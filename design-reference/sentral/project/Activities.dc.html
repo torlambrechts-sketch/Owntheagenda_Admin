@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+    <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.pick }}" style="padding:8px 14px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for></div>
+    <span style="flex:1"></span>
+    <sc-for list="{{ filters }}" as="f"><label style="display:flex; align-items:center; gap:5px; height:34px; padding:0 4px 0 10px; border-radius:10px; border:1px solid {{ f.bc }}; background:#FFFDF6; font-size:12px; color:#5F5849">{{ f.n }}<select value="{{ f.value }}" onChange="{{ f.set }}" style="border:none; background:transparent; font-size:12.5px; font-weight:600"><sc-for list="{{ f.opts }}" as="o"><option>{{ o }}</option></sc-for></select></label></sc-for>
+    <button onClick="{{ newAct }}" style="height:36px; padding:0 15px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">＋ Activity</button>
+  </div>
+
+  <sc-if value="{{ v.calendar }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; gap:8px; align-items:center">
+        <div style="display:flex; padding:3px; border-radius:10px; background:#F2EAD6"><sc-for list="{{ calModes }}" as="m"><button onClick="{{ m.pick }}" style="padding:6px 12px; border-radius:7px; border:none; font-size:12.5px; cursor:pointer; background:{{ m.bg }}; font-weight:{{ m.fw }}">{{ m.n }}</button></sc-for></div>
+        <b style="font-family:'Playfair Display',serif; font-size:18px">{{ calTitle }}</b>
+        <span style="font-size:12px; color:#5F5849">Drag to reschedule · synced calendar events update too</span>
+      </div>
+      <sc-if value="{{ cal.week }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:auto">
+          <div style="min-width:900px">
+            <div style="display:grid; grid-template-columns:54px repeat(7,minmax(0,1fr)); border-bottom:1px solid #E8DFC9"><span></span><sc-for list="{{ days }}" as="d"><div style="padding:10px; border-left:1px solid #E8DFC9; background:{{ d.bg }}"><div style="font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ d.dow }}</div><b style="font-family:'Playfair Display',serif; font-size:18px">{{ d.n }}</b></div></sc-for></div>
+            <div style="display:grid; grid-template-columns:54px repeat(7,minmax(0,1fr))">
+              <div style="display:flex; flex-direction:column"><sc-for list="{{ hours }}" as="h"><div style="height:54px; font-size:11px; color:#8A8272; text-align:right; padding:3px 8px 0 0; border-bottom:1px solid #F2EAD6">{{ h }}</div></sc-for></div>
+              <sc-for list="{{ days }}" as="d">
+                <div style="position:relative; border-left:1px solid #E8DFC9; background:{{ d.bg }}">
+                  <sc-for list="{{ d.slots }}" as="s"><div onDragOver="{{ allowDrop }}" onDrop="{{ s.drop }}" style="height:54px; border-bottom:1px solid #F2EAD6"></div></sc-for>
+                  <sc-for list="{{ d.items }}" as="a"><div draggable="true" onDragStart="{{ a.drag }}" onClick="{{ a.open }}" title="{{ a.tip }}" style="position:absolute; left:4px; right:4px; top:{{ a.top }}px; height:{{ a.h }}px; border-radius:10px; padding:5px 7px; background:{{ a.bg }}; border:1px solid {{ a.bc }}; overflow:hidden; cursor:grab; font-size:11.5px; line-height:1.25"><b style="text-decoration:{{ a.td }}">{{ a.g }} {{ a.subject }}</b><div style="color:#5F5849">{{ a.time }} · {{ a.org }}</div></div></sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ cal.month }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden; display:grid; grid-template-columns:repeat(7,minmax(0,1fr))">
+          <sc-for list="{{ monthCells }}" as="c"><div style="min-height:96px; padding:8px; border-right:1px solid #E8DFC9; border-bottom:1px solid #E8DFC9; background:{{ c.bg }}; display:flex; flex-direction:column; gap:4px"><b style="font-size:12px; color:{{ c.c }}">{{ c.n }}</b><sc-for list="{{ c.items }}" as="a"><span style="font-size:10.5px; padding:2px 6px; border-radius:6px; background:{{ a.bg }}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ a.g }} {{ a.subject }}</span></sc-for></div></sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ cal.day }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:12px 18px; display:flex; flex-direction:column">
+          <sc-for list="{{ dayList }}" as="a"><div style="display:grid; grid-template-columns:70px 8px minmax(0,1fr) 140px; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid #E8DFC9; font-size:13px"><b>{{ a.time }}</b><span style="width:8px; height:36px; border-radius:999px; background:{{ a.bc }}"></span><span style="display:flex; flex-direction:column"><b>{{ a.g }} {{ a.subject }}</b><span style="font-size:12px; color:#5F5849">{{ a.org }} · {{ a.dur }} min · {{ a.ownerName }}</span></span><span style="font-size:12px; color:#5F5849">{{ a.extra }}</span></div></sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.list }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 16px; border-bottom:1px solid #E8DFC9; font-size:12.5px">
+        <sc-for list="{{ listTabs }}" as="t"><button onClick="{{ t.pick }}" style="padding:5px 11px; border-radius:999px; font-size:12px; border:1px solid {{ t.bc }}; background:{{ t.bg }}; font-weight:{{ t.fw }}; cursor:pointer">{{ t.n }} <span style="color:#5F5849">{{ t.count }}</span></button></sc-for>
+        <span style="flex:1"></span>
+        <sc-if value="{{ selCount }}"><span style="display:flex; gap:6px; align-items:center"><b>{{ selCount }} selected</b><select onChange="{{ bulkPrio }}" value="" style="height:30px; border-radius:9px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px"><option value="">Set priority …</option><option>High</option><option>Medium</option><option>Low</option></select><button onClick="{{ bulkTomorrow }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Move to tomorrow</button><button onClick="{{ bulkDone }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Mark done</button></span></sc-if>
+      </div>
+      <div style="display:grid; grid-template-columns:26px 28px minmax(180px,1.6fr) minmax(140px,1.2fr) 120px 70px 90px 100px 70px; gap:10px; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span></span><span>Done</span><span>Subject</span><span>Linked to</span><button onClick="{{ sortDue }}" style="border:none; background:transparent; padding:0; font:inherit; letter-spacing:inherit; text-transform:inherit; color:inherit; text-align:left; cursor:pointer">Due ↕</button><span>Dur.</span><span>Owner</span><button onClick="{{ sortPrio }}" style="border:none; background:transparent; padding:0; font:inherit; letter-spacing:inherit; text-transform:inherit; color:inherit; text-align:left; cursor:pointer">Priority ↕</button><span>Guests</span></div>
+      <sc-for list="{{ todo }}" as="a" hint-placeholder-count="10">
+        <div style="display:grid; grid-template-columns:26px 28px minmax(180px,1.6fr) minmax(140px,1.2fr) 120px 70px 90px 100px 70px; gap:10px; align-items:center; padding:8px 16px; border-bottom:1px solid #E8DFC9; font-size:12.5px; background:{{ a.rowBg }}">
+          <input type="checkbox" checked="{{ a.sel }}" onChange="{{ a.toggle }}" style="accent-color:#191510"></input>
+          <button onClick="{{ a.markDone }}" aria-label="Mark done" style="width:20px; height:20px; border-radius:999px; border:1.5px solid {{ a.dbc }}; background:{{ a.dbg }}; color:#20431C; font-size:11px; font-weight:700; cursor:pointer; padding:0">{{ a.dmark }}</button>
+          <button onClick="{{ a.open }}" style="border:none; background:transparent; padding:0; text-align:left; cursor:pointer; font-weight:600; text-decoration:{{ a.td }}">{{ a.g }} {{ a.subject }}</button>
+          <span style="color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ a.dealTitle }}</span>
+          <span style="color:{{ a.dueC }}; font-weight:{{ a.dueW }}">{{ a.due }}</span><span>{{ a.dur }} min</span><span>{{ a.ownerName }}</span>
+          <select value="{{ a.prio }}" onChange="{{ a.setPrio }}" style="height:28px; border-radius:8px; border:1px solid #E8DFC9; background:{{ a.pbg }}; font-size:12px; font-weight:700"><option>High</option><option>Medium</option><option>Low</option></select>
+          <span style="color:#5F5849">{{ a.guestsF }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.scheduler }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <sc-for list="{{ bookingLinks }}" as="b"><div style="background:#FFFDF6; border:1px solid {{ b.bc }}; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px; cursor:pointer" onClick="{{ b.pick }}"><div style="display:flex; justify-content:space-between; gap:10px"><b style="font-size:14px">{{ b.n }}</b><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:#F2EAD6">{{ b.kind }}</span></div><span style="font-family:ui-monospace,Menlo,monospace; font-size:12px; color:#2F5D2A">{{ b.url }}</span><span style="font-size:12px; color:#5F5849">{{ b.desc }}</span></div></sc-for>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px">
+          <b style="font-size:14px">Availability</b>
+          <div style="display:grid; grid-template-columns:50px repeat(5,minmax(0,1fr)); gap:4px; margin-top:10px; font-size:11px">
+            <span></span><sc-for list="{{ availHead }}" as="h"><b style="text-align:center">{{ h }}</b></sc-for>
+            <sc-for list="{{ avail }}" as="r"><span style="color:#5F5849; padding-top:5px">{{ r.h }}</span><sc-for list="{{ r.cells }}" as="c"><button onClick="{{ c.toggle }}" style="height:24px; border-radius:6px; border:1px solid #E8DFC9; background:{{ c.bg }}; cursor:pointer"></button></sc-for></sc-for>
+          </div>
+          <div style="font-size:11.5px; color:#5F5849; margin-top:8px">Busy times are read from the synced calendar · 15 min buffer · video link added automatically</div>
+        </div>
+      </div>
+      <div style="background:#FCF6E9; border:1px solid #E8DFC9; border-radius:20px; padding:18px 20px; display:flex; flex-direction:column; gap:12px">
+        <div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">What the contact sees</div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:12px">
+          <div style="display:flex; gap:10px; align-items:center"><span style="width:40px; height:40px; border-radius:12px; background:#191510; color:#FCF6E9; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:700">TL</span><span style="display:flex; flex-direction:column"><b>{{ bookingSel.title }}</b><span style="font-size:12px; color:#5F5849">Tor Lambrechts · 30 min · Google Meet</span></span></div>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px"><sc-for list="{{ slots }}" as="s"><button onClick="{{ s.pick }}" style="height:38px; border-radius:10px; border:1px solid {{ s.bc }}; background:{{ s.bg }}; font-size:12.5px; font-weight:{{ s.fw }}; cursor:pointer">{{ s.t }}</button></sc-for></div>
+          <button onClick="{{ book }}" style="height:40px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">Confirm booking</button>
+          <div style="font-size:11.5px; color:#5F5849">Both get a confirmation · an activity is created and linked to the person and open deal</div>
+        </div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">Recent bookings</div>
+        <sc-for list="{{ bookings }}" as="b"><div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid #E8DFC9"><span><b>{{ b.who }}</b> · {{ b.org }}</span><span style="color:#5F5849">{{ b.when }}</span></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.sync }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 20px; display:flex; flex-direction:column; gap:10px">
+        <b style="font-size:15px">Reminders</b>
+        <span style="font-size:12px; color:#5F5849">Each reminder fires once per chosen channel</span>
+        <sc-for list="{{ channels }}" as="c"><div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #E8DFC9"><span style="display:flex; flex-direction:column"><b style="font-size:13px">{{ c.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ c.s }}</span></span><button onClick="{{ c.toggle }}" style="position:relative; width:40px; height:22px; border-radius:999px; border:none; background:{{ c.track }}; cursor:pointer"><span style="position:absolute; top:3px; left:{{ c.knob }}px; width:16px; height:16px; border-radius:999px; background:#FFFDF6"></span></button></div></sc-for>
+        <label style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px">Default timing<select style="height:32px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>15 minutes before</option><option>1 hour before</option><option>1 day before</option></select></label>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 20px; display:flex; flex-direction:column; gap:10px">
+        <b style="font-size:15px">Calendar sync</b>
+        <div style="display:flex; gap:8px"><sc-for list="{{ providers }}" as="p"><button onClick="{{ p.pick }}" style="flex:1; height:40px; border-radius:11px; border:1px solid {{ p.bc }}; background:{{ p.bg }}; font-size:12.5px; font-weight:{{ p.fw }}; cursor:pointer">{{ p.n }}</button></sc-for></div>
+        <div style="display:flex; padding:3px; border-radius:10px; background:#F2EAD6"><sc-for list="{{ syncModes }}" as="m"><button onClick="{{ m.pick }}" style="flex:1; padding:7px; border-radius:7px; border:none; font-size:12.5px; cursor:pointer; background:{{ m.bg }}; font-weight:{{ m.fw }}">{{ m.n }}</button></sc-for></div>
+        <label style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px">Calendar<select style="height:32px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>tor@orgpuls.no</option><option>Sales team</option></select></label>
+        <div style="font-size:12px; font-weight:700; color:#5F5849">Activity types to sync</div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ syncTypes }}" as="t"><button onClick="{{ t.toggle }}" style="padding:5px 11px; border-radius:999px; font-size:12px; border:1px solid {{ t.bc }}; background:{{ t.bg }}; font-weight:{{ t.fw }}; cursor:pointer">{{ t.g }} {{ t.n }}</button></sc-for></div>
+        <div style="font-size:12px; color:#5F5849; border-top:1px solid #E8DFC9; padding-top:8px">Private events sync as private · last sync 2 min ago · 0 conflicts (latest change wins)</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ edit }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeEdit }}" style="position:fixed; inset:0; z-index:90; background:rgba(25,21,16,.42); display:flex; align-items:center; justify-content:center; padding:20px">
+      <div onClick="{{ stop }}" style="width:620px; max-width:100%; max-height:92vh; overflow:auto; background:#FFFDF6; border-radius:22px; padding:22px 24px; display:flex; flex-direction:column; gap:12px; box-shadow:0 34px 80px rgba(25,21,16,.3)">
+        <div style="display:flex; justify-content:space-between"><b style="font-family:'Playfair Display',serif; font-size:21px">{{ edit.heading }}</b><button onClick="{{ closeEdit }}" style="width:30px; height:30px; border-radius:999px; border:1px solid #191510; background:transparent; cursor:pointer">×</button></div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ typeChips }}" as="t"><button onClick="{{ t.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12.5px; border:1px solid {{ t.bc }}; background:{{ t.bg }}; font-weight:{{ t.fw }}; cursor:pointer">{{ t.g }} {{ t.n }}</button></sc-for></div>
+        <input value="{{ edit.subject }}" onChange="{{ setSubject }}" placeholder="Subject" style="height:42px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:14px; font-weight:600"></input>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px">
+          <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; color:#5F5849">Date<input value="{{ edit.date }}" style="height:36px; padding:0 8px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input></label>
+          <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; color:#5F5849">Time<input value="{{ edit.time }}" style="height:36px; padding:0 8px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input></label>
+          <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; color:#5F5849">Duration<select style="height:36px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>30 min</option><option>45 min</option><option>60 min</option></select></label>
+          <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; color:#5F5849">Priority<select style="height:36px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>High</option><option>Medium</option><option>Low</option></select></label>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
+          <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; color:#5F5849">Linked deal<select style="height:36px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>{{ edit.dealTitle }}</option></select></label>
+          <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; color:#5F5849">Owner<select style="height:36px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>Tor Lambrechts</option><option>Ingrid Solberg</option><option>Eirik Moen</option></select></label>
+        </div>
+        <div style="border:1px solid #E8DFC9; border-radius:14px; padding:10px 12px; display:flex; flex-direction:column; gap:6px">
+          <b style="font-size:12.5px">Guests — invites go out through the synced calendar</b>
+          <sc-for list="{{ guests }}" as="g"><div style="display:flex; justify-content:space-between; font-size:12.5px"><span>{{ g.n }} <span style="color:#5F5849">· {{ g.e }}</span></span><span style="font-weight:700; color:{{ g.c }}">{{ g.r }}</span></div></sc-for>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; border:1px solid #E8DFC9; border-radius:14px; padding:10px 12px"><b style="font-size:12.5px; flex:1">Video call link</b><sc-for list="{{ videoOpts }}" as="o"><button onClick="{{ o.pick }}" style="padding:5px 10px; border-radius:999px; font-size:12px; border:1px solid {{ o.bc }}; background:{{ o.bg }}; font-weight:{{ o.fw }}; cursor:pointer">{{ o.n }}</button></sc-for></div>
+        <sc-if value="{{ videoUrl }}"><span style="font-family:ui-monospace,Menlo,monospace; font-size:12px; color:#2F5D2A">{{ videoUrl }}</span></sc-if>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center"><b style="font-size:12.5px; margin-right:4px">Remind me</b><sc-for list="{{ remindChips }}" as="r"><button onClick="{{ r.toggle }}" style="padding:5px 10px; border-radius:999px; font-size:12px; border:1px solid {{ r.bc }}; background:{{ r.bg }}; font-weight:{{ r.fw }}; cursor:pointer">{{ r.n }}</button></sc-for></div>
+        <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; color:#5F5849">Outcome (custom field)<select style="height:36px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>—</option><option>Interested</option><option>Needs follow-up</option><option>Not now</option></select></label>
+        <textarea placeholder="Note" style="min-height:60px; padding:9px 11px; border-radius:11px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></textarea>
+        <div style="display:flex; justify-content:flex-end; gap:8px"><button onClick="{{ closeEdit }}" style="height:38px; padding:0 15px; border-radius:11px; border:1px solid #E8DFC9; background:transparent; font-size:13px; font-weight:600; cursor:pointer">Cancel</button><button onClick="{{ saveEdit }}" style="height:38px; padding:0 17px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">Save activity</button></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ nextPrompt }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; right:26px; bottom:26px; z-index:95; width:360px; background:#FFFDF6; border:1px solid #191510; border-radius:18px; padding:16px 18px; box-shadow:0 18px 40px -24px rgba(25,21,16,.45); display:flex; flex-direction:column; gap:8px">
+      <b style="font-size:14px">Done. What is the next step?</b>
+      <span style="font-size:12.5px; color:#5F5849">«{{ nextPrompt.subject }}» on {{ nextPrompt.dealTitle }}</span>
+      <div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ nextOpts }}" as="o"><button onClick="{{ o.pick }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">{{ o.n }}</button></sc-for></div>
+      <button onClick="{{ skipNext }}" style="align-self:flex-start; border:none; background:transparent; padding:0; font-size:12px; color:#5F5849; cursor:pointer">Skip — deal will show a warning icon</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:96; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'calendar', calMode: 'Week', owner: 'Everyone', type: 'All types', status: 'Open', acts: null, sel: {}, sortBy: 'due', listTab: 'All', edit: null, editType: 'call', video: 'Google Meet', remind: { 'In app': true, Email: true, Desktop: false, Push: true }, nextPrompt: null, booking: 0, slot: 1, avail: {}, ch: { app: true, email: true, desktop: false, push: true }, provider: 'Google', syncMode: 'Two-way', syncTypes: { call: true, meeting: true, demo: true, lunch: true }, toast: null };
+  componentDidMount() {
+    const init = () => { const f = this.props.focus; this.setState({ acts: window.SA.activities.map((a) => ({ ...a })), tab: f && f.tab === 'reminders' ? 'sync' : this.state.tab }); };
+    if (window.SA) init(); else this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); init(); } }, 40);
+  }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  patch(id, p) { this.setState((s) => ({ acts: s.acts.map((a) => (a.id === id ? { ...a, ...p } : a)) })); }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D || !st.acts) return { tabs: [], filters: [], v: {}, calModes: [], cal: {}, days: [], hours: [], monthCells: [], dayList: [], listTabs: [], todo: [], bookingLinks: [], availHead: [], avail: [], slots: [], bookings: [], bookingSel: {}, channels: [], providers: [], syncModes: [], syncTypes: [], typeChips: [], guests: [], videoOpts: [], remindChips: [], nextOpts: [] };
+    const pill = (cur, k) => ({ bg: cur === k ? '#191510' : 'transparent', c: cur === k ? '#FCF6E9' : '#191510', bc: cur === k ? '#191510' : '#C4BCA8', fw: cur === k ? 700 : 500 });
+    const tabs = [['calendar', 'Calendar'], ['list', 'To-do list'], ['scheduler', 'Meeting scheduler'], ['sync', 'Reminders and sync']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(st.tab, k) }));
+    const T = Object.fromEntries(D.actTypes.map((t) => [t.id, t]));
+    const fdefs = [['owner', 'User', ['Everyone', 'Tor Lambrechts', 'Ingrid Solberg', 'Eirik Moen']], ['type', 'Type', ['All types', ...D.actTypes.map((t) => t.n)]], ['status', 'Status', ['Open', 'Done', 'All']]];
+    const filters = fdefs.map(([k, n, opts]) => ({ n, opts, value: st[k], bc: st[k] !== opts[0] ? '#191510' : '#E8DFC9', set: (e) => this.setState({ [k]: e.target.value }) }));
+    const oid = { 'Tor Lambrechts': 'tor', 'Ingrid Solberg': 'ingrid', 'Eirik Moen': 'eirik' }[st.owner];
+    const tc = { call: ['#DCEBD3', '#5C9A55'], meeting: ['#CFE0F5', '#6E8FB8'], task: ['#F3E2C9', '#E0A21F'], deadline: ['#F6D9C6', '#D4633A'], email: ['#E7DAF2', '#8F74B3'], lunch: ['#F2EAD6', '#C4BCA8'], demo: ['#CFE0F5', '#6E8FB8'] };
+    const acts = st.acts.filter((a) => (!oid || a.owner === oid) && (st.type === 'All types' || T[a.type].n === st.type) && (st.status === 'All' || (st.status === 'Done' ? a.done : !a.done || st.calMode !== 'List')));
+    const dealBy = Object.fromEntries(D.deals.map((d) => [d.id, d]));
+    const dows = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const hours = Array.from({ length: 10 }, (_, i) => (8 + i) + ':00');
+    const days = dows.map((dow, i) => ({ dow, n: 5 + i, bg: i === 0 ? '#FFFBEF' : i > 4 ? '#FCF6E9' : '#FFFDF6',
+      slots: hours.map((h, hi) => ({ drop: (e) => { e.preventDefault(); const id = e.dataTransfer.getData('text/plain'); if (!id) return; this.patch(id, { day: i, hour: 8 + hi, min: 0 }); this.flash('Rescheduled to ' + dow + ' ' + (8 + hi) + ':00 · calendar event updated'); } })),
+      items: acts.filter((a) => a.day === i && a.hour >= 8 && a.hour < 18).map((a) => ({ ...a, g: T[a.type].g, top: (a.hour - 8) * 54 + (a.min / 60) * 54 + 2, h: Math.max(26, (a.dur / 60) * 54 - 4), bg: a.done ? '#EFE6D2' : tc[a.type][0], bc: tc[a.type][1], td: a.done ? 'line-through' : 'none', time: a.hour + ':' + String(a.min).padStart(2, '0'), org: D.orgById[a.org].name.split(' ')[0], tip: T[a.type].n + ' · ' + a.subject, drag: (e) => e.dataTransfer.setData('text/plain', a.id), open: () => this.openEdit(a) })) }));
+    const monthCells = Array.from({ length: 35 }, (_, i) => { const d = i - 2; const inMonth = d >= 1 && d <= 31; const its = inMonth ? acts.filter((a) => a.day + 5 === d).slice(0, 3).map((a) => ({ g: T[a.type].g, subject: a.subject, bg: tc[a.type][0] })) : []; return { n: inMonth ? d : '', c: d === 5 ? '#A33A16' : '#191510', bg: d === 5 ? '#FBEBBE' : inMonth ? '#FFFDF6' : '#FCF6E9', items: its }; });
+    const dayList = acts.filter((a) => a.day === 0).sort((a, b) => a.hour - b.hour).map((a) => ({ ...a, g: T[a.type].g, time: a.hour + ':' + String(a.min).padStart(2, '0'), org: D.orgById[a.org].name, bc: tc[a.type][1], ownerName: D.staffById[a.owner].name, extra: (a.video ? 'Video link · ' : '') + (a.guests ? a.guests + ' guests' : '') }));
+    const calModes = ['Day', 'Week', 'Month'].map((n) => ({ n, pick: () => this.setState({ calMode: n }), bg: st.calMode === n ? '#FFFDF6' : 'transparent', fw: st.calMode === n ? 700 : 500 }));
+    // list
+    const open = st.acts.filter((a) => !a.done);
+    const LT = { All: (a) => true, Overdue: (a) => !a.done && a.day < 0, Today: (a) => a.day === 0, 'This week': (a) => a.day >= 0 && a.day < 7, Done: (a) => a.done };
+    const listTabs = Object.keys(LT).map((n) => ({ n, count: st.acts.filter(LT[n]).length, pick: () => this.setState({ listTab: n }), bg: st.listTab === n ? '#FBEBBE' : 'transparent', bc: st.listTab === n ? '#191510' : '#C4BCA8', fw: st.listTab === n ? 700 : 500 }));
+    const pr = { High: 0, Medium: 1, Low: 2 };
+    const todoSrc = st.acts.filter((a) => (!oid || a.owner === oid) && (st.type === 'All types' || T[a.type].n === st.type)).filter(LT[st.listTab]).sort((a, b) => (st.sortBy === 'prio' ? pr[a.prio] - pr[b.prio] : a.day * 24 + a.hour - (b.day * 24 + b.hour)));
+    const todo = todoSrc.map((a) => { const d = dealBy[a.deal]; const overdue = !a.done && a.day < 0; return { ...a, g: T[a.type].g, dealTitle: d ? d.title : D.orgById[a.org].name, due: a.day === 0 ? 'Today ' + a.hour + ':00' : a.day < 0 ? Math.abs(a.day) + ' d overdue' : dows[a.day % 7] + ' ' + (5 + a.day) + ' Oct', dueC: overdue ? '#A33A16' : '#191510', dueW: overdue ? 700 : 400, ownerName: D.staffById[a.owner].name.split(' ')[0], guestsF: a.guests ? a.guests + ' · 1 declined' : '—', pbg: a.prio === 'High' ? '#FBD5C4' : a.prio === 'Medium' ? '#FBEBBE' : '#FFFDF6', td: a.done ? 'line-through' : 'none', dmark: a.done ? '✓' : '', dbg: a.done ? '#CFE7E4' : 'transparent', dbc: a.done ? '#2F5D2A' : '#191510', sel: !!st.sel[a.id], rowBg: st.sel[a.id] ? '#FBEBBE' : 'transparent',
+      toggle: () => this.setState({ sel: { ...st.sel, [a.id]: !st.sel[a.id] } }), setPrio: (e) => this.patch(a.id, { prio: e.target.value }), open: () => this.openEdit(a),
+      markDone: () => { this.patch(a.id, { done: !a.done }); if (!a.done) this.setState({ nextPrompt: { subject: a.subject, dealTitle: d ? d.title : '' } }); } }; });
+    const selIds = Object.keys(st.sel).filter((k) => st.sel[k]);
+    const bulk = (p, msg) => { this.setState((s) => ({ acts: s.acts.map((a) => (selIds.includes(a.id) ? { ...a, ...p } : a)), sel: {} })); this.flash(msg + ' · ' + selIds.length + ' activities'); };
+    // scheduler
+    const links = [{ n: 'Product walkthrough — 30 min', kind: 'General availability', url: 'book.orgpuls.no/tor/walkthrough', desc: 'Any open slot in the next 3 weeks · Google Meet', title: 'Product walkthrough' }, { n: 'Lumio AS — proposal follow-up', kind: 'Proposed times', url: 'book.orgpuls.no/tor/x7Kq2', desc: '3 specific times sent to Kari Nordmann · expires Fri', title: 'Proposal follow-up with Lumio AS' }];
+    const bookingLinks = links.map((b, i) => ({ ...b, bc: st.booking === i ? '#191510' : '#E8DFC9', pick: () => this.setState({ booking: i }) }));
+    const availHead = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+    const avail = ['08', '09', '10', '11', '12', '13', '14', '15'].map((h, hi) => ({ h: h + ':00', cells: availHead.map((d, di) => { const k = d + h; const def = hi !== 4 && !(di === 4 && hi > 5); const on = st.avail[k] != null ? st.avail[k] : def; return { bg: on ? '#CFE7E4' : '#FCF6E9', toggle: () => this.setState({ avail: { ...st.avail, [k]: !on } }) }; }) }));
+    const slotTimes = st.booking === 1 ? ['Tue 6 Oct 10:00', 'Wed 7 Oct 13:30', 'Thu 8 Oct 09:00'] : ['Tue 09:00', 'Tue 10:30', 'Wed 13:00', 'Thu 09:30', 'Thu 14:00', 'Fri 10:00'];
+    const slots = slotTimes.map((t, i) => ({ t, pick: () => this.setState({ slot: i }), bg: st.slot === i ? '#FBEBBE' : '#FFFDF6', bc: st.slot === i ? '#191510' : '#E8DFC9', fw: st.slot === i ? 700 : 500 }));
+    const bookings = [['Kari Nordmann', 'Lumio AS', 'Thu 10:00'], ['Ole Hansen', 'Bergheim Bygg AS', 'Fri 13:30'], ['Marte Larsen', 'Solstrand Helse AS', 'Mon 12 Oct 09:00']].map(([who, org, when]) => ({ who, org, when }));
+    const channels = [['app', 'In app', 'Bell and toast'], ['email', 'Email', 'To tor@orgpuls.no'], ['desktop', 'Desktop notification', 'Browser permission granted'], ['push', 'Push', 'iPhone · Sentral mobile']].map(([k, n, s]) => ({ n, s, track: st.ch[k] ? '#191510' : '#C4BCA8', knob: st.ch[k] ? 21 : 3, toggle: () => this.setState({ ch: { ...st.ch, [k]: !st.ch[k] } }) }));
+    const providers = ['Google', 'Microsoft 365'].map((n) => ({ n, pick: () => this.setState({ provider: n }), bg: st.provider === n ? '#FBEBBE' : 'transparent', bc: st.provider === n ? '#191510' : '#E8DFC9', fw: st.provider === n ? 700 : 500 }));
+    const syncModes = ['One-way', 'Two-way'].map((n) => ({ n, pick: () => this.setState({ syncMode: n }), bg: st.syncMode === n ? '#FFFDF6' : 'transparent', fw: st.syncMode === n ? 700 : 500 }));
+    const syncTypes = D.actTypes.map((t) => ({ ...t, toggle: () => this.setState({ syncTypes: { ...st.syncTypes, [t.id]: !st.syncTypes[t.id] } }), bg: st.syncTypes[t.id] ? '#FBEBBE' : 'transparent', bc: st.syncTypes[t.id] ? '#191510' : '#C4BCA8', fw: st.syncTypes[t.id] ? 700 : 500 }));
+    const typeChips = [...D.actTypes, { id: 'site', n: 'Site visit', g: '⌂' }].map((t) => ({ ...t, pick: () => this.setState({ editType: t.id }), bg: st.editType === t.id ? '#FBEBBE' : 'transparent', bc: st.editType === t.id ? '#191510' : '#C4BCA8', fw: st.editType === t.id ? 700 : 500 }));
+    const guests = [['Kari Nordmann', 'kari.nordmann@lumio.no', 'Accepted', '#2F5D2A'], ['Mona Hansen', 'mona.hansen@lumio.no', 'Tentative', '#8A6A00'], ['Petter Aas', 'petter.aas@lumio.no', 'Declined', '#A33A16']].map(([n, e, r, c]) => ({ n, e, r, c }));
+    const videoOpts = ['Google Meet', 'Teams', 'Zoom', 'None'].map((n) => ({ n, pick: () => this.setState({ video: n }), bg: st.video === n ? '#FBEBBE' : 'transparent', bc: st.video === n ? '#191510' : '#C4BCA8', fw: st.video === n ? 700 : 500 }));
+    const vu = { 'Google Meet': 'meet.google.com/kqv-zrbd-wmt', Teams: 'teams.microsoft.com/l/meetup-join/19%3a…', Zoom: 'zoom.us/j/84629103371' }[st.video];
+    const remindChips = Object.keys(st.remind).map((n) => ({ n, toggle: () => this.setState({ remind: { ...st.remind, [n]: !st.remind[n] } }), bg: st.remind[n] ? '#FBEBBE' : 'transparent', bc: st.remind[n] ? '#191510' : '#C4BCA8', fw: st.remind[n] ? 700 : 500 }));
+    const nextOpts = ['Call in 2 days', 'Email tomorrow', 'Meeting next week', 'Task: send proposal'].map((n) => ({ n, pick: () => { this.setState({ nextPrompt: null }); this.flash('Next activity planned: ' + n); } }));
+    const cal = { week: st.calMode === 'Week', month: st.calMode === 'Month', day: st.calMode === 'Day' };
+    return { tabs, filters, v: { [st.tab]: true }, calModes, cal, calTitle: st.calMode === 'Month' ? 'October 2026' : st.calMode === 'Day' ? D.today.label : 'Week 41 · 5–11 October', days, hours, monthCells, dayList, allowDrop: (e) => e.preventDefault(),
+      listTabs, todo, selCount: selIds.length || null, bulkPrio: (e) => e.target.value && bulk({ prio: e.target.value }, 'Priority set'), bulkTomorrow: () => bulk({ day: 1 }, 'Moved to tomorrow'), bulkDone: () => bulk({ done: true }, 'Marked done'), sortDue: () => this.setState({ sortBy: 'due' }), sortPrio: () => this.setState({ sortBy: 'prio' }),
+      bookingLinks, bookingSel: links[st.booking], availHead, avail, slots, bookings, book: () => this.flash('Booked ' + slotTimes[st.slot] + ' · confirmation sent · activity linked'),
+      channels, providers, syncModes, syncTypes,
+      newAct: () => this.openEdit(null), edit: st.edit, typeChips, guests, videoOpts, videoUrl: st.video !== 'None' ? vu : null, remindChips,
+      setSubject: (e) => this.setState({ edit: { ...st.edit, subject: e.target.value } }), closeEdit: () => this.setState({ edit: null }), stop: (e) => e.stopPropagation(),
+      saveEdit: () => { if (st.edit.id) this.patch(st.edit.id, { subject: st.edit.subject, type: st.editType, video: st.video !== 'None' }); else this.setState((s) => ({ acts: [...s.acts, { ...s.acts[0], id: 'a' + (100 + s.acts.length), subject: st.edit.subject || 'New activity', type: st.editType, day: 1, hour: 10, min: 0, done: false, guests: 3, video: st.video !== 'None' }] })); this.setState({ edit: null }); this.flash('Activity saved · invites sent · reminders set'); },
+      nextPrompt: st.nextPrompt, nextOpts, skipNext: () => this.setState({ nextPrompt: null }), toast: st.toast };
+  }
+  openEdit(a) {
+    const D = window.SA; const d = a ? D.deals.find((x) => x.id === a.deal) : D.deals[0];
+    this.setState({ edit: { id: a ? a.id : null, heading: a ? 'Edit activity' : 'New activity', subject: a ? a.subject : '', date: a ? (5 + a.day) + ' Oct 2026' : '6 Oct 2026', time: a ? a.hour + ':' + String(a.min).padStart(2, '0') : '10:00', dealTitle: d ? d.title : '—' }, editType: a ? a.type : 'meeting' });
+  }
+}
+</script>
+</body>
+</html>

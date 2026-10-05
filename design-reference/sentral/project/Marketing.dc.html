@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="10"><button onClick="{{ t.pick }}" style="padding:7px 13px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for></div>
+
+  <sc-if value="{{ v.campaigns }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center"><sc-for list="{{ typeFilter }}" as="f"><button onClick="{{ f.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12px; border:1px solid {{ f.bc }}; background:{{ f.bg }}; font-weight:{{ f.fw }}; cursor:pointer">{{ f.n }}</button></sc-for><span style="flex:1"></span><button onClick="{{ newCampaign }}" style="height:36px; padding:0 15px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">＋ Campaign</button></div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="display:grid; grid-template-columns:minmax(200px,1.6fr) 120px 120px 80px 70px 70px 80px 90px 100px; gap:10px; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Campaign</span><span>Type</span><span>Status</span><span>Sent</span><span>Open</span><span>Click</span><span>Unsub.</span><span>Signups</span><span>MRR won</span></div>
+        <sc-for list="{{ campaigns }}" as="c" hint-placeholder-count="7"><button onClick="{{ c.pick }}" style="display:grid; width:100%; grid-template-columns:minmax(200px,1.6fr) 120px 120px 80px 70px 70px 80px 90px 100px; gap:10px; align-items:center; padding:10px 16px; border:none; border-bottom:1px solid #E8DFC9; background:{{ c.bg }}; cursor:pointer; text-align:left; font-size:12.5px; font-variant-numeric:tabular-nums"><span style="display:flex; flex-direction:column"><b>{{ c.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ c.aud }}</span></span><span>{{ c.type }}</span><span><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ c.sbg }}; color:{{ c.sc }}">{{ c.status }}</span></span><span>{{ c.sent }}</span><b>{{ c.open }}</b><b>{{ c.click }}</b><span>{{ c.unsub }}</span><span>{{ c.signups }}</span><b>{{ c.mrr }}</b></button></sc-for>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px"><b style="font-size:14px">{{ cur.n }}</b><span style="font-size:12px; color:#5F5849">{{ cur.when }}</span></div>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px"><sc-for list="{{ cur.stats }}" as="s"><div style="border-radius:13px; background:#FCF6E9; border:1px solid #E8DFC9; padding:9px 10px"><div style="font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ s.k }}</div><b style="font-size:15px">{{ s.v }}</b></div></sc-for></div>
+          <div style="margin-top:12px; font-size:12px; color:#5F5849">A/B subject test: <b style="color:#191510">«{{ cur.a }}»</b> {{ cur.ar }} vs «{{ cur.b }}» {{ cur.br }} — winner sent to the rest</div>
+          <div style="margin-top:8px; font-size:12px; color:#5F5849">Top locations: Oslo · Bergen · Trondheim · Stavanger · owners notified on engagement</div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px"><b style="font-size:14px">Compare campaigns</b><span style="font-size:12px; color:#5F5849">Same figures as each campaign’s report</span></div>
+          <sc-for list="{{ compare }}" as="c"><div style="display:grid; grid-template-columns:150px minmax(0,1fr) 54px; gap:8px; align-items:center; font-size:12px; padding:4px 0"><span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ c.n }}</span><span style="display:flex; flex-direction:column; gap:2px"><span style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ c.ow }}%; background:#9DB8B3"></span></span><span style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ c.cw }}%; background:#E0A21F"></span></span></span><b style="text-align:right">{{ c.o }}</b></div></sc-for>
+          <div style="display:flex; gap:12px; margin-top:8px; font-size:11.5px; color:#5F5849"><span>▬ open rate</span><span style="color:#8A6A00">▬ click rate</span></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.builder }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:190px minmax(0,1fr) 270px; gap:12px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:12px; display:flex; flex-direction:column; gap:6px">
+        <span style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">Content blocks</span>
+        <sc-for list="{{ palette }}" as="p"><button onClick="{{ p.add }}" style="display:flex; align-items:center; gap:8px; padding:7px 9px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; cursor:pointer; text-align:left"><span style="width:18px; text-align:center">{{ p.g }}</span>{{ p.n }}</button></sc-for>
+        <span style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849; margin-top:6px">Start from</span>
+        <sc-for list="{{ layouts }}" as="l"><button onClick="{{ l.use }}" style="padding:7px 9px; border-radius:10px; border:1px dashed #C4BCA8; background:transparent; font-size:12px; cursor:pointer; text-align:left">{{ l.n }}</button></sc-for>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px; align-items:center">
+        <div style="display:flex; gap:8px; align-items:center; width:100%"><div style="display:flex; padding:3px; border-radius:10px; background:#F2EAD6"><sc-for list="{{ devices }}" as="d"><button onClick="{{ d.pick }}" style="padding:6px 12px; border-radius:7px; border:none; font-size:12px; cursor:pointer; background:{{ d.bg }}; font-weight:{{ d.fw }}">{{ d.n }}</button></sc-for></div><span style="flex:1"></span><button onClick="{{ testSend }}" style="height:32px; padding:0 12px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Send test</button><button onClick="{{ schedule }}" style="height:32px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Schedule</button></div>
+        <div style="width:{{ canvasW }}px; max-width:100%; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:14px; overflow:hidden; box-shadow:0 18px 40px -28px rgba(25,21,16,.35)">
+          <sc-for list="{{ blocks }}" as="b"><div onClick="{{ b.pick }}" style="position:relative; padding:{{ b.pad }}; background:{{ b.bg }}; outline:{{ b.ol }}; outline-offset:-2px; cursor:pointer">
+            <sc-if value="{{ b.isHeader }}"><div style="display:flex; justify-content:space-between; align-items:center"><span style="display:flex; align-items:center; gap:8px"><img src="assets/orgpuls-mark.svg" alt="" width="24" height="24"></img><b style="font-family:'Playfair Display',serif; font-size:17px">Orgpuls</b></span><span style="font-size:11px; color:#5F5849">Nyhetsbrev · oktober</span></div></sc-if>
+            <sc-if value="{{ b.isTitle }}"><div style="font-family:'Playfair Display',serif; font-size:{{ b.fs }}px; font-weight:600; line-height:1.15">{{ b.text }}</div></sc-if>
+            <sc-if value="{{ b.isPara }}"><div style="font-size:13.5px; line-height:1.65; color:#3A342A">{{ b.text }}</div></sc-if>
+            <sc-if value="{{ b.isImage }}"><div style="height:150px; border-radius:10px; background:repeating-linear-gradient(135deg,#F2EAD6 0 10px,#FCF6E9 10px 20px); display:flex; align-items:center; justify-content:center; font-family:ui-monospace,Menlo,monospace; font-size:11px; color:#5F5849">product shot · resultater</div></sc-if>
+            <sc-if value="{{ b.isButton }}"><div style="display:flex; justify-content:center"><span style="display:inline-flex; height:42px; padding:0 20px; align-items:center; border-radius:12px; border:1px solid #191510; background:#F5C64A; font-size:14px; font-weight:700">{{ b.text }}</span></div></sc-if>
+            <sc-if value="{{ b.isDivider }}"><div style="height:1px; background:#E8DFC9"></div></sc-if>
+            <sc-if value="{{ b.isList }}"><div style="display:flex; flex-direction:column; gap:6px; font-size:13px"><span>✓ Kartlegg alle 11 faktorer på 10 minutter</span><span>✓ Resultat for grupper med minst 5 svar</span><span>✓ Tiltak med eier og frist</span></div></sc-if>
+            <sc-if value="{{ b.isFooter }}"><div style="font-size:11px; color:#5F5849; line-height:1.6; text-align:center">Orgpuls AS · Oslo · Du får denne e-posten fordi du har samtykket.<br></br><u>Meld deg av med ett klikk</u> · sendt fra markedsstrømmen, adskilt fra varsler</div></sc-if>
+            <sc-if value="{{ b.isHtml }}"><div style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; padding:10px; border-radius:8px; background:#191510; color:#F2EAD6">&lt;table role="presentation"&gt;…&lt;/table&gt; · sanitized</div></sc-if>
+            <sc-if value="{{ b.isSocial }}"><div style="display:flex; gap:10px; justify-content:center; font-size:12px; font-weight:700"><span>LinkedIn</span><span>Facebook</span><span>Instagram</span></div></sc-if>
+          </div></sc-for>
+        </div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #191510; border-radius:18px; padding:14px; display:flex; flex-direction:column; gap:9px">
+        <span style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ selBlock.kind }} · row properties</span>
+        <sc-if value="{{ selBlock.editable }}"><textarea value="{{ selBlock.text }}" onChange="{{ editText }}" style="min-height:80px; padding:9px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></textarea></sc-if>
+        <label style="display:flex; justify-content:space-between; align-items:center; font-size:12px">Background<select value="{{ selBlock.bgName }}" onChange="{{ setBg }}" style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>Card</option><option>Soft yellow</option><option>Mint</option><option>Cream</option></select></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; font-size:12px">Padding<select style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>22 px</option><option>14 px</option><option>32 px</option></select></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; font-size:12px">Border<select style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>None</option><option>Hairline</option></select></label>
+        <div style="display:flex; gap:6px"><button onClick="{{ moveUp }}" style="flex:1; height:30px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; cursor:pointer">↑ Move</button><button onClick="{{ moveDown }}" style="flex:1; height:30px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; cursor:pointer">↓ Move</button><button onClick="{{ removeBlock }}" style="flex:1; height:30px; border-radius:9px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:12px; cursor:pointer">Remove</button></div>
+        <div style="border-top:1px solid #E8DFC9; padding-top:9px; display:flex; flex-direction:column; gap:7px; font-size:12px">
+          <label style="display:flex; flex-direction:column; gap:3px; color:#5F5849">Subject A<input value="Slik kartlegger dere arbeidsmiljøet før nyttår" style="height:30px; padding:0 8px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px; color:#191510"></input></label>
+          <label style="display:flex; flex-direction:column; gap:3px; color:#5F5849">Subject B (A/B test)<input value="Lovkravet dere må dokumentere i 2026" style="height:30px; padding:0 8px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px; color:#191510"></input></label>
+          <label style="display:flex; justify-content:space-between; align-items:center">Promotion coupon<select style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>HMS2026</option><option>None</option></select></label>
+          <span style="color:#5F5849">UTM: utm_source=newsletter · utm_campaign=okt-2026</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.audience }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,360px); gap:14px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+          <b style="font-size:14px">Segment: HR in organizations with 26–100 employees on trial</b>
+          <sc-for list="{{ segConds }}" as="c"><div style="display:flex; gap:8px; align-items:center; font-size:12.5px"><span style="width:44px; font-size:10.5px; font-weight:700; color:#5F5849">{{ c.j }}</span><span style="padding:6px 10px; border-radius:9px; background:#FCF6E9; border:1px solid #E8DFC9; flex:1">{{ c.t }}</span></div></sc-for>
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E8DFC9; padding-top:8px; font-size:12.5px"><span><b>214</b> people match · <b>178</b> can receive marketing (subscribed)</span><button onClick="{{ saveSeg }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Save segment</button></div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Saved segments · shared by sales and marketing</div>
+          <sc-for list="{{ segments }}" as="s"><div style="display:flex; justify-content:space-between; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b>{{ s.n }}</b><span style="color:#5F5849">{{ s.c }} people</span></div></sc-for>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:7px">
+          <b style="font-size:14px">Marketing status of all addresses</b>
+          <sc-for list="{{ statuses }}" as="s"><div style="display:grid; grid-template-columns:150px minmax(0,1fr) 46px; gap:8px; align-items:center; font-size:12.5px"><span>{{ s.n }}</span><span style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ s.w }}%; background:{{ s.c }}"></span></span><b style="text-align:right">{{ s.v }}</b></div></sc-for>
+          <div style="font-size:11.5px; color:#5F5849; border-top:1px solid #E8DFC9; padding-top:7px">Double opt-in for newsletter signups · one suppression list across all sends · every change logged with time and source</div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 16px; border-bottom:1px solid #E8DFC9; font-size:13.5px; font-weight:700">Consent log</div>
+          <sc-for list="{{ consentLog }}" as="c"><div style="padding:8px 16px; border-bottom:1px solid #E8DFC9; font-size:12px"><b>{{ c.who }}</b> · {{ c.ch }}<div style="color:#5F5849">{{ c.src }}</div></div></sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.deliver }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Sending domains</b><button onClick="{{ recheck }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Re-check DNS</button></div>
+        <sc-for list="{{ domains }}" as="d"><div style="display:flex; flex-direction:column; gap:6px; padding:12px 18px; border-bottom:1px solid #E8DFC9"><div style="display:flex; justify-content:space-between; font-size:13px"><b style="font-family:ui-monospace,Menlo,monospace; font-size:12.5px">{{ d.n }}</b><span style="color:#5F5849; font-size:12px">{{ d.stream }}</span></div><div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ d.checks }}" as="c"><span style="padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ c.bg }}; color:{{ c.c }}">{{ c.n }}</span></sc-for></div><div style="display:flex; gap:14px; font-size:12px; color:#5F5849"><span>Bounce <b style="color:{{ d.bc }}">{{ d.bounce }}</b></span><span>Complaints <b>{{ d.comp }}</b></span><span>Warm-up {{ d.warm }}</span></div></div></sc-for>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px"><b style="font-size:14px">Recommendations</b><sc-for list="{{ recs }}" as="r"><div style="display:flex; gap:10px; align-items:flex-start; font-size:12.5px; line-height:1.5"><span style="width:7px; align-self:stretch; border-radius:999px; background:{{ r.c }}; flex:none"></span><span>{{ r.t }}</span></div></sc-for></div>
+        <div style="background:#191510; color:#FCF6E9; border-radius:20px; padding:16px 18px; font-size:12.5px; line-height:1.55"><b>Separate streams.</b> Campaigns send from news.orgpuls.no on the marketing stream; survey invitations use varsler.orgpuls.no on the transactional stream, so a campaign can never hurt invitation deliverability. Mail from staff mailboxes is a third path.</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.forms }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:minmax(220px,260px) minmax(0,1fr) minmax(240px,300px); gap:12px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; overflow:hidden">
+        <sc-for list="{{ forms }}" as="f"><button onClick="{{ f.pick }}" style="display:flex; width:100%; flex-direction:column; gap:2px; padding:11px 13px; border:none; border-bottom:1px solid #E8DFC9; background:{{ f.bg }}; cursor:pointer; text-align:left"><b style="font-size:13px">{{ f.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ f.s }}</span></button></sc-for>
+        <div style="padding:10px 13px; display:flex; flex-wrap:wrap; gap:5px"><sc-for list="{{ formTemplates }}" as="t"><span style="padding:3px 9px; border-radius:999px; border:1px dashed #C4BCA8; font-size:11px">{{ t }}</span></sc-for></div>
+      </div>
+      <div style="background:#FCF6E9; border:1px solid #E8DFC9; border-radius:18px; padding:18px; display:flex; justify-content:center">
+        <div style="width:420px; max-width:100%; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:20px; display:flex; flex-direction:column; gap:10px">
+          <div style="border:1px dashed #C4BCA8; border-radius:12px; padding:10px 12px"><span style="font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">Introduction · mandatory</span><div style="font-family:'Playfair Display',serif; font-size:19px; font-weight:600; margin-top:4px">Snakk med oss om arbeidsmiljøet</div><div style="font-size:12.5px; color:#5F5849; margin-top:3px">Vi svarer innen én arbeidsdag.</div></div>
+          <sc-for list="{{ formFields }}" as="f"><label style="display:flex; flex-direction:column; gap:4px; font-size:12px; font-weight:600">{{ f.n }} <span style="color:#A33A16">{{ f.req }}</span><input placeholder="{{ f.ph }}" style="height:38px; padding:0 10px; border-radius:10px; border:1.5px solid #191510; background:#FFFDF6; font-size:13px"></input></label></sc-for>
+          <label style="display:flex; gap:8px; align-items:flex-start; font-size:12px; line-height:1.45"><input type="checkbox" style="accent-color:#191510; margin-top:2px"></input>Ja, send meg nyhetsbrev (marketing status: pending double opt-in)</label>
+          <button style="height:42px; border-radius:12px; border:1px solid #191510; background:#F5C64A; font-size:14px; font-weight:700">Send</button>
+          <div style="font-size:11px; color:#8A8272">Hidden tracking fields: UTM, referrer, cookie ID (setting on) · creates a lead, a ticket in Sales and a consented prospect</div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px; display:flex; flex-direction:column; gap:6px"><b style="font-size:13.5px">Blocks</b><sc-for list="{{ formBlocks }}" as="b"><button onClick="{{ addField }}" style="padding:6px 9px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px; text-align:left; cursor:pointer">＋ {{ b }}</button></sc-for></div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px; display:flex; flex-direction:column; gap:6px"><b style="font-size:13.5px">After submit</b><span style="font-size:12px; line-height:1.5; color:#3A342A">Create lead → owner by assignment rule «Inbound — chatbot and forms» → enroll in «Trial nurture» → thank-you message.</span><span style="font-size:12px; color:#5F5849">Submissions this month <b style="color:#191510">128</b> · conversion 7,4 %</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.chat }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <b style="font-size:14px">Playbooks</b>
+        <sc-for list="{{ playbooks }}" as="p"><div style="display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ p.n }}</b><span style="color:#5F5849; font-size:11.5px">{{ p.s }}</span></span><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ p.bg }}">{{ p.state }}</span></div></sc-for>
+        <div style="display:flex; gap:6px"><sc-for list="{{ pbSteps }}" as="s"><div style="flex:1; padding:9px 10px; border-radius:12px; border:1px solid {{ s.bc }}; background:{{ s.bg }}; font-size:12px"><b>{{ s.i }} · {{ s.n }}</b><div style="color:#5F5849; font-size:11px">{{ s.d }}</div></div></sc-for></div>
+        <div style="font-size:12px; color:#5F5849">Templates: get more leads · book meetings · qualify and route · chat live. Questions can differ per page; answers create a lead or deal and assign an owner.</div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; display:flex; flex-direction:column; min-height:440px">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid #E8DFC9"><span style="display:flex; flex-direction:column"><b style="font-size:14px">Live chat · visitor on /pris</b><span style="font-size:11.5px; color:#5F5849">Bergheim Bygg AS (identified) · 3rd visit</span></span><button onClick="{{ takeOver }}" style="height:32px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:{{ toBg }}; font-size:12px; font-weight:700; cursor:pointer">{{ toLabel }}</button></div>
+        <div style="flex:1; padding:12px 16px; display:flex; flex-direction:column; gap:8px; background:#FCF6E9"><sc-for list="{{ liveMsgs }}" as="m"><div style="display:flex; justify-content:{{ m.align }}"><div style="max-width:75%; padding:8px 11px; border-radius:13px; background:{{ m.bg }}; border:1px solid #E8DFC9; font-size:12.5px; line-height:1.45"><span style="font-size:10.5px; font-weight:700; color:#5F5849; display:block">{{ m.who }}</span>{{ m.t }}</div></div></sc-for></div>
+        <div style="display:flex; gap:8px; padding:10px 12px; border-top:1px solid #E8DFC9"><input value="{{ liveDraft }}" onChange="{{ setLiveDraft }}" placeholder="{{ livePh }}" style="flex:1; height:36px; padding:0 11px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input><button onClick="{{ sendLive }}" style="height:36px; padding:0 14px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">Send</button></div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px; grid-column:1/-1">
+        <b style="font-size:14px">Embed — one script for chatbot, live chat and tracking</b>
+        <div style="font-family:ui-monospace,Menlo,monospace; font-size:12px; padding:12px; border-radius:12px; background:#191510; color:#F2EAD6">&lt;script async src="https://sentral.orgpuls.no/w.js" data-site="orgpuls-com"&gt;&lt;/script&gt;</div>
+        <div style="display:flex; flex-wrap:wrap; gap:14px; font-size:12px; color:#5F5849"><span>Consent-gated loading: <b style="color:#191510">off</b> (setting)</span><span>Consent wording and cookie notice on forms and widgets</span><span style="color:#A33A16; font-weight:700">Never loaded on survey pages (svar.orgpuls.no) — fixed</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.prospect }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:minmax(240px,280px) minmax(0,1fr); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:14px 16px; display:flex; flex-direction:column; gap:8px">
+        <span style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">Person</span>
+        <sc-for list="{{ pFilters }}" as="f"><label style="display:flex; flex-direction:column; gap:3px; font-size:11.5px; color:#5F5849">{{ f.n }}<input value="{{ f.v }}" style="height:32px; padding:0 9px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; color:#191510"></input></label></sc-for>
+        <span style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849; margin-top:6px">Organization</span>
+        <sc-for list="{{ oFilters }}" as="f"><label style="display:flex; flex-direction:column; gap:3px; font-size:11.5px; color:#5F5849">{{ f.n }}<input value="{{ f.v }}" style="height:32px; padding:0 9px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; color:#191510"></input></label></sc-for>
+        <button onClick="{{ saveSearch }}" style="height:32px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Save filter</button>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; font-size:12.5px"><b style="font-size:14px">1 284 prospects</b><span style="color:#5F5849">Credits {{ creditsLeft }} · reveal adds the prospect as a lead</span></div>
+        <sc-for list="{{ prospects }}" as="p"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1.2fr) minmax(0,1fr) 120px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ p.n }}</b><span style="color:#5F5849; font-size:11.5px">{{ p.title }}</span></span><span style="display:flex; flex-direction:column"><b>{{ p.org }}</b><span style="color:#5F5849; font-size:11.5px">{{ p.meta }}</span></span><span style="color:#3A342A">{{ p.contact }}</span><button onClick="{{ p.reveal }}" style="height:30px; border-radius:9px; border:1px solid #191510; background:{{ p.bg }}; font-size:12px; font-weight:700; cursor:pointer">{{ p.cta }}</button></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.visitors }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; font-size:12px; color:#5F5849"><span style="padding:5px 11px; border-radius:999px; background:#CFE7E4; color:#20431C; font-weight:700">Tracker on 2 sites</span><span>orgpuls.com · skiftly.no</span><span>· ISPs, crawlers and irrelevant traffic filtered</span><span>· identification on (setting)</span></div>
+      <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,340px); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="display:grid; grid-template-columns:40px minmax(0,1.4fr) 130px 110px 90px 60px; gap:10px; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Rank</span><span>Company</span><span>Location</span><span>Source</span><span>Last visit</span><span>Pages</span></div>
+          <sc-for list="{{ visitors }}" as="w"><button onClick="{{ w.pick }}" style="display:grid; width:100%; grid-template-columns:40px minmax(0,1.4fr) 130px 110px 90px 60px; gap:10px; align-items:center; padding:10px 16px; border:none; border-bottom:1px solid #E8DFC9; background:{{ w.bg }}; cursor:pointer; text-align:left; font-size:12.5px"><span style="width:26px; height:26px; border-radius:8px; background:{{ w.rbg }}; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px">{{ w.rank }}</span><span style="display:flex; flex-direction:column"><b>{{ w.n }}</b><span style="color:#5F5849; font-size:11.5px">{{ w.ind }}</span></span><span>{{ w.loc }}</span><span style="color:#5F5849">{{ w.src }}</span><span style="color:#5F5849">{{ w.last }}</span><b>{{ w.pages }}</b></button></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #191510; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+          <b style="font-family:'Playfair Display',serif; font-size:19px">{{ vis.n }}</b>
+          <span style="font-size:12px; color:#5F5849">{{ vis.ind }} · {{ vis.loc }} · {{ vis.known }}</span>
+          <div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">Visit history</div>
+          <sc-for list="{{ vis.history }}" as="h"><div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0; border-bottom:1px solid #E8DFC9"><span style="font-family:ui-monospace,Menlo,monospace">{{ h.p }}</span><span style="color:#5F5849">{{ h.t }}</span></div></sc-for>
+          <div style="display:flex; gap:6px; flex-wrap:wrap"><button onClick="{{ toLead }}" style="height:32px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Create lead</button><button onClick="{{ toDeal }}" style="height:32px; padding:0 11px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Create deal</button><button onClick="{{ toOrg }}" style="height:32px; padding:0 11px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Create organization</button><button onClick="{{ findPeople }}" style="height:32px; padding:0 11px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Find people here</button></div>
+          <span style="font-size:11.5px; color:#8A8272">Created records link to this visit history</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: null, ctype: 'All', camp: 0, device: 'Desktop', blocks: null, selB: 1, form: 0, extraFields: 0, taken: false, live: [], liveDraft: '', revealed: {}, credits: 618, vis: 0, toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const D = window.SA; const st = this.state; const go = this.props.go || (() => {});
+    if (!D) return { tabs: [], v: {}, typeFilter: [], campaigns: [], cur: { stats: [] }, compare: [], palette: [], layouts: [], devices: [], blocks: [], selBlock: {}, segConds: [], segments: [], statuses: [], consentLog: [], domains: [], recs: [], forms: [], formTemplates: [], formFields: [], formBlocks: [], playbooks: [], pbSteps: [], liveMsgs: [], pFilters: [], oFilters: [], prospects: [], visitors: [], vis: { history: [] } };
+    const tab = st.tab || this.props.tab || 'campaigns';
+    const pill = (k) => ({ bg: tab === k ? '#191510' : 'transparent', c: tab === k ? '#FCF6E9' : '#191510', bc: tab === k ? '#191510' : '#C4BCA8', fw: tab === k ? 700 : 500 });
+    const tabs = [['campaigns', 'Campaigns'], ['builder', 'Email builder'], ['audience', 'Audience and consent'], ['deliver', 'Deliverability'], ['forms', 'Web forms'], ['chat', 'Chatbot and live chat'], ['prospect', 'Prospect search'], ['visitors', 'Web visitors']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(k) }));
+    const C = [['Nyhetsbrev oktober', 'Newsletter', 'Scheduled', 'All subscribed · 4 120', 0, 0, 0, 0, 0, 0], ['Lovkrav 2026 — HMS-kampanje', 'Promotion', 'Sent', 'HR + daglig leder · 2 860', 2860, 48.2, 7.9, 0.4, 41, 23400], ['Skiftly for helse', 'Product announcement', 'Sent', 'Orgpuls customers · Health · 610', 610, 56.1, 11.2, 0.2, 9, 8700], ['Verneombud-webinar', 'One-off campaign', 'Sent', 'Verneombud users · 1 240', 1240, 44.5, 9.6, 0.6, 22, 3400], ['Trial nurture — day 2', 'Automated', 'Active', 'Workflow step · trial orgs', 980, 61.3, 18.4, 0.1, 64, 31200], ['Nyhetsbrev september', 'Newsletter', 'Sent', 'All subscribed · 4 010', 4010, 41.8, 5.2, 0.5, 18, 6100]];
+    const tcol = { Scheduled: ['#FBEBBE', '#5C4600'], Sent: ['#CFE7E4', '#20431C'], Active: ['#E4EEEC', '#20431C'] };
+    const types = ['All', 'Newsletter', 'One-off campaign', 'Promotion', 'Product announcement', 'Automated'];
+    const typeFilter = types.map((n) => ({ n, pick: () => this.setState({ ctype: n }), bg: st.ctype === n ? '#FBEBBE' : 'transparent', bc: st.ctype === n ? '#191510' : '#C4BCA8', fw: st.ctype === n ? 700 : 500 }));
+    const campaigns = C.map((c, i) => ({ c, i })).filter(({ c }) => st.ctype === 'All' || c[1] === st.ctype).map(({ c: [n, type, status, aud, sent, open, click, unsub, signups, mrr], i }) => ({ n, type, status, aud, sent: sent ? D.nb(sent) : '—', open: open ? D.pct(open) : '—', click: click ? D.pct(click) : '—', unsub: unsub ? D.pct(unsub) : '—', signups: signups || '—', mrr: mrr ? D.kr(mrr) : '—', sbg: tcol[status][0], sc: tcol[status][1], bg: st.camp === i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ camp: i }) }));
+    const cc = C[st.camp] || C[1];
+    const cur = { n: cc[0], when: cc[2] === 'Scheduled' ? 'Sends Thu 8 Oct 08:00 · marketing stream' : 'Sent 22 Sep 08:00', a: 'Slik kartlegger dere arbeidsmiljøet', ar: '49 %', b: 'Lovkravet dere må dokumentere', br: '44 %', stats: [['Delivered', cc[4] ? D.nb(cc[4] * 0.986) : '—'], ['Bounced', cc[4] ? '1,4 %' : '—'], ['Unique opens', cc[5] ? D.pct(cc[5]) : '—'], ['Total opens', cc[4] ? D.nb(cc[4] * cc[5] / 100 * 1.6) : '—'], ['Unique clicks', cc[6] ? D.pct(cc[6]) : '—'], ['Click-through', cc[5] ? D.pct(cc[6] / cc[5] * 100) : '—'], ['Spam reports', cc[4] ? '2' : '—'], ['Signups (UTM)', cc[8] || '—']].map(([k, vv]) => ({ k, v: vv })) };
+    const compare = C.filter((c) => c[5]).map((c) => ({ n: c[0], o: D.pct(c[5]), ow: c[5], cw: c[6] * 4 }));
+    // builder
+    const defBlocks = [{ k: 'header' }, { k: 'title', text: 'Fem er gulvet — og det er produktets.', fs: 26 }, { k: 'para', text: 'Fra 1. januar må flere virksomheter dokumentere kartleggingen av det psykososiale arbeidsmiljøet. Her er sjekklisten vi bruker med kundene våre.' }, { k: 'image' }, { k: 'list' }, { k: 'button', text: 'Les sjekklisten →' }, { k: 'divider' }, { k: 'social' }, { k: 'footer' }];
+    const blocksSrc = st.blocks || defBlocks;
+    const bgMap = { Card: '#FFFDF6', 'Soft yellow': '#FBEBBE', Mint: '#CFE7E4', Cream: '#FCF6E9' };
+    const kindName = { header: 'Header', title: 'Title', para: 'Paragraph', image: 'Image', list: 'List', button: 'Button', divider: 'Divider', social: 'Social', footer: 'Footer', html: 'HTML', video: 'Video' };
+    const blocks = blocksSrc.map((b, i) => ({ ...b, ['is' + { header: 'Header', title: 'Title', para: 'Para', image: 'Image', list: 'List', button: 'Button', divider: 'Divider', social: 'Social', footer: 'Footer', html: 'Html', video: 'Image' }[b.k]]: true, pad: b.k === 'divider' ? '6px 22px' : '16px 22px', bg: bgMap[b.bg || (b.k === 'footer' ? 'Cream' : 'Card')], ol: st.selB === i ? '2px solid #191510' : 'none', pick: () => this.setState({ selB: i }) }));
+    const sb = blocksSrc[st.selB] || blocksSrc[0];
+    const setBlocks = (fn) => this.setState({ blocks: fn([...blocksSrc]) });
+    const palette = [['T', 'Title', 'title', 'Ny overskrift'], ['¶', 'Paragraph', 'para', 'Skriv teksten her.'], ['☰', 'List', 'list'], ['▣', 'Image', 'image'], ['▭', 'Button', 'button', 'Kom i gang →'], ['—', 'Divider', 'divider'], ['◎', 'Social', 'social'], ['</>', 'HTML', 'html'], ['▶', 'Video', 'video'], ['≡', 'Menu', 'header']].map(([g, n, k, text]) => ({ g, n, add: () => setBlocks((b) => { b.splice(b.length - 1, 0, { k, text, fs: 22 }); return b; }) }));
+    const layouts = ['Blank', 'Newsletter — Orgpuls', 'Product announcement', 'Saved: Webinar invite', 'Code your own HTML'].map((n) => ({ n, use: () => (n === 'Blank' ? this.setState({ blocks: [{ k: 'header' }, { k: 'footer' }], selB: 0 }) : this.setState({ blocks: null, selB: 1 })) }));
+    const devices = ['Desktop', 'Mobile'].map((n) => ({ n, pick: () => this.setState({ device: n }), bg: st.device === n ? '#FFFDF6' : 'transparent', fw: st.device === n ? 700 : 500 }));
+    const selBlock = { kind: kindName[sb.k] || 'Block', text: sb.text || '', editable: !!sb.text, bgName: sb.bg || 'Card' };
+    // audience
+    const segConds = [['Where', 'Person · role is HR'], ['AND', 'Organization · employees between 26 and 100'], ['AND', 'Organization · status is Trial'], ['AND', 'Engagement · opened any campaign in 90 days'], ['OR', 'Location · fylke is Vestland or Rogaland']].map(([j, t]) => ({ j, t }));
+    const segments = [['All daglig ledere', 612], ['Customers without a pulse in 90 days', 148], ['Verneombud users', 1240], ['Industry = Health and care', 386], ['Former customers (win-back)', 74]].map(([n, c]) => ({ n, c: D.nb(c) }));
+    const S = [['Subscribed', 4120, '#5C9A55'], ['No consent', 1870, '#C4BCA8'], ['Pending double opt-in', 212, '#E0A21F'], ['Pending upgrade', 96, '#F5DC96'], ['Unsubscribed', 640, '#D4633A'], ['Bounced', 188, '#A33A16'], ['Archived (no engagement 12 m)', 410, '#8A8272']];
+    const statuses = S.map(([n, v, c]) => ({ n, v: D.nb(v), w: (v / 4120) * 100, c }));
+    const consentLog = [['silje.olsen@solstrandhelse.no', 'Pending double opt-in → Subscribed', 'Confirmation link · 08:12 today'], ['ole.hansen@bergheimbygg.no', 'Subscribed → Unsubscribed', 'One-click unsubscribe in «Nyhetsbrev september» · honoured immediately'], ['marte.larsen@tveitomsorg.no', 'No consent → Pending double opt-in', 'Web form «Kontakt oss» · checkbox'], ['jon.aas@kvamme.no', 'Subscribed → Bounced', 'Provider: 550 mailbox unavailable']].map(([who, ch, src]) => ({ who, ch, src }));
+    const ok = (n) => ({ n: '✓ ' + n, bg: '#CFE7E4', c: '#20431C' });
+    const domains = [{ n: 'news.orgpuls.no', stream: 'Marketing stream', checks: [ok('SPF'), ok('DKIM'), ok('DMARC p=quarantine'), ok('Verified')], bounce: '1,4 %', bc: '#191510', comp: '0,03 %', warm: 'done' }, { n: 'varsler.orgpuls.no', stream: 'Transactional · survey invitations', checks: [ok('SPF'), ok('DKIM'), ok('DMARC p=reject'), ok('Verified')], bounce: '0,6 %', bc: '#191510', comp: '0,01 %', warm: 'done' }, { n: 'news.skiftly.no', stream: 'Marketing stream · Skiftly', checks: [ok('SPF'), { n: '! DKIM missing', bg: '#F0B9A0', c: '#6B240C' }, { n: '! DMARC none', bg: '#F5DC96', c: '#5C4600' }, ok('Verified')], bounce: '3,1 %', bc: '#A33A16', comp: '0,09 %', warm: 'day 9 of 30' }];
+    const recs = [['#D4633A', 'Publish the DKIM record for news.skiftly.no before the next send — bounce rate is above 3 %.'], ['#E0A21F', '410 contacts have not engaged in 12 months. Archive them to protect sender reputation (list hygiene).'], ['#5C9A55', 'Unsubscribe link and sender identity are present in all marketing templates.']].map(([c, t]) => ({ c, t }));
+    // forms
+    const F = [['Kontakt oss', 'Contact · orgpuls.com/kontakt · 128 this month'], ['Last ned: Lovkrav-sjekkliste', 'Gated download · 342 this month'], ['Webinar-påmelding', 'Registration · 96'], ['Send oss ansattlisten', 'File upload · 14']];
+    const forms = F.map(([n, s], i) => ({ n, s, bg: st.form === i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ form: i }) }));
+    const formFields = [['Navn', '*', 'Kari Nordmann'], ['E-post', '*', 'kari@firma.no'], ['Telefon', '', '+47'], ['Organisasjonsnummer', '*', '923 456 789'], ['Antall ansatte (custom)', '', 'f.eks. 48'], ...Array.from({ length: st.extraFields }, () => ['Ny felt', '', ''])].map(([n, req, ph]) => ({ n, req, ph }));
+    // chat
+    const playbooks = [['Pris-siden: kvalifiser og rut', 'Qualify and route · /pris', 'Live', '#CFE7E4'], ['Book en demo', 'Book meetings · /plattform', 'Live', '#CFE7E4'], ['Flere leads fra artikler', 'Get more leads · /artikler/*', 'Draft', '#F2EAD6'], ['Snakk med oss', 'Chat live · business hours', 'Live', '#CFE7E4']].map(([n, s, state, bg]) => ({ n, s, state, bg }));
+    const pbSteps = [['1', 'Theme', 'Cream, saffron button'], ['2', 'Profile', 'Name «Orgpuls», face, Bokmål'], ['3', 'Template', 'Qualify and route']].map(([i, n, d], j) => ({ i, n, d, bg: j === 2 ? '#FBEBBE' : '#FCF6E9', bc: j === 2 ? '#191510' : '#E8DFC9' }));
+    const liveMsgs = [{ who: 'Bot', t: 'Hei! Hvor mange ansatte er dere?', me: true }, { who: 'Visitor', t: '120, fordelt på tre byggeplasser.', me: false }, { who: 'Bot', t: 'Takk! Vil du snakke med en av oss nå?', me: true }, { who: 'Visitor', t: 'Ja, gjerne — kan hver plass få egne resultater?', me: false }, ...st.live].map((m) => ({ ...m, align: m.me ? 'flex-end' : 'flex-start', bg: m.me ? (m.who === 'Bot' ? '#E4EEEC' : '#FBEBBE') : '#FFFDF6' }));
+    // prospect
+    const pFilters = [['Job title', 'HR-leder, personalsjef'], ['Department', 'HR'], ['Location', 'Vestland, Rogaland']].map(([n, vv]) => ({ n, v: vv }));
+    const oFilters = [['Size (employees)', '50–250'], ['Industry', 'Construction, Health and care'], ['Revenue', '> 50 MNOK'], ['Keyword or domain', '']].map(([n, vv]) => ({ n, v: vv }));
+    const PR = [['Nora Berg', 'HR-leder', 'Kystlinje Transport AS', 'Transport · 220 · Stavanger', 'nora.berg@kystlinje.no · +47 917 20 118'], ['Thea Solheim', 'Personalsjef', 'Vestvik Bygg AS', 'Construction · 140 · Bergen', 'thea@vestvikbygg.no · +47 482 66 019'], ['Morten Lie', 'HR-direktør', 'Fjordklinikken AS', 'Health · 96 · Haugesund', 'morten.lie@fjordklinikken.no · +47 930 12 455'], ['Julie Aas', 'HR-rådgiver', 'Sola Entreprenør AS', 'Construction · 75 · Sola', 'julie@solaent.no · +47 401 98 230']];
+    const prospects = PR.map(([n, title, org, meta, contact]) => { const r = st.revealed[n]; return { n, title, org, meta, contact: r ? contact : '•••• · reveal to see', bg: r ? '#CFE7E4' : '#FFFDF6', cta: r ? 'Added as lead' : 'Reveal · 1 credit', reveal: () => { if (!r) { this.setState({ revealed: { ...st.revealed, [n]: true }, credits: st.credits - 1 }); this.flash(n + ' added as a lead · source: prospect search'); } } }; });
+    // visitors
+    const VI = [['Bergheim Bygg AS', 'Construction', 'Lillestrøm, NO', 'Organic search', '12 min ago', 9, true], ['Nordic Care AS', 'Health and care', 'Oslo, NO', 'LinkedIn', '1 h ago', 7, false], ['Havbris Sjømat AS', 'Aquaculture', 'Ålesund, NO', 'Newsletter', '3 h ago', 5, true], ['Trøndelag fylkeskommune', 'Public administration', 'Trondheim, NO', 'Direct', 'Yesterday', 11, false], ['Vestvik Bygg AS', 'Construction', 'Bergen, NO', 'Paid search', 'Yesterday', 4, false]];
+    const visitors = VI.map(([n, ind, loc, src, last, pages, known], i) => ({ n, ind, loc, src, last, pages, rank: i + 1, rbg: i < 2 ? '#F5C64A' : '#F2EAD6', bg: st.vis === i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ vis: i }) }));
+    const vv = VI[st.vis];
+    const vis = { n: vv[0], ind: vv[1], loc: vv[2], known: vv[6] ? 'existing organization in CRM' : 'not in CRM yet', history: [['/pris', '4 min'], ['/bruksomrader/bygg-og-anlegg', '2 min'], ['/skiftly', '6 min'], ['/artikler/arbeidsmiljokartlegging', '3 min'], ['/kom-i-gang', '1 min']].map(([p, t]) => ({ p, t })) };
+    return { tabs, v: { [tab]: true }, typeFilter, campaigns, cur, compare, newCampaign: () => this.setState({ tab: 'builder' }),
+      palette, layouts, devices, canvasW: st.device === 'Mobile' ? 360 : 600, blocks, selBlock, editText: (e) => setBlocks((b) => { b[st.selB] = { ...b[st.selB], text: e.target.value }; return b; }), setBg: (e) => setBlocks((b) => { b[st.selB] = { ...b[st.selB], bg: e.target.value }; return b; }),
+      moveUp: () => { if (st.selB < 1) return; setBlocks((b) => { [b[st.selB - 1], b[st.selB]] = [b[st.selB], b[st.selB - 1]]; return b; }); this.setState({ selB: st.selB - 1 }); }, moveDown: () => { if (st.selB >= blocksSrc.length - 1) return; setBlocks((b) => { [b[st.selB + 1], b[st.selB]] = [b[st.selB], b[st.selB + 1]]; return b; }); this.setState({ selB: st.selB + 1 }); }, removeBlock: () => { setBlocks((b) => { b.splice(st.selB, 1); return b; }); this.setState({ selB: 0 }); },
+      testSend: () => this.flash('Test sent to tor@orgpuls.no · desktop and mobile'), schedule: () => this.flash('Scheduled Thu 8 Oct 08:00 · marketing stream · A/B on 20 %'),
+      segConds, segments, statuses, consentLog, saveSeg: () => this.flash('Segment saved · available in Campaigns and Automation'), domains, recs, recheck: () => this.flash('DNS re-checked · DKIM still missing on news.skiftly.no'),
+      forms, formTemplates: ['Contact', 'Registration', 'Gated download', 'File upload', 'Blank'], formFields, formBlocks: ['Short text', 'Email', 'Phone', 'Marketing status', 'Custom field', 'File upload', 'Message block'], addField: () => this.setState({ extraFields: st.extraFields + 1 }),
+      playbooks, pbSteps, liveMsgs, takeOver: () => this.setState({ taken: !st.taken }), toBg: st.taken ? '#CFE7E4' : '#F5C64A', toLabel: st.taken ? '✓ You are chatting' : 'Take over from bot', liveDraft: st.liveDraft, setLiveDraft: (e) => this.setState({ liveDraft: e.target.value }), livePh: st.taken ? 'Reply as Tor' : 'Take over to reply', sendLive: () => { if (!st.taken || !st.liveDraft.trim()) return; this.setState({ live: [...st.live, { who: 'Tor', t: st.liveDraft, me: true }], liveDraft: '' }); },
+      pFilters, oFilters, prospects, creditsLeft: st.credits, saveSearch: () => this.flash('Prospect filter saved'),
+      visitors, vis, toLead: () => this.flash('Lead created · linked to visit history'), toDeal: () => this.flash('Deal created · linked to visit history'), toOrg: () => this.flash('Organization created'), findPeople: () => this.setState({ tab: 'prospect' }), toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

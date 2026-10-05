@@ -1,0 +1,46 @@
+{
+  "app": { "name": "Plattform", "signOut": "Logg ut" },
+  "login": {
+    "title": "Logg inn",
+    "email": "E-post",
+    "password": "Passord",
+    "submit": "Logg inn",
+    "failed": "Feil e-post eller passord.",
+    "invalid": "Skriv inn e-post og passord."
+  },
+  "mfa": {
+    "title": "Andre faktor",
+    "enrollLead": "Skann koden med en autentiseringsapp, og skriv inn de seks sifrene den viser.",
+    "verifyLead": "Skriv inn de seks sifrene fra autentiseringsappen.",
+    "secret": "Kan du ikke skanne? Skriv inn denne nøkkelen: {secret}",
+    "code": "Kode",
+    "submit": "Bekreft",
+    "failed": "Koden stemte ikke. Prøv igjen med en ny kode.",
+    "start": "Sett opp autentiseringsapp"
+  },
+  "denied": {
+    "title": "Ingen tilgang",
+    "body": "Kontoen er ikke en administrator på plattformen."
+  },
+  "status": {
+    "title": "Status",
+    "installations": "Installasjoner",
+    "enabled": "På",
+    "disabled": "Av",
+    "notInstalled": "Ikke installert",
+    "customers": "Kunder",
+    "accounts": "{count, plural, one {# kunde} other {# kunder}}",
+    "tenants": "{count, plural, one {# aktiv i et produkt} other {# aktive i et produkt}}",
+    "events": "Hendelser",
+    "eventsTotal": "{count, plural, =0 {Ingen hendelser mottatt ennå} one {# hendelse mottatt} other {# hendelser mottatt}}",
+    "lastEvent": "Sist mottatt {when}",
+    "byKind": "Siste 30 dager",
+    "recent": "Siste hendelser",
+    "commands": "Siste kommandoer",
+    "noCommands": "Ingen kommandoer sendt ennå.",
+    "test": "Test koblingen: hent organisasjonene i Orgpuls",
+    "testOk": "Koblingen virker: {count, plural, one {# organisasjon} other {# organisasjoner}} i Orgpuls.",
+    "testFailed": "Kommandoen feilet: {error}",
+    "unavailable": "Statusen kunne ikke leses."
+  }
+}

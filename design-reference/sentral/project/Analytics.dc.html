@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:22px 28px 60px; display:flex; flex-direction:column; gap:16px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between">
+    <div style="display:flex; flex-wrap:wrap; gap:6px">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="8"><button onClick="{{ t.pick }}" style="padding:8px 15px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for>
+    </div>
+    <div style="display:flex; gap:6px; align-items:center">
+      <span style="font-size:12px; color:#5F5849">{{ scope }}</span>
+      <div style="display:flex; padding:3px; border-radius:11px; background:#F2EAD6"><sc-for list="{{ ranges }}" as="r"><button onClick="{{ r.pick }}" style="padding:6px 11px; border-radius:8px; border:none; font-size:12px; cursor:pointer; background:{{ r.bg }}; font-weight:{{ r.fw }}">{{ r.n }}</button></sc-for></div>
+    </div>
+  </div>
+
+  <sc-if value="{{ v.business }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 24px">
+        <div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">The first question</div>
+        <div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600; line-height:1.2; margin-top:6px; text-wrap:balance">{{ biz.headline }}</div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px">
+        <sc-for list="{{ biz.kpis }}" as="k" hint-placeholder-count="10"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ k.n }}</div><div style="display:flex; align-items:baseline; gap:8px; margin-top:6px"><span style="font-family:'Playfair Display',serif; font-size:22px; font-weight:600; white-space:nowrap; font-variant-numeric:tabular-nums">{{ k.v }}</span><span style="font-size:12px; font-weight:700; color:{{ k.dc }}">{{ k.d }}</span></div><div style="font-size:11.5px; color:#5F5849; margin-top:2px">{{ k.s }}</div></div></sc-for>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr)); gap:16px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="display:flex; justify-content:space-between; align-items:baseline"><span style="font-size:15px; font-weight:700">Net new MRR</span><span style="font-size:12px; color:#5F5849">new · expansion · contraction · churn</span></div>
+          <div style="display:flex; gap:12px; margin:10px 0 8px"><sc-for list="{{ nnLegend }}" as="l"><span style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:#5F5849"><span style="width:10px; height:10px; border-radius:3px; background:{{ l.c }}; border:1px solid rgba(25,21,16,.15)"></span>{{ l.n }}</span></sc-for></div>
+          <div style="display:flex; gap:8px; height:200px">
+            <sc-for list="{{ biz.nn }}" as="b" hint-placeholder-count="12">
+              <div title="{{ b.tip }}" style="flex:1; display:flex; flex-direction:column">
+                <div style="height:120px; display:flex; flex-direction:column; justify-content:flex-end"><div style="height:{{ b.exp }}px; background:#B5DAD4; border-radius:5px 5px 0 0"></div><div style="height:{{ b.nw }}px; background:#5C9A55"></div></div>
+                <div style="height:1px; background:#191510"></div>
+                <div style="height:60px; display:flex; flex-direction:column"><div style="height:{{ b.con }}px; background:#F5DC96"></div><div style="height:{{ b.ch }}px; background:#D4633A; border-radius:0 0 5px 5px"></div></div>
+                <div style="font-size:10.5px; color:#8A8272; text-align:center; margin-top:4px">{{ b.m }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="display:flex; justify-content:space-between; align-items:baseline"><span style="font-size:15px; font-weight:700">MRR by application</span><span style="font-size:12px; color:#5F5849">12 months</span></div>
+          <div style="display:flex; gap:12px; margin:10px 0 8px"><sc-for list="{{ lines }}" as="l"><span style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:#5F5849"><span style="width:14px; height:3px; border-radius:2px; background:{{ l.stroke }}"></span>{{ l.n }} <b style="color:#191510">{{ l.last }}</b></span></sc-for></div>
+          <svg viewBox="0 0 600 180" preserveAspectRatio="none" style="width:100%; height:180px; display:block">
+            <line x1="0" y1="179" x2="600" y2="179" stroke="#C4BCA8" stroke-width="1"></line>
+            <line x1="0" y1="90" x2="600" y2="90" stroke="#E8DFC9" stroke-width="1" stroke-dasharray="4 4"></line>
+            <sc-for list="{{ lines }}" as="l"><polyline points="{{ l.pts }}" fill="none" stroke="{{ l.stroke }}" stroke-width="2.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polyline></sc-for>
+          </svg>
+          <div style="display:flex; justify-content:space-between; font-size:10.5px; color:#8A8272; margin-top:4px"><sc-for list="{{ months }}" as="m"><span>{{ m }}</span></sc-for></div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:16px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="font-size:15px; font-weight:700; margin-bottom:12px">Trial → paid by signup source</div>
+          <sc-for list="{{ biz.bySource }}" as="r"><div style="display:grid; grid-template-columns:110px minmax(0,1fr) 46px 40px; gap:8px; align-items:center; font-size:12.5px; padding:5px 0"><span>{{ r.n }}</span><span style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ r.w }}%; background:#5C9A55"></span></span><b style="text-align:right">{{ r.v }}</b><span style="color:#8A8272; text-align:right">{{ r.n2 }}</span></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="font-size:15px; font-weight:700; margin-bottom:4px">ARPA and price tiers</div>
+          <div style="font-size:12px; color:#5F5849; margin-bottom:12px">ARPA <b style="color:#191510">{{ biz.arpa }}</b> · employee-count bands</div>
+          <div style="display:flex; align-items:flex-end; gap:12px; height:130px">
+            <sc-for list="{{ biz.tiers }}" as="t"><div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px"><b style="font-size:12px">{{ t.n }}</b><div style="width:100%; height:{{ t.h }}px; border-radius:7px 7px 0 0; background:{{ t.c }}; border:1px solid rgba(25,21,16,.1)"></div><span style="font-size:11px; color:#5F5849">{{ t.band }}</span></div></sc-for>
+          </div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px"><span style="font-size:15px; font-weight:700">Customers by</span><div style="display:flex; gap:4px"><sc-for list="{{ dims }}" as="d"><button onClick="{{ d.pick }}" style="padding:4px 10px; border-radius:999px; font-size:11.5px; border:1px solid {{ d.bc }}; background:{{ d.bg }}; font-weight:{{ d.fw }}; cursor:pointer">{{ d.n }}</button></sc-for></div></div>
+          <sc-for list="{{ biz.dim }}" as="r"><div style="display:grid; grid-template-columns:130px minmax(0,1fr) 30px; gap:8px; align-items:center; font-size:12.5px; padding:4px 0"><span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ r.n }}</span><span style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ r.w }}%; background:#E0A21F"></span></span><b style="text-align:right">{{ r.v }}</b></div></sc-for>
+          <div style="font-size:11px; color:#8A8272; margin-top:8px">Industry from NACE in Brønnøysund · size from the employee list</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.activation }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:12px">
+        <div style="background:#191510; color:#FCF6E9; border-radius:20px; padding:20px 22px"><div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#F5DC96">Promise on the site</div><div style="font-family:'Playfair Display',serif; font-size:40px; font-weight:600; line-height:1; margin-top:10px">18 min</div><div style="font-size:13px; margin-top:6px">Median time from signup to first survey sent · target 20 min</div></div>
+        <sc-for list="{{ act.cards }}" as="k"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px"><div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">{{ k.n }}</div><div style="font-family:'Playfair Display',serif; font-size:30px; font-weight:600; margin-top:8px">{{ k.v }}</div><div style="font-size:12.5px; color:#5F5849; margin-top:4px">{{ k.s }}</div></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 24px">
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:16px"><span style="font-size:15px; font-weight:700">Activation funnel by signup cohort</span><div style="display:flex; gap:4px"><sc-for list="{{ cohorts }}" as="c"><button onClick="{{ c.pick }}" style="padding:5px 11px; border-radius:999px; font-size:12px; border:1px solid {{ c.bc }}; background:{{ c.bg }}; color:{{ c.c }}; font-weight:{{ c.fw }}; cursor:pointer">{{ c.n }}</button></sc-for></div></div>
+        <div style="display:flex; flex-direction:column; gap:6px">
+          <sc-for list="{{ act.funnel }}" as="f" hint-placeholder-count="8">
+            <div style="display:grid; grid-template-columns:24px minmax(180px,1.2fr) minmax(0,2fr) 60px 76px 96px; gap:12px; align-items:center; font-size:13px">
+              <span style="width:22px; height:22px; border-radius:999px; background:#191510; color:#FBEBBE; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center">{{ f.i }}</span>
+              <span style="font-weight:600">{{ f.n }}</span>
+              <span style="height:26px; border-radius:8px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ f.w }}%; background:{{ f.c }}; border-right:1px solid rgba(25,21,16,.15)"></span></span>
+              <b style="text-align:right; font-variant-numeric:tabular-nums">{{ f.v }}</b>
+              <span style="text-align:right; font-size:12px; font-weight:700; color:{{ f.dc }}">{{ f.drop }}</span>
+              <span style="text-align:right; font-size:12px; color:#5F5849">{{ f.t }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex; gap:18px; margin-top:14px; font-size:11.5px; color:#8A8272"><span>Bar = organizations reaching the step</span><span>Red = drop-off from the previous step</span><span>Right = median time per step</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.retention }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 24px; overflow-x:auto">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px"><span style="font-size:15px; font-weight:700">Cohort retention — paying organizations</span><div style="display:flex; gap:4px"><sc-for list="{{ retModes }}" as="d"><button onClick="{{ d.pick }}" style="padding:4px 10px; border-radius:999px; font-size:11.5px; border:1px solid {{ d.bc }}; background:{{ d.bg }}; font-weight:{{ d.fw }}; cursor:pointer">{{ d.n }}</button></sc-for></div></div>
+        <div style="min-width:760px; display:flex; flex-direction:column; gap:3px">
+          <div style="display:grid; grid-template-columns:90px 50px repeat(12,minmax(0,1fr)); gap:3px; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#5F5849"><span>Cohort</span><span>Orgs</span><sc-for list="{{ retHead }}" as="h"><span style="text-align:center">{{ h }}</span></sc-for></div>
+          <sc-for list="{{ ret }}" as="r"><div style="display:grid; grid-template-columns:90px 50px repeat(12,minmax(0,1fr)); gap:3px; font-size:12px"><b>{{ r.n }}</b><span style="color:#5F5849">{{ r.size }}</span><sc-for list="{{ r.cells }}" as="c"><span title="{{ c.tip }}" style="height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-weight:600; font-variant-numeric:tabular-nums; background:{{ c.bg }}; color:{{ c.c }}">{{ c.v }}</span></sc-for></div></sc-for>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:16px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="font-size:15px; font-weight:700; margin-bottom:12px">Logo churn and revenue churn per month</div>
+          <div style="display:flex; gap:8px; align-items:flex-end; height:130px"><sc-for list="{{ churn }}" as="c"><div style="flex:1; display:flex; gap:2px; align-items:flex-end; height:100%"><div title="Logo {{ c.l }}" style="flex:1; height:{{ c.lh }}%; background:#EC9B77; border-radius:4px 4px 0 0"></div><div title="Revenue {{ c.r }}" style="flex:1; height:{{ c.rh }}%; background:#D4633A; border-radius:4px 4px 0 0"></div></div></sc-for></div>
+          <div style="display:flex; gap:8px; margin-top:4px"><sc-for list="{{ churn }}" as="c"><span style="flex:1; text-align:center; font-size:10.5px; color:#8A8272">{{ c.m }}</span></sc-for></div>
+          <div style="display:flex; gap:14px; margin-top:10px; font-size:11.5px; color:#5F5849"><span style="display:flex; gap:6px; align-items:center"><span style="width:10px; height:10px; border-radius:3px; background:#EC9B77"></span>Logo churn</span><span style="display:flex; gap:6px; align-items:center"><span style="width:10px; height:10px; border-radius:3px; background:#D4633A"></span>Revenue churn</span></div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="font-size:15px; font-weight:700; margin-bottom:12px">Churn reasons (last 6 months)</div>
+          <sc-for list="{{ reasons }}" as="r"><div style="display:grid; grid-template-columns:minmax(0,1fr) 140px 30px; gap:8px; align-items:center; font-size:12.5px; padding:5px 0"><span>{{ r.n }}</span><span style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ r.w }}%; background:#D4633A"></span></span><b style="text-align:right">{{ r.v }}</b></div></sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.usage }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px">
+        <sc-for list="{{ use.kpis }}" as="k"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ k.n }}</div><div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600; margin-top:6px; color:{{ k.c }}">{{ k.v }}</div><div style="font-size:11.5px; color:#5F5849">{{ k.s }}</div></div></sc-for>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:16px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px"><span style="font-size:15px; font-weight:700">Surveys sent per month</span><span style="display:flex; gap:10px; font-size:11.5px; color:#5F5849"><span style="display:flex; gap:5px; align-items:center"><span style="width:10px; height:10px; border-radius:3px; background:#D9CFB8"></span>Main</span><span style="display:flex; gap:5px; align-items:center"><span style="width:10px; height:10px; border-radius:3px; background:#A8D5D2"></span>Pulse</span></span></div>
+          <div style="display:flex; gap:8px; align-items:flex-end; height:140px"><sc-for list="{{ use.surveys }}" as="s"><div title="{{ s.tip }}" style="flex:1; display:flex; flex-direction:column; justify-content:flex-end; height:100%"><div style="height:{{ s.p }}%; background:#A8D5D2; border-radius:5px 5px 0 0"></div><div style="height:{{ s.m }}%; background:#D9CFB8"></div></div></sc-for></div>
+          <div style="display:flex; gap:8px; margin-top:4px"><sc-for list="{{ use.surveys }}" as="s"><span style="flex:1; text-align:center; font-size:10.5px; color:#8A8272">{{ s.mo }}</span></sc-for></div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="font-size:15px; font-weight:700; margin-bottom:12px">Logins by role (30 days)</div>
+          <sc-for list="{{ use.roles }}" as="r"><div style="display:grid; grid-template-columns:170px minmax(0,1fr) 50px; gap:8px; align-items:center; font-size:12.5px; padding:6px 0"><span>{{ r.n }}</span><span style="height:10px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ r.w }}%; background:#9DB8B3"></span></span><b style="text-align:right">{{ r.v }}</b></div></sc-for>
+          <div style="font-size:15px; font-weight:700; margin:16px 0 10px">Feature adoption per organization</div>
+          <sc-for list="{{ use.features }}" as="r"><div style="display:grid; grid-template-columns:170px minmax(0,1fr) 50px; gap:8px; align-items:center; font-size:12.5px; padding:6px 0"><span>{{ r.n }}</span><span style="height:10px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ r.w }}%; background:#5C9A55"></span></span><b style="text-align:right">{{ r.v }}</b></div></sc-for>
+        </div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><span style="font-size:15px; font-weight:700">Usage across applications</span><span style="font-size:12px; color:#5F5849">Each application reports its own core events through the API</span></div>
+        <sc-for list="{{ use.apps }}" as="a"><div style="display:grid; grid-template-columns:30px minmax(140px,1fr) repeat(4,minmax(0,1fr)); gap:12px; align-items:center; padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><span style="width:26px; height:26px; border-radius:8px; background:{{ a.color }}; color:{{ a.ink }}; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:700">{{ a.ini }}</span><b>{{ a.name }}</b><sc-for list="{{ a.m }}" as="m"><span style="display:flex; flex-direction:column"><b style="font-variant-numeric:tabular-nums">{{ m.v }}</b><span style="font-size:11.5px; color:#5F5849">{{ m.n }}</span></span></sc-for></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.web }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <div style="display:flex; gap:10px; align-items:center; padding:10px 14px; border-radius:14px; border:1px dashed #C4BCA8; font-size:12px; color:#5F5849">In-house and cookieless · unique visitors from an IP + user-agent hash with a daily rotating salt · bots filtered · never loaded in the survey flow</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px">
+        <sc-for list="{{ web.kpis }}" as="k"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ k.n }}</div><div style="display:flex; gap:8px; align-items:baseline; margin-top:6px"><span style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600">{{ k.v }}</span><span style="font-size:12px; font-weight:700; color:{{ k.dc }}">{{ k.d }}</span></div></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px"><span style="font-size:15px; font-weight:700">Visitors and signups · orgpuls.com</span><span style="font-size:12px; color:#5F5849">30 days</span></div>
+        <svg viewBox="0 0 600 160" preserveAspectRatio="none" style="width:100%; height:160px; display:block">
+          <polygon points="{{ web.area }}" fill="#E4EEEC"></polygon>
+          <polyline points="{{ web.line }}" fill="none" stroke="#9DB8B3" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+          <polyline points="{{ web.sign }}" fill="none" stroke="#2F5D2A" stroke-width="2" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></polyline>
+        </svg>
+        <div style="display:flex; gap:14px; margin-top:8px; font-size:11.5px; color:#5F5849"><span style="display:flex; gap:6px; align-items:center"><span style="width:14px; height:3px; background:#9DB8B3"></span>Visitors</span><span style="display:flex; gap:6px; align-items:center"><span style="width:14px; height:3px; background:#2F5D2A"></span>Signups (× 20)</span></div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr)); gap:16px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="font-size:15px; font-weight:700; margin-bottom:12px">Website funnel</div>
+          <sc-for list="{{ web.funnel }}" as="f"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 54px 54px; gap:10px; align-items:center; font-size:12.5px; padding:6px 0"><span style="font-weight:600">{{ f.n }}</span><span style="height:20px; border-radius:7px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ f.w }}%; background:#CFE0F5"></span></span><b style="text-align:right">{{ f.v }}</b><span style="text-align:right; color:#A33A16; font-weight:700; font-size:12px">{{ f.drop }}</span></div></sc-for>
+          <div style="margin-top:10px; padding:10px 12px; border-radius:12px; background:#FBD5C4; font-size:12px; color:#6B240C"><b>38 failed Brønnøysund lookups</b> on the signup form this month — mostly sole proprietorships (ENK) without employees.</div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <div style="font-size:15px; font-weight:700; margin-bottom:12px">Persona entry points — «Hvem er du?»</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+            <sc-for list="{{ web.personas }}" as="p"><div style="border:1px solid #E8DFC9; border-radius:15px; padding:12px 14px; background:#FCF6E9"><div style="display:flex; justify-content:space-between"><b style="font-size:13px">{{ p.n }}</b><span style="font-size:12px; color:#2F5D2A; font-weight:700">{{ p.conv }}</span></div><div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600; margin-top:4px">{{ p.v }}</div><div style="font-size:11.5px; color:#5F5849">clicks · signup rate</div></div></sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr)); gap:16px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; font-size:15px; font-weight:700">Sources</div>
+          <div style="display:grid; grid-template-columns:minmax(0,1.3fr) 70px 70px 60px 60px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Source</span><span>Visits</span><span>Bounce</span><span>Signups</span><span>Conv.</span></div>
+          <sc-for list="{{ web.sources }}" as="s"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) 70px 70px 60px 60px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; font-variant-numeric:tabular-nums"><b>{{ s.n }}</b><span>{{ s.v }}</span><span style="color:#5F5849">{{ s.b }}</span><span>{{ s.s }}</span><b>{{ s.c }}</b></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; font-size:15px; font-weight:700">Top landing pages and content</div>
+          <sc-for list="{{ web.pages }}" as="s"><div style="display:grid; grid-template-columns:minmax(0,1.6fr) 70px 60px 70px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; font-variant-numeric:tabular-nums"><span style="font-family:ui-monospace,Menlo,monospace; font-size:12px">{{ s.p }}</span><span>{{ s.v }}</span><span>{{ s.s }}</span><b style="color:#2F5D2A">{{ s.c }}</b></div></sc-for>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr)); gap:16px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><span style="font-size:15px; font-weight:700">Campaigns — spend to paid customers</span><span style="font-size:12px; color:#5F5849">Spend entered per channel</span></div>
+          <div style="display:grid; grid-template-columns:minmax(0,1.3fr) 96px 56px 56px 48px 88px; gap:8px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#5F5849"><span>Campaign</span><span>Spend</span><span>Visits</span><span>Signups</span><span>Paid</span><span>Cost / paid</span></div>
+          <sc-for list="{{ web.campaigns }}" as="c"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) 96px 56px 56px 48px 88px; gap:8px; align-items:center; padding:8px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px; font-variant-numeric:tabular-nums"><span style="display:flex; flex-direction:column"><b>{{ c.n }}</b><span style="font-size:11px; color:#5F5849">{{ c.ch }}</span></span><input value="{{ c.spend }}" onChange="{{ c.setSpend }}" style="width:90px; height:30px; padding:0 8px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input><span>{{ c.v }}</span><span>{{ c.s }}</span><span>{{ c.p }}</span><b>{{ c.cpp }}</b></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><span style="font-size:15px; font-weight:700">Search Console</span><span style="font-size:12px; color:#5F5849">Imported nightly</span></div>
+          <div style="display:grid; grid-template-columns:minmax(0,1.6fr) 80px 60px 60px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Query</span><span>Impr.</span><span>Clicks</span><span>Pos.</span></div>
+          <sc-for list="{{ web.queries }}" as="s"><div style="display:grid; grid-template-columns:minmax(0,1.6fr) 80px 60px 60px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; font-variant-numeric:tabular-nums"><span>{{ s.q }}</span><span>{{ s.i }}</span><span>{{ s.c }}</span><b style="color:{{ s.pc }}">{{ s.p }}</b></div></sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.attribution }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <div style="display:flex; gap:10px; align-items:center"><div style="display:flex; padding:3px; border-radius:11px; background:#F2EAD6"><sc-for list="{{ touch }}" as="r"><button onClick="{{ r.pick }}" style="padding:7px 13px; border-radius:8px; border:none; font-size:12.5px; cursor:pointer; background:{{ r.bg }}; font-weight:{{ r.fw }}">{{ r.n }}</button></sc-for></div><span style="font-size:12px; color:#5F5849">Stored on the organization at signup · UTM source, medium, campaign and referrer</span></div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="display:grid; grid-template-columns:minmax(0,1.3fr) repeat(6,minmax(70px,1fr)); gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Channel</span><span>Signups</span><span>Activated</span><span>Paid</span><span>MRR won</span><span>Spend</span><span>CAC</span></div>
+        <sc-for list="{{ attr }}" as="a"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) repeat(6,minmax(70px,1fr)); gap:10px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; font-variant-numeric:tabular-nums"><span style="display:flex; align-items:center; gap:8px"><span style="width:9px; height:9px; border-radius:3px; background:{{ a.c }}"></span><b>{{ a.n }}</b></span><span>{{ a.s }}</span><span>{{ a.a }}</span><span>{{ a.p }}</span><b>{{ a.mrr }}</b><span style="color:#5F5849">{{ a.spend }}</span><b style="color:{{ a.cc }}">{{ a.cac }}</b></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+        <div style="font-size:15px; font-weight:700; margin-bottom:12px">Journey of a paying customer — Lumio AS</div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center"><sc-for list="{{ journey }}" as="j"><span style="display:flex; align-items:center; gap:6px"><span style="padding:7px 12px; border-radius:12px; border:1px solid #E8DFC9; background:{{ j.bg }}; font-size:12px"><b>{{ j.n }}</b><span style="color:#5F5849"> · {{ j.s }}</span></span><span style="color:#8A8272">{{ j.arrow }}</span></span></sc-for></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.health }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:16px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+        <div style="font-size:15px; font-weight:700; margin-bottom:12px">Health score distribution</div>
+        <div style="display:flex; gap:6px; align-items:flex-end; height:150px"><sc-for list="{{ hist }}" as="h"><div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:4px; height:100%"><b style="font-size:11px">{{ h.v }}</b><div style="width:100%; height:{{ h.h }}%; background:{{ h.c }}; border-radius:5px 5px 0 0"></div></div></sc-for></div>
+        <div style="display:flex; gap:6px; margin-top:4px"><sc-for list="{{ hist }}" as="h"><span style="flex:1; text-align:center; font-size:10.5px; color:#8A8272">{{ h.n }}</span></sc-for></div>
+        <div style="font-size:15px; font-weight:700; margin:18px 0 10px">How the score is built</div>
+        <sc-for list="{{ weights }}" as="w"><div style="display:grid; grid-template-columns:minmax(0,1fr) 60px; gap:10px; padding:7px 0; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span>{{ w.n }}</span><b style="text-align:right">{{ w.v }}</b></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><span style="font-size:15px; font-weight:700">At risk before renewal</span><span style="font-size:12px; color:#5F5849">score &lt; 40 · paying</span></div>
+        <sc-for list="{{ risk }}" as="r"><button onClick="{{ r.open }}" style="display:grid; width:100%; grid-template-columns:minmax(0,1fr) 46px 100px; gap:10px; align-items:center; padding:11px 18px; border:none; border-bottom:1px solid #E8DFC9; background:transparent; cursor:pointer; text-align:left; font-size:13px"><span style="display:flex; flex-direction:column"><b>{{ r.name }}</b><span style="font-size:11.5px; color:#5F5849">{{ r.why }}</span></span><b style="color:#A33A16; font-size:16px">{{ r.health }}</b><span style="font-size:12px; color:#5F5849">{{ r.renew }}</span></button></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.defs }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+      <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><span style="font-size:15px; font-weight:700">Metric definitions</span><span style="font-size:12px; color:#5F5849">Defined once as SQL views, versioned in git · reports and CRM read the same views</span></div>
+      <sc-for list="{{ defs }}" as="d"><div style="display:grid; grid-template-columns:220px minmax(0,1fr) 120px; gap:14px; padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><b style="font-family:ui-monospace,Menlo,monospace; font-size:12px">{{ d.v }}</b><span style="color:#3A342A; line-height:1.5">{{ d.d }}</span><span style="color:#5F5849; font-size:12px">{{ d.git }}</span></div></sc-for>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'business', range: '12 m', dim: 'Industry', cohort: 'Sep', retMode: 'Logos', touch: 'First touch', spend: {}, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  pill(cur, k) { return { bg: cur === k ? '#191510' : 'transparent', c: cur === k ? '#FCF6E9' : '#191510', bc: cur === k ? '#191510' : '#C4BCA8', fw: cur === k ? 700 : 500 }; }
+  renderVals() {
+    const D = window.SA; const st = this.state; const go = this.props.go || (() => {});
+    if (!D) return { tabs: [], ranges: [], v: {}, biz: { kpis: [], nn: [], bySource: [], tiers: [], dim: [] }, lines: [], months: [], act: { cards: [], funnel: [] }, cohorts: [], ret: [], retHead: [], churn: [], reasons: [], use: { kpis: [], surveys: [], roles: [], features: [], apps: [] }, web: { kpis: [], funnel: [], personas: [], sources: [], pages: [], campaigns: [], queries: [] }, attr: [], touch: [], journey: [], hist: [], weights: [], risk: [], defs: [], dims: [], retModes: [], nnLegend: [] };
+    let s = 31; const r = () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+    const product = this.props.product || 'all';
+    const prods = product === 'all' ? D.products.map((p) => p.id) : [product];
+    const pname = product === 'all' ? 'All applications' : D.productById[product].name;
+    const orgs = D.orgs.filter((o) => o.products.some((p) => prods.includes(p)));
+    const tabs = [['business', 'Business KPIs'], ['activation', 'Activation funnel'], ['retention', 'Retention and churn'], ['usage', 'Product usage'], ['web', 'Web analytics'], ['attribution', 'Attribution'], ['health', 'Health score'], ['defs', 'Metric definitions']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...this.pill(st.tab, k) }));
+    const ranges = ['30 d', '90 d', '12 m'].map((n) => ({ n, pick: () => this.setState({ range: n }), bg: st.range === n ? '#FFFDF6' : 'transparent', fw: st.range === n ? 700 : 500 }));
+    const M = D.mrrSeries; const tot = (m) => prods.reduce((a, p) => a + m[p], 0);
+    const mrr = tot(M[11]), prev = tot(M[10]);
+    const paying = orgs.filter((o) => o.mrr > 0);
+    const trials = orgs.filter((o) => o.status === 'Trial');
+    const kpis = [
+      { n: 'MRR', v: D.kr(mrr), d: '+' + D.pct((mrr / prev - 1) * 100), dc: '#2F5D2A', s: pname },
+      { n: 'ARR', v: D.kr(mrr * 12), d: '', s: 'Run rate' },
+      { n: 'Net new MRR', v: D.kr(mrr - prev), d: '', s: 'This month' },
+      { n: 'Paying orgs', v: String(paying.length), d: '+6', dc: '#2F5D2A', s: 'vs last month' },
+      { n: 'Trials active', v: String(trials.length), d: trials.filter((o) => o.trialLeft <= 7).length + ' ≤ 7 d', dc: '#8A6A00', s: 'expiring next 7 days' },
+      { n: 'Trial → paid', v: '31 %', d: '+4', dc: '#2F5D2A', s: 'September cohort' },
+      { n: 'Logo churn', v: '1,4 %', d: '−0,3', dc: '#2F5D2A', s: 'monthly' },
+      { n: 'Revenue churn', v: '0,9 %', d: '−0,2', dc: '#2F5D2A', s: 'net of expansion: −1,6 %' },
+      { n: 'ARPA', v: D.kr(paying.length ? paying.reduce((a, o) => a + o.mrr, 0) / paying.length : 0), d: '+3 %', dc: '#2F5D2A', s: 'per paying org' },
+      { n: 'Customers', v: String(orgs.length), d: '', s: 'incl. trials and cancelled' },
+    ];
+    const nn = D.months.map((m, i) => { const nw = 14 + r() * 40, exp = 6 + r() * 26, con = 2 + r() * 12, ch = 3 + r() * 16; return { m, nw: Math.round(nw * 1.3), exp: Math.round(exp * 1.3), con: Math.round(con * 1.6), ch: Math.round(ch * 1.6), tip: m + ' · new ' + D.nb(nw * 300) + ' · expansion ' + D.nb(exp * 300) + ' · contraction −' + D.nb(con * 300) + ' · churn −' + D.nb(ch * 300) }; });
+    const max = Math.max(...M.map((m) => Math.max(...prods.map((p) => m[p]))));
+    const colors = { orgpuls: '#5C9A55', skiftly: '#6E8FB8', avvik: '#D4633A', kurs: '#8F74B3' };
+    const lines = prods.map((p) => ({ n: D.productById[p].name, stroke: colors[p], last: D.nb(M[11][p] / 1000) + 'k', pts: M.map((m, i) => (i * 600 / 11).toFixed(1) + ',' + (176 - (m[p] / max) * 166).toFixed(1)).join(' ') }));
+    const srcs = D.sources.map((n) => { const v = 14 + Math.round(r() * 30); return { n, v: v + ' %', w: v * 2.2, n2: Math.round(5 + r() * 30) }; }).sort((a, b) => parseInt(b.v) - parseInt(a.v));
+    const tiers = D.bands.map((b, i) => { const n = orgs.filter((o) => o.band === b.label && o.mrr > 0).length; return { band: b.label, n, c: ['#F6D9C6', '#DCEBD3', '#CFE0F5', '#E7DAF2'][i] }; });
+    const tmax = Math.max(...tiers.map((t) => t.n), 1); tiers.forEach((t) => (t.h = Math.round((t.n / tmax) * 100)));
+    const key = { Industry: 'industry', Fylke: 'fylke', Size: 'band' }[st.dim];
+    const counts = {}; orgs.forEach((o) => { counts[o[key]] = (counts[o[key]] || 0) + 1; });
+    const cmax = Math.max(...Object.values(counts));
+    const dim = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([n, v]) => ({ n: st.dim === 'Size' ? n + ' employees' : n, v, w: (v / cmax) * 100 }));
+    const biz = { headline: 'Yes — trials are turning into organizations that run surveys and act on them: 31 % convert, and 78 % of paying customers created a tiltak within 30 days of their first result.', kpis, nn, bySource: srcs, arpa: kpis[8].v, tiers, dim };
+    const dims = ['Industry', 'Fylke', 'Size'].map((n) => ({ n, pick: () => this.setState({ dim: n }), bg: st.dim === n ? '#FBEBBE' : 'transparent', bc: st.dim === n ? '#191510' : '#C4BCA8', fw: st.dim === n ? 700 : 500 }));
+    // activation
+    const cohortSize = { Jul: 58, Aug: 71, Sep: 84, Oct: 19 }[st.cohort];
+    const rates = [1, .88, .74, .69, .61, .57, .44, st.cohort === 'Oct' ? .05 : .31];
+    const steps = ['Account created', 'Employee list uploaded', 'First survey scheduled', 'First survey sent', 'Result unlocked (≥ 5 answers)', 'Results viewed by daglig leder / HR', 'First tiltak created', 'Converted to paid'];
+    const times = ['—', '6 min', '9 min', '3 min', '6 days', '4 h', '2 days', '24 days'];
+    const funnel = steps.map((n, i) => { const v = Math.round(cohortSize * rates[i]); const pv = i ? Math.round(cohortSize * rates[i - 1]) : v; return { i: i + 1, n, v, w: rates[i] * 100, c: i === 7 ? '#F5C64A' : '#CFE7E4', drop: i ? '−' + Math.round((1 - v / pv) * 100) + ' %' : '', dc: i && (1 - v / pv) > .2 ? '#A33A16' : '#8A6A00', t: times[i] }; });
+    const cohorts = ['Jul', 'Aug', 'Sep', 'Oct'].map((n) => ({ n: n + ' cohort', pick: () => this.setState({ cohort: n }), ...this.pill(st.cohort, n) }));
+    const act = { cards: [{ n: 'Biggest drop-off', v: 'Step 6 → 7', s: '23 % view results but never create a tiltak' }, { n: 'Activated (step 5)', v: '61 %', s: 'of the ' + st.cohort + ' cohort · +7 vs Jul' }, { n: 'Signup → paid', v: '24 days', s: 'median for converted orgs' }], funnel };
+    // retention
+    const heat = (v) => (v >= 90 ? ['#B5DAD4', '#20431C'] : v >= 80 ? ['#CFE7E4', '#20431C'] : v >= 70 ? ['#F5DC96', '#5C4600'] : v >= 60 ? ['#EC9B77', '#5E1F09'] : ['#E38258', '#4A1706']);
+    const ret = D.months.slice(0, 11).map((m, ci) => { const size = 18 + Math.round(r() * 30); const cells = []; let val = 100; for (let k = 0; k < 12; k++) { if (k > 11 - ci - 1) { cells.push({ v: '', bg: 'transparent', c: '#191510', tip: '' }); continue; } if (k) val -= r() * (st.retMode === 'Revenue' ? 2.2 : 3.4) - (st.retMode === 'Revenue' && r() > .6 ? 2.5 : 0); const v = Math.max(40, Math.min(st.retMode === 'Revenue' ? 118 : 100, Math.round(val))); const [bg, c] = heat(v); cells.push({ v: v + '', bg, c, tip: m + ' cohort · month ' + k }); } return { n: m + (ci < 2 ? ' 25' : ' 26'), size, cells }; });
+    const retHead = Array.from({ length: 12 }, (_, i) => 'M' + i);
+    const retModes = ['Logos', 'Revenue'].map((n) => ({ n, pick: () => this.setState({ retMode: n }), bg: st.retMode === n ? '#FBEBBE' : 'transparent', bc: st.retMode === n ? '#191510' : '#C4BCA8', fw: st.retMode === n ? 700 : 500 }));
+    const churn = D.months.map((m) => { const l = 0.6 + r() * 2.2, rv = 0.3 + r() * 1.8; return { m, l: D.pct(l), r: D.pct(rv), lh: l * 30, rh: rv * 30 }; });
+    const reasons = [['Organization restructured or merged', 7], ['Moved to an HR suite with surveys', 5], ['No owner after daglig leder left', 4], ['Price for the band', 3], ['Ran one survey — statutory need met', 3], ['Payment failure, not recovered', 2]].map(([n, v]) => ({ n, v, w: v * 13 }));
+    // usage
+    const use = {
+      kpis: [{ n: 'Surveys sent · Sep', v: '214', s: '61 main · 153 pulse' }, { n: 'Avg response rate', v: '79 %', s: 'main 82 % · pulse 74 %' }, { n: 'Reminder effectiveness', v: '+17 %', s: 'answers after first reminder' }, { n: 'Groups hidden by threshold', v: '11 %', s: 'orgs structured too finely', c: '#8A6A00' }, { n: 'Tiltak created · Sep', v: '486', s: '92 % with owner and deadline' }, { n: 'Tiltak closed on time', v: '64 %', s: '−3 vs Aug', c: '#A33A16' }, { n: 'Comments posted', v: '1 920', s: '58 % answered by leaders' }],
+      surveys: D.months.map((m, i) => { const ma = 30 + r() * 40, pu = 60 + i * 8 + r() * 30; const t = ma + pu; return { mo: m, m: (ma / 230) * 100, p: (pu / 230) * 100, tip: m + ' · ' + Math.round(ma) + ' main · ' + Math.round(pu) + ' pulse' }; }),
+      roles: [['Daglig leder', 1840], ['HR', 2310], ['Avdelingsleder', 3920], ['Verneombud / tillitsvalgt', 1270]].map(([n, v]) => ({ n, v: D.nb(v), w: (v / 3920) * 100 })),
+      features: [['Årshjul', 71], ['AMU report', 46], ['Risk assessment export', 38], ['Pulse surveys', 64], ['Tiltak with deadlines', 88]].map(([n, v]) => ({ n, v: v + ' %', w: v })),
+      apps: D.products.filter((p) => prods.includes(p.id)).map((p) => ({ ...p, ini: p.name[0], m: { orgpuls: [['3 120', 'weekly active users'], ['214', 'surveys sent'], ['486', 'tiltak created'], ['79 %', 'response rate']], skiftly: [['5 840', 'weekly active users'], ['41 200', 'shifts planned'], ['3 410', 'swaps approved'], ['2,4 %', 'sync errors']], avvik: [['1 130', 'weekly active users'], ['612', 'incidents reported'], ['88 %', 'closed within deadline'], ['4,1 d', 'median handling']], kurs: [['410', 'weekly active users'], ['1 280', 'courses completed'], ['93 %', 'completion'], ['12', 'courses published']] }[p.id].map(([v, n]) => ({ v, n })) })),
+    };
+    // web
+    const days = 30; const vis = [], sig = [];
+    for (let i = 0; i < days; i++) { const base = 700 + Math.sin(i / 3) * 120 + r() * 160 + (i % 7 > 4 ? -220 : 0); vis.push(base); sig.push(base * (0.012 + r() * 0.01)); }
+    const vmax = Math.max(...vis);
+    const pt = (arr, k) => arr.map((v, i) => (i * 600 / (days - 1)).toFixed(1) + ',' + (156 - (v * k / vmax) * 146).toFixed(1)).join(' ');
+    const linePts = pt(vis, 1);
+    const web = {
+      kpis: [{ n: 'Visitors', v: '21 480', d: '+12 %', dc: '#2F5D2A' }, { n: 'Sessions', v: '27 910', d: '+9 %', dc: '#2F5D2A' }, { n: 'Pages / visit', v: '2,8', d: '+0,2', dc: '#2F5D2A' }, { n: 'Bounce', v: '41 %', d: '−3', dc: '#2F5D2A' }, { n: 'Signups', v: '312', d: '+18 %', dc: '#2F5D2A' }],
+      line: linePts, area: '0,156 ' + linePts + ' 600,156', sign: pt(sig, 20),
+      funnel: [['Visit', 21480], ['Pricing or platform page', 6890], ['«Kom i gang» click', 1420], ['Org.nr entered', 690], ['Account created', 312]].map(([n, v], i, a) => ({ n, v: D.nb(v), w: (v / 21480) * 100 + 2, drop: i ? '−' + Math.round((1 - v / a[i - 1][1]) * 100) + ' %' : '' })),
+      personas: [['Daglig leder', 1840, '6,1 %'], ['HR', 2210, '5,4 %'], ['Avdelingsleder', 960, '2,2 %'], ['Verneombud', 1180, '3,8 %']].map(([n, v, conv]) => ({ n, v: D.nb(v), conv })),
+      sources: [['Organic search', 9840, '38 %', 151], ['Paid search', 3920, '46 %', 64], ['Social', 2460, '58 %', 21], ['Referral', 1890, '33 %', 38], ['Direct', 2510, '44 %', 29], ['E-mail (UTM)', 860, '27 %', 9]].map(([n, v, b, sg]) => ({ n, v: D.nb(v), b, s: sg, c: D.pct((sg / v) * 100) })),
+      pages: [['/lovkrav', 4210, 88], ['/artikler/medarbeiderundersokelse-mal', 3120, 61], ['/', 5840, 74], ['/pris', 2980, 52], ['/bruksomrader/verneombud', 1460, 19], ['/artikler/arbeidsmiljokartlegging', 1180, 14]].map(([p, v, sg]) => ({ p, v: D.nb(v), s: sg, c: D.pct((sg / v) * 100) })),
+      campaigns: [['Lovkrav — Q3', 'Google Ads', 18000, 2940, 62, 14], ['LinkedIn HR managers', 'LinkedIn', 24000, 1810, 31, 6], ['Verneombud webinar', 'Event + e-mail', 6000, 640, 22, 7], ['Newsletter September', 'E-mail', 0, 860, 9, 3]].map(([n, ch, sp, v, sg, p]) => { const spend = st.spend[n] != null ? st.spend[n] : sp; const num = parseInt(String(spend).replace(/\D/g, ''), 10) || 0; return { n, ch, spend: String(spend), v: D.nb(v), s: sg, p, cpp: p ? D.kr(num / p) : '—', setSpend: (e) => this.setState({ spend: { ...st.spend, [n]: e.target.value } }) }; }),
+      queries: [['medarbeiderundersøkelse', 18400, 610, 4.2], ['arbeidsmiljøkartlegging', 9200, 420, 2.8], ['psykososialt arbeidsmiljø lovkrav', 6100, 380, 1.9], ['qps nordic', 2400, 96, 6.1], ['verneombud plikter', 11800, 210, 8.4]].map(([q, i, c, p]) => ({ q, i: D.nb(i), c, p: String(p).replace('.', ','), pc: p <= 3 ? '#2F5D2A' : p <= 6 ? '#8A6A00' : '#A33A16' })),
+    };
+    const touch = ['First touch', 'Last touch'].map((n) => ({ n, pick: () => this.setState({ touch: n }), bg: st.touch === n ? '#FFFDF6' : 'transparent', fw: st.touch === n ? 700 : 500 }));
+    const ft = st.touch === 'First touch';
+    const attr = [['Organic search', '#5C9A55', 151, 98, 41, 0], ['Paid search', '#E0A21F', 64, 40, 17, 18000], ['LinkedIn', '#6E8FB8', 31, 19, 9, 24000], ['Referral and partners', '#8F74B3', 38, 30, 16, 0], ['Event', '#D4633A', 22, 15, 8, 6000], ['Newsletter', '#9DB8B3', 9, 7, 4, 0]].map(([n, c, sg, a, p, sp]) => { const k = ft ? 1 : (n === 'Newsletter' ? 2.4 : n === 'Organic search' ? .8 : 1.1); const pp = Math.round(p * k); return { n, c, s: Math.round(sg * k), a: Math.round(a * k), p: pp, mrr: D.kr(pp * 620), spend: sp ? D.kr(sp) : '—', cac: sp ? D.kr(sp / pp) : '—', cc: sp && sp / pp > 2500 ? '#A33A16' : '#191510' }; });
+    const journey = [['LinkedIn ad', '«HR managers» · Feb 2024', '#E4EEEC'], ['/artikler/medarbeiderundersokelse-mal', '3 visits', '#FCF6E9'], ['Newsletter signup', 'double opt-in', '#FCF6E9'], ['/pris', 'last touch', '#FCF6E9'], ['Account created', '12 Mar 2024', '#CFE7E4'], ['First survey sent', '18 min later', '#CFE7E4'], ['Paid', '26–100 band', '#FBEBBE']].map(([n, sub, bg], i, a) => ({ n, s: sub, bg, arrow: i < a.length - 1 ? '→' : '' }));
+    const buckets = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
+    const hc = (b) => (b >= 70 ? '#5C9A55' : b >= 40 ? '#E0A21F' : '#D4633A');
+    const hist = buckets.map((b) => ({ n: b + '', v: orgs.filter((o) => o.health >= b && o.health < b + 10).length, c: hc(b) }));
+    const hmax = Math.max(...hist.map((h) => h.v), 1); hist.forEach((h) => (h.h = (h.v / hmax) * 85 + 2));
+    const weights = [['Last admin login (recency)', '25 %'], ['Survey cadence vs årshjul', '25 %'], ['Response rate trend', '20 %'], ['Tiltak activity', '15 %'], ['Payment status', '15 %']].map(([n, v]) => ({ n, v }));
+    const risk = orgs.filter((o) => o.health < 40 && o.mrr > 0).map((o) => ({ ...o, why: o.status === 'Past due' ? 'Payment failed · no admin login in 34 days' : 'No survey in ' + (o.lastSurvey || 120) + ' days · response trend −9', renew: 'Renews in ' + (5 + (parseInt(o.id.slice(1)) % 50)) + ' d', open: () => go('customers', { org: o.id }) }));
+    const defs = [['v_mrr_monthly', 'Sum of active subscription items per month from the Stripe mirror, excluding complimentary and trial. Annual plans divided by 12.', 'metrics/mrr.sql · v4'], ['v_net_new_mrr', 'New + expansion − contraction − churn, by comparing each org’s MRR to the previous month.', 'metrics/mrr.sql · v4'], ['v_activated_orgs', 'Organizations with at least one group reaching ≥ 5 answers (result unlocked).', 'metrics/activation.sql · v2'], ['v_trial_conversion', 'Share of a signup cohort with a paid invoice within 45 days of signup.', 'metrics/activation.sql · v2'], ['v_logo_churn', 'Paying orgs at start of month that are cancelled or deleted by its end.', 'metrics/churn.sql · v3'], ['v_health_score', 'Weighted score 0–100 from five signals; recomputed nightly and on payment events.', 'metrics/health.sql · v5'], ['v_time_to_first_send', 'Minutes from account created to first survey sent; median per cohort.', 'metrics/activation.sql · v2']].map(([v, d, git]) => ({ v, d, git }));
+    const nnLegend = [['New', '#5C9A55'], ['Expansion', '#B5DAD4'], ['Contraction', '#F5DC96'], ['Churn', '#D4633A']].map(([n, c]) => ({ n, c }));
+    return { tabs, ranges, scope: pname, v: { [st.tab]: true }, biz, nnLegend, lines, months: D.months, dims, act, cohorts, ret, retHead, retModes, churn, reasons, use, web, touch, attr, journey, hist, weights, risk, defs };
+  }
+}
+</script>
+</body>
+</html>

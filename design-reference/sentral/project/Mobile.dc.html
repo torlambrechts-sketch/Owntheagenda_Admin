@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:flex; flex-direction:column; gap:16px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; justify-content:space-between">
+    <div style="max-width:720px"><div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">iOS and Android · same API · real-time sync</div><div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600; margin-top:6px; line-height:1.2">Sentral in the pocket — for field visits, calls between meetings and live chats on the go.</div></div>
+    <div style="display:flex; gap:8px"><button onClick="{{ toggleOffline }}" style="height:34px; padding:0 12px; border-radius:10px; border:1px solid {{ offBc }}; background:{{ offBg }}; font-size:12.5px; font-weight:600; cursor:pointer">{{ offLabel }}</button><button onClick="{{ toggleLand }}" style="height:34px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer">{{ landLabel }}</button></div>
+  </div>
+  <div style="display:flex; flex-wrap:wrap; gap:26px; align-items:flex-start">
+    <sc-for list="{{ phones }}" as="p" hint-placeholder-count="6">
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center">
+        <div style="width:{{ pw }}px; height:{{ ph }}px; border:7px solid #191510; border-radius:38px; background:#FCF6E9; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 18px 40px -28px rgba(25,21,16,.35)">
+          <div style="height:30px; flex:none; display:flex; justify-content:space-between; align-items:center; padding:0 18px; font-size:11px; font-weight:700"><span>09:41</span><span>{{ p.net }}</span></div>
+          <sc-if value="{{ p.banner }}"><div style="padding:6px 14px; background:#F5DC96; font-size:11px; font-weight:700; color:#5C4600; display:flex; justify-content:space-between"><span>{{ p.banner }}</span><span style="text-decoration:underline">Sync now</span></div></sc-if>
+          <div style="flex:1; overflow:auto; padding:10px 14px 14px; display:flex; flex-direction:column; gap:9px">
+            <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:600">{{ p.title }}</div>
+            <sc-for list="{{ p.blocks }}" as="b">
+              <div style="display:flex; flex-direction:column; gap:6px; padding:{{ b.pad }}; border-radius:{{ b.r }}px; background:{{ b.bg }}; border:1px solid {{ b.bc }}; color:{{ b.c }}">
+                <sc-if value="{{ b.eyebrow }}"><span style="font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; opacity:.75">{{ b.eyebrow }}</span></sc-if>
+                <sc-if value="{{ b.big }}"><span style="font-family:'Playfair Display',serif; font-size:26px; font-weight:600; line-height:1">{{ b.big }}</span></sc-if>
+                <sc-if value="{{ b.t }}"><b style="font-size:12.5px; line-height:1.3">{{ b.t }}</b></sc-if>
+                <sc-if value="{{ b.s }}"><span style="font-size:11.5px; opacity:.8; line-height:1.4">{{ b.s }}</span></sc-if>
+                <sc-if value="{{ b.map }}"><div style="position:relative; height:190px; border-radius:12px; background:repeating-linear-gradient(135deg,#F2EAD6 0 8px,#FCF6E9 8px 16px)"><sc-for list="{{ b.pins }}" as="pin"><span style="position:absolute; left:{{ pin.x }}%; top:{{ pin.y }}%; width:22px; height:22px; border-radius:999px; border:1.5px solid #191510; background:{{ pin.bg }}; display:flex; align-items:center; justify-content:center; font-size:9.5px; font-weight:700">{{ pin.n }}</span></sc-for><span style="position:absolute; left:46%; top:52%; width:12px; height:12px; border-radius:999px; background:#2F5D2A; border:3px solid #FFFDF6"></span></div></sc-if>
+                <sc-if value="{{ b.btns }}"><div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ b.btns }}" as="x"><button onClick="{{ x.run }}" style="flex:1; min-height:44px; padding:0 10px; border-radius:12px; border:1px solid {{ x.bc }}; background:{{ x.bg }}; color:#191510; font-size:12px; font-weight:700; cursor:pointer">{{ x.n }}</button></sc-for></div></sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <div style="height:56px; flex:none; border-top:1px solid #E8DFC9; background:#FFFDF6; display:grid; grid-template-columns:repeat(5,1fr); align-items:center; font-size:9.5px; font-weight:700; text-align:center"><sc-for list="{{ tabbar }}" as="t"><span style="display:flex; flex-direction:column; align-items:center; gap:2px; color:{{ t.c }}"><span style="font-size:14px">{{ t.g }}</span>{{ t.n }}</span></sc-for></div>
+        </div>
+        <span style="font-size:12px; font-weight:700">{{ p.label }}</span><span style="font-size:11.5px; color:#5F5849; max-width:{{ pw }}px; text-align:center">{{ p.ids }}</span>
+      </div>
+    </sc-for>
+  </div>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { offline: false, land: false, pending: 0, chatTaken: false, toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { phones: [], tabbar: [] };
+    const card = (o) => ({ pad: '10px 12px', r: 14, bg: '#FFFDF6', bc: '#E8DFC9', c: '#191510', eyebrow: null, big: null, t: null, s: null, map: false, btns: null, pins: [], ...o });
+    const btn = (n, run, primary) => ({ n, run, bg: primary ? '#F5C64A' : '#FFFDF6', bc: primary ? '#191510' : '#E8DFC9' });
+    const banner = st.offline ? 'Offline · ' + st.pending + ' changes waiting' : null;
+    const net = st.offline ? 'No network' : '5G · 82 %';
+    const change = (m) => () => { if (st.offline) { this.setState({ pending: st.pending + 1 }); this.flash('Saved offline · syncs when back online'); } else this.flash(m); };
+    const phones = [
+      { label: 'Focus', ids: 'MOB-02 · opening screen and home widget', title: 'God morgen, Tor', net, banner, blocks: [card({ bg: '#191510', bc: '#191510', c: '#FCF6E9', eyebrow: 'Overdue', big: '3', s: '2 activities · 1 deal past close date' }), card({ eyebrow: 'Today', t: '10:00 Call Kari Nordmann', s: 'Lumio AS · Expansion to Skiftly' }), card({ t: '13:30 Site visit Bergheim Bygg', s: 'Lillestrøm · 24 min drive' }), card({ eyebrow: 'Unread email · nearby', t: '4 unread · 6 customers within 10 km', s: 'Expected to close this week: 2 deals · 148 000 kr' }), card({ bg: '#FBEBBE', bc: '#F5DC96', eyebrow: 'Home-screen widget', t: 'Next: Call Kari · 10:00', s: 'Agenda for today and the coming week' })] },
+      { label: 'Nearby', ids: 'MOB-03 · deals, organizations and people near you', title: 'Nearby', net, banner, blocks: [card({ pad: '6px', map: true, pins: [{ x: 30, y: 30, n: '3', bg: '#F5C64A' }, { x: 62, y: 22, n: '1', bg: '#FFFDF6' }, { x: 70, y: 66, n: '2', bg: '#FFFDF6' }, { x: 20, y: 70, n: '1', bg: '#FFFDF6' }] }), card({ t: 'Bergheim Bygg AS · 1,8 km', s: 'Deal «Group agreement» · Negotiation', btns: [btn('Navigate', () => this.flash('Handed off to the navigation app')), btn('Check in', change('Visit logged as activity'), true)] }), card({ t: 'Lyngvær Rør AS · 3,4 km', s: 'Customer · health 71 · no visit in 90 days' })] },
+      { label: 'Deal on the go', ids: 'MOB-01 · MOB-04 · MOB-05 · pipeline, details, calls, offline', title: 'Lumio AS', net, banner, blocks: [card({ eyebrow: 'Expansion to Skiftly', big: '64 000 kr', s: 'Proposal sent · score 86 · close 16 Oct' }), card({ t: 'Kari Nordmann', s: 'Daglig leder · +47 912 34 567', btns: [btn('Call', change('Call logged as activity · 6 min'), true), btn('Text', () => this.flash('Opens the messaging app with the number filled'))] }), card({ t: 'Move to Negotiation', s: 'Decision maker is required from this stage', btns: [btn('Move stage', change('Stage changed'))] }), card({ t: 'Notes', s: '«Board on 14 Oct. Start with the two warehouse teams.»' })] },
+      { label: 'Capture', ids: 'MOB-06 · AIA-07 · audio notes, scanner, card scanner, share-in', title: 'Capture', net, banner, blocks: [card({ eyebrow: 'Audio note · transcribed', t: '«Petter vil ha bytter på mobil før jul. Ta med pris per sete.»', s: '0:18 · attached to Lumio AS — Expansion to Skiftly' }), card({ eyebrow: 'Business card', t: 'Nora Berg · HR-leder', s: 'Kystlinje Transport AS · 2 phones · 2 emails found', btns: [btn('Create contact', change('Contact draft saved · editable'), true)] }), card({ eyebrow: 'Scan notes', t: 'Handwritten notes → text', s: 'Photos and files upload to the record · share from other apps' }), card({ bg: '#FCF6E9', s: 'Contact rule: no rule (setting) — cards create contacts directly' })] },
+      { label: 'Notifications', ids: 'MOB-07 · reminders, assignments, mentions, chat requests', title: 'Notifications', net, banner, blocks: [card({ bg: '#191510', bc: '#191510', c: '#FCF6E9', eyebrow: 'Reminder · now', t: 'Call Kari Nordmann in 15 minutes', s: 'Lumio AS' }), card({ eyebrow: 'Assigned to you', t: 'Lead L-503 · Mjøsa Energi', s: 'Rule «Inbound — large orgs»' }), card({ eyebrow: 'Mention', t: 'Ingrid: «@Tor partner discount here?»', s: 'Lumio AS — Expansion to Skiftly' }), card({ bg: '#FBEBBE', bc: '#F5DC96', eyebrow: 'Chat request', t: 'Visitor on /pris wants to talk', s: 'Bergheim Bygg AS · 3rd visit' })] },
+      { label: 'Extras', ids: 'MOB-08 · live chat takeover, project tasks, statistics', title: 'Today’s numbers', net, banner, blocks: [card({ eyebrow: 'This month', big: '312 000 kr', s: 'Won · 62 % of goal · 14 new deals' }), card({ eyebrow: 'Live chat', t: st.chatTaken ? 'You are chatting with the visitor' : 'Bot is handling a visitor on /pris', s: '«Kan hver plass få egne resultater?»', btns: [btn(st.chatTaken ? 'Open chat' : 'Take over', () => this.setState({ chatTaken: true }), true)] }), card({ eyebrow: 'Project tasks', t: '2 due today', s: 'Upload employee list · Lumio onboarding (late)' })] },
+    ];
+    const tabbar = [['◉', 'Focus', '#191510'], ['▥', 'Deals', '#8A8272'], ['◷', 'Activities', '#8A8272'], ['◎', 'Nearby', '#8A8272'], ['☰', 'More', '#8A8272']].map(([g, n, c]) => ({ g, n, c }));
+    return { phones, tabbar, pw: st.land ? 520 : 300, ph: st.land ? 330 : 620, toggleOffline: () => (st.offline ? (this.setState({ offline: false, pending: 0 }), this.flash(st.pending + ' changes synced · latest change wins')) : this.setState({ offline: true })), offLabel: st.offline ? 'Go back online' : 'Simulate offline', offBc: st.offline ? '#191510' : '#E8DFC9', offBg: st.offline ? '#F5DC96' : 'transparent', toggleLand: () => this.setState({ land: !st.land }), landLabel: st.land ? 'Portrait' : 'Landscape', toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

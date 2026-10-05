@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="7"><button onClick="{{ t.pick }}" style="padding:7px 13px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for></div>
+
+  <sc-if value="{{ v.dash }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px"><sc-for list="{{ kpis }}" as="k"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ k.n }}</div><div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:600; margin-top:6px; color:{{ k.c }}">{{ k.v }}</div><div style="font-size:11.5px; color:#5F5849">{{ k.s }}</div></div></sc-for></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Signed in right now</b><span style="font-size:12px; color:#5F5849">Session timeout 30 min idle · IP allowlist on</span></div>
+          <sc-for list="{{ live }}" as="l"><div style="display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1.3fr) 100px 90px; gap:10px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; align-items:center; gap:8px"><span style="width:7px; height:7px; border-radius:999px; background:#5C9A55"></span><b>{{ l.n }}</b></span><span style="color:#5F5849">{{ l.where }}</span><span style="color:#5F5849">{{ l.since }}</span><button onClick="{{ l.logout }}" style="height:26px; border-radius:8px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:11.5px; font-weight:600; cursor:pointer">Log out</button></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Assessment</b><span style="font-size:12px; color:#5F5849">{{ openIssues }} open</span></div>
+          <sc-for list="{{ issues }}" as="i"><div style="display:flex; gap:12px; align-items:flex-start; padding:11px 18px; border-bottom:1px solid #E8DFC9"><span style="width:7px; align-self:stretch; border-radius:999px; background:{{ i.c }}"></span><span style="flex:1; display:flex; flex-direction:column; gap:2px"><b style="font-size:13px">{{ i.t }}</b><span style="font-size:12px; color:#5F5849">{{ i.fix }}</span></span><button onClick="{{ i.resolve }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">{{ i.cta }}</button></div></sc-for>
+        </div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Last 7 days</div>
+        <sc-for list="{{ week }}" as="w"><div style="display:grid; grid-template-columns:110px 160px minmax(0,1fr) 140px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="color:#5F5849">{{ w.when }}</span><b style="color:{{ w.c }}">{{ w.kind }}</b><span>{{ w.t }}</span><span style="color:#5F5849">{{ w.who }}</span></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.alerts }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Email alerts</b><span style="font-size:12px; color:#5F5849">to security@orgpuls.no · and Slack #admin-logins</span></div>
+        <sc-for list="{{ alerts }}" as="a"><div style="display:flex; justify-content:space-between; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span>{{ a.n }}</span><button onClick="{{ a.toggle }}" style="position:relative; width:40px; height:22px; border-radius:999px; border:none; background:{{ a.track }}; cursor:pointer"><span style="position:absolute; top:3px; left:{{ a.knob }}px; width:16px; height:16px; border-radius:999px; background:#FFFDF6"></span></button></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Security rules</div>
+        <sc-for list="{{ secRules }}" as="r"><div style="display:flex; justify-content:space-between; gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ r.n }}</b><span style="color:#5F5849; font-size:11.5px">{{ r.d }}</span></span><b style="text-align:right; color:{{ r.c }}">{{ r.v }}</b></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.logins }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; gap:8px; align-items:center"><select value="{{ who }}" onChange="{{ setWho }}" style="height:36px; padding:0 10px; border-radius:10px; border:1px solid #191510; background:#FFFDF6; font-size:13px; font-weight:700"><sc-for list="{{ staffOpts }}" as="s"><option value="{{ s.id }}">{{ s.name }}</option></sc-for></select><span style="font-size:12px; color:#5F5849">Devices, locations, IPs, method and session end · last 60 days</span><span style="flex:1"></span><button onClick="{{ logoutAll }}" style="height:34px; padding:0 13px; border-radius:10px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:12.5px; font-weight:600; cursor:pointer">Log out of all devices</button></div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="display:grid; grid-template-columns:130px minmax(0,1.2fr) minmax(0,1fr) 120px 110px 110px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Login</span><span>Device</span><span>Location</span><span>IP</span><span>Method</span><span>Session end</span></div>
+        <sc-for list="{{ logins }}" as="l"><div style="display:grid; grid-template-columns:130px minmax(0,1.2fr) minmax(0,1fr) 120px 110px 110px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px; background:{{ l.bg }}"><span>{{ l.when }}</span><b>{{ l.dev }}</b><span>{{ l.loc }}</span><span style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px">{{ l.ip }}</span><span style="color:#5F5849">{{ l.m }}</span><span style="color:{{ l.ec }}">{{ l.end }}</span></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.signin }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <b style="font-size:14px">Single sign-on</b>
+        <sc-for list="{{ idps }}" as="p"><div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-radius:13px; border:1px solid {{ p.bc }}; background:{{ p.bg }}"><span style="display:flex; flex-direction:column"><b style="font-size:13px">{{ p.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ p.d }}</span></span><span style="font-size:11.5px; font-weight:700; color:{{ p.c }}">{{ p.state }}</span></div></sc-for>
+        <div style="font-size:11.5px; color:#5F5849">Admin identities are separate from customer logins · quarterly access review due 1 Jan · break-glass access logged</div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; justify-content:space-between; align-items:center"><b style="font-size:14px">Two-factor authentication</b><span style="padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; background:#CFE7E4; color:#20431C">Enforced for everyone</span></div>
+        <sc-for list="{{ mfa }}" as="m"><div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid #E8DFC9"><span>{{ m.n }}</span><b style="color:{{ m.c }}">{{ m.v }}</b></div></sc-for>
+        <div style="font-size:11.5px; color:#5F5849">Authenticator app or email code · account recovery codes · remembered login email</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.protect }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="background:#191510; color:#FCF6E9; border-radius:20px; padding:18px 22px; display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#F5DC96">Anonymity firewall — a platform constant</span>
+        <span style="font-family:'Playfair Display',serif; font-size:22px; font-weight:600; line-height:1.25">No CRM, analytics, ticket, export, search, AI or connector path can read survey responses or respondent identities.</span>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px"><sc-for list="{{ firewall }}" as="f"><div style="border:1px solid rgba(252,246,233,.2); border-radius:14px; padding:10px 12px; font-size:12px; line-height:1.5"><b style="color:#F5C64A">✓ {{ f.n }}</b><div style="color:#D9CFB8">{{ f.d }}</div></div></sc-for></div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden"><div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Protection in place</div><sc-for list="{{ protect }}" as="p"><div style="display:flex; justify-content:space-between; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="color:#5F5849">{{ p.k }}</span><b style="text-align:right">{{ p.v }}</b></div></sc-for></div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden"><div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Anonymity guardrails</b><span style="font-size:12px; color:#5F5849">Monitoring n ≥ 5 on every path</span></div><sc-for list="{{ guards }}" as="g"><div style="display:flex; gap:10px; align-items:flex-start; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="width:7px; align-self:stretch; border-radius:999px; background:{{ g.c }}"></span><span style="flex:1"><b>{{ g.t }}</b><div style="color:#5F5849; font-size:12px">{{ g.s }}</div></span></div></sc-for></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.privacy }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <b style="font-size:14px">Export or erase a person</b>
+        <input value="{{ eraseQ }}" onChange="{{ setEraseQ }}" placeholder="Email or name" style="height:38px; padding:0 11px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></input>
+        <sc-if value="{{ eraseHit }}"><div style="border-radius:14px; background:#FCF6E9; border:1px solid #E8DFC9; padding:11px 13px; display:flex; flex-direction:column; gap:6px; font-size:12.5px"><b>{{ eraseHit.name }} · {{ eraseHit.email }}</b><span style="color:#5F5849">Found in: person record, 3 emails, 2 activities, 1 deal participant, campaign history, 1 ticket, meeting transcript mentions</span><div style="display:flex; gap:6px"><button onClick="{{ exportPerson }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Export (access request)</button><button onClick="{{ erasePerson }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #E38258; background:#FBD5C4; color:#6B240C; font-size:12px; font-weight:700; cursor:pointer">Erase from every module</button></div></div></sc-if>
+        <div style="font-size:11.5px; color:#5F5849">Requests also arrive as personvern tickets with a 30-day clock</div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Retention rules</div>
+        <sc-for list="{{ retention }}" as="r"><div style="display:flex; justify-content:space-between; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span>{{ r.k }}</span><b>{{ r.v }}</b></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Subprocessor register</b><span style="font-size:12px; color:#5F5849">Source for the public list</span></div>
+        <sc-for list="{{ subs }}" as="s"><div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) 120px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b>{{ s.n }}</b><span style="color:#5F5849">{{ s.p }}</span><span>{{ s.r }}</span></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:center"><b style="font-size:14px">Incident register</b><button onClick="{{ newIncident }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">＋ Log incident</button></div>
+        <sc-for list="{{ incidents }}" as="i"><div style="display:flex; flex-direction:column; gap:5px; padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><div style="display:flex; justify-content:space-between"><b>{{ i.t }}</b><span style="font-weight:700; color:{{ i.c }}">{{ i.state }}</span></div><span style="color:#5F5849">{{ i.d }}</span><span style="height:6px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ i.w }}%; background:{{ i.bc }}"></span></span><span style="font-size:11.5px; color:#5F5849">{{ i.clock }}</span></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.audit }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; flex-wrap:wrap; gap:8px"><input value="{{ aq }}" onChange="{{ setAq }}" placeholder="Search admin, organization, action" style="flex:1 1 260px; height:36px; padding:0 11px; border-radius:10px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:13px"></input><sc-for list="{{ auditKinds }}" as="k"><button onClick="{{ k.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12px; border:1px solid {{ k.bc }}; background:{{ k.bg }}; font-weight:{{ k.fw }}; cursor:pointer">{{ k.n }}</button></sc-for></div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="display:grid; grid-template-columns:120px 130px 90px minmax(0,1.6fr) minmax(0,1fr) 100px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>When</span><span>Who</span><span>Kind</span><span>What</span><span>Organization</span><span>Source</span></div>
+        <sc-for list="{{ audit }}" as="a"><div style="display:grid; grid-template-columns:120px 130px 90px minmax(0,1.6fr) minmax(0,1fr) 100px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="color:#5F5849">{{ a.when }}</span><b>{{ a.who }}</b><span><span style="padding:2px 8px; border-radius:999px; font-size:10.5px; font-weight:700; background:{{ a.bg }}">{{ a.kind }}</span></span><span>{{ a.what }}</span><span style="color:#5F5849">{{ a.org }}</span><span style="color:#5F5849">{{ a.src }}</span></div></sc-for>
+        <div style="padding:10px 18px; font-size:11.5px; color:#5F5849">Append-only · every write and every read of customer-scoped data · typed reason: off (setting) · retained 5 years</div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'dash', resolved: [], loggedOut: [], alertsOff: {}, who: 'hanna', eraseQ: 'ole.olsen@kystlinje.no', aq: '', akind: 'All', toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { tabs: [], v: {}, kpis: [], live: [], issues: [], week: [], alerts: [], secRules: [], staffOpts: [], logins: [], idps: [], mfa: [], firewall: [], protect: [], guards: [], retention: [], subs: [], incidents: [], auditKinds: [], audit: [] };
+    const pill = (cur, k) => ({ bg: cur === k ? '#191510' : 'transparent', c: cur === k ? '#FCF6E9' : '#191510', bc: cur === k ? '#191510' : '#C4BCA8', fw: cur === k ? 700 : 500 });
+    const tabs = [['dash', 'Security dashboard'], ['alerts', 'Alerts and rules'], ['logins', 'Device and login history'], ['signin', 'SSO and two-factor'], ['protect', 'Data protection'], ['privacy', 'Privacy compliance'], ['audit', 'Audit log']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(st.tab, k) }));
+    const LV = [['Tor Lambrechts', 'Oslo, NO · MacBook · Chrome', '08:02'], ['Magnus Berg', 'Oslo, NO · Windows · Edge', '07:55'], ['Hanna Vik', 'Bergen, NO · Windows 11 · Edge (new device)', '09:21'], ['Ingrid Solberg', 'Oslo, NO · iPhone · Sentral app', '08:40'], ['Jonas Dahl', 'Stockholm, SE · MacBook · Safari', '09:05']];
+    const live = LV.filter((l) => !st.loggedOut.includes(l[0])).map(([n, where, since]) => ({ n, where, since: 'since ' + since, logout: () => { this.setState({ loggedOut: [...st.loggedOut, n] }); this.flash(n + ' logged out remotely'); } }));
+    const IS = [['#D4633A', 'High · 1 user without MFA enrolled after invite', 'Ola Nilsen has not completed enrolment in 6 days — send a reminder or deactivate.', 'Send reminder'], ['#D4633A', 'High · Meeting mailbox token expires in 3 days', 'Re-authenticate meetings@orgpuls.no to keep briefs working.', 'Re-authenticate'], ['#E0A21F', 'Low · 2 personal API tokens older than 180 days', 'Rotate tokens for Tor Lambrechts and Ingrid Solberg.', 'Rotate'], ['#E0A21F', 'Low · Quarterly access review due 1 January', 'Review roles and permission sets for 9 staff users.', 'Start review']];
+    const issues = IS.filter((i) => !st.resolved.includes(i[1])).map(([c, t, fix, cta]) => ({ c, t, fix, cta, resolve: () => { this.setState({ resolved: [...st.resolved, t] }); this.flash('Done · ' + cta.toLowerCase()); } }));
+    const kpis = [['Signed in now', String(live.length), '#191510', 'staff sessions'], ['New devices · 7 d', '2', '#8A6A00', 'Hanna Vik, Jonas Dahl'], ['New locations · 7 d', '1', '#8A6A00', 'Stockholm, SE'], ['Security events · 7 d', '6', '#191510', '0 critical'], ['Forced logouts · 7 d', String(1 + st.loggedOut.length), '#191510', 'remote log-outs'], ['MFA coverage', '89 %', '#A33A16', '8 of 9 enrolled']].map(([n, vv, c, s]) => ({ n, v: vv, c, s }));
+    const week = [['Today 09:21', 'New device', 'Hanna Vik signed in from Edge on Windows 11 in Bergen', 'Alert sent', '#8A6A00'], ['Yesterday', 'Large export', 'Jonas Dahl exported 4 120 contacts (campaign audience)', 'Alert sent · audited', '#8A6A00'], ['2 Oct', 'Failed logins', '4 failed logins in a row for ola@orgpuls.no', 'Account locked 15 min', '#A33A16'], ['1 Oct', 'User invited', 'Emma Lie invited Petter Aas (Project role)', 'Pending', '#191510'], ['30 Sep', 'Password reset', 'Password reset requested for sara@orgpuls.no', 'Completed', '#191510'], ['29 Sep', 'Forced logout', 'Tor Lambrechts logged out an old iPad session', 'Done', '#191510']].map(([when, kind, t, who, c]) => ({ when, kind, t, who, c }));
+    const AL = ['Login from a new device or location', 'A user is invited', 'More than 3 failed logins in a row', 'A password reset is requested', 'Unusually large exports or deletions', 'Admin logins (all) to Slack #admin-logins'];
+    const alerts = AL.map((n, i) => { const on = !st.alertsOff[i]; return { n, track: on ? '#191510' : '#C4BCA8', knob: on ? 21 : 3, toggle: () => this.setState({ alertsOff: { ...st.alertsOff, [i]: on } }) }; });
+    const secRules = [['Password strength', 'Minimum length and complexity', '12+ chars · mixed', '#191510'], ['Password expiry', 'Force change after', 'Never (MFA on)', '#191510'], ['Password reuse', 'Block the last N passwords', '5', '#191510'], ['IP restriction', 'Allow sign-in only from', 'Office + VPN ranges · 3 rules', '#2F5D2A'], ['Time restriction', 'Allow sign-in only between', 'Off', '#5F5849'], ['Session timeout', 'Idle time before sign-out', '30 min', '#191510']].map(([n, d, vv, c]) => ({ n, d, v: vv, c }));
+    const staffOpts = D.staff.map((s) => ({ id: s.id, name: s.name }));
+    const u = D.staffById[st.who];
+    const logins = [['Today 09:21', 'Windows 11 · Edge 128', 'Bergen, NO', '84.208.12.40', 'Password + app', 'Active', true], ['Yesterday 16:02', 'MacBook · Chrome 129', 'Oslo, NO', '193.69.41.7', 'SSO · Entra ID', 'Signed out 17:30', false], ['2 Oct 08:11', 'iPhone · Sentral app', 'Oslo, NO', '46.9.101.220', 'SSO + Face ID', 'Timed out', false], ['30 Sep 07:58', 'MacBook · Chrome 129', 'Oslo, NO', '193.69.41.7', 'SSO · Entra ID', 'Signed out 16:10', false], ['21 Sep 22:40', 'Unknown · Firefox', 'Riga, LV', '185.12.4.77', 'Password', 'Blocked — IP rule', false]].map(([when, dev, loc, ip, m, end, isNew]) => ({ when, dev: dev + (isNew ? ' · new' : ''), loc, ip, m, end, ec: end.startsWith('Blocked') ? '#A33A16' : end === 'Active' ? '#2F5D2A' : '#5F5849', bg: isNew ? '#FFFBEF' : 'transparent' }));
+    const idps = [['Microsoft Entra ID (SAML)', 'orgpuls.no · 9 users', 'Connected', '#2F5D2A', '#191510', '#FBEBBE'], ['Okta (SAML)', 'Not configured', 'Available', '#5F5849', '#E8DFC9', 'transparent'], ['Sign in with Google', 'Allowed for @orgpuls.no', 'On', '#2F5D2A', '#E8DFC9', 'transparent']].map(([n, d, state, c, bc, bg]) => ({ n, d, state, c, bc, bg }));
+    const mfa = [['Authenticator app', '7 users', '#191510'], ['Email code', '1 user', '#191510'], ['Not enrolled', '1 user · Ola Nilsen', '#A33A16'], ['Recovery codes generated', '8 of 9', '#191510']].map(([n, vv, c]) => ({ n, v: vv, c }));
+    const firewall = [['No grants', 'CRM roles hold no privilege on response-level tables'], ['No references', 'No foreign key, view or function points at them'], ['Aggregates only', 'Admin reads go through views that enforce n ≥ 5'], ['No tracking in surveys', 'Tracker and widgets never load in the survey flow'], ['No contacts from respondents', 'Respondents never become CRM contacts'], ['Tested', 'Database tests fail if any of this is added']].map(([n, d]) => ({ n, d }));
+    const protect = [['Encryption in transit', 'TLS 1.3'], ['Encryption at rest', 'AES-256 · provider tokens encrypted'], ['Hosting', 'EU · Stockholm (eu-north-1)'], ['Isolation', 'CRM data separated from survey data'], ['Last successful backup', 'Today 02:00'], ['Last restore test', '14 Sep 2026 · passed'], ['Recovery objectives', 'RPO 1 h · RTO 4 h']].map(([k, vv]) => ({ k, v: vv }));
+    const guards = [['#5C9A55', 'No query path returned n < 5 in the last 30 days', 'Checked on every admin view, export and support session'], ['#E0A21F', 'Re-identification risk: Tveit Omsorg AS', 'Department «Natt» has 5 employees and 5 answers split by segment — suppress the complement'], ['#5C9A55', 'Differencing attacks blocked', 'n ≥ 5 enforced on the difference between overlapping filters'], ['#5C9A55', 'Comment screening on', 'Names and identifying details flagged before leaders see comments']].map(([c, t, s]) => ({ c, t, s }));
+    const q = st.eraseQ.toLowerCase();
+    const hit = q.length > 3 ? (D.people.find((p) => p.email.includes(q) || p.name.toLowerCase().includes(q)) || { name: 'Ole Olsen', email: st.eraseQ }) : null;
+    const retention = [['Raw survey responses', 'Customer chooses · default 2 years, then aggregates'], ['CRM soft-deleted records', '30 days, then purged'], ['Tickets', 'Same as customer data · 3 years after close'], ['Email bodies in CRM', '5 years'], ['Meeting recordings', '12 months · transcripts kept'], ['Audit log', '5 years (longer than product data)']].map(([k, vv]) => ({ k, v: vv }));
+    const subs = [['Supabase', 'Database, auth, storage', 'EU · Stockholm'], ['Vercel', 'Hosting', 'EU · Frankfurt'], ['Email provider', 'Transactional and marketing streams', 'EU'], ['Stripe', 'Payments', 'EU'], ['Telephony provider', 'Calls and recordings', 'EU'], ['Transcription service', 'Meeting transcripts', 'EU'], ['Language model provider', 'AI gateway · no training on data', 'EU']].map(([n, p, r]) => ({ n, p, r }));
+    const incidents = [['Misdirected invoice email', 'One invoice PDF sent to an old billing contact at Kvamme Regnskap AS. Contained name and org.nr only.', 'Assessed · not notifiable', '#2F5D2A', 100, '#5C9A55', 'Logged 12 Sep · closed 13 Sep'], ['Webhook endpoint exposed', 'A test webhook pointed at a private address — blocked by the outbound filter, no data left.', 'Investigating', '#8A6A00', 38, '#E0A21F', '72-hour clock: 45 h left to decide on notification']].map(([t, d, state, c, w, bc, clock]) => ({ t, d, state, c, w, bc, clock }));
+    const AU = [['Today 09:44', 'Tor Lambrechts', 'Read', 'Viewed organization detail', 'Lumio AS', 'Web'], ['Today 09:40', 'Magnus Berg', 'Write', 'Extended trial 14 days · reason T-2312', 'Tindra Barnehager AS', 'Ticket'], ['Today 09:12', 'Workflow «Won → project»', 'Write', 'Created project P-8 and invoice draft', 'Fjellheim skole', 'Automation'], ['Today 08:55', 'API · Zapier', 'Write', 'Updated person ole.hansen@…', 'Bergheim Bygg AS', 'API'], ['Today 08:40', 'Magnus Berg', 'Read', 'Support-access session · 14 page views', 'Lumio AS', 'Support access'], ['Yesterday', 'Jonas Dahl', 'Export', 'Exported 4 120 contacts', '—', 'Web'], ['Yesterday', 'Claude (MCP) · Tor', 'Write', 'Added note on deal d101', 'Lumio AS', 'AI connector'], ['2 Oct', 'Sara Haugen', 'Write', 'Plan change 1–25 → 26–100', 'Lumio AS', 'Web'], ['1 Oct', 'Tor Lambrechts', 'Role', 'Granted Project role to Emma Lie', '—', 'Web']];
+    const kc = { Read: '#E4EEEC', Write: '#FBEBBE', Export: '#FBD5C4', Role: '#E7DAF2' };
+    const auditKinds = ['All', 'Read', 'Write', 'Export', 'Role'].map((n) => ({ n, pick: () => this.setState({ akind: n }), bg: st.akind === n ? '#FBEBBE' : 'transparent', bc: st.akind === n ? '#191510' : '#C4BCA8', fw: st.akind === n ? 700 : 500 }));
+    const aq = st.aq.toLowerCase();
+    const audit = AU.filter((a) => (st.akind === 'All' || a[2] === st.akind) && (!aq || a.join(' ').toLowerCase().includes(aq))).map(([when, who, kind, what, org, src]) => ({ when, who, kind, what, org, src, bg: kc[kind] }));
+    return { tabs, v: { [st.tab]: true }, kpis, live, issues, openIssues: issues.length, week, alerts, secRules, staffOpts, who: st.who, setWho: (e) => this.setState({ who: e.target.value }), logins, logoutAll: () => this.flash(u.name + ' logged out of all devices'), idps, mfa, firewall, protect, guards,
+      eraseQ: st.eraseQ, setEraseQ: (e) => this.setState({ eraseQ: e.target.value }), eraseHit: hit, exportPerson: () => this.flash('Export package created · logged'), erasePerson: () => this.flash('Erasure scheduled across CRM, campaigns, tickets, meetings and files · confirmation sent'), retention, subs, incidents, newIncident: () => this.flash('Incident logged · 72-hour clock started'),
+      aq: st.aq, setAq: (e) => this.setState({ aq: e.target.value }), auditKinds, audit, toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

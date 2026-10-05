@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+    <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.pick }}" style="padding:8px 14px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for></div>
+    <select value="{{ board }}" onChange="{{ setBoard }}" style="height:36px; padding:0 10px; border-radius:10px; border:1px solid #191510; background:#FFFDF6; font-size:13px; font-weight:700"><sc-for list="{{ boards }}" as="b"><option>{{ b }}</option></sc-for></select>
+    <span style="flex:1"></span>
+    <span style="font-size:12px; color:#5F5849">Workflow «Won deal → project» creates projects automatically</span>
+    <button onClick="{{ newProject }}" style="height:36px; padding:0 15px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">＋ Project</button>
+  </div>
+
+  <sc-if value="{{ v.board }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; align-items:flex-start">
+      <sc-for list="{{ phases }}" as="ph" hint-placeholder-count="4">
+        <div onDragOver="{{ allowDrop }}" onDrop="{{ ph.drop }}" style="flex:0 0 260px; display:flex; flex-direction:column; gap:8px; border-radius:18px; padding:8px; background:#F2EAD6; min-height:360px">
+          <div style="padding:6px 6px 8px; border-bottom:3px solid {{ ph.c }}; display:flex; justify-content:space-between"><b style="font-size:13px">{{ ph.n }}</b><span style="font-size:12px; color:#5F5849">{{ ph.count }}</span></div>
+          <sc-for list="{{ ph.cards }}" as="p"><div draggable="true" onDragStart="{{ p.drag }}" onClick="{{ p.open }}" style="display:flex; flex-direction:column; gap:6px; padding:11px 12px; border-radius:14px; background:#FFFDF6; border:1px solid #E8DFC9; cursor:pointer">
+            <div style="display:flex; justify-content:space-between; gap:6px"><b style="font-size:12.5px; line-height:1.3">{{ p.n }}</b><span style="flex:none; padding:1px 8px; border-radius:999px; font-size:10.5px; font-weight:700; background:{{ p.hbg }}; color:{{ p.hc }}">{{ p.health }}</span></div>
+            <span style="font-size:11.5px; color:#5F5849">{{ p.org }} · {{ p.dates }}</span>
+            <div style="display:flex; align-items:center; gap:8px"><span style="flex:1; height:6px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ p.pct }}%; background:#5C9A55"></span></span><span style="font-size:11px; font-weight:700">{{ p.done }}</span></div>
+            <span style="display:flex; justify-content:space-between; font-size:11px; color:#5F5849"><span>{{ p.owner }}</span><span>◆ {{ p.deal }}</span></span>
+          </div></sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.timeline }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; overflow-x:auto">
+      <div style="min-width:900px; position:relative">
+        <div style="display:grid; grid-template-columns:240px repeat(4,minmax(0,1fr)); font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849; padding-bottom:8px; border-bottom:1px solid #E8DFC9"><span>{{ gantt.title }}</span><sc-for list="{{ gantt.months }}" as="m"><span style="padding-left:6px; border-left:1px solid #E8DFC9">{{ m }}</span></sc-for></div>
+        <sc-for list="{{ gantt.rows }}" as="r"><div style="display:grid; grid-template-columns:240px minmax(0,1fr); align-items:center; height:38px; border-bottom:1px solid #F2EAD6">
+          <span style="font-size:12.5px; padding-left:{{ r.indent }}px; font-weight:{{ r.fw }}; display:flex; gap:6px; align-items:center"><span style="color:#8A8272">{{ r.g }}</span>{{ r.n }}</span>
+          <div style="position:relative; height:100%"><span title="{{ r.tip }}" style="position:absolute; top:{{ r.top }}px; left:{{ r.x }}%; width:{{ r.w }}%; height:{{ r.h }}px; border-radius:{{ r.rad }}; background:{{ r.bg }}; border:1px solid {{ r.bc }}; transform:{{ r.tf }}"></span></div>
+        </div></sc-for>
+        <div style="position:absolute; top:26px; bottom:0; left:calc(240px + {{ gantt.today }}%); width:2px; background:#D4633A"></div>
+        <div style="display:flex; gap:14px; margin-top:10px; font-size:11.5px; color:#5F5849"><span>▬ task</span><span>◆ milestone</span><span>↳ depends on the row above</span><span style="color:#A33A16">| today</span><span>Drag a phase bar to shift everything in it</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.templates }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:12px">
+      <sc-for list="{{ templates }}" as="t"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px"><b style="font-size:14px">{{ t.n }}</b><span style="font-size:12px; color:#5F5849">{{ t.s }}</span><sc-for list="{{ t.items }}" as="i"><span style="font-size:12px; padding:4px 0; border-bottom:1px solid #F2EAD6">{{ i }}</span></sc-for><button onClick="{{ t.use }}" style="align-self:flex-start; height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Use template</button></div></sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.reports }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:12px">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px"><b style="font-size:14px">Project performance</b><sc-for list="{{ perf }}" as="p"><div style="display:grid; grid-template-columns:110px minmax(0,1fr) 30px; gap:8px; align-items:center; font-size:12.5px; padding:6px 0"><span>{{ p.n }}</span><span style="height:10px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ p.w }}%; background:{{ p.c }}"></span></span><b>{{ p.v }}</b></div></sc-for></div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px"><b style="font-size:14px">Duration by phase (median days)</b><sc-for list="{{ dur }}" as="p"><div style="display:grid; grid-template-columns:110px minmax(0,1fr) 40px; gap:8px; align-items:center; font-size:12.5px; padding:6px 0"><span>{{ p.n }}</span><span style="height:10px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ p.w }}%; background:#9DB8B3"></span></span><b>{{ p.v }}</b></div></sc-for></div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:6px"><b style="font-size:14px">Automation hooks</b><span style="font-size:12.5px; line-height:1.55">Triggers: project added, phase changed, task completed, milestone reached. Actions: create project, move phase, add tasks from template, assign task.</span></div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ proj }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ close }}" style="position:fixed; inset:0; z-index:80; background:rgba(25,21,16,.42); display:flex; justify-content:flex-end">
+      <div onClick="{{ stop }}" style="width:min(900px,100%); height:100%; overflow:auto; background:#FCF6E9; padding:20px 22px; display:flex; flex-direction:column; gap:12px">
+        <div style="display:flex; gap:10px; align-items:flex-start">
+          <div style="flex:1"><div style="font-size:12px; color:#5F5849">{{ proj.board }} · {{ proj.phase }} · owner {{ proj.owner }}</div><div style="font-family:'Playfair Display',serif; font-size:23px; font-weight:600; margin-top:2px">{{ proj.n }}</div><div style="font-size:12.5px; color:#3A342A; margin-top:3px">{{ proj.org }} · {{ proj.person }} · ◆ {{ proj.deal }} · {{ proj.dates }}</div></div>
+          <select value="{{ proj.health }}" onChange="{{ setHealth }}" style="height:34px; border-radius:10px; border:1px solid #191510; background:{{ proj.hbg }}; font-size:12.5px; font-weight:700"><option>On track</option><option>At risk</option><option>Off track</option><option>On hold</option></select>
+          <button onClick="{{ statusReport }}" style="height:34px; padding:0 12px; border-radius:10px; border:1px solid #191510; background:#FFFDF6; font-size:12.5px; font-weight:700; cursor:pointer">AI status report (PDF)</button>
+          <button onClick="{{ close }}" style="width:32px; height:32px; border-radius:999px; border:1px solid #191510; background:transparent; cursor:pointer">×</button>
+        </div>
+        <div style="background:#191510; color:#FCF6E9; border-radius:18px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start"><img src="assets/assistant.png" alt="" width="26" height="26" style="border-radius:8px; background:#FCF6E9"></img><span style="flex:1; font-size:12.5px; line-height:1.55; color:#F2EAD6"><b style="color:#F5C64A">Suggested: At risk.</b> The employee import is 4 days late and blocks the first survey milestone. Kari’s last email asks to move the kickoff. Recommend: confirm the new import date and shift the «Baseline sent» milestone by one week.</span></div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; overflow:hidden">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid #E8DFC9"><b style="font-size:14px">Work items</b><span style="display:flex; gap:6px"><button onClick="{{ togglePaste }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Paste a list</button><button onClick="{{ addTask }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">＋ Task</button></span></div>
+          <sc-if value="{{ pasteOpen }}"><div style="padding:10px 16px; border-bottom:1px solid #E8DFC9; display:flex; gap:8px"><textarea value="{{ paste }}" onChange="{{ setPaste }}" placeholder="One task per line" style="flex:1; min-height:70px; padding:8px 10px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></textarea><button onClick="{{ addPasted }}" style="align-self:flex-end; height:32px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Add tasks</button></div></sc-if>
+          <sc-for list="{{ proj.items }}" as="i"><div style="display:grid; grid-template-columns:22px minmax(0,1.6fr) 120px 110px minmax(0,1fr); gap:10px; align-items:center; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:12.5px; padding-left:{{ i.pl }}px"><button onClick="{{ i.toggle }}" style="width:18px; height:18px; border-radius:{{ i.rad }}; border:1.5px solid #191510; background:{{ i.bg }}; font-size:10px; color:#20431C; cursor:pointer; padding:0">{{ i.mark }}</button><span style="font-weight:{{ i.fw }}; text-decoration:{{ i.td }}">{{ i.g }} {{ i.n }}</span><span style="color:#5F5849">{{ i.who }}</span><span style="color:{{ i.dc }}">{{ i.due }}</span><span style="color:#8A8272; font-size:11.5px">{{ i.dep }}</span></div></sc-for>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:8px"><b style="font-size:13.5px">Notes, mentions and emails</b><sc-for list="{{ proj.notes }}" as="n"><div style="font-size:12.5px; padding:7px 0; border-bottom:1px solid #E8DFC9; line-height:1.5"><b>{{ n.by }}</b> · <span style="color:#5F5849">{{ n.when }}</span><div>{{ n.t }}</div></div></sc-for></div>
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:8px"><b style="font-size:13.5px">Files and sharing</b><sc-for list="{{ proj.files }}" as="f"><div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid #E8DFC9"><span>▦ {{ f.n }}</span><span style="color:#5F5849">{{ f.s }}</span></div></sc-for><span style="font-size:11.5px; color:#5F5849">Shared with Delivery team · Emma Lie, Magnus Berg</span></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'board', board: 'Customer onboarding', projs: null, open: null, health: {}, done: {}, extra: [], pasteOpen: false, paste: '', toast: null };
+  componentDidMount() {
+    const init = () => this.setState({ projs: [['Lumio AS — Skiftly onboarding', 'o1', 'p1', 'Kickoff', 'At risk', 'emma', 5, 14, 'Lumio — Skiftly'], ['Fjellheim skole — full platform', 'o15', 'p15', 'Setup', 'On track', 'emma', 9, 16, 'Fjellheim — Full'], ['Solstrand Helse — Avvikspunkt', 'o4', 'p4', 'Setup', 'On track', 'magnus', 11, 18, 'Solstrand — HR'], ['Elvebakken kommune — pilot', 'o8', 'p8', 'First survey', 'Off track', 'emma', 7, 20, 'Tender award'], ['Bergheim Bygg — group rollout', 'o3', 'p3', 'Kickoff', 'On hold', 'magnus', 1, 22, 'Group agreement'], ['Mørkved IT — upgrade', 'o12', 'p12', 'Handover', 'On track', 'emma', 15, 16, 'Upgrade'], ['Tveit Omsorg — verneombud training', 'o21', 'p21', 'First survey', 'At risk', 'emma', 6, 10, 'Training bundle']].map(([n, org, person, phase, health, owner, done, total, deal], i) => ({ id: 'P' + (i + 1), n, org, person, phase, health, owner, done, total, deal })) });
+    if (window.SA) init(); else this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); init(); } }, 40);
+  }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D || !st.projs) return { tabs: [], v: {}, boards: [], phases: [], gantt: { months: [], rows: [] }, templates: [], perf: [], dur: [] };
+    const pill = (cur, k) => ({ bg: cur === k ? '#191510' : 'transparent', c: cur === k ? '#FCF6E9' : '#191510', bc: cur === k ? '#191510' : '#C4BCA8', fw: cur === k ? 700 : 500 });
+    const tabs = [['board', 'Board'], ['timeline', 'Timeline'], ['templates', 'Templates'], ['reports', 'Reports']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(st.tab, k) }));
+    const H = { 'On track': ['#CFE7E4', '#20431C'], 'At risk': ['#F5DC96', '#5C4600'], 'Off track': ['#F0B9A0', '#6B240C'], 'On hold': ['#EFE6D2', '#5F5849'] };
+    const P = ['Kickoff', 'Setup', 'First survey', 'Handover']; const viz = ['#F6D9C6', '#DCEBD3', '#CFE0F5', '#E7DAF2'];
+    const phases = P.map((n, i) => { const cs = st.projs.filter((p) => p.phase === n); return { n, c: viz[i], count: cs.length, drop: (e) => { e.preventDefault(); const id = e.dataTransfer.getData('text/plain'); this.setState({ projs: st.projs.map((p) => (p.id === id ? { ...p, phase: n } : p)) }); this.flash('Moved to ' + n); },
+      cards: cs.map((p) => { const h = st.health[p.id] || p.health; return { ...p, org: D.orgById[p.org].name, owner: D.staffById[p.owner].name.split(' ')[0], health: h, hbg: H[h][0], hc: H[h][1], pct: (p.done / p.total) * 100, done: p.done + '/' + p.total, dates: '5 Oct – 18 Dec', drag: (e) => e.dataTransfer.setData('text/plain', p.id), open: () => this.setState({ open: p.id }) }; }) }; });
+    const G = [['phase', 'Kickoff', 0, 12, 0], ['task', 'Kickoff meeting', 0, 3, 1], ['task', 'Upload employee list', 3, 8, 1], ['mile', 'Employee list ready', 11, 0, 1], ['phase', 'Setup', 10, 28, 0], ['task', 'Configure departments', 12, 10, 1], ['task', 'Invite HR and leaders', 20, 8, 1], ['phase', 'First survey', 30, 40, 0], ['task', 'Schedule baseline', 30, 6, 1], ['mile', 'Baseline sent', 37, 0, 1], ['task', 'Result review with HR', 52, 8, 1], ['mile', 'Handover to CSM', 72, 0, 0]];
+    const gantt = { title: 'Lumio AS — Skiftly onboarding', months: ['October', 'November', 'December', 'January'], today: 3.5, rows: G.map(([k, n, x, w, ind]) => ({ n, x, w: k === 'mile' ? 0 : w, g: k === 'mile' ? '◆' : ind ? '↳' : '▸', indent: ind ? 18 : 0, fw: k === 'phase' ? 700 : 500, top: k === 'phase' ? 12 : k === 'mile' ? 12 : 10, h: k === 'phase' ? 14 : k === 'mile' ? 14 : 18, rad: k === 'mile' ? '3px' : k === 'phase' ? '5px' : '7px', bg: k === 'phase' ? '#191510' : k === 'mile' ? '#F5C64A' : '#CFE7E4', bc: k === 'mile' ? '#191510' : 'rgba(25,21,16,.15)', tf: k === 'mile' ? 'rotate(45deg) translateX(-7px)' : 'none', tip: n })).map((r) => (r.w === 0 && r.g === '◆' ? { ...r, w: 1.4 } : r)) };
+    const templates = [['Customer onboarding — Orgpuls', '4 phases · 14 tasks · 3 milestones · due dates relative to start', ['Day 0 · Kickoff meeting', 'Day 3 · Upload employee list', 'Day 11 ◆ Employee list ready', 'Day 30 · Schedule baseline']], ['Skiftly rollout', '3 phases · 11 tasks · dependencies on import', ['Day 0 · Import shifts', 'Day 5 · Train shift leads', 'Day 14 ◆ First live week']], ['Municipality pilot', 'Groups by sector · 18 tasks', ['Day 0 · Agree scope with HR', 'Day 10 · Verneombud briefing', 'Day 45 ◆ Pilot report']]].map(([n, s, items]) => ({ n, s, items, use: () => this.flash('Project created from «' + n + '»') }));
+    const perf = Object.keys(H).map((n) => { const v = st.projs.filter((p) => (st.health[p.id] || p.health) === n).length; return { n, v, w: v * 22, c: H[n][0] === '#CFE7E4' ? '#5C9A55' : H[n][0] === '#F5DC96' ? '#E0A21F' : H[n][0] === '#F0B9A0' ? '#D4633A' : '#C4BCA8' }; });
+    const dur = [['Kickoff', 9], ['Setup', 16], ['First survey', 21], ['Handover', 6]].map(([n, v]) => ({ n, v: v + ' d', w: v * 4 }));
+    let proj = null;
+    const op = st.projs.find((p) => p.id === st.open);
+    if (op) {
+      const h = st.health[op.id] || op.health;
+      const I = [['task', 'Kickoff meeting', 'Emma Lie', 'Done', '', 0], ['sub', 'Agree survey dates', 'Emma Lie', 'Done', '', 1], ['task', 'Upload employee list', 'Kari Nordmann · Mona Hansen', '4 days late', '', 0], ['mile', 'Employee list ready', '—', '16 Oct', 'Depends on «Upload employee list»', 0], ['task', 'Configure departments', 'Emma Lie', '22 Oct', 'Depends on milestone', 0], ['act', 'Training call with shift leads', 'Magnus Berg', 'Thu 10:00', 'Activity', 0], ...st.extra.map((n) => ['task', n, 'Unassigned', '—', 'Added from list', 0])];
+      proj = { ...op, org: D.orgById[op.org].name, person: D.personById[op.person].name, owner: D.staffById[op.owner].name, board: st.board, health: h, hbg: H[h][0], dates: '5 Oct – 18 Dec 2026',
+        items: I.map(([k, n, who, due, dep, sub], i) => { const d = st.done[op.id + i] != null ? st.done[op.id + i] : due === 'Done'; return { n, who, due: d ? 'Done' : due, dep, g: k === 'mile' ? '◆' : k === 'act' ? '◷' : '', pl: sub ? 40 : 16, fw: k === 'mile' ? 700 : 500, rad: k === 'mile' ? '4px' : '999px', mark: d ? '✓' : '', bg: d ? '#CFE7E4' : 'transparent', td: d ? 'line-through' : 'none', dc: due.includes('late') && !d ? '#A33A16' : '#5F5849', toggle: () => this.setState({ done: { ...st.done, [op.id + i]: !d } }) }; }),
+        notes: [{ by: 'Kari Nordmann (email)', when: 'Yesterday', t: 'Kan vi flytte oppstarten én uke? HR er på samling.' }, { by: 'Emma Lie', when: '2 Oct', t: '@Magnus kan du ta opplæringen av skiftlederne torsdag?' }], files: [{ n: 'Oppstartsplan.pdf', s: '188 kB' }, { n: 'Ansattliste-mal.xlsx', s: '24 kB' }] };
+    }
+    return { tabs, v: { [st.tab]: true }, boards: ['Customer onboarding', 'Implementation — public sector', 'Training delivery'], board: st.board, setBoard: (e) => this.setState({ board: e.target.value }), phases, allowDrop: (e) => e.preventDefault(), gantt, templates, perf, dur,
+      newProject: () => this.flash('Project created · link a deal, person and organization'), proj, close: () => this.setState({ open: null }), stop: (e) => e.stopPropagation(),
+      setHealth: (e) => this.setState({ health: { ...st.health, [op.id]: e.target.value } }), statusReport: () => this.flash('Status report PDF generated for the client'),
+      pasteOpen: st.pasteOpen, togglePaste: () => this.setState({ pasteOpen: !st.pasteOpen }), paste: st.paste, setPaste: (e) => this.setState({ paste: e.target.value }), addPasted: () => { const l = st.paste.split('\n').map((x) => x.trim()).filter(Boolean); this.setState({ extra: [...st.extra, ...l], paste: '', pasteOpen: false }); this.flash(l.length + ' tasks added'); }, addTask: () => this.setState({ extra: [...st.extra, 'New task'] }), toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

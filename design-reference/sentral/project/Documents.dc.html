@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+    <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.pick }}" style="padding:8px 14px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for></div>
+    <span style="flex:1"></span>
+    <button onClick="{{ newDoc }}" style="height:36px; padding:0 15px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">＋ Document from template</button>
+  </div>
+
+  <sc-if value="{{ v.docs }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(320px,440px); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="display:grid; grid-template-columns:minmax(180px,1.6fr) minmax(130px,1.2fr) 120px 80px 100px; gap:10px; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Document</span><span>Deal</span><span>Status</span><span>Opens</span><span>Stored in</span></div>
+        <sc-for list="{{ docs }}" as="d" hint-placeholder-count="6"><button onClick="{{ d.pick }}" style="display:grid; width:100%; grid-template-columns:minmax(180px,1.6fr) minmax(130px,1.2fr) 120px 80px 100px; gap:10px; align-items:center; padding:10px 16px; border:none; border-bottom:1px solid #E8DFC9; background:{{ d.bg }}; cursor:pointer; text-align:left; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ d.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ d.tpl }}</span></span><span style="color:#3A342A">{{ d.deal }}</span><span><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ d.sbg }}; color:{{ d.sc }}">{{ d.status }}</span></span><b>{{ d.opens }}</b><span style="color:#5F5849">{{ d.store }}</span></button></sc-for>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px; box-shadow:0 18px 40px -28px rgba(25,21,16,.35)">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start"><span style="display:flex; align-items:center; gap:8px"><img src="assets/orgpuls-mark.svg" alt="" width="26" height="26"></img><b style="font-family:'Playfair Display',serif; font-size:16px">Orgpuls</b></span><span style="font-size:11px; color:#5F5849; text-align:right">Tilbud {{ doc.no }}<br></br>5. oktober 2026</span></div>
+          <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:600; margin-top:16px">Tilbud til {{ doc.org }}</div>
+          <div style="font-size:12px; color:#3A342A; margin-top:4px; line-height:1.55">Til {{ doc.person }} · {{ doc.orgnr }} · gyldig til 19. oktober</div>
+          <div style="margin-top:14px; border-top:1px solid #191510; border-bottom:1px solid #E8DFC9">
+            <div style="display:grid; grid-template-columns:minmax(0,1.6fr) 44px 80px 50px 90px; gap:6px; padding:7px 0; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#5F5849"><span>Produkt</span><span>Ant.</span><span>Pris</span><span>Rab.</span><span style="text-align:right">Sum</span></div>
+            <sc-for list="{{ doc.lines }}" as="l"><div style="display:grid; grid-template-columns:minmax(0,1.6fr) 44px 80px 50px 90px; gap:6px; padding:6px 0; border-top:1px solid #F2EAD6; font-size:12px"><span>{{ l.n }}</span><span>{{ l.q }}</span><span>{{ l.p }}</span><span>{{ l.d }}</span><b style="text-align:right">{{ l.t }}</b></div></sc-for>
+          </div>
+          <sc-for list="{{ doc.totals }}" as="t"><div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0"><span style="color:#5F5849">{{ t.k }}</span><b style="font-size:{{ t.fs }}px">{{ t.v }}</b></div></sc-for>
+          <div style="font-size:10.5px; color:#8A8272; margin-top:10px">Product table filled from the deal · placeholders: [deal.title] [person.name] [organization.orgnr] [product.table]</div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:14px 16px; display:flex; flex-direction:column; gap:8px">
+          <b style="font-size:13.5px">Trackable link</b>
+          <span style="font-family:ui-monospace,Menlo,monospace; font-size:12px; color:#2F5D2A">docs.orgpuls.no/s/{{ doc.token }}</span>
+          <sc-for list="{{ doc.views }}" as="w"><div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0; border-bottom:1px solid #F2EAD6"><span>{{ w.who }}</span><span style="color:#5F5849">{{ w.when }}</span></div></sc-for>
+          <div style="display:flex; gap:6px"><button onClick="{{ copyLink }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Copy link</button><button onClick="{{ revoke }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:12px; font-weight:600; cursor:pointer">Revoke</button><button onClick="{{ goSign }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Request signature</button></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.templates }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center"><sc-for list="{{ cats }}" as="c"><button onClick="{{ c.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12px; border:1px solid {{ c.bc }}; background:{{ c.bg }}; font-weight:{{ c.fw }}; cursor:pointer">{{ c.n }}</button></sc-for><span style="flex:1"></span><button onClick="{{ importDrive }}" style="height:32px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Import from drive</button></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:12px">
+        <sc-for list="{{ templates }}" as="t"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:14px 16px; display:flex; flex-direction:column; gap:8px"><div style="height:90px; border-radius:12px; background:repeating-linear-gradient(135deg,#F2EAD6 0 8px,#FCF6E9 8px 16px); display:flex; align-items:center; justify-content:center; font-family:ui-monospace,Menlo,monospace; font-size:10.5px; color:#5F5849">{{ t.kind }}</div><b style="font-size:13.5px">{{ t.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ t.cat }} · {{ t.share }}</span><div style="display:flex; flex-wrap:wrap; gap:4px"><sc-for list="{{ t.ph }}" as="p"><span style="padding:2px 7px; border-radius:6px; background:#F2EAD6; font-family:ui-monospace,Menlo,monospace; font-size:10.5px">{{ p }}</span></sc-for></div></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.sign }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,380px); gap:14px; align-items:flex-start">
+      <div style="background:#FCF6E9; border:1px solid #E8DFC9; border-radius:20px; padding:18px; display:flex; justify-content:center">
+        <div style="position:relative; width:420px; max-width:100%; height:520px; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:12px; padding:22px; box-shadow:0 18px 40px -28px rgba(25,21,16,.35)">
+          <div style="font-family:'Playfair Display',serif; font-size:16px; font-weight:600">Avtale om bruk av Skiftly</div>
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:7px"><sc-for list="{{ lines }}" as="l"><span style="height:7px; border-radius:4px; background:#F2EAD6; width:{{ l }}%"></span></sc-for></div>
+          <sc-for list="{{ fields }}" as="f"><div onClick="{{ f.pick }}" style="position:absolute; left:{{ f.x }}%; top:{{ f.y }}%; width:{{ f.w }}%; height:38px; border-radius:8px; border:1.5px dashed {{ f.c }}; background:{{ f.bg }}; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:{{ f.c }}; cursor:pointer">{{ f.n }}</div></sc-for>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+          <b style="font-size:14px">Signers</b>
+          <sc-for list="{{ signers }}" as="s"><div style="display:flex; gap:10px; align-items:center; padding:7px 0; border-bottom:1px solid #E8DFC9"><span style="width:10px; height:10px; border-radius:3px; background:{{ s.c }}"></span><span style="flex:1; display:flex; flex-direction:column; font-size:12.5px"><b>{{ s.n }}</b><span style="color:#5F5849; font-size:11.5px">{{ s.e }}</span></span><span style="font-size:11.5px; font-weight:700; color:{{ s.sc }}">{{ s.status }}</span></div></sc-for>
+          <button onClick="{{ addSigner }}" style="align-self:flex-start; height:28px; padding:0 10px; border-radius:9px; border:1px dashed #C4BCA8; background:transparent; font-size:12px; font-weight:600; cursor:pointer">＋ Signer</button>
+          <span style="font-size:11.5px; color:#5F5849">Signers: unlimited (setting · source reference 10) · drag fields onto the page</span>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+          <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; color:#5F5849">Message<textarea style="min-height:60px; padding:8px 10px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; color:#191510">Hei Kari, her er avtalen for Skiftly som vi gikk gjennom torsdag.</textarea></label>
+          <label style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px">Invite language<select style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>Norsk bokmål</option><option>English</option><option>Svenska</option></select></label>
+          <label style="display:flex; gap:8px; align-items:center; font-size:12.5px"><input type="checkbox" checked="{{ true }}" style="accent-color:#191510"></input>One-time code by email before signing</label>
+          <button onClick="{{ sendSign }}" style="height:38px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">Send for signature</button>
+          <span style="font-size:11.5px; color:#8A8272">Status shows on the deal · evidence package (audit trail, hashes) stored with the document</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.settings }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+        <b style="font-size:14px">Cloud storage</b>
+        <sc-for list="{{ storage }}" as="s"><button onClick="{{ s.pick }}" style="display:flex; justify-content:space-between; align-items:center; padding:11px 13px; border-radius:13px; border:1px solid {{ s.bc }}; background:{{ s.bg }}; cursor:pointer; text-align:left"><span style="display:flex; flex-direction:column"><b style="font-size:13px">{{ s.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ s.d }}</span></span><span style="font-size:11.5px; font-weight:700; color:{{ s.sc }}">{{ s.state }}</span></button></sc-for>
+        <label style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px">Location<select style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>Shared drive · Salg/Tilbud</option><option>Personal drive</option></select></label>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <b style="font-size:14px">Branding and e-signature service</b>
+        <div style="display:flex; justify-content:space-between; align-items:center"><span style="display:flex; flex-direction:column; font-size:12.5px"><b>Remove platform branding</b><span style="color:#5F5849; font-size:11.5px">Documents and signing pages show only Orgpuls</span></span><button onClick="{{ toggleBrand }}" style="position:relative; width:40px; height:22px; border-radius:999px; border:none; background:{{ brandTrack }}; cursor:pointer"><span style="position:absolute; top:3px; left:{{ brandKnob }}px; width:16px; height:16px; border-radius:999px; background:#FFFDF6"></span></button></div>
+        <div style="display:flex; padding:3px; border-radius:10px; background:#F2EAD6"><sc-for list="{{ signSvc }}" as="s"><button onClick="{{ s.pick }}" style="flex:1; padding:7px; border-radius:7px; border:none; font-size:12px; cursor:pointer; background:{{ s.bg }}; font-weight:{{ s.fw }}">{{ s.n }}</button></sc-for></div>
+        <span style="font-size:11.5px; color:#5F5849">An external service sends its status back to the deal through its adapter.</span>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'docs', sel: 0, cat: 'All', storage: 0, brand: true, svc: 0, signers: 2, selField: null, toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { tabs: [], v: {}, docs: [], doc: { lines: [], totals: [], views: [] }, cats: [], templates: [], lines: [], fields: [], signers: [], storage: [], signSvc: [] };
+    const pill = (cur, k) => ({ bg: cur === k ? '#191510' : 'transparent', c: cur === k ? '#FCF6E9' : '#191510', bc: cur === k ? '#191510' : '#C4BCA8', fw: cur === k ? 700 : 500 });
+    const tabs = [['docs', 'Documents'], ['templates', 'Templates'], ['sign', 'E-signature'], ['settings', 'Storage and branding']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(st.tab, k) }));
+    const S = { Draft: ['#F2EAD6', '#5F5849'], Sent: ['#FBEBBE', '#5C4600'], Opened: ['#E4EEEC', '#20431C'], 'Awaiting signature': ['#F5DC96', '#5C4600'], Signed: ['#CFE7E4', '#20431C'] };
+    const DO = [['Tilbud — Skiftly for lageret', 'Tilbud — standard', 'd101', 'Opened', 3, 'Google Drive'], ['Avtale om bruk av Skiftly', 'Avtale — SaaS', 'd101', 'Awaiting signature', 1, 'Google Drive'], ['Tilbud — Avvikspunkt rollout', 'Tilbud — standard', 'd104', 'Sent', 0, 'OneDrive'], ['Rammeavtale kommune', 'Avtale — offentlig', 'd130', 'Draft', 0, 'SharePoint'], ['Avtale — Full platform', 'Avtale — SaaS', 'd201', 'Signed', 6, 'Google Drive'], ['Uploaded: Kundens innkjøpsvilkår.pdf', 'Uploaded PDF', 'd107', 'Opened', 2, 'Google Drive']];
+    const dealBy = Object.fromEntries(D.deals.map((d) => [d.id, d]));
+    const docs = DO.map(([n, tpl, dl, status, opens, store], i) => ({ n, tpl, deal: (dealBy[dl] || D.deals[0]).title, status, opens, store, sbg: S[status][0], sc: S[status][1], bg: st.sel === i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ sel: i }) }));
+    const sd = DO[st.sel]; const dd = dealBy[sd[2]] || D.deals[0]; const o = D.orgById[dd.org]; const p = D.personById[dd.person];
+    const lines = dd.id === 'd101' ? [['Skiftly — per seat (mnd)', 48, 39, '10 %'], ['Onboarding workshop', 1, 7500, '—']] : [[D.productById[dd.product].name + ' — abonnement (mnd)', 1, Math.round(dd.value / 12), '—']];
+    const sub = lines.reduce((a, [, q, pr, d]) => a + q * pr * (d === '10 %' ? 0.9 : 1), 0);
+    const doc = { no: 'T-' + dd.id.slice(1), org: o.name, orgnr: o.orgnr, person: p.name, token: 'k7Q' + dd.id + 'xZ2', lines: lines.map(([n, q, pr, d]) => ({ n, q, p: D.kr(pr), d, t: D.kr(q * pr * (d === '10 %' ? 0.9 : 1)) })), totals: [{ k: 'Sum eks. mva', v: D.kr(sub), fs: 12 }, { k: 'Mva 25 %', v: D.kr(sub * 0.25), fs: 12 }, { k: 'Totalt', v: D.kr(sub * 1.25), fs: 15 }], views: sd[4] ? [{ who: p.name + ' · ' + o.city, when: 'Yesterday 18:40 · 4 min' }, { who: p.name, when: 'Yesterday 18:31 · 2 min' }, { who: 'Unknown viewer · forwarded', when: '3 Oct 09:12' }].slice(0, sd[4]) : [{ who: 'Not opened yet', when: '—' }] };
+    const cats = ['All', 'Quotes', 'Contracts', 'Presentations', 'Spreadsheets'].map((n) => ({ n, pick: () => this.setState({ cat: n }), bg: st.cat === n ? '#FBEBBE' : 'transparent', bc: st.cat === n ? '#191510' : '#C4BCA8', fw: st.cat === n ? 700 : 500 }));
+    const TP = [['Tilbud — standard', 'Quotes', 'document', 'Company-wide', ['[deal.title]', '[person.name]', '[product.table]']], ['Avtale — SaaS', 'Contracts', 'document', 'Company-wide', ['[organization.orgnr]', '[deal.value]', '[signer.1]']], ['Avtale — offentlig', 'Contracts', 'document', 'Sales team', ['[organization.name]', '[project.start]']], ['Kundepresentasjon', 'Presentations', 'presentation', 'Company-wide', ['[organization.name]', '[organization.employees]']], ['Prisberegning', 'Spreadsheets', 'spreadsheet', 'Private', ['[product.table]', '[deal.currency]']]];
+    const templates = TP.filter((t) => st.cat === 'All' || t[1] === st.cat).map(([n, cat, kind, share, ph]) => ({ n, cat, kind, share, ph }));
+    const colors = ['#2F5D2A', '#6E8FB8', '#8F74B3', '#D4633A'];
+    const SG = [['Kari Nordmann', 'kari.nordmann@lumio.no', 'Opened · code verified'], ['Tor Lambrechts', 'tor@orgpuls.no', 'Waiting'], ['Mona Hansen', 'mona.hansen@lumio.no', 'Waiting'], ['Petter Aas', 'petter.aas@lumio.no', 'Waiting']];
+    const signers = SG.slice(0, st.signers).map(([n, e, status], i) => ({ n, e, status, c: colors[i], sc: status.startsWith('Opened') ? '#2F5D2A' : '#8A6A00' }));
+    const fields = [['Signature · Kari', 8, 70, 40, 0], ['Date · Kari', 52, 70, 26, 0], ['Signature · Tor', 8, 82, 40, 1], ['Date · Tor', 52, 82, 26, 1]].filter((f) => f[4] < st.signers).map(([n, x, y, w, si], i) => ({ n, x, y, w, c: colors[si], bg: st.selField === i ? '#FBEBBE' : 'rgba(255,253,246,.7)', pick: () => this.setState({ selField: i }) }));
+    const storage = [['Google Drive', 'Connected · tor@orgpuls.no', 'Default'], ['OneDrive', 'Connected via Microsoft 365', 'Available'], ['SharePoint', 'Site «Salg»', 'Available']].map(([n, d, state], i) => ({ n, d, state: st.storage === i ? 'Default' : state, sc: st.storage === i ? '#2F5D2A' : '#5F5849', bg: st.storage === i ? '#FBEBBE' : 'transparent', bc: st.storage === i ? '#191510' : '#E8DFC9', pick: () => this.setState({ storage: i }) }));
+    const signSvc = ['Built-in e-signature', 'External service'].map((n, i) => ({ n, pick: () => this.setState({ svc: i }), bg: st.svc === i ? '#FFFDF6' : 'transparent', fw: st.svc === i ? 700 : 500 }));
+    return { tabs, v: { [st.tab]: true }, docs, doc, cats, templates, lines: [92, 88, 95, 70, 90, 84, 60, 93, 77, 40], fields, signers, storage, signSvc,
+      newDoc: () => this.flash('Document created from «Tilbud — standard» in Google Drive'), copyLink: () => this.flash('Link copied · each open is recorded'), revoke: () => this.flash('Link revoked'), goSign: () => this.setState({ tab: 'sign' }), importDrive: () => this.flash('Template imported from Google Drive'),
+      addSigner: () => this.setState({ signers: Math.min(4, st.signers + 1) }), sendSign: () => this.flash('Signature request sent · status shows on the deal'), toggleBrand: () => this.setState({ brand: !st.brand }), brandTrack: st.brand ? '#191510' : '#C4BCA8', brandKnob: st.brand ? 21 : 3, toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

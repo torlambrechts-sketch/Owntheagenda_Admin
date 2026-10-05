@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="8"><button onClick="{{ t.pick }}" style="padding:7px 13px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for></div>
+
+  <sc-if value="{{ v.apps }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center"><div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:600; flex:1 1 360px">Every application talks to Sentral through one admin API.</div><button onClick="{{ openConnect }}" style="height:38px; padding:0 16px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">＋ Connect an application</button></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:12px">
+        <sc-for list="{{ apps }}" as="a" hint-placeholder-count="4">
+          <button onClick="{{ a.pick }}" style="display:flex; flex-direction:column; gap:10px; padding:16px 18px; border-radius:20px; border:1px solid {{ a.bc }}; background:#FFFDF6; cursor:pointer; text-align:left">
+            <div style="display:flex; gap:10px; align-items:center"><span style="width:38px; height:38px; border-radius:12px; background:{{ a.color }}; color:{{ a.ink }}; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:17px; font-weight:700; border:1px solid rgba(25,21,16,.1)">{{ a.ini }}</span><span style="flex:1; display:flex; flex-direction:column"><b style="font-size:14px">{{ a.name }}</b><span style="font-size:11.5px; color:#5F5849">{{ a.desc }} · {{ a.region }}</span></span><span style="padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; background:{{ a.sbg }}; color:{{ a.sc }}">{{ a.status }}</span></div>
+            <svg viewBox="0 0 200 36" preserveAspectRatio="none" style="width:100%; height:36px; display:block"><polyline points="{{ a.spark }}" fill="none" stroke="{{ a.stroke }}" stroke-width="2" vector-effect="non-scaling-stroke"></polyline></svg>
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px; font-size:11px; color:#5F5849"><span style="display:flex; flex-direction:column"><b style="font-size:13px; color:#191510">{{ a.rpm }}</b>req/min</span><span style="display:flex; flex-direction:column"><b style="font-size:13px; color:{{ a.latC }}">{{ a.lat }}</b>p95</span><span style="display:flex; flex-direction:column"><b style="font-size:13px; color:{{ a.errC }}">{{ a.err }}</b>errors</span><span style="display:flex; flex-direction:column"><b style="font-size:13px; color:#191510">{{ a.orgs }}</b>orgs</span></div>
+          </button>
+        </sc-for>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:center"><b style="font-size:14px">{{ app.name }} — connection</b><button onClick="{{ testConn }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Test connection</button></div>
+          <sc-for list="{{ app.conn }}" as="r"><div style="display:flex; justify-content:space-between; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="color:#5F5849">{{ r.k }}</span><b style="text-align:right; font-family:{{ r.f }}; font-size:{{ r.fs }}px">{{ r.v }}</b></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Data synced with {{ app.name }}</b><span style="font-size:12px; color:#5F5849">org.nr is the shared customer key</span></div>
+          <sc-for list="{{ app.entities }}" as="e"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) 70px 90px 100px; gap:10px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ e.n }}</b><span style="color:#5F5849; font-size:11.5px">{{ e.dir }}</span></span><span>{{ e.count }}</span><span style="color:#5F5849">{{ e.last }}</span><span style="font-weight:700; color:{{ e.c }}">{{ e.state }}</span></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Events received · typed events table</div>
+          <sc-for list="{{ app.events }}" as="e"><div style="display:grid; grid-template-columns:minmax(0,1.2fr) 80px minmax(0,1fr); gap:10px; padding:8px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="font-family:ui-monospace,Menlo,monospace; font-size:12px">{{ e.n }}</span><b>{{ e.c }}</b><span style="color:#5F5849">{{ e.use }}</span></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Remote actions Sentral may call</div>
+          <sc-for list="{{ app.actions }}" as="a"><div style="display:flex; justify-content:space-between; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="font-family:ui-monospace,Menlo,monospace; font-size:12px">{{ a.ep }}</span><span style="color:#5F5849">{{ a.used }}</span></div></sc-for>
+          <div style="padding:10px 18px; font-size:11.5px; color:#A33A16; font-weight:600">Response-level survey tables are never exposed through this API — aggregates with n ≥ 5 only.</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.api }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">REST API v2</b><a href="#" onClick="{{ noop }}" style="font-size:12.5px; font-weight:600">API reference · client libraries · collections →</a></div>
+        <sc-for list="{{ endpoints }}" as="e"><div style="display:grid; grid-template-columns:62px minmax(0,1fr) 70px; gap:10px; align-items:center; padding:8px 18px; border-bottom:1px solid #E8DFC9; font-size:12px"><span style="padding:2px 7px; border-radius:6px; font-size:10.5px; font-weight:700; text-align:center; background:{{ e.bg }}">{{ e.m }}</span><span style="font-family:ui-monospace,Menlo,monospace">{{ e.p }}</span><span style="color:#5F5849; text-align:right">{{ e.cost }}</span></div></sc-for>
+        <div style="padding:10px 18px; font-size:11.5px; color:#5F5849">Every entity incl. custom fields · filtering and cursor pagination · same permissions as the calling user</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:center"><b style="font-size:14px">Tokens and OAuth apps</b><button onClick="{{ rotate }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Rotate my token</button></div>
+          <sc-for list="{{ tokens }}" as="t"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 90px 70px; gap:10px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ t.n }}</b><span style="color:#5F5849; font-size:11.5px; font-family:ui-monospace,Menlo,monospace">{{ t.k }}</span></span><span style="color:#5F5849; font-size:11.5px">{{ t.scope }}</span><span style="color:#5F5849">{{ t.last }}</span><button onClick="{{ t.revoke }}" style="height:26px; border-radius:8px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:11.5px; font-weight:600; cursor:pointer">Revoke</button></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+          <div style="display:flex; justify-content:space-between"><b style="font-size:14px">Rate limits</b><span style="padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; background:#F2EAD6">Off (setting)</span></div>
+          <span style="font-size:12.5px; line-height:1.55">When switched on with source values: daily budget = base × plan multiplier × seats, a token cost per endpoint type, and a burst limit per token in a rolling 2-second window.</span>
+          <div style="display:flex; align-items:flex-end; gap:4px; height:70px"><sc-for list="{{ usage }}" as="u"><span style="flex:1; height:{{ u }}%; background:#CFE0F5; border-radius:3px 3px 0 0"></span></sc-for></div>
+          <span style="font-size:11.5px; color:#5F5849">Requests per hour · last 24 h · 412 k total</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.hooks }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,400px); gap:14px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Subscriptions</b><span style="font-size:12px; color:#5F5849">Webhooks per user: unlimited (setting)</span></div>
+          <sc-for list="{{ hooks }}" as="h"><div style="display:grid; grid-template-columns:150px minmax(0,1.4fr) 90px; gap:10px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b style="font-family:ui-monospace,Menlo,monospace; font-size:12px">{{ h.ev }}</b><span style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ h.url }}</span><span style="font-weight:700; color:{{ h.c }}">{{ h.state }}</span></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Deliveries</b><span style="font-size:12px; color:#5F5849">Retry and ban policy: source values (safeguard)</span></div>
+          <sc-for list="{{ deliveries }}" as="d"><button onClick="{{ d.pick }}" style="display:grid; width:100%; grid-template-columns:90px 150px minmax(0,1fr) 70px 70px; gap:10px; align-items:center; padding:9px 18px; border:none; border-bottom:1px solid #E8DFC9; background:{{ d.bg }}; cursor:pointer; text-align:left; font-size:12.5px"><span style="color:#5F5849">{{ d.when }}</span><b style="font-family:ui-monospace,Menlo,monospace; font-size:12px">{{ d.ev }}</b><span style="color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ d.to }}</span><b style="color:{{ d.c }}">{{ d.code }}</b><span style="color:#5F5849">{{ d.tries }}</span></button></sc-for>
+        </div>
+      </div>
+      <div style="background:#191510; color:#F2EAD6; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+        <b style="color:#FCF6E9; font-size:13.5px">Payload — current and previous state</b>
+        <pre style="margin:0; font-family:ui-monospace,Menlo,monospace; font-size:11.5px; line-height:1.55; white-space:pre-wrap">{{ payload }}</pre>
+        <span style="font-size:11.5px; color:#D9CFB8">Signature header: open decision (A4) · private and link-local targets blocked</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.catalog }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:flex; gap:10px; align-items:center; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:16px; padding:10px 12px"><img src="assets/assistant.png" alt="" width="26" height="26" style="border-radius:8px"></img><input value="{{ catQ }}" onChange="{{ setCatQ }}" placeholder="Describe what you need — «send invoices when a deal is won»" style="flex:1; height:34px; border:none; background:transparent; font-size:13px; outline:none"></input><span style="font-size:12px; color:#5F5849">{{ catHint }}</span></div>
+      <sc-for list="{{ collections }}" as="c"><div style="display:flex; flex-direction:column; gap:10px"><b style="font-size:14px">{{ c.h }}</b><div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:10px"><sc-for list="{{ c.items }}" as="i"><div style="background:#FFFDF6; border:1px solid {{ i.bc }}; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:6px"><div style="display:flex; justify-content:space-between; gap:8px"><b style="font-size:13.5px">{{ i.n }}</b><span style="font-size:11px; font-weight:700; color:{{ i.sc }}">{{ i.state }}</span></div><span style="font-size:12px; color:#5F5849; line-height:1.45">{{ i.d }}</span><span style="font-size:11px; color:#8A8272">Access: {{ i.access }}</span><div style="display:flex; gap:6px"><button onClick="{{ i.toggle }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:{{ i.btnBg }}; font-size:12px; font-weight:700; cursor:pointer">{{ i.cta }}</button><sc-if value="{{ i.installed }}"><button style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600">Settings · users</button></sc-if></div></div></sc-for></div></div></sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.mcp }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; justify-content:space-between; align-items:center"><b style="font-size:15px">AI connector (MCP)</b><button onClick="{{ toggleMcp }}" style="position:relative; width:44px; height:24px; border-radius:999px; border:none; background:{{ mcpTrack }}; cursor:pointer"><span style="position:absolute; top:3px; left:{{ mcpKnob }}px; width:18px; height:18px; border-radius:999px; background:#FFFDF6"></span></button></div>
+        <span style="font-size:12.5px; color:#3A342A">{{ mcpState }}</span>
+        <div style="font-family:ui-monospace,Menlo,monospace; font-size:12px; padding:10px; border-radius:10px; background:#FCF6E9; border:1px solid #E8DFC9">https://sentral.orgpuls.no/mcp · OAuth login</div>
+        <div style="display:flex; justify-content:space-between; font-size:12.5px"><span style="color:#5F5849">Sync mode (index every 30 min)</span><b>On · last index 12 min ago</b></div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849; margin-top:4px">Connected assistants</div>
+        <sc-for list="{{ assistants }}" as="a"><div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span><b>{{ a.n }}</b> · {{ a.u }}</span><span style="color:#5F5849">{{ a.last }}</span></div></sc-for>
+        <span style="font-size:11.5px; color:#8A8272">Calls run with the user’s permissions · changes appear in the changelog with the connector as source · survey data unreachable</span>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Tool catalog</div>
+        <sc-for list="{{ tools }}" as="t"><div style="display:flex; justify-content:space-between; gap:10px; padding:8px 18px; border-bottom:1px solid #E8DFC9; font-size:12px"><span style="font-family:ui-monospace,Menlo,monospace">{{ t.n }}</span><span style="color:#5F5849">{{ t.d }}</span></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.jobs }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px"><sc-for list="{{ jobStats }}" as="s"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:16px; padding:12px 14px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ s.n }}</div><div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600; color:{{ s.c }}">{{ s.v }}</div></div></sc-for></div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <sc-for list="{{ jobs }}" as="j"><div style="display:grid; grid-template-columns:minmax(0,1.4fr) 110px 100px minmax(0,1.2fr) 80px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ j.n }}</b><span style="color:#5F5849; font-size:11.5px">{{ j.app }}</span></span><span><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ j.bg }}; color:{{ j.c }}">{{ j.state }}</span></span><span style="color:#5F5849">{{ j.when }}</span><span style="color:#5F5849">{{ j.info }}</span><sc-if value="{{ j.failed }}"><button onClick="{{ j.retry }}" style="height:28px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Retry</button></sc-if></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.flags }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Feature flags — global and per organization</div>
+        <sc-for list="{{ flags }}" as="f"><div style="display:grid; grid-template-columns:minmax(0,1.4fr) 110px minmax(0,1fr) 46px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b style="font-family:ui-monospace,Menlo,monospace; font-size:12px">{{ f.k }}</b><span style="color:#5F5849; font-size:11.5px">{{ f.app }}</span></span><span style="color:#5F5849">{{ f.scope }}</span><span style="display:flex; align-items:center; gap:6px"><span style="flex:1; height:6px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ f.pct }}%; background:#5C9A55"></span></span><b style="font-size:11.5px">{{ f.pctL }}</b></span><button onClick="{{ f.toggle }}" style="position:relative; width:40px; height:22px; border-radius:999px; border:none; background:{{ f.track }}; cursor:pointer"><span style="position:absolute; top:3px; left:{{ f.knob }}px; width:16px; height:16px; border-radius:999px; background:#FFFDF6"></span></button></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <b style="font-size:14px">Maintenance mode and status banner</b>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px"><span>Maintenance mode · all applications</span><button onClick="{{ toggleMaint }}" style="position:relative; width:40px; height:22px; border-radius:999px; border:none; background:{{ maintTrack }}; cursor:pointer"><span style="position:absolute; top:3px; left:{{ maintKnob }}px; width:16px; height:16px; border-radius:999px; background:#FFFDF6"></span></button></div>
+        <textarea style="min-height:60px; padding:9px 11px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px">Noen invitasjoner til kommunale e-postdomener kommer forsinket frem. Vi jobber med saken.</textarea>
+        <div style="padding:10px 12px; border-radius:12px; background:#F5DC96; font-size:12.5px; color:#5C4600"><b>Preview in the product:</b> Noen invitasjoner til kommunale e-postdomener kommer forsinket frem …</div>
+        <div style="font-size:11.5px; color:#5F5849">Linked to known error T-2316 · shown in Orgpuls until the problem is resolved</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.content }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:12px">
+      <sc-for list="{{ content }}" as="c"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px"><div style="display:flex; justify-content:space-between; gap:8px"><b style="font-size:14px">{{ c.n }}</b><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ c.bg }}">{{ c.ver }}</span></div><span style="font-size:12.5px; color:#3A342A; line-height:1.5">{{ c.d }}</span><span style="font-size:11.5px; color:{{ c.mc }}">{{ c.meta }}</span><div style="display:flex; gap:6px"><button style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700">Edit draft</button><button onClick="{{ c.rollback }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Roll back</button></div></div></sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ connect }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeConnect }}" style="position:fixed; inset:0; z-index:90; background:rgba(25,21,16,.42); display:flex; align-items:center; justify-content:center; padding:20px">
+      <div onClick="{{ stop }}" style="width:560px; max-width:100%; background:#FFFDF6; border-radius:22px; padding:22px 24px; display:flex; flex-direction:column; gap:11px; box-shadow:0 34px 80px rgba(25,21,16,.3)">
+        <b style="font-family:'Playfair Display',serif; font-size:21px">Connect an application</b>
+        <sc-for list="{{ connectFields }}" as="f"><label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; font-weight:600; color:#5F5849">{{ f.k }}<input value="{{ f.v }}" style="height:38px; padding:0 11px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"></input></label></sc-for>
+        <div style="font-size:11.5px; font-weight:600; color:#5F5849">Scopes</div>
+        <div style="display:flex; flex-wrap:wrap; gap:5px"><sc-for list="{{ scopes }}" as="s"><button onClick="{{ s.toggle }}" style="padding:5px 10px; border-radius:999px; font-size:12px; border:1px solid {{ s.bc }}; background:{{ s.bg }}; font-weight:{{ s.fw }}; cursor:pointer; font-family:ui-monospace,Menlo,monospace">{{ s.n }}</button></sc-for></div>
+        <div style="font-size:12px; color:#5F5849">Credentials are encrypted at rest. The service-role key never reaches the browser.</div>
+        <div style="display:flex; justify-content:flex-end; gap:8px"><button onClick="{{ closeConnect }}" style="height:38px; padding:0 15px; border-radius:11px; border:1px solid #E8DFC9; background:transparent; font-size:13px; font-weight:600; cursor:pointer">Cancel</button><button onClick="{{ doConnect }}" style="height:38px; padding:0 17px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">Test and connect</button></div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: null, app: 'orgpuls', connect: false, scopes: { 'orgs:read': true, 'users:read': true, 'subscriptions:read': true, 'events:write': true }, delivery: 0, catQ: '', installed: { gw: true, m365: true, slack: true, acc: true }, mcp: true, flagsOff: {}, maint: false, revoked: [], retried: [], toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  sw(on) { return { track: on ? '#191510' : '#C4BCA8', knob: on ? 21 : 3 }; }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { tabs: [], v: {}, apps: [], app: { conn: [], entities: [], events: [], actions: [] }, endpoints: [], tokens: [], usage: [], hooks: [], deliveries: [], collections: [], assistants: [], tools: [], jobStats: [], jobs: [], flags: [], content: [], connectFields: [], scopes: [] };
+    const tab = st.tab || this.props.tab || 'apps';
+    const pill = (k) => ({ bg: tab === k ? '#191510' : 'transparent', c: tab === k ? '#FCF6E9' : '#191510', bc: tab === k ? '#191510' : '#C4BCA8', fw: tab === k ? 700 : 500 });
+    const tabs = [['apps', 'Applications'], ['api', 'REST API and tokens'], ['hooks', 'Webhooks'], ['catalog', 'Integration catalog'], ['mcp', 'AI connector'], ['jobs', 'Job monitor'], ['flags', 'Feature flags'], ['content', 'Content']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(k) }));
+    let s = 5; const r = () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+    const apps = D.products.map((p) => { const pts = Array.from({ length: 24 }, (_, i) => (i * 200 / 23).toFixed(1) + ',' + (32 - (0.3 + r() * 0.6 + (p.status === 'Degraded' && i > 17 ? 0.3 : 0)) * 26).toFixed(1)).join(' ');
+      return { ...p, ini: p.name[0], orgs: D.orgs.filter((o) => o.products.includes(p.id)).length, rpm: D.nb(p.rpm), lat: p.latency + ' ms', latC: p.latency > 500 ? '#A33A16' : '#191510', err: D.pct(p.err), errC: p.err > 1.5 ? '#A33A16' : '#191510', sbg: p.status === 'Degraded' ? '#F5DC96' : p.status === 'Beta' ? '#EFE6D2' : '#CFE7E4', sc: p.status === 'Degraded' ? '#5C4600' : p.status === 'Beta' ? '#5F5849' : '#20431C', stroke: p.status === 'Degraded' ? '#E0A21F' : '#5C9A55', spark: pts, bc: st.app === p.id ? '#191510' : '#E8DFC9', pick: () => this.setState({ app: p.id }) }; });
+    const P = D.productById[st.app];
+    const mono = 'ui-monospace,Menlo,monospace';
+    const app = { name: P.name,
+      conn: [['Base URL', 'https://' + P.api, mono, 12], ['API version', P.version, 'inherit', 12.5], ['Auth', 'OAuth 2.0 client credentials · ' + P.keys + ' keys', 'inherit', 12.5], ['Inbound webhooks', P.hooks + ' subscriptions · signed', 'inherit', 12.5], ['Product key', 'product_id = ' + P.id, mono, 12], ['Region', P.region, 'inherit', 12.5], ['Last sync', P.lastSync, 'inherit', 12.5], ['Connected since', P.since, 'inherit', 12.5]].map(([k, vv, f, fs]) => ({ k, v: vv, f, fs })),
+      entities: [['Organizations', 'two-way · org.nr key', D.orgs.filter((o) => o.products.includes(P.id)).length, '40 s ago', 'Healthy', '#2F5D2A'], ['Users and roles', 'app → Sentral', 1240, '1 min ago', 'Healthy', '#2F5D2A'], ['Subscriptions', 'Stripe mirror → both', D.orgs.filter((o) => o.products.includes(P.id) && o.mrr).length, '2 min ago', 'Healthy', '#2F5D2A'], ['Usage events', 'app → Sentral', '18 k/day', 'live', P.status === 'Degraded' ? 'Lagging 3 min' : 'Healthy', P.status === 'Degraded' ? '#A33A16' : '#2F5D2A'], ['Feature flags', 'Sentral → app', 8, '12 min ago', 'Healthy', '#2F5D2A']].map(([n, dir, count, last, state, c]) => ({ n, dir, count: typeof count === 'number' ? D.nb(count) : count, last, state, c })),
+      events: [[P.id + '.org.signed_up', 31, 'Funnel · CRM trigger'], [P.id + '.survey.sent', 214, 'Activation · health'], [P.id + '.user.logged_in', '3 120', 'Health · logins by role'], [P.id + '.payment.failed', 4, 'Workflow · ticket'], [P.id + '.trial.day_7', 12, 'Lifecycle nudge']].map(([n, c, use]) => ({ n, c, use })),
+      actions: [['POST /orgs/{orgnr}/trial/extend', 'Tickets · Customers'], ['POST /orgs/{orgnr}/suspend', 'Customers'], ['POST /orgs/{orgnr}/export', 'Personvern'], ['POST /support-access/requests', 'Support access'], ['PUT /flags/{key}', 'Feature flags']].map(([ep, used]) => ({ ep, used })) };
+    const endpoints = [['GET', '/v2/deals?filter[stage]=s4&cursor=…', '1'], ['POST', '/v2/deals', '2'], ['PATCH', '/v2/persons/{id}', '2'], ['DELETE', '/v2/leads/{id}', '2'], ['GET', '/v2/organizations/{id}/related', '1'], ['POST', '/v2/search?term=lumio', '4'], ['GET', '/v2/custom-fields?entity=deal', '1'], ['POST', '/v2/leads/{id}/convert', '3']].map(([m, p, cost]) => ({ m, p, cost: cost + ' token' + (cost > 1 ? 's' : ''), bg: m === 'GET' ? '#E4EEEC' : m === 'POST' ? '#FBEBBE' : m === 'DELETE' ? '#FBD5C4' : '#E7DAF2' }));
+    const tokens = [['Personal token · Tor Lambrechts', 'sk_live_…f3a9', 'Full · as user', '2 min ago'], ['OAuth app · Zapier', 'client_7Gk…', 'deals, persons, leads', '1 h ago'], ['OAuth app · Accounting', 'client_Qx2…', 'deals:read, invoices', 'Today'], ['Personal token · Ingrid Solberg', 'sk_live_…82bd', 'Full · as user', 'Yesterday']].filter((t) => !st.revoked.includes(t[0])).map(([n, k, scope, last]) => ({ n, k, scope, last, revoke: () => { this.setState({ revoked: [...st.revoked, n] }); this.flash('Revoked at once · ' + n); } }));
+    const usage = Array.from({ length: 24 }, (_, i) => 20 + Math.round((Math.sin((i - 6) / 4) + 1) * 30 + r() * 15));
+    const hooks = [['deal.updated', 'https://hooks.zapier.com/…/8823', 'Active', '#2F5D2A'], ['person.added', 'https://crm-sync.lumio.no/hook', 'Active', '#2F5D2A'], ['deal.won', 'https://api.skiftly.no/v1/provision', 'Retrying', '#8A6A00'], ['organization.deleted', 'http://10.0.4.2/internal', 'Blocked (private address)', '#A33A16']].map(([ev, url, state, c]) => ({ ev, url, state, c }));
+    const DL = [['09:41', 'deal.won', 'api.skiftly.no/v1/provision', 504, '3 / 5'], ['09:40', 'deal.updated', 'hooks.zapier.com', 200, '1'], ['09:12', 'person.added', 'crm-sync.lumio.no', 200, '1'], ['08:55', 'deal.updated', 'hooks.zapier.com', 200, '1']];
+    const deliveries = DL.map(([when, ev, to, code, tries], i) => ({ when, ev, to, code, tries, c: code >= 400 ? '#A33A16' : '#2F5D2A', bg: st.delivery === i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ delivery: i }) }));
+    const payload = JSON.stringify({ event: DL[st.delivery][1], object: 'deal', id: 'd101', meta: { user: 'tor', source: 'user', product_id: 'orgpuls', attempt: DL[st.delivery][4] }, current: { stage: 's5', status: 'open', value: 64000 }, previous: { stage: 's4', status: 'open', value: 64000 } }, null, 2);
+    const CAT = [['Productivity and mail', [['gw', 'Google Workspace', 'Contacts, calendar, tasks, Drive files, Gmail, Meet links and sign-in', 'contacts, calendar, mail, drive'], ['m365', 'Microsoft 365', 'Outlook and Exchange mail, calendar, contacts, Teams links and notifications, OneDrive, SharePoint', 'mail, calendar, contacts, files']]], ['Team chat', [['slack', 'Slack', 'Deal events to channels or DMs, search deals and people from chat', 'deal events, search'], ['teams', 'Microsoft Teams', 'Deal events to channels, search from chat', 'deal events, search']]], ['Close and get paid', [['acc', 'Accounting system (EHF)', 'Create invoices from deals with person, organization and products; status on the deal', 'deals, products, invoices'], ['sign', 'External e-signature', 'Send documents to an external signing service', 'documents']]], ['Automate', [['zap', 'No-code automation platforms', 'Connectors built on the API and webhooks', 'scoped by token'], ['ext', 'App extensions', 'Panels in deal and contact views; actions that open a link, dialog or embedded view', 'per app']]]];
+    const q = st.catQ.toLowerCase();
+    const collections = CAT.map(([h, items]) => ({ h, items: items.map(([id, n, d, access]) => { const inst = !!st.installed[id]; const hit = q && (d.toLowerCase().includes(q.split(' ')[0]) || (q.includes('invoice') && id === 'acc')); return { n, d, access, installed: inst, state: inst ? 'Installed' : 'Available', sc: inst ? '#2F5D2A' : '#5F5849', cta: inst ? 'Remove' : 'Install', btnBg: inst ? '#FFFDF6' : '#F5C64A', bc: hit ? '#191510' : '#E8DFC9', toggle: () => { this.setState({ installed: { ...st.installed, [id]: !inst } }); this.flash(inst ? n + ' removed · access revoked' : n + ' installed'); } }; }) }));
+    const tools = [['get_deal / list_deals / add_deal / update_deal', 'Deals'], ['search_persons / add_person / update_person', 'People'], ['list_organizations / get_organization', 'Organizations'], ['list_leads / convert_lead_to_deal', 'Leads'], ['list_activities / add_activity', 'Activities'], ['list_products', 'Products'], ['list_pipeline_stages', 'Pipelines'], ['add_note', 'Notes']].map(([n, d]) => ({ n, d }));
+    const jobStats = [['Queued', '18', '#191510'], ['Running', '4', '#191510'], ['Failed (24 h)', '3', '#A33A16'], ['Succeeded (24 h)', '2 914', '#2F5D2A']].map(([n, vv, c]) => ({ n, v: vv, c }));
+    const J = [['Scheduled survey sends', 'Orgpuls', 'Running', '09:00', '41 orgs · 1 812 invitations'], ['Reminder batch', 'Orgpuls', 'Queued', '12:00', '23 surveys'], ['Result unlocks', 'Orgpuls', 'Succeeded', '08:30', '7 groups unlocked'], ['Retention purge — raw responses', 'Orgpuls', 'Succeeded', '02:00', 'Reduced to aggregates · 12 orgs'], ['Brønnøysund re-sync', 'Sentral', 'Failed', '06:00', 'Timeout from register API · 3 orgs'], ['CRM soft-delete purge (30 days)', 'Sentral', 'Succeeded', '03:00', '14 records purged'], ['Shift sync', 'Skiftly', 'Failed', '09:20', 'Provider 504 · webhook retrying'], ['Search Console import', 'Sentral', 'Succeeded', '04:00', '1 920 queries'], ['MCP sync index', 'Sentral', 'Running', '09:30', 'every 30 min']];
+    const jc = { Running: ['#E4EEEC', '#20431C'], Queued: ['#FBEBBE', '#5C4600'], Succeeded: ['#CFE7E4', '#20431C'], Failed: ['#F0B9A0', '#6B240C'] };
+    const jobs = J.map(([n, a, state, when, info], i) => { const rt = st.retried.includes(i); const s2 = rt ? 'Queued' : state; return { n, app: a, state: s2, when, info: rt ? 'Retry queued' : info, bg: jc[s2][0], c: jc[s2][1], failed: s2 === 'Failed', retry: () => { this.setState({ retried: [...st.retried, i] }); this.flash('Retry queued · ' + n); } }; });
+    const F = [['orgpuls.nynorsk_survey', 'Orgpuls', 'Pilot · 6 orgs', 8], ['orgpuls.ai_comment_screening', 'Orgpuls', 'Global', 100], ['skiftly.swap_marketplace', 'Skiftly', 'Staged rollout', 35], ['avvik.mobile_photos', 'Avvikspunkt', 'Global', 100], ['kurs.certificates_v2', 'Kursrom', 'Per org · 2', 3], ['sentral.crm_deals', 'Sentral module switch', 'Global', 100]];
+    const flags = F.map(([k, a, scope, pct], i) => { const on = !st.flagsOff[i]; return { k, app: a, scope, pct: on ? pct : 0, pctL: on ? pct + ' %' : 'off', ...this.sw(on), toggle: () => this.setState({ flagsOff: { ...st.flagsOff, [i]: on } }) }; });
+    const content = [['Question set', 'v3 · published', 'QPS Nordic · 11 factors × 3 statements. A published version is immutable; v4 draft maps old questions to new to keep trends.', 'Author Tor · 12 Aug · draft v4 in review', '#CFE7E4', '#5F5849'], ['Pulse templates', '5 templates', 'Short sets drawn from the main bank.', 'Last change 2 Sep', '#F2EAD6', '#5F5849'], ['Tiltak library', 'v7', 'Suggestions per factor and score band · «three suggestions» ranking configurable.', 'Last change 28 Sep', '#CFE7E4', '#5F5849'], ['Legal references', 'Review due', 'Hjemmel per factor for risk assessment and the Arbeidstilsynet report.', '2 references not reviewed in 12 months', '#F5DC96', '#A33A16'], ['Email and SMS templates', '14 templates', 'Invitation, reminder, verneombud notice, results ready, trial expiring, payment failed · Bokmål first.', 'Preview and test-send', '#F2EAD6', '#5F5849'], ['Help texts and announcements', '3 live', 'In-app announcements and help articles · macros for tickets live here too.', 'Last change today', '#F2EAD6', '#5F5849']].map(([n, ver, d, meta, bg, mc]) => ({ n, ver, d, meta, bg, mc, rollback: () => this.flash(n + ' rolled back to the previous published version') }));
+    const connectFields = [['Application name', 'Vaktbok'], ['Base URL', 'https://api.vaktbok.no/v1'], ['Client ID', 'vaktbok-sentral'], ['Client secret', '••••••••••••'], ['Product key (product_id)', 'vaktbok']].map(([k, vv]) => ({ k, v: vv }));
+    const scopes = ['orgs:read', 'orgs:write', 'users:read', 'subscriptions:read', 'events:write', 'flags:read', 'support-access:write'].map((n) => ({ n, toggle: () => this.setState({ scopes: { ...st.scopes, [n]: !st.scopes[n] } }), bg: st.scopes[n] ? '#FBEBBE' : 'transparent', bc: st.scopes[n] ? '#191510' : '#C4BCA8', fw: st.scopes[n] ? 700 : 500 }));
+    const mcpSw = this.sw(st.mcp);
+    return { tabs, v: { [tab]: true }, apps, app, openConnect: () => this.setState({ connect: true }), testConn: () => this.flash(P.name + ' · 200 OK in ' + P.latency + ' ms'),
+      endpoints, tokens, usage, rotate: () => this.flash('New token issued · the old one stops working now'), noop: (e) => e.preventDefault(), hooks, deliveries, payload,
+      catQ: st.catQ, setCatQ: (e) => this.setState({ catQ: e.target.value }), catHint: q ? 'Highlighted: best matches' : 'Recommendations by the assistant', collections,
+      toggleMcp: () => this.setState({ mcp: !st.mcp }), mcpTrack: mcpSw.track, mcpKnob: mcpSw.knob + 2, mcpState: st.mcp ? 'On for the company · 3 assistants connected' : 'Off — new connections are blocked and existing ones removed', assistants: st.mcp ? [{ n: 'Claude', u: 'Tor Lambrechts', last: '5 min ago' }, { n: 'Claude', u: 'Ingrid Solberg', last: 'Yesterday' }, { n: 'ChatGPT', u: 'Jonas Dahl', last: '3 days ago' }] : [], tools,
+      jobStats, jobs, flags, toggleMaint: () => this.setState({ maint: !st.maint }), maintTrack: this.sw(st.maint).track, maintKnob: this.sw(st.maint).knob, content,
+      connect: st.connect, closeConnect: () => this.setState({ connect: false }), stop: (e) => e.stopPropagation(), connectFields, scopes, doConnect: () => { this.setState({ connect: false }); this.flash('Vaktbok connected · 200 OK · first sync started'); }, toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

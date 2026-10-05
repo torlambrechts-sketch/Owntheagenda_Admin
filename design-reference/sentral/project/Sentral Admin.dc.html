@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Sentral — platform admin</title>
+<script src="admin-data.js"></script>
+<script src="coverage-data.js"></script>
+<style>
+@font-face{font-family:'DM Sans';font-weight:400 700;font-display:swap;src:url(fonts/dmsans-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'DM Sans';font-weight:400 700;font-display:swap;src:url(fonts/dmsans-latinext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Playfair Display';font-weight:500 700;font-display:swap;src:url(fonts/playfair-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+20AC,U+2212}
+@font-face{font-family:'Playfair Display';font-weight:500 700;font-display:swap;src:url(fonts/playfair-latinext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+1E00-1E9F,U+20A0-20AB}
+html,body{margin:0;background:#FCF6E9;color:#191510;font-family:'DM Sans',Arial,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button,input,select,textarea{font-family:inherit;color:inherit}
+a{color:#2F5D2A;text-decoration:none}
+a:hover{color:#1E3D1A;text-decoration:underline}
+:focus-visible{outline:3px solid #191510;outline-offset:2px;border-radius:6px}
+::placeholder{color:#8A8272}
+</style>
+</helmet>
+<div style="display:flex; min-height:100vh; background:#FCF6E9; color:#191510; font-family:'DM Sans',Arial,sans-serif; font-size:14px">
+  <aside style="position:sticky; top:0; height:100vh; width:236px; flex:none; display:flex; flex-direction:column; border-right:1px solid #E8DFC9; background:#FFFDF6; overflow:hidden">
+    <div style="display:flex; align-items:center; gap:10px; padding:16px 16px 10px">
+      <img src="assets/orgpuls-mark.svg" alt="" width="30" height="30" style="display:block"></img>
+      <div style="display:flex; flex-direction:column; gap:1px">
+        <span style="font-family:'Playfair Display',serif; font-size:19px; font-weight:600; letter-spacing:-0.01em; line-height:1">Sentral</span>
+        <span style="font-size:11px; color:#5F5849; font-weight:600">Platform admin</span>
+      </div>
+    </div>
+    <div style="position:relative; padding:4px 12px 6px">
+      <button onClick="{{ toggleProd }}" aria-expanded="{{ prodMenu }}" style="display:flex; width:100%; align-items:center; gap:9px; height:40px; padding:0 10px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; cursor:pointer; text-align:left">
+        <span style="width:18px; height:18px; flex:none; border-radius:6px; border:1px solid rgba(25,21,16,.15); background:{{ curProd.color }}"></span>
+        <span style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <span style="font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ curProd.name }}</span>
+          <span style="font-size:11px; color:#5F5849">{{ curProd.desc }}</span>
+        </span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+      </button>
+      <sc-if value="{{ prodMenu }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; left:12px; right:12px; top:48px; z-index:60; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:6px; box-shadow:0 18px 40px -24px rgba(25,21,16,.45)">
+          <div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849; padding:8px 10px 6px">Applications on the API</div>
+          <sc-for list="{{ prodOptions }}" as="p" hint-placeholder-count="5">
+            <button onClick="{{ p.pick }}" style="display:flex; width:100%; align-items:center; gap:9px; padding:8px 10px; border-radius:10px; border:none; background:{{ p.bg }}; cursor:pointer; text-align:left">
+              <span style="width:16px; height:16px; flex:none; border-radius:5px; border:1px solid rgba(25,21,16,.15); background:{{ p.color }}"></span>
+              <span style="flex:1; display:flex; flex-direction:column"><span style="font-size:13px; font-weight:{{ p.fw }}">{{ p.name }}</span><span style="font-size:11px; color:#5F5849">{{ p.desc }}</span></span>
+              <span style="width:7px; height:7px; border-radius:999px; background:{{ p.dot }}"></span>
+            </button>
+          </sc-for>
+          <button onClick="{{ goApps }}" style="display:flex; width:100%; align-items:center; gap:8px; margin-top:4px; padding:9px 10px; border-radius:10px; border:1px dashed #C4BCA8; background:transparent; cursor:pointer; font-size:12.5px; font-weight:600">＋ Connect an application →</button>
+        </div>
+      </sc-if>
+    </div>
+    <nav aria-label="Main menu" style="flex:1; overflow-y:auto; padding:0 10px 14px">
+      <sc-for list="{{ nav }}" as="g" hint-placeholder-count="5">
+        <div style="display:flex; flex-direction:column; gap:1px; margin-top:12px">
+          <sc-if value="{{ g.h }}" hint-placeholder-val="{{ true }}">
+            <div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#8A8272; padding:2px 10px 5px">{{ g.h }}</div>
+          </sc-if>
+          <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+            <button onClick="{{ it.go }}" aria-current="{{ it.cur }}" style="display:flex; align-items:center; gap:10px; width:100%; padding:5px 8px; border-radius:11px; border:none; cursor:pointer; text-align:left; font-size:13.5px; background:{{ it.bg }}; font-weight:{{ it.fw }}">
+              <span style="display:flex; width:26px; height:26px; flex:none; align-items:center; justify-content:center; border-radius:8px; background:{{ it.tile }}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ it.icon }}"></path></svg>
+              </span>
+              <span style="flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ it.label }}</span>
+              <sc-if value="{{ it.badge }}" hint-placeholder-val="{{ false }}">
+                <span style="min-width:19px; height:19px; padding:0 5px; border-radius:999px; background:#D4633A; color:#FFFDF6; font-size:10.5px; font-weight:700; display:flex; align-items:center; justify-content:center">{{ it.badge }}</span>
+              </sc-if>
+            </button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </nav>
+    <div style="border-top:1px solid #E8DFC9; padding:10px 14px; display:flex; align-items:center; gap:8px; font-size:11.5px; color:#5F5849">
+      <span style="width:7px; height:7px; border-radius:999px; background:#5C9A55"></span>
+      <span>EU residency · Stockholm</span>
+    </div>
+  </aside>
+
+  <main style="flex:1; min-width:0; display:flex; flex-direction:column">
+    <header style="position:sticky; top:0; z-index:40; background:#FFFDF6; border-bottom:1px solid #E8DFC9">
+      <div style="display:flex; align-items:center; gap:14px; min-height:56px; padding:8px 26px">
+        <div style="flex:1; min-width:120px; display:flex; flex-direction:column; white-space:nowrap; overflow:hidden">
+          <span style="font-size:11px; color:#5F5849; font-weight:600; overflow:hidden; text-overflow:ellipsis">{{ title.crumb }}</span>
+          <span style="font-family:'Playfair Display',serif; font-size:18px; font-weight:600; line-height:1.15; overflow:hidden; text-overflow:ellipsis">{{ title.name }}</span>
+        </div>
+        <button onClick="{{ openSearch }}" style="display:flex; align-items:center; gap:9px; flex:0 1 300px; min-width:40px; height:38px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; cursor:pointer; color:#8A8272; font-size:13px; overflow:hidden">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="flex:none"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14M20 20l-4-4"></path></svg>
+          <span style="flex:1; min-width:0; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">Search records, emails, tickets …</span>
+          <span style="font-size:11px; font-weight:700; color:#5F5849; border:1px solid #E8DFC9; border-radius:6px; padding:2px 6px; background:#FFFDF6">⌘K</span>
+        </button>
+        <button onClick="{{ toggleSandbox }}" aria-pressed="{{ sandbox }}" style="display:flex; align-items:center; gap:8px; height:34px; padding:0 11px; border-radius:10px; border:1px solid {{ sbBorder }}; background:{{ sbBg }}; cursor:pointer; font-size:12.5px; font-weight:600">
+          <span style="position:relative; width:30px; height:18px; border-radius:999px; background:{{ sbTrack }}"><span style="position:absolute; top:2px; left:{{ sbKnob }}px; width:14px; height:14px; border-radius:999px; background:#FFFDF6; border:1px solid rgba(25,21,16,.15)"></span></span>
+          Sandbox
+        </button>
+        <div style="position:relative">
+          <button onClick="{{ toggleNotif }}" aria-label="Notifications" style="position:relative; display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; cursor:pointer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20a2 2 0 0 0 4 0"></path></svg>
+            <span style="position:absolute; top:-5px; right:-5px; min-width:18px; height:18px; border-radius:999px; background:#D4633A; color:#FFFDF6; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center">{{ notifCount }}</span>
+          </button>
+          <sc-if value="{{ notif }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; right:0; top:44px; z-index:60; width:380px; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:8px; box-shadow:0 18px 40px -24px rgba(25,21,16,.45)">
+              <div style="display:flex; gap:6px; padding:6px 6px 10px; border-bottom:1px solid #E8DFC9">
+                <sc-for list="{{ nTabs }}" as="t" hint-placeholder-count="4">
+                  <button onClick="{{ t.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; font-weight:{{ t.fw }}">{{ t.n }}</button>
+                </sc-for>
+              </div>
+              <div style="display:flex; flex-direction:column; max-height:420px; overflow:auto; padding-top:4px">
+                <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="4">
+                  <button onClick="{{ n.open }}" style="display:flex; gap:10px; align-items:flex-start; padding:10px; border:none; border-radius:12px; background:transparent; cursor:pointer; text-align:left">
+                    <span style="margin-top:5px; width:7px; height:7px; flex:none; border-radius:999px; background:{{ n.dot }}"></span>
+                    <span style="flex:1; display:flex; flex-direction:column; gap:2px"><span style="font-size:13px; font-weight:600; line-height:1.35">{{ n.t }}</span><span style="font-size:12px; color:#5F5849">{{ n.s }}</span></span>
+                    <span style="font-size:11px; color:#8A8272; white-space:nowrap">{{ n.ago }}</span>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:8px 10px 4px; border-top:1px solid #E8DFC9; font-size:12px"><span style="color:#5F5849">In app · email · desktop · push</span><a href="#" onClick="{{ goNotifSettings }}">Reminder channels →</a></div>
+            </div>
+          </sc-if>
+        </div>
+        <button onClick="{{ toggleAssist }}" aria-pressed="{{ assist }}" style="display:flex; align-items:center; gap:8px; height:36px; padding:0 12px 0 4px; border-radius:10px; border:1px solid {{ asBorder }}; background:{{ asBg }}; cursor:pointer; font-size:12.5px; font-weight:600">
+          <img src="assets/assistant.png" alt="" width="28" height="28" style="display:block; border-radius:9px; background:#FCF6E9"></img>
+          Assistant
+        </button>
+        <div style="position:relative">
+          <button onClick="{{ toggleAcct }}" aria-label="Account: Tor Lambrechts" style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:999px; border:1px solid #191510; background:#FBEBBE; cursor:pointer; font-size:12px; font-weight:700">TL</button>
+          <sc-if value="{{ acct }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; right:0; top:44px; z-index:60; width:290px; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:8px; box-shadow:0 18px 40px -24px rgba(25,21,16,.45)">
+              <div style="padding:8px 12px 12px; border-bottom:1px solid #E8DFC9">
+                <div style="font-size:14px; font-weight:700">Tor Lambrechts</div>
+                <div style="font-size:12.5px; color:#5F5849; margin-top:2px">tor@orgpuls.no</div>
+                <div style="font-size:12px; font-weight:600; color:#5F5849; margin-top:8px">Super-admin · MFA by app · IP allowlist on</div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:2px; padding-top:6px; font-size:13px">
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px"><span style="font-weight:600">Language</span><span style="display:flex; gap:2px"><span style="border-radius:999px; padding:4px 9px; font-size:11.5px; font-weight:700; background:#FBEBBE">English</span><span style="border-radius:999px; padding:4px 9px; font-size:11.5px; color:#5F5849">Norsk</span></span></div>
+                <div style="display:flex; justify-content:space-between; padding:8px 12px"><span style="font-weight:600">Time zone</span><span style="color:#5F5849">Europe/Oslo</span></div>
+                <div style="display:flex; justify-content:space-between; padding:8px 12px"><span style="font-weight:600">Number format</span><span style="color:#5F5849">12 345,67</span></div>
+                <div style="padding:8px 12px; font-size:12px; color:#5F5849">Session ends after 30 min idle.</div>
+                <button onClick="{{ goSettings }}" style="text-align:left; padding:9px 12px; border:none; border-radius:10px; background:transparent; cursor:pointer; font-size:13px; font-weight:600">Settings</button>
+                <button style="text-align:left; padding:9px 12px; border:none; border-radius:10px; background:transparent; cursor:pointer; font-size:13px; font-weight:600">Sign out</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+      <sc-if value="{{ sandbox }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:center; gap:12px; padding:9px 26px; background:#FBEBBE; border-top:1px solid #E8DFC9; font-size:12.5px">
+          <span style="font-weight:700">Sandbox — Lumio AS demo tenant</span>
+          <span style="color:#5C4600">Changes here never touch the live company. Sample records carry a «Sample» label.</span>
+          <span style="flex:1"></span>
+          <button style="height:28px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Remove sample records</button>
+        </div>
+      </sc-if>
+    </header>
+
+    <div style="flex:1; min-width:0">
+      <sc-if value="{{ r.home }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:26px 28px 48px; display:flex; flex-direction:column; gap:18px; max-width:1480px">
+          <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px">
+            <div style="max-width:820px">
+              <div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">{{ home.eyebrow }}</div>
+              <h1 style="margin:8px 0 0; font-family:'Playfair Display',serif; font-size:30px; font-weight:600; line-height:1.12; text-wrap:balance">{{ home.headline }}</h1>
+            </div>
+            <div style="display:flex; gap:8px">
+              <button onClick="{{ goAnalytics }}" style="height:36px; padding:0 16px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer">Open analytics →</button>
+              <button onClick="{{ openSearch }}" style="height:36px; padding:0 16px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">＋ New record</button>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:13px">
+            <sc-for list="{{ home.kpis }}" as="k" hint-placeholder-count="5">
+              <button onClick="{{ k.go }}" style="text-align:left; cursor:pointer; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 20px; display:flex; flex-direction:column; gap:6px">
+                <span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">{{ k.label }}</span>
+                <span style="display:flex; align-items:baseline; gap:10px"><span style="font-family:'Playfair Display',serif; font-size:26px; font-weight:600; font-variant-numeric:tabular-nums; line-height:1; white-space:nowrap">{{ k.value }}</span><span style="font-size:12.5px; font-weight:700; color:{{ k.dc }}">{{ k.delta }}</span></span>
+                <span style="font-size:12px; color:#5F5849">{{ k.sub }}</span>
+              </button>
+            </sc-for>
+          </div>
+
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+            <div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px">
+              <span style="font-size:15px; font-weight:700">Applications on the admin API</span>
+              <a href="#" onClick="{{ goAppsLink }}" style="font-size:12.5px; font-weight:600">Manage applications →</a>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:10px">
+              <sc-for list="{{ home.apps }}" as="a" hint-placeholder-count="4">
+                <div style="display:flex; flex-direction:column; gap:10px; border:1px solid #E8DFC9; border-radius:15px; padding:14px 16px; background:#FCF6E9">
+                  <div style="display:flex; align-items:center; gap:10px">
+                    <span style="width:32px; height:32px; border-radius:10px; background:{{ a.color }}; color:{{ a.ink }}; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:700; font-size:15px; border:1px solid rgba(25,21,16,.1)">{{ a.ini }}</span>
+                    <span style="flex:1; display:flex; flex-direction:column"><span style="font-size:13.5px; font-weight:700">{{ a.name }}</span><span style="font-size:11.5px; color:#5F5849">{{ a.api }}</span></span>
+                    <span style="border-radius:999px; padding:3px 9px; font-size:11px; font-weight:700; background:{{ a.sbg }}; color:{{ a.sc }}">{{ a.status }}</span>
+                  </div>
+                  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px; font-size:11px; color:#5F5849">
+                    <span style="display:flex; flex-direction:column"><b style="font-size:13px; color:#191510; font-variant-numeric:tabular-nums">{{ a.orgs }}</b>orgs</span>
+                    <span style="display:flex; flex-direction:column"><b style="font-size:13px; color:#191510; font-variant-numeric:tabular-nums">{{ a.mrr }}</b>MRR</span>
+                    <span style="display:flex; flex-direction:column"><b style="font-size:13px; color:{{ a.latC }}; font-variant-numeric:tabular-nums">{{ a.lat }}</b>p95</span>
+                    <span style="display:flex; flex-direction:column"><b style="font-size:13px; color:{{ a.errC }}; font-variant-numeric:tabular-nums">{{ a.err }}</b>errors</span>
+                  </div>
+                  <div style="font-size:11px; color:#8A8272">{{ a.version }} · last sync {{ a.lastSync }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr)); gap:18px">
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px">
+              <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px"><span style="font-size:15px; font-weight:700">Needs you today</span><span style="font-size:12px; color:#5F5849">{{ home.todoCount }} items</span></div>
+              <div style="display:flex; flex-direction:column; gap:8px">
+                <sc-for list="{{ home.todo }}" as="t" hint-placeholder-count="5">
+                  <div style="display:flex; align-items:center; gap:14px; border:1px solid #E8DFC9; border-radius:15px; padding:12px 14px 12px 12px; background:#FFFDF6">
+                    <span style="width:7px; align-self:stretch; border-radius:999px; background:{{ t.tone }}"></span>
+                    <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px"><span style="font-size:13.5px; font-weight:600">{{ t.t }}</span><span style="font-size:12px; color:#5F5849">{{ t.s }}</span></span>
+                    <button onClick="{{ t.go }}" style="height:30px; padding:0 12px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap">{{ t.cta }}</button>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px; display:flex; flex-direction:column">
+              <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px"><span style="font-size:15px; font-weight:700">Monthly recurring revenue</span><span style="font-size:12px; color:#5F5849">12 months · by application</span></div>
+              <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px">
+                <sc-for list="{{ home.legend }}" as="l" hint-placeholder-count="4"><span style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:#5F5849"><span style="width:10px; height:10px; border-radius:3px; background:{{ l.c }}; border:1px solid rgba(25,21,16,.15)"></span>{{ l.n }}</span></sc-for>
+              </div>
+              <div style="flex:1; min-height:170px; display:flex; align-items:flex-end; gap:8px; border-bottom:1px solid #C4BCA8; padding-bottom:0">
+                <sc-for list="{{ home.bars }}" as="b" hint-placeholder-count="12">
+                  <div title="{{ b.tip }}" style="flex:1; display:flex; flex-direction:column-reverse; height:{{ b.h }}px; border-radius:6px 6px 0 0; overflow:hidden">
+                    <sc-for list="{{ b.segs }}" as="sg"><div style="height:{{ sg.h }}%; background:{{ sg.c }}; border-top:1px solid rgba(25,21,16,.08)"></div></sc-for>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex; gap:8px; margin-top:6px"><sc-for list="{{ home.bars }}" as="b"><span style="flex:1; text-align:center; font-size:10.5px; color:#8A8272">{{ b.m }}</span></sc-for></div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr)); gap:18px">
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px">
+              <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px"><span style="font-size:15px; font-weight:700">Trials expiring soonest</span><a href="#" onClick="{{ goCustomersLink }}" style="font-size:12.5px; font-weight:600">All organizations →</a></div>
+              <div style="display:grid; grid-template-columns:minmax(0,2fr) 70px minmax(0,1fr) minmax(0,1fr) 90px; gap:10px; padding:8px 4px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Organization</span><span>Days left</span><span>First survey</span><span>Source</span><span>Owner</span></div>
+              <sc-for list="{{ home.trials }}" as="o" hint-placeholder-count="6">
+                <button onClick="{{ o.open }}" style="display:grid; width:100%; grid-template-columns:minmax(0,2fr) 70px minmax(0,1fr) minmax(0,1fr) 90px; gap:10px; align-items:center; padding:10px 4px; border:none; border-bottom:1px solid #E8DFC9; background:transparent; cursor:pointer; text-align:left; font-size:13px">
+                  <span style="display:flex; flex-direction:column"><span style="font-weight:600">{{ o.name }}</span><span style="font-size:11.5px; color:#5F5849">{{ o.orgnr }} · {{ o.employees }} employees</span></span>
+                  <span style="font-weight:700; color:{{ o.dc }}; font-variant-numeric:tabular-nums">{{ o.left }}</span>
+                  <span style="color:{{ o.sc }}">{{ o.survey }}</span>
+                  <span style="color:#5F5849">{{ o.source }}</span>
+                  <span style="color:#5F5849">{{ o.owner }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px">
+              <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px"><span style="font-size:15px; font-weight:700">New business pipeline</span><a href="#" onClick="{{ goDealsLink }}" style="font-size:12.5px; font-weight:600">Open pipeline →</a></div>
+              <div style="display:flex; flex-direction:column; gap:10px">
+                <sc-for list="{{ home.stages }}" as="s" hint-placeholder-count="5">
+                  <div style="display:grid; grid-template-columns:120px minmax(0,1fr) 92px; align-items:center; gap:10px; font-size:12.5px">
+                    <span style="font-weight:600">{{ s.name }}</span>
+                    <span style="height:22px; border-radius:7px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ s.w }}%; background:{{ s.c }}; border-right:1px solid rgba(25,21,16,.15)"></span></span>
+                    <span style="text-align:right; font-variant-numeric:tabular-nums"><b>{{ s.value }}</b> <span style="color:#8A8272">· {{ s.n }}</span></span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="margin-top:16px; padding-top:12px; border-top:1px solid #E8DFC9; display:flex; justify-content:space-between; font-size:12.5px; color:#5F5849"><span>Weighted forecast</span><b style="color:#191510; font-variant-numeric:tabular-nums">{{ home.weighted }}</b></div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ r.customers }}"><dc-import name="Customers" go="{{ go }}" product="{{ product }}" focus="{{ focus }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.analytics }}"><dc-import name="Analytics" go="{{ go }}" product="{{ product }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.tickets }}"><dc-import name="Tickets" go="{{ go }}" product="{{ product }}" focus="{{ focus }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.feed }}"><dc-import name="Feed" go="{{ go }}" product="{{ product }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.leads }}"><dc-import name="Contacts" go="{{ go }}" tab="leads" focus="{{ focus }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.contacts }}"><dc-import name="Contacts" go="{{ go }}" tab="people" focus="{{ focus }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.deals }}"><dc-import name="Deals" go="{{ go }}" product="{{ product }}" focus="{{ focus }}" modules="{{ modules }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.activities }}"><dc-import name="Activities" go="{{ go }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.inbox }}"><dc-import name="Inbox" go="{{ go }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.meetings }}"><dc-import name="Meetings" go="{{ go }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.projects }}"><dc-import name="Projects" go="{{ go }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.documents }}"><dc-import name="Documents" go="{{ go }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.campaigns }}"><dc-import name="Marketing" go="{{ go }}" tab="campaigns" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.leadgen }}"><dc-import name="Marketing" go="{{ go }}" tab="forms" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.visitors }}"><dc-import name="Marketing" go="{{ go }}" tab="visitors" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.automation }}"><dc-import name="Automation" go="{{ go }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.insights }}"><dc-import name="Insights" go="{{ go }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.apps }}"><dc-import name="Platform" go="{{ go }}" tab="apps" product="{{ product }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.platform }}"><dc-import name="Platform" go="{{ go }}" tab="api" product="{{ product }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.settings }}"><dc-import name="Settings" go="{{ go }}" modules="{{ modules }}" set-module="{{ setModule }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.security }}"><dc-import name="Security" go="{{ go }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.mobile }}"><dc-import name="Mobile" go="{{ go }}" hint-size="100%,900px"></dc-import></sc-if>
+      <sc-if value="{{ r.coverage }}"><dc-import name="Coverage" go="{{ go }}" hint-size="100%,900px"></dc-import></sc-if>
+    </div>
+  </main>
+
+  <sc-if value="{{ assist }}" hint-placeholder-val="{{ false }}">
+    <aside style="position:fixed; top:0; right:0; bottom:0; z-index:70; width:420px; max-width:100vw; background:#FFFDF6; border-left:1px solid #E8DFC9; box-shadow:0 34px 80px rgba(25,21,16,.3); display:flex; flex-direction:column">
+      <div style="display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:1px solid #E8DFC9">
+        <img src="assets/assistant.png" alt="" width="38" height="38" style="display:block; border-radius:11px; background:#FCF6E9"></img>
+        <div style="flex:1; display:flex; flex-direction:column"><span style="font-size:15px; font-weight:700">Assistant</span><span style="font-size:12px; color:#5F5849">Reads CRM data you may see · never survey answers</span></div>
+        <button onClick="{{ toggleAssist }}" aria-label="Close" style="width:30px; height:30px; border-radius:999px; border:1px solid #191510; background:transparent; cursor:pointer; font-size:15px">×</button>
+      </div>
+      <div style="flex:1; overflow:auto; padding:16px 18px; display:flex; flex-direction:column; gap:12px">
+        <sc-for list="{{ chat }}" as="m" hint-placeholder-count="2">
+          <div style="display:flex; justify-content:{{ m.align }}">
+            <div style="max-width:88%; display:flex; flex-direction:column; gap:8px; padding:11px 14px; border-radius:16px; background:{{ m.bg }}; border:1px solid {{ m.bc }}; font-size:13px; line-height:1.55; white-space:pre-wrap">
+              <span>{{ m.text }}</span>
+              <sc-if value="{{ m.approve }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; gap:6px; flex-wrap:wrap; padding-top:4px; border-top:1px solid rgba(25,21,16,.1)">
+                  <button onClick="{{ m.approve }}" style="height:28px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">{{ m.approveLabel }}</button>
+                  <button onClick="{{ m.dismiss }}" style="height:28px; padding:0 11px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Discard</button>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding:12px 18px 16px; border-top:1px solid #E8DFC9; display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; flex-wrap:wrap; gap:6px">
+          <sc-for list="{{ prompts }}" as="p" hint-placeholder-count="4"><button onClick="{{ p.ask }}" style="padding:6px 11px; border-radius:999px; border:1px solid #C4BCA8; background:transparent; font-size:12px; cursor:pointer">{{ p.t }}</button></sc-for>
+        </div>
+        <div style="display:flex; gap:8px">
+          <input value="{{ draft }}" onChange="{{ setDraft }}" onKeyDown="{{ draftKey }}" placeholder="Ask about deals, customers, tickets …" style="flex:1; height:40px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></input>
+          <button aria-label="Voice input" style="width:40px; height:40px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></button>
+          <button onClick="{{ send }}" style="height:40px; padding:0 15px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">Send</button>
+        </div>
+        <div style="font-size:11px; color:#8A8272">Every call goes through the AI gateway · prompts are logged · providers never train on this data</div>
+      </div>
+    </aside>
+  </sc-if>
+
+  <sc-if value="{{ search }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeSearch }}" style="position:fixed; inset:0; z-index:80; background:rgba(25,21,16,.42); display:flex; justify-content:center; align-items:flex-start; padding-top:90px">
+      <div onClick="{{ stop }}" style="width:640px; max-width:92vw; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:22px; box-shadow:0 34px 80px rgba(25,21,16,.3); overflow:hidden">
+        <div style="display:flex; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid #E8DFC9">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14M20 20l-4-4"></path></svg>
+          <input autoFocus="{{ true }}" value="{{ q }}" onChange="{{ setQ }}" placeholder="Name, email, phone, org.nr, ticket ID or any field value" style="flex:1; height:36px; border:none; background:transparent; font-size:15px; outline:none"></input>
+          <span style="font-size:11px; color:#8A8272">Esc</span>
+        </div>
+        <div style="max-height:460px; overflow:auto; padding:8px">
+          <sc-for list="{{ results }}" as="g" hint-placeholder-count="3">
+            <div style="padding:6px 0">
+              <div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849; padding:4px 10px">{{ g.h }}</div>
+              <sc-for list="{{ g.items }}" as="it">
+                <button onClick="{{ it.open }}" style="display:flex; width:100%; align-items:center; gap:10px; padding:9px 10px; border:none; border-radius:11px; background:transparent; cursor:pointer; text-align:left">
+                  <span style="width:28px; height:28px; flex:none; border-radius:8px; background:#F2EAD6; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700">{{ it.ini }}</span>
+                  <span style="flex:1; min-width:0; display:flex; flex-direction:column"><span style="font-size:13.5px; font-weight:600">{{ it.t }}</span><span style="font-size:12px; color:#5F5849">{{ it.s }}</span></span>
+                  <span style="font-size:11.5px; color:#8A8272">↵</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}"><div style="padding:26px; text-align:center; color:#5F5849; font-size:13px">Nothing matches «{{ q }}» in records you may see.</div></sc-if>
+        </div>
+        <div style="padding:10px 18px; border-top:1px solid #E8DFC9; font-size:11.5px; color:#8A8272">Searches deals, leads, people, organizations, tickets, products and custom-field values · respects visibility groups</div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { route: 'home', focus: null, product: 'all', prodMenu: false, search: false, q: '', notif: false, nTab: 'All', assist: false, acct: false, sandbox: false, ready: !!window.SA, draft: '', modules: {},
+    chat: [{ who: 'ai', text: 'Good morning, Tor. I can summarize records, answer questions about pipeline, customers and tickets, and draft notes and emails for you to approve.' }] };
+  componentDidMount() {
+    if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40);
+    try { const r = localStorage.getItem('sa.route'); if (r) this.setState({ route: r }); const p = localStorage.getItem('sa.product'); if (p) this.setState({ product: p }); } catch (e) {}
+    this.onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); this.setState({ search: true, q: '' }); }
+      if (e.key === 'Escape') this.setState({ search: false, notif: false, acct: false, prodMenu: false });
+    };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); clearInterval(this.t); }
+  go = (route, focus) => {
+    this.setState({ route, focus: focus || null, search: false, notif: false, acct: false, prodMenu: false });
+    try { localStorage.setItem('sa.route', route); } catch (e) {}
+    window.scrollTo(0, 0);
+  };
+  ask(text) {
+    const D = window.SA; const q = text.toLowerCase();
+    let a = { who: 'ai', text: 'I can only answer from CRM, customer, billing and ticket data. Survey responses and respondent identities are outside my reach by design.' };
+    if (q.includes('trial')) {
+      const t = D.orgs.filter((o) => o.status === 'Trial').sort((x, y) => x.trialLeft - y.trialLeft).slice(0, 4);
+      a.text = 'Trials expiring first:\n' + t.map((o) => '· ' + o.name + ' — ' + o.trialLeft + ' days left' + (o.lastSurvey ? '' : ', no survey sent')).join('\n') + '\n\nTwo have no survey sent. A day-7 nudge is queued for both.';
+    } else if (q.includes('lumio') || q.includes('summar')) {
+      a.text = 'Lumio AS · 48 employees · 26–100 band · Orgpuls since March 2024.\nHealth 82 — surveys on cadence, response rate 84 %, 6 tiltak open.\nOpen deal: Expansion to Skiftly, 64 000 kr, Proposal sent, score 86.\nKari Nordmann (daglig leder) opened the proposal twice yesterday.';
+    } else if (q.includes('draft') || q.includes('email') || q.includes('follow')) {
+      a = { who: 'ai', text: 'Draft — friendly, short:\n\nHi Kari,\nThanks for looking through the proposal. I have held the partner price for Skiftly until 16 October. Would Thursday at 10:00 suit for a 20-minute walkthrough with your shift leads?\n\nBest, Tor', approve: true, approveLabel: 'Save as draft on deal' };
+    } else if (q.includes('ticket') || q.includes('sla')) {
+      const u = D.tickets.filter((t) => !t.responded && t.status !== 'Closed' && t.status !== 'Resolved');
+      a.text = u.length + ' tickets are waiting for a first response. The most urgent is ' + D.tickets[0].id + ' «' + D.tickets[0].subject + '», linked to problem T-2316 with two other incidents.';
+    } else if (q.includes('pipeline') || q.includes('forecast')) {
+      const open = D.deals.filter((d) => d.status === 'open');
+      a.text = open.length + ' open deals worth ' + D.kr(open.reduce((s, d) => s + d.value, 0)) + '. Five are rotting past their stage threshold; three of them sit in Proposal sent.';
+    }
+    this.setState((s) => ({ chat: [...s.chat, { who: 'me', text }, a], draft: '' }));
+  }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { nav: [], prodOptions: [], curProd: { name: 'Loading …', desc: '', color: '#F2EAD6' }, title: { crumb: '', name: '' }, r: {}, home: { kpis: [], apps: [], todo: [], bars: [], legend: [], trials: [], stages: [] }, chat: [], prompts: [], results: [], nTabs: [], notifs: [] };
+    const I = D.ICON; const go = this.go;
+    const allProd = { id: 'all', name: 'All applications', desc: D.products.length + ' connected via API', color: '#F5C64A' };
+    const curProd = st.product === 'all' ? allProd : D.productById[st.product];
+    const openTickets = D.tickets.filter((t) => t.status !== 'Resolved' && t.status !== 'Closed');
+    const off = st.modules || {};
+    const NAV = [
+      { h: '', items: [['home', 'Overview', I.dashboard]] },
+      { h: 'Customers', items: [['customers', 'Organizations', I.building], ['analytics', 'Analytics', I.chart], ['tickets', 'Tickets', I.ticket, openTickets.filter((t) => !t.responded).length]] },
+      { h: 'CRM', items: [['feed', 'Feed', I.pulse, 9], ['leads', 'Leads', I.filter], ['deals', 'Deals', I.kanban], ['contacts', 'Contacts', I.contacts], ['activities', 'Activities', I.calendar], ['inbox', 'Inbox', I.inbox, 4], ['meetings', 'Meetings', I.mic], ['projects', 'Projects', I.flag], ['documents', 'Documents', I.page]] },
+      { h: 'Growth', items: [['campaigns', 'Campaigns', I.mail], ['leadgen', 'Lead capture', I.target], ['visitors', 'Web visitors', I.globe], ['automation', 'Automation', I.bolt], ['insights', 'Insights', I.activity]] },
+      { h: 'Platform', items: [['apps', 'Applications', I.puzzle], ['platform', 'API and integrations', I.redirect], ['settings', 'Settings', I.sliders], ['security', 'Security and privacy', I.shield], ['mobile', 'Mobile app', I.phone], ['coverage', 'Spec coverage', I.list]] },
+    ];
+    const nav = NAV.map((g) => ({ h: g.h, items: g.items.filter((it) => !off[it[0]]).map(([k, label, icon, badge]) => ({ label, icon, badge: badge || null, cur: st.route === k ? 'page' : undefined, go: () => go(k), bg: st.route === k ? '#FBEBBE' : 'transparent', fw: st.route === k ? 700 : 500, tile: st.route === k ? '#F5C64A' : '#F2EAD6' })) }));
+    const T = { home: ['Across all applications', 'Overview'], customers: ['Customers', 'Organizations'], analytics: ['Customers', 'Analytics'], tickets: ['Customers', 'Tickets'], feed: ['CRM', 'Feed'], leads: ['CRM', 'Leads'], deals: ['CRM', 'Deals'], contacts: ['CRM', 'Contacts'], activities: ['CRM', 'Activities'], inbox: ['CRM', 'Inbox'], meetings: ['CRM', 'Meetings'], projects: ['CRM', 'Projects'], documents: ['CRM', 'Documents and e-sign'], campaigns: ['Growth', 'Campaigns'], leadgen: ['Growth', 'Lead capture'], visitors: ['Growth', 'Web visitors'], automation: ['Growth', 'Automation'], insights: ['Growth', 'Insights'], apps: ['Platform', 'Applications'], platform: ['Platform', 'API and integrations'], settings: ['Platform', 'Settings'], security: ['Platform', 'Security and privacy'], mobile: ['Platform', 'Mobile app'], coverage: ['Platform', 'Specification coverage'] };
+    const t = T[st.route] || T.home;
+    const prodOptions = [allProd, ...D.products].map((p) => ({ ...p, bg: st.product === p.id ? '#FBEBBE' : 'transparent', fw: st.product === p.id ? 700 : 600, dot: p.status === 'Degraded' ? '#E0A21F' : '#5C9A55', pick: () => { this.setState({ product: p.id, prodMenu: false }); try { localStorage.setItem('sa.product', p.id); } catch (e) {} } }));
+    // Home
+    const prods = st.product === 'all' ? D.products.map((p) => p.id) : [st.product];
+    const orgs = D.orgs.filter((o) => o.products.some((p) => prods.includes(p)));
+    const last = D.mrrSeries[11], prev = D.mrrSeries[10];
+    const mrrNow = prods.reduce((a, p) => a + last[p], 0), mrrPrev = prods.reduce((a, p) => a + prev[p], 0);
+    const paying = orgs.filter((o) => o.mrr > 0).length;
+    const trials = orgs.filter((o) => o.status === 'Trial');
+    const exp7 = trials.filter((o) => o.trialLeft <= 7).length;
+    const openDeals = D.deals.filter((d) => d.status === 'open');
+    const stageProb = {}; D.pipelines.forEach((p) => p.stages.forEach((s) => (stageProb[s.id] = s.prob)));
+    const weighted = openDeals.reduce((a, d) => a + d.value * stageProb[d.stage] / 100, 0);
+    const atRiskSla = openTickets.filter((x) => !x.responded && x.ageH > x.frtTarget * 0.7).length;
+    const rotting = openDeals.filter((d) => d.act === 'overdue').length;
+    const atRisk = orgs.filter((o) => o.health < 40 && (o.status === 'Active' || o.status === 'Past due'));
+    const delta = mrrNow - mrrPrev;
+    const kpis = [
+      { label: 'MRR', value: D.kr(mrrNow), delta: (delta >= 0 ? '+' : '−') + D.nb(Math.abs(delta)), dc: delta >= 0 ? '#2F5D2A' : '#A33A16', sub: 'ARR ' + D.kr(mrrNow * 12), go: () => go('analytics') },
+      { label: 'Paying organizations', value: String(paying), delta: '+6', dc: '#2F5D2A', sub: 'Shared key: org.nr across products', go: () => go('customers') },
+      { label: 'Active trials', value: String(trials.length), delta: exp7 + ' end ≤ 7 d', dc: '#8A6A00', sub: 'Trial → paid 31 % this month', go: () => go('customers') },
+      { label: 'Open tickets', value: String(openTickets.length), delta: atRiskSla + ' at SLA risk', dc: atRiskSla ? '#A33A16' : '#2F5D2A', sub: 'Median first response 2 h 10 min', go: () => go('tickets') },
+      { label: 'Weighted pipeline', value: D.kr(weighted), delta: rotting + ' rotting', dc: '#A33A16', sub: openDeals.length + ' open deals', go: () => go('deals') },
+    ];
+    const apps = D.products.filter((p) => prods.includes(p.id)).map((p) => {
+      const n = D.orgs.filter((o) => o.products.includes(p.id)).length;
+      return { ...p, ini: p.name[0], orgs: n, mrr: D.nb(last[p.id] / 1000) + 'k', lat: p.latency + ' ms', latC: p.latency > 500 ? '#A33A16' : '#191510', err: D.pct(p.err), errC: p.err > 1.5 ? '#A33A16' : '#191510', sbg: p.status === 'Degraded' ? '#F5DC96' : p.status === 'Beta' ? '#EFE6D2' : '#CFE7E4', sc: p.status === 'Degraded' ? '#5C4600' : p.status === 'Beta' ? '#5F5849' : '#20431C' };
+    });
+    const tk = D.tickets[0];
+    const todo = [
+      { tone: '#D4633A', t: tk.id + ' · ' + tk.subject, s: 'Urgent incident · ' + D.orgById[tk.org].name + ' · first response due in 38 min', cta: 'Open ticket', go: () => go('tickets', { ticket: tk.id }) },
+      { tone: '#D4633A', t: rotting + ' deals are rotting past their stage threshold', s: 'Oldest: ' + openDeals.filter((d) => d.act === 'overdue').sort((a, b) => b.idle - a.idle)[0].title, cta: 'Review', go: () => go('deals') },
+      { tone: '#E0A21F', t: atRisk.length + ' organizations at risk before renewal', s: atRisk.slice(0, 3).map((o) => o.name).join(' · '), cta: 'See list', go: () => go('customers') },
+      { tone: '#E0A21F', t: 'Personvern request due in 4 days', s: 'Deletion request · Elvebakken kommune · 30-day clock', cta: 'Open queue', go: () => go('customers', { tab: 'privacy' }) },
+      { tone: '#E0A21F', t: 'Skiftly API degraded — p95 640 ms', s: 'Error rate 2,4 % · webhook deliveries retrying', cta: 'Application', go: () => go('apps') },
+      { tone: '#5C9A55', t: 'Kari Nordmann opened the Skiftly proposal twice', s: 'Lumio AS · tracked link · 18:42 yesterday', cta: 'Open deal', go: () => go('deals', { deal: 'd101' }) },
+    ];
+    const pc = { orgpuls: '#DCEBD3', skiftly: '#CFE0F5', avvik: '#F6D9C6', kurs: '#E7DAF2' };
+    const max = Math.max(...D.mrrSeries.map((m) => prods.reduce((a, p) => a + m[p], 0)));
+    const bars = D.mrrSeries.map((m) => { const tot = prods.reduce((a, p) => a + m[p], 0); return { m: m.m, h: Math.round((tot / max) * 160), tip: m.m + ': ' + D.kr(tot), segs: prods.filter((p) => m[p] > 0).map((p) => ({ h: (m[p] / tot) * 100, c: pc[p] })) }; });
+    const legend = D.products.filter((p) => prods.includes(p.id)).map((p) => ({ n: p.name, c: p.color }));
+    const trialRows = D.orgs.filter((o) => o.status === 'Trial').sort((a, b) => a.trialLeft - b.trialLeft).slice(0, 6).map((o) => ({ ...o, left: o.trialLeft + ' d', dc: o.trialLeft <= 7 ? '#A33A16' : '#191510', survey: o.lastSurvey ? 'Sent ' + o.lastSurvey + ' d ago' : 'Not sent', sc: o.lastSurvey ? '#2F5D2A' : '#A33A16', owner: D.staffById[o.owner].name.split(' ')[0], open: () => go('customers', { org: o.id }) }));
+    const viz = ['#F6D9C6', '#DCEBD3', '#CFE0F5', '#F3E2C9', '#E7DAF2'];
+    const pl = D.pipelines[0];
+    const stVals = pl.stages.map((s) => { const ds = openDeals.filter((d) => d.stage === s.id); return { name: s.name, n: ds.length, v: ds.reduce((a, d) => a + d.value, 0) }; });
+    const maxV = Math.max(...stVals.map((x) => x.v));
+    const stages = stVals.map((x, i) => ({ ...x, value: D.nb(x.v / 1000) + 'k', w: Math.round((x.v / maxV) * 100), c: viz[i] }));
+    const home = { eyebrow: D.today.label + ' · ' + curProd.name, headline: 'Trials are converting at 31 % this month. ' + atRisk.length + ' customers need attention before renewal, and one urgent incident is waiting.', kpis, apps, todo, todoCount: todo.length, bars, legend, trials: trialRows, stages, weighted: D.kr(weighted) };
+    // search
+    const q = st.q.trim().toLowerCase();
+    let results = [];
+    if (q.length) {
+      const m = (s) => (s || '').toLowerCase().includes(q);
+      const g1 = D.orgs.filter((o) => m(o.name) || m(o.orgnr.replace(/\u00A0/g, ' ')) || m(o.orgnr.replace(/\u00A0/g, ''))).slice(0, 4).map((o) => ({ ini: o.name.slice(0, 2), t: o.name, s: o.orgnr + ' · ' + o.status + ' · ' + o.products.map((p) => D.productById[p].name).join(', '), open: () => go('customers', { org: o.id }) }));
+      const g2 = D.people.filter((p) => m(p.name) || m(p.email) || m(p.phone)).slice(0, 4).map((p) => ({ ini: p.ini, t: p.name, s: p.role + ' · ' + D.orgById[p.org].name + ' · ' + p.email, open: () => go('contacts', { person: p.id }) }));
+      const g3 = D.deals.filter((d) => m(d.title)).slice(0, 4).map((d) => ({ ini: '◆', t: d.title, s: D.kr(d.value) + ' · ' + d.status, open: () => go('deals', { deal: d.id }) }));
+      const g4 = D.tickets.filter((x) => m(x.id) || m(x.subject)).slice(0, 4).map((x) => ({ ini: '#', t: x.id + ' · ' + x.subject, s: x.type + ' · ' + x.prio + ' · ' + x.status, open: () => go('tickets', { ticket: x.id }) }));
+      results = [{ h: 'Organizations', items: g1 }, { h: 'People', items: g2 }, { h: 'Deals', items: g3 }, { h: 'Tickets', items: g4 }].filter((g) => g.items.length);
+    } else {
+      results = [{ h: 'Recent', items: [
+        { ini: 'LU', t: 'Lumio AS', s: 'Organization · demo tenant', open: () => go('customers', { org: 'o1' }) },
+        { ini: 'KN', t: 'Kari Nordmann', s: 'Daglig leder · Lumio AS', open: () => go('contacts', { person: 'p1' }) },
+        { ini: '◆', t: 'Lumio AS — Expansion to Skiftly', s: 'Deal · 64 000 kr · Proposal sent', open: () => go('deals', { deal: 'd101' }) },
+        { ini: '#', t: tk.id + ' · ' + tk.subject, s: 'Ticket · Urgent', open: () => go('tickets', { ticket: tk.id }) } ] }];
+    }
+    const nTabs = ['All', 'Mentions', 'Reminders', 'Security'].map((n) => ({ n, pick: () => this.setState({ nTab: n }), bg: st.nTab === n ? '#191510' : 'transparent', bc: st.nTab === n ? '#191510' : '#C4BCA8', fw: st.nTab === n ? 700 : 500 }));
+    const notifs = D.notifications.filter((n) => st.nTab === 'All' || n.kind === st.nTab).map((n) => ({ ...n, dot: n.kind === 'Security' ? '#D4633A' : n.kind === 'Mentions' ? '#E0A21F' : '#5C9A55', open: () => go(n.route) }));
+    const chat = st.chat.map((m, i) => ({ ...m, align: m.who === 'me' ? 'flex-end' : 'flex-start', bg: m.who === 'me' ? '#FBEBBE' : '#FCF6E9', bc: m.who === 'me' ? '#191510' : '#E8DFC9',
+      approve: m.approve ? () => this.setState((s) => ({ chat: [...s.chat.map((x, j) => (j === i ? { ...x, approve: false } : x)), { who: 'ai', text: 'Saved as a draft on «Lumio AS — Expansion to Skiftly». Changelog source: assistant, approved by Tor Lambrechts.' }] })) : null,
+      dismiss: () => this.setState((s) => ({ chat: s.chat.map((x, j) => (j === i ? { ...x, approve: false } : x)) })) }));
+    const prompts = ['Which trials expire this week?', 'Summarize Lumio AS', 'Draft a follow-up to Kari', 'Tickets waiting on SLA', 'How is the pipeline?'].map((t) => ({ t, ask: () => this.ask(t) }));
+    const r = { [st.route]: true };
+    return {
+      nav, prodOptions, curProd, prodMenu: st.prodMenu, toggleProd: () => this.setState({ prodMenu: !st.prodMenu }), goApps: () => go('apps'), goAppsLink: (e) => { e.preventDefault(); go('apps'); },
+      title: { crumb: t[0], name: t[1] }, r, go, product: st.product, focus: st.focus, modules: st.modules,
+      setModule: (k, v) => this.setState((s) => ({ modules: { ...s.modules, [k]: v } })),
+      openSearch: () => this.setState({ search: true, q: '' }), closeSearch: () => this.setState({ search: false }), stop: (e) => e.stopPropagation(), q: st.q, setQ: (e) => this.setState({ q: e.target.value }), results, noResults: q.length > 0 && results.length === 0,
+      sandbox: st.sandbox, toggleSandbox: () => this.setState({ sandbox: !st.sandbox }), sbBorder: st.sandbox ? '#191510' : '#E8DFC9', sbBg: st.sandbox ? '#FBEBBE' : 'transparent', sbTrack: st.sandbox ? '#191510' : '#C4BCA8', sbKnob: st.sandbox ? 14 : 2,
+      notif: st.notif, toggleNotif: () => this.setState({ notif: !st.notif, acct: false }), notifCount: D.notifications.length, nTabs, notifs, goNotifSettings: (e) => { e.preventDefault(); go('activities', { tab: 'reminders' }); },
+      assist: st.assist, toggleAssist: () => this.setState({ assist: !st.assist }), asBorder: st.assist ? '#191510' : '#E8DFC9', asBg: st.assist ? '#FBEBBE' : 'transparent',
+      acct: st.acct, toggleAcct: () => this.setState({ acct: !st.acct, notif: false }), goSettings: () => go('settings'),
+      chat, prompts, draft: st.draft, setDraft: (e) => this.setState({ draft: e.target.value }), draftKey: (e) => { if (e.key === 'Enter' && st.draft.trim()) this.ask(st.draft.trim()); }, send: () => { if (st.draft.trim()) this.ask(st.draft.trim()); },
+      home, goAnalytics: () => go('analytics'), goCustomersLink: (e) => { e.preventDefault(); go('customers'); }, goDealsLink: (e) => { e.preventDefault(); go('deals'); },
+    };
+  }
+}
+</script>
+</body>
+</html>

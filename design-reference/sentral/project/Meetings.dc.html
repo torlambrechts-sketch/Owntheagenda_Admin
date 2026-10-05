@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+    <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.pick }}" style="padding:8px 14px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for></div>
+    <span style="flex:1"></span>
+    <button onClick="{{ adhoc }}" style="height:36px; padding:0 14px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer">● Record unscheduled call</button>
+    <button onClick="{{ upload }}" style="height:36px; padding:0 14px; border-radius:10px; border:1px solid #191510; background:#FFFDF6; font-size:12.5px; font-weight:700; cursor:pointer">Upload transcript</button>
+  </div>
+
+  <sc-if value="{{ v.workspace }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid; grid-template-columns:minmax(260px,320px) minmax(0,1fr); gap:14px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <sc-for list="{{ groups }}" as="g">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+            <div style="padding:10px 14px; border-bottom:1px solid #E8DFC9; font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">{{ g.h }}</div>
+            <sc-for list="{{ g.items }}" as="m"><button onClick="{{ m.pick }}" style="display:flex; width:100%; flex-direction:column; gap:3px; padding:11px 14px; border:none; border-bottom:1px solid #E8DFC9; background:{{ m.bg }}; cursor:pointer; text-align:left"><span style="display:flex; justify-content:space-between; font-size:12px; color:#5F5849"><span>{{ m.when }}</span><span style="font-weight:700; color:{{ m.sc }}">{{ m.state }}</span></span><b style="font-size:13px">{{ m.title }}</b><span style="font-size:11.5px; color:#5F5849">{{ m.org }} · {{ m.via }}</span></button></sc-for>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px; min-width:0">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 20px; display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:flex-start">
+          <div style="flex:1 1 300px"><div style="font-size:12px; color:#5F5849">{{ m.when }} · {{ m.via }} · {{ m.attendees }}</div><div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:600; margin-top:3px">{{ m.title }}</div><div style="font-size:12.5px; color:#3A342A; margin-top:3px">Linked to <b>{{ m.deal }}</b></div></div>
+          <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end"><span style="padding:4px 11px; border-radius:999px; font-size:11.5px; font-weight:700; background:{{ m.sbg }}; color:{{ m.sc }}">{{ m.state }}</span><span style="font-size:11.5px; color:#5F5849">{{ m.notice }}</span></div>
+        </div>
+        <div style="display:flex; gap:2px; border-bottom:1px solid #E8DFC9"><sc-for list="{{ mtabs }}" as="t"><button onClick="{{ t.pick }}" style="padding:9px 14px; border:none; border-bottom:2px solid {{ t.bc }}; background:transparent; font-size:13px; font-weight:{{ t.fw }}; color:{{ t.c }}; cursor:pointer">{{ t.n }}</button></sc-for></div>
+
+        <sc-if value="{{ mt.brief }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:12px">
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:8px"><b style="font-size:13.5px">Since the last contact</b><sc-for list="{{ brief.changes }}" as="c"><label style="display:flex; gap:8px; align-items:flex-start; font-size:12.5px; line-height:1.45"><input type="checkbox" style="accent-color:#191510; margin-top:2px"></input>{{ c }}</label></sc-for></div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:8px"><b style="font-size:13.5px">Who you meet</b><sc-for list="{{ brief.people }}" as="p"><div style="display:flex; flex-direction:column; font-size:12.5px; padding:5px 0; border-bottom:1px solid #E8DFC9"><b>{{ p.n }}</b><span style="color:#5F5849">{{ p.s }}</span></div></sc-for></div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:8px"><b style="font-size:13.5px">Deal and organization</b><sc-for list="{{ brief.facts }}" as="f"><div style="display:flex; justify-content:space-between; font-size:12.5px"><span style="color:#5F5849">{{ f.k }}</span><b>{{ f.v }}</b></div></sc-for></div>
+            <div style="background:#191510; color:#FCF6E9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:6px"><b style="font-size:13.5px">From earlier conversations</b><sc-for list="{{ brief.past }}" as="p"><span style="font-size:12.5px; color:#F2EAD6; line-height:1.5">❝ {{ p }}</span></sc-for></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ mt.transcript }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:12px; align-items:flex-start">
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; max-height:620px; overflow:auto">
+              <div style="display:flex; justify-content:space-between; align-items:center"><b style="font-size:13.5px">Transcript</b><span style="font-size:11.5px; color:#5F5849">28 min · 3 speakers · nb-NO</span></div>
+              <sc-for list="{{ transcript }}" as="l"><div style="display:grid; grid-template-columns:48px minmax(0,1fr); gap:10px; font-size:12.5px"><span style="font-family:ui-monospace,Menlo,monospace; font-size:11px; color:#8A8272; padding-top:2px">{{ l.t }}</span><span style="line-height:1.55"><b style="color:{{ l.c }}">{{ l.who }}</b> {{ l.text }}</span></div></sc-for>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px">
+              <div style="background:#FBEBBE; border:1px solid #191510; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:8px">
+                <b style="font-size:13.5px">Recap</b>
+                <span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5C4600">Key takeaways</span>
+                <sc-for list="{{ recap.take }}" as="r"><span style="font-size:12.5px; line-height:1.5">· {{ r }}</span></sc-for>
+                <span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5C4600; margin-top:4px">Next steps</span>
+                <sc-for list="{{ recap.next }}" as="r"><span style="font-size:12.5px; line-height:1.5">○ {{ r }}</span></sc-for>
+                <button onClick="{{ saveRecap }}" style="align-self:flex-start; height:32px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">{{ recapLabel }}</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ mt.suggest }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; overflow:hidden">
+            <div style="padding:12px 16px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:center"><b style="font-size:13.5px">Proposed CRM updates from the call</b><button onClick="{{ acceptAll }}" style="height:30px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Accept all remaining</button></div>
+            <div style="display:grid; grid-template-columns:110px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 150px; gap:10px; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Record</span><span>Field</span><span>Current</span><span>Proposed</span><span></span></div>
+            <sc-for list="{{ suggestions }}" as="s"><div style="display:grid; grid-template-columns:110px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 150px; gap:10px; align-items:center; padding:10px 16px; border-bottom:1px solid #E8DFC9; font-size:12.5px; background:{{ s.bg }}"><span style="color:#5F5849">{{ s.rec }}</span><b>{{ s.f }}</b><span style="color:#8A8272">{{ s.cur }}</span><b style="color:#20431C">{{ s.nv }}</b><span style="display:flex; gap:6px; justify-content:flex-end"><sc-if value="{{ s.pending }}"><button onClick="{{ s.reject }}" style="height:28px; padding:0 9px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:11.5px; font-weight:600; cursor:pointer">Reject</button><button onClick="{{ s.accept }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:11.5px; font-weight:700; cursor:pointer">Accept</button></sc-if><sc-if value="{{ s.decided }}"><span style="font-size:12px; font-weight:700; color:{{ s.dc }}">{{ s.decided }}</span></sc-if></span></div></sc-for>
+            <div style="padding:10px 16px; font-size:11.5px; color:#8A8272">Nothing is written without your approval · changelog source: meeting intelligence</div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.capture }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:14px">
+      <sc-for list="{{ capture }}" as="c"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 20px; display:flex; flex-direction:column; gap:8px"><span style="width:40px; height:40px; border-radius:12px; background:{{ c.bg }}; display:flex; align-items:center; justify-content:center; font-size:18px">{{ c.g }}</span><b style="font-size:15px">{{ c.n }}</b><span style="font-size:12.5px; color:#3A342A; line-height:1.55">{{ c.d }}</span><span style="font-size:12px; color:#5F5849">{{ c.s }}</span><button onClick="{{ c.run }}" style="align-self:flex-start; height:32px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">{{ c.cta }}</button></div></sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.controls }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Meeting workspace per user</b><span style="font-size:12px; color:#5F5849">On by default · one permission covers all features</span></div>
+        <sc-for list="{{ users }}" as="u"><div style="display:flex; justify-content:space-between; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ u.name }}</b><span style="color:#5F5849; font-size:11.5px">{{ u.role }} · mailbox {{ u.mb }}</span></span><button onClick="{{ u.toggle }}" style="position:relative; width:40px; height:22px; border-radius:999px; border:none; background:{{ u.track }}; cursor:pointer"><span style="position:absolute; top:3px; left:{{ u.knob }}px; width:16px; height:16px; border-radius:999px; background:#FFFDF6"></span></button></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <b style="font-size:14px">Recording consent notices to attendees</b>
+        <sc-for list="{{ noticeOpts }}" as="o"><button onClick="{{ o.pick }}" style="display:flex; flex-direction:column; gap:2px; padding:11px 13px; border-radius:13px; border:1px solid {{ o.bc }}; background:{{ o.bg }}; cursor:pointer; text-align:left"><b style="font-size:13px">{{ o.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ o.s }}</span></button></sc-for>
+        <div style="font-size:12px; color:#5F5849; line-height:1.5">The notetaker joins as a visible participant. Transcripts are CRM data only — survey content is never part of a brief, recap or AI context.</div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'workspace', sel: 0, mtab: 'brief', dec: {}, recapSaved: false, userOff: {}, notice: 0, toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { tabs: [], v: {}, groups: [], m: {}, mtabs: [], mt: {}, brief: { changes: [], people: [], facts: [], past: [] }, transcript: [], recap: { take: [], next: [] }, suggestions: [], capture: [], users: [], noticeOpts: [] };
+    const pill = (cur, k) => ({ bg: cur === k ? '#191510' : 'transparent', c: cur === k ? '#FCF6E9' : '#191510', bc: cur === k ? '#191510' : '#C4BCA8', fw: cur === k ? 700 : 500 });
+    const tabs = [['workspace', 'Workspace'], ['capture', 'Ways to capture'], ['controls', 'Workspace and controls']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(st.tab, k) }));
+    const M = [
+      { g: 'Upcoming', when: 'Thu 8 Oct 10:00', title: 'Skiftly walkthrough with shift leads', org: 'Lumio AS', via: 'Google Meet · notetaker', state: 'Bot joins', sc: '#2F5D2A', sbg: '#CFE7E4', notice: 'Recording notice sent 24 h before', attendees: 'Kari Nordmann, Mona Hansen, Petter Aas', deal: 'Lumio AS — Expansion to Skiftly' },
+      { g: 'Upcoming', when: 'Fri 9 Oct 13:30', title: 'Group agreement — steering group', org: 'Bergheim Bygg AS', via: 'Teams · notetaker', state: 'Notice due tomorrow', sc: '#8A6A00', sbg: '#FBEBBE', notice: 'Notice goes out Thu 13:30', attendees: 'Ole Hansen, 4 others', deal: 'Bergheim Bygg — Group agreement' },
+      { g: 'Needs your review', when: 'Today 09:00', title: 'Discovery call', org: 'Kystlinje Transport AS', via: 'Desktop capture · phone', state: '6 suggestions', sc: '#A33A16', sbg: '#FBD5C4', notice: 'Recorded without a bot', attendees: 'Lars Olsen', deal: 'Lead L-501 · Kystlinje Transport' },
+      { g: 'History', when: '2 Oct', title: 'Demo: Avvikspunkt', org: 'Solstrand Helse AS', via: 'Zoom · notetaker', state: 'Recap saved', sc: '#5F5849', sbg: '#EFE6D2', notice: 'Recap saved as note', attendees: 'Marte Larsen, Silje Olsen', deal: 'Solstrand Helse — HR suite' },
+    ];
+    const groups = ['Upcoming', 'Needs your review', 'History'].map((h) => ({ h, items: M.map((m, i) => ({ ...m, i })).filter((m) => m.g === h).map((m) => ({ ...m, bg: st.sel === m.i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ sel: m.i, mtab: m.g === 'Upcoming' ? 'brief' : 'transcript' }) })) }));
+    const m = M[st.sel];
+    const mtabs = [['brief', 'Pre-call brief'], ['transcript', 'Transcript and recap'], ['suggest', 'CRM update suggestions']].map(([k, n]) => ({ n, pick: () => this.setState({ mtab: k }), bc: st.mtab === k ? '#191510' : 'transparent', fw: st.mtab === k ? 700 : 500, c: st.mtab === k ? '#191510' : '#5F5849' }));
+    const brief = { changes: ['Kari opened the proposal twice yesterday and clicked pricing', 'Board meeting fixed for 14 October', 'Employee list grew from 44 to 48 — still the 26–100 band', 'Ticket T-2312 resolved on 2 Oct with CSAT 5', 'Mona Hansen (HR) joined as a participant'],
+      people: [{ n: 'Kari Nordmann', s: 'Daglig leder · decision maker · prefers phone mornings' }, { n: 'Mona Hansen', s: 'HR · first meeting · uses Orgpuls weekly' }, { n: 'Petter Aas', s: 'Shift lead warehouse · first meeting' }],
+      facts: [{ k: 'Deal', v: '64 000 kr · Proposal sent' }, { k: 'Score', v: '86' }, { k: 'Health', v: '82' }, { k: 'Applications', v: 'Orgpuls' }, { k: 'Competitor', v: 'Planday' }],
+      past: ['«Start with the two warehouse teams first.» — Kari, 24 Sep', '«Shift swaps by phone are the biggest pain.» — Petter, via Kari', '«Board wants a price per seat, not per org.» — 28 Sep'] };
+    const tr = [['00:12', 'Tor', 'Takk for at dere tok dere tid. Skal vi starte med hvordan bytter fungerer i dag?', '#191510'], ['00:31', 'Lars', 'I dag går alt på telefon og en delt Excel. Vi er 220 sjåfører fordelt på tre depoter.', '#2F5D2A'], ['02:05', 'Tor', 'Da passer Skiftly per depot. Hva skjer når noen blir syke på natta?', '#191510'], ['02:40', 'Lars', 'Vaktsjefen ringer rundt. Vi vil gjerne ha det på plass før jul — budsjettet er godkjent for fire hundre tusen.', '#2F5D2A'], ['05:18', 'Lars', 'HR-sjefen vår, Nora Berg, må være med på neste møte.', '#2F5D2A'], ['07:02', 'Tor', 'Jeg sender et forslag innen fredag, og vi booker en demo med Nora.', '#191510']];
+    const transcript = tr.map(([t, who, text, c]) => ({ t, who: who + ':', text, c }));
+    const recap = { take: ['220 drivers across three depots; swaps run on phone and a shared spreadsheet', 'Budget approved — about 400 000 kr; wants go-live before Christmas', 'HR lead Nora Berg must join the next meeting'], next: ['Send proposal by Friday', 'Book demo with Nora Berg', 'Convert lead to deal in New business · Discovery call'] };
+    const S = [['Lead', 'Value', '120 000 kr', '400 000 kr'], ['Lead', 'Expected close', '—', '15 Dec 2026'], ['Lead', 'Labels', 'Hot', 'Hot, Multi-product'], ['Person', 'Lars Olsen · role', 'Leder', 'Driftssjef'], ['Organization', 'Employees', '180', '220'], ['New contact', 'Nora Berg', '—', 'HR-leder · Kystlinje Transport']];
+    const suggestions = S.map(([rec, f, cur, nv], i) => { const d = st.dec[i]; return { rec, f, cur, nv, pending: !d, decided: d || null, dc: d === 'Accepted' ? '#2F5D2A' : '#A33A16', bg: d === 'Accepted' ? '#F2F7EF' : 'transparent', accept: () => this.setState({ dec: { ...st.dec, [i]: 'Accepted' } }), reject: () => this.setState({ dec: { ...st.dec, [i]: 'Rejected' } }) }; });
+    const capture = [['◉', '#CFE7E4', 'Notetaker bot', 'Joins Google Meet, Zoom or Microsoft Teams from the calendar as a visible participant and records.', 'Auto-join: meetings with external guests', 'Configure'], ['▣', '#CFE0F5', 'Desktop capture', 'Records the computer’s audio with no bot in the call — VoIP, phone and in-person meetings.', 'macOS and Windows app · 6 users', 'Download app'], ['●', '#FBD5C4', 'Unscheduled calls', 'Start an ad hoc recording from the desktop app when there is no calendar event.', 'Linked afterwards to a deal or person', 'Start recording'], ['▤', '#F3E2C9', 'Transcript upload', 'Upload a transcript from a call recorded elsewhere to get the same recap and suggestions.', '.vtt · .srt · .txt · .docx', 'Upload']].map(([g, bg, n, d, s, cta]) => ({ g, bg, n, d, s, cta, run: () => this.flash(n + ' · ready') }));
+    const users = D.staff.slice(0, 7).map((u) => { const off = !!st.userOff[u.id]; return { name: u.name, role: u.role, mb: u.id === 'tor' ? 'meetings@ (re-auth)' : 'own', track: off ? '#C4BCA8' : '#191510', knob: off ? 3 : 21, toggle: () => this.setState({ userOff: { ...st.userOff, [u.id]: !off } }) }; });
+    const noticeOpts = [['On with 24 hours’ notice', 'Default, as in the source'], ['Custom timing', 'e.g. 48 hours or at invite time'], ['Off', 'No notice email — the bot is still visible in the call']].map(([n, s], i) => ({ n, s, pick: () => this.setState({ notice: i }), bg: st.notice === i ? '#FBEBBE' : 'transparent', bc: st.notice === i ? '#191510' : '#E8DFC9' }));
+    return { tabs, v: { [st.tab]: true }, groups, m, mtabs, mt: { [st.mtab]: true }, brief, transcript, recap, recapLabel: st.recapSaved ? '✓ Saved as note on the lead' : 'Save recap as note', saveRecap: () => this.setState({ recapSaved: true }),
+      suggestions, acceptAll: () => { const d = { ...st.dec }; S.forEach((_, i) => { if (!d[i]) d[i] = 'Accepted'; }); this.setState({ dec: d }); this.flash('Updates written · changelog source: meeting intelligence'); },
+      capture, users, noticeOpts, adhoc: () => this.flash('Recording started in the desktop app'), upload: () => this.flash('Transcript uploaded · recap ready in about a minute'), toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

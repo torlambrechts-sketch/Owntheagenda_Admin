@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:grid; grid-template-columns:200px minmax(0,1fr); gap:16px; align-items:flex-start; color:#191510; font-size:14px">
+  <nav style="position:sticky; top:76px; display:flex; flex-direction:column; gap:2px">
+    <sc-for list="{{ sections }}" as="s" hint-placeholder-count="11"><button onClick="{{ s.pick }}" style="text-align:left; padding:8px 11px; border:none; border-radius:10px; background:{{ s.bg }}; font-size:13px; font-weight:{{ s.fw }}; cursor:pointer">{{ s.n }}</button></sc-for>
+  </nav>
+  <div style="min-width:0; display:flex; flex-direction:column; gap:14px">
+
+    <sc-if value="{{ v.rules }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#191510; color:#FCF6E9; border-radius:20px; padding:16px 20px; display:flex; flex-wrap:wrap; gap:14px; align-items:center"><span style="flex:1 1 360px; font-size:13px; line-height:1.55"><b style="color:#F5C64A">No restrictions are built in.</b> Every rule that can limit a feature lives here as a setting, and every default leaves the feature fully working. Only the anonymity firewall is fixed.</span><span style="font-size:12px; color:#D9CFB8">{{ changedCount }} changed from default</span></div>
+        <sc-for list="{{ rules }}" as="g">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+            <div style="padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">{{ g.h }}</div>
+            <sc-for list="{{ g.items }}" as="r"><div style="display:grid; grid-template-columns:minmax(0,1.5fr) minmax(220px,1.3fr) 150px; gap:14px; align-items:center; padding:12px 18px; border-bottom:1px solid #E8DFC9; background:{{ r.rowBg }}">
+              <span style="display:flex; flex-direction:column; gap:3px"><b style="font-size:13px">{{ r.n }}</b><span style="font-size:11.5px; color:#5F5849">Applies to {{ r.applies }}</span></span>
+              <span style="display:flex; flex-wrap:wrap; gap:4px"><sc-for list="{{ r.opts }}" as="o"><button onClick="{{ o.pick }}" disabled="{{ r.fixed }}" style="padding:5px 10px; border-radius:999px; font-size:11.5px; border:1px solid {{ o.bc }}; background:{{ o.bg }}; color:{{ o.c }}; font-weight:{{ o.fw }}; cursor:pointer">{{ o.n }}</button></sc-for></span>
+              <span style="display:flex; flex-direction:column; gap:2px; font-size:11.5px; text-align:right"><span style="color:#5F5849">Default: <b style="color:#191510">{{ r.def }}</b></span><span style="color:{{ r.sc }}; font-weight:700">{{ r.state }}</span></span>
+            </div></sc-for>
+          </div>
+        </sc-for>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Change log</div>
+          <sc-for list="{{ ruleLog }}" as="l"><div style="display:grid; grid-template-columns:110px 130px minmax(0,1fr); gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="color:#5F5849">{{ l.when }}</span><b>{{ l.who }}</b><span>{{ l.what }}</span></div></sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.modules }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Modules</b><span style="font-size:12px; color:#5F5849">A switched-off module leaves the navigation for every user, and its API returns «module disabled»</span></div>
+        <sc-for list="{{ modules }}" as="m"><div style="display:flex; justify-content:space-between; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9"><span style="display:flex; flex-direction:column"><b style="font-size:13px">{{ m.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ m.d }}</span></span><button onClick="{{ m.toggle }}" style="position:relative; width:42px; height:24px; border-radius:999px; border:none; background:{{ m.track }}; cursor:pointer"><span style="position:absolute; top:3px; left:{{ m.knob }}px; width:18px; height:18px; border-radius:999px; background:#FFFDF6"></span></button></div></sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.fields }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ entities }}" as="e"><button onClick="{{ e.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12px; border:1px solid {{ e.bc }}; background:{{ e.bg }}; font-weight:{{ e.fw }}; cursor:pointer">{{ e.n }}</button></sc-for></div>
+        <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,340px); gap:14px; align-items:flex-start">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+            <div style="display:grid; grid-template-columns:minmax(0,1.4fr) 120px minmax(0,1.2fr) minmax(0,1fr); gap:10px; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Field</span><span>Type</span><span>Quality rule</span><span>Access</span></div>
+            <sc-for list="{{ fields }}" as="f"><button onClick="{{ f.pick }}" style="display:grid; width:100%; grid-template-columns:minmax(0,1.4fr) 120px minmax(0,1.2fr) minmax(0,1fr); gap:10px; align-items:center; padding:9px 16px; border:none; border-bottom:1px solid #E8DFC9; background:{{ f.bg }}; cursor:pointer; text-align:left; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ f.n }}</b><span style="font-size:11px; color:#8A8272">{{ f.sys }}</span></span><span>{{ f.type }}</span><span style="color:{{ f.qc }}">{{ f.rule }}</span><span style="color:#5F5849">{{ f.access }}</span></button></sc-for>
+          </div>
+          <div style="background:#FFFDF6; border:1px solid #191510; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:9px">
+            <b style="font-size:14px">{{ field.n }}</b>
+            <div style="font-size:11.5px; font-weight:600; color:#5F5849">Type — 16 available</div>
+            <div style="display:flex; flex-wrap:wrap; gap:4px"><sc-for list="{{ types }}" as="t"><span style="padding:3px 8px; border-radius:999px; font-size:11px; border:1px solid {{ t.bc }}; background:{{ t.bg }}; font-weight:{{ t.fw }}">{{ t.n }}</span></sc-for></div>
+            <sc-if value="{{ field.formula }}"><label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; font-weight:600; color:#5F5849">Formula<input value="{{ field.formula }}" style="height:34px; padding:0 9px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-family:ui-monospace,Menlo,monospace; font-size:12px; color:#191510"></input></label></sc-if>
+            <label style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px">Quality<select value="{{ field.q }}" style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>Optional</option><option>Important (nudge)</option><option>Required</option></select></label>
+            <label style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px">From stage<select style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>{{ field.stage }}</option><option>Qualified</option><option>Proposal sent</option></select></label>
+            <label style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px">Pipelines<select style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>{{ field.pipes }}</option><option>New business only</option></select></label>
+            <label style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px">Read-only for<select style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>{{ field.ro }}</option><option>Read-only analyst</option></select></label>
+            <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; font-weight:600; color:#5F5849">Description (behind the info icon)<textarea style="min-height:56px; padding:8px 10px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; color:#191510">{{ field.desc }}</textarea></label>
+            <span style="font-size:11.5px; color:#8A8272">Appears in forms, filters, reports, import and the API without a deploy · options per field: unlimited</span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.pipelines }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center"><sc-for list="{{ plTabs }}" as="p"><button onClick="{{ p.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12px; border:1px solid {{ p.bc }}; background:{{ p.bg }}; font-weight:{{ p.fw }}; cursor:pointer">{{ p.n }}</button></sc-for><button onClick="{{ addPipeline }}" style="padding:6px 12px; border-radius:999px; font-size:12px; border:1px dashed #C4BCA8; background:transparent; cursor:pointer">＋ Pipeline</button><span style="flex:1"></span><span style="font-size:12px; color:#5F5849">Visible to: {{ plVis }}</span></div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="display:grid; grid-template-columns:50px minmax(0,1.5fr) 120px 140px 130px; gap:10px; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Order</span><span>Stage</span><span>Probability</span><span>Rotting after</span><span></span></div>
+          <sc-for list="{{ stages }}" as="s"><div style="display:grid; grid-template-columns:50px minmax(0,1.5fr) 120px 140px 130px; gap:10px; align-items:center; padding:8px 16px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; gap:2px"><button onClick="{{ s.up }}" style="width:22px; height:22px; border-radius:6px; border:1px solid #E8DFC9; background:transparent; font-size:10px; cursor:pointer">▲</button><button onClick="{{ s.down }}" style="width:22px; height:22px; border-radius:6px; border:1px solid #E8DFC9; background:transparent; font-size:10px; cursor:pointer">▼</button></span><input value="{{ s.name }}" onChange="{{ s.setName }}" style="height:32px; padding:0 9px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; font-weight:600"></input><span style="display:flex; align-items:center; gap:4px"><input value="{{ s.prob }}" onChange="{{ s.setProb }}" style="width:56px; height:32px; padding:0 8px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input>%</span><span style="display:flex; align-items:center; gap:4px"><input value="{{ s.rot }}" onChange="{{ s.setRot }}" style="width:56px; height:32px; padding:0 8px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input>days</span><button onClick="{{ s.del }}" style="height:28px; border-radius:9px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:12px; font-weight:600; cursor:pointer">Delete stage</button></div></sc-for>
+          <div style="padding:10px 16px"><button onClick="{{ addStage }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px dashed #C4BCA8; background:transparent; font-size:12px; font-weight:600; cursor:pointer">＋ Stage</button></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.acttypes }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Activity types</b><span style="font-size:12px; color:#5F5849">New types are selectable and reportable at once</span></div>
+        <sc-for list="{{ actTypes }}" as="t"><div style="display:grid; grid-template-columns:30px minmax(0,1fr) minmax(0,1.2fr) 46px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="width:26px; height:26px; border-radius:8px; background:#F2EAD6; display:flex; align-items:center; justify-content:center">{{ t.g }}</span><b style="color:{{ t.c }}">{{ t.n }}</b><span style="color:#5F5849">Custom fields: {{ t.cf }}</span><button onClick="{{ t.toggle }}" style="position:relative; width:40px; height:22px; border-radius:999px; border:none; background:{{ t.track }}; cursor:pointer"><span style="position:absolute; top:3px; left:{{ t.knob }}px; width:16px; height:16px; border-radius:999px; background:#FFFDF6"></span></button></div></sc-for>
+        <div style="padding:10px 18px"><button onClick="{{ addType }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px dashed #C4BCA8; background:transparent; font-size:12px; font-weight:600; cursor:pointer">＋ Activity type</button></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.locale }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+          <b style="font-size:14px">Language and locale — per user</b>
+          <div style="display:flex; padding:3px; border-radius:10px; background:#F2EAD6"><sc-for list="{{ langs }}" as="l"><button onClick="{{ l.pick }}" style="flex:1; padding:7px; border-radius:7px; border:none; font-size:12.5px; cursor:pointer; background:{{ l.bg }}; font-weight:{{ l.fw }}">{{ l.n }}</button></sc-for></div>
+          <sc-for list="{{ localeRows }}" as="r"><div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid #E8DFC9"><span style="color:#5F5849">{{ r.k }}</span><b>{{ r.v }}</b></div></sc-for>
+          <span style="font-size:11.5px; color:#8A8272">Labels come from the translation catalog · switching language does not reload data</span>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Currencies</b><span style="font-size:12px; color:#5F5849">Company default NOK</span></div>
+          <sc-for list="{{ currencies }}" as="c"><div style="display:grid; grid-template-columns:60px minmax(0,1fr) 100px 80px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b>{{ c.code }}</b><span>{{ c.n }}</span><span style="color:#5F5849">{{ c.rate }}</span><span style="font-weight:700; color:{{ c.c }}">{{ c.tag }}</span></div></sc-for>
+          <div style="padding:10px 18px"><button style="height:30px; padding:0 11px; border-radius:9px; border:1px dashed #C4BCA8; background:transparent; font-size:12px; font-weight:600">＋ Custom currency</button></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.users }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:center"><b style="font-size:14px">Staff users</b><button onClick="{{ invite }}" style="height:30px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">＋ Invite</button></div>
+          <sc-for list="{{ staff }}" as="u"><div style="display:grid; grid-template-columns:minmax(0,1.4fr) 130px 130px 120px 90px 220px; gap:10px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px; opacity:{{ u.op }}"><span style="display:flex; flex-direction:column"><b>{{ u.name }}</b><span style="color:#5F5849; font-size:11.5px">{{ u.email }}</span></span><span>{{ u.role }}</span><span style="color:#5F5849">{{ u.pset }}</span><span style="color:#5F5849">{{ u.group }}</span><span style="color:#5F5849">{{ u.last }}</span><span style="display:flex; gap:5px; justify-content:flex-end"><button onClick="{{ u.copy }}" style="height:26px; padding:0 8px; border-radius:8px; border:1px solid #E8DFC9; background:transparent; font-size:11.5px; cursor:pointer">Copy access</button><button onClick="{{ u.replace }}" style="height:26px; padding:0 8px; border-radius:8px; border:1px solid #E8DFC9; background:transparent; font-size:11.5px; cursor:pointer">Replace</button><button onClick="{{ u.deact }}" style="height:26px; padding:0 8px; border-radius:8px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:11.5px; cursor:pointer">{{ u.deactLabel }}</button></span></div></sc-for>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:12px"><sc-for list="{{ teams }}" as="t"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:6px"><b style="font-size:13.5px">{{ t.n }}</b><span style="font-size:12px; color:#5F5849">Manager {{ t.mgr }}</span><span style="font-size:12px">{{ t.members }}</span><span style="font-size:11px; color:#8A8272">Used by assignment, reports and goals</span></div></sc-for></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.perms }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ psets }}" as="p"><button onClick="{{ p.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12px; border:1px solid {{ p.bc }}; background:{{ p.bg }}; font-weight:{{ p.fw }}; cursor:pointer">{{ p.n }}</button></sc-for></div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="display:grid; grid-template-columns:minmax(0,1.8fr) repeat(4,80px); gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Action</span><span>Deals</span><span>Projects</span><span>Campaigns</span><span>Global</span></div>
+          <sc-for list="{{ matrix }}" as="m"><div style="display:grid; grid-template-columns:minmax(0,1.8fr) repeat(4,80px); gap:10px; align-items:center; padding:8px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span>{{ m.n }}</span><sc-for list="{{ m.cells }}" as="c"><button onClick="{{ c.toggle }}" style="width:22px; height:22px; border-radius:6px; border:1.5px solid {{ c.bc }}; background:{{ c.bg }}; font-size:11px; color:#20431C; cursor:pointer; padding:0">{{ c.mark }}</button></sc-for></div></sc-for>
+          <div style="padding:10px 18px; font-size:11.5px; color:#5F5849">Staff roles map to sets: super-admin → Admin · support → Support · finance → Finance · analyst → Read-only · sales, marketing and project roles are an open point (G-10)</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.groups }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:4px">
+          <b style="font-size:14px; margin-bottom:6px">Visibility groups</b>
+          <sc-for list="{{ vgroups }}" as="g"><div style="display:flex; justify-content:space-between; padding:7px 0 7px {{ g.pl }}px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b style="font-weight:{{ g.fw }}">{{ g.n }}</b><span style="color:#5F5849">{{ g.m }}</span></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Default visibility per record type</div>
+          <sc-for list="{{ visDefaults }}" as="d"><div style="display:flex; justify-content:space-between; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b>{{ d.n }}</b><select value="{{ d.v }}" onChange="{{ d.set }}" style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>Owner only</option><option>Owner’s group</option><option>Owner’s group and sub-groups</option><option>Everyone</option></select></div></sc-for>
+          <div style="padding:10px 18px; font-size:11.5px; color:#5F5849">Enforced by row-level security on every read and write, not by hiding things in the interface</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.plans }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:14px">Usage against every limit</b><span style="font-size:12px; color:#5F5849">Plan gates and usage limits: all on and unlimited (setting)</span></div>
+          <sc-for list="{{ usage }}" as="u"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px; gap:12px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span>{{ u.n }}</span><span style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ u.w }}%; background:#9DB8B3"></span></span><span style="text-align:right"><b>{{ u.v }}</b> <span style="color:#5F5849">/ {{ u.lim }}</span></span></div></sc-for>
+          <div style="padding:10px 18px; font-size:11.5px; color:#5F5849">At a limit, new additions are blocked and nothing is deleted — overflow goes to the waitlist (0) or the import skip file</div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Entitlements — features per plan and add-on</div>
+          <div style="display:grid; grid-template-columns:minmax(0,1.6fr) repeat(3,90px); gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Feature</span><span>Base</span><span>Growth</span><span>Add-on</span></div>
+          <sc-for list="{{ ents }}" as="e"><div style="display:grid; grid-template-columns:minmax(0,1.6fr) repeat(3,90px); gap:10px; padding:8px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span>{{ e.n }}</span><sc-for list="{{ e.c }}" as="c"><span style="color:#2F5D2A; font-weight:700">{{ c }}</span></sc-for></div></sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.sandbox }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FBEBBE; border:1px solid #191510; border-radius:20px; padding:18px 20px; display:flex; flex-direction:column; gap:10px">
+          <b style="font-family:'Playfair Display',serif; font-size:20px">Sandbox — Lumio AS demo tenant</b>
+          <span style="font-size:12.5px; line-height:1.55; color:#5C4600">A separate test company for trying configuration and automations. It holds configuration and demo data, never customer data. Changes here never touch the live company.</span>
+          <sc-for list="{{ sandboxRows }}" as="r"><div style="display:flex; justify-content:space-between; font-size:12.5px; padding:5px 0; border-bottom:1px solid rgba(25,21,16,.12)"><span>{{ r.k }}</span><b>{{ r.v }}</b></div></sc-for>
+          <div style="display:flex; gap:8px; flex-wrap:wrap"><button onClick="{{ removeSamples }}" style="height:34px; padding:0 13px; border-radius:10px; border:1px solid #191510; background:#FFFDF6; font-size:12.5px; font-weight:700; cursor:pointer">Remove sample records</button><button onClick="{{ resetSandbox }}" style="height:34px; padding:0 13px; border-radius:10px; border:1px solid #191510; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer">Reset from seed</button></div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+          <b style="font-size:14px">Use the sandbox</b>
+          <span style="font-size:12.5px; line-height:1.55">Switch it on from the header. A yellow band shows on every screen while you work in it, and sample records carry a «Sample» label.</span>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { sec: 'rules', vals: {}, log: [], entity: 'Deals', field: 0, pl: 'new', stages: {}, typeOff: {}, extraTypes: 0, lang: 'English', deact: {}, pset: 'Regular — Sales', perms: {}, vis: {}, toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  sw(on) { return { track: on ? '#191510' : '#C4BCA8', knob: on ? 21 : 3 }; }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { sections: [], v: {}, rules: [], ruleLog: [], modules: [], entities: [], fields: [], field: {}, types: [], plTabs: [], stages: [], actTypes: [], langs: [], localeRows: [], currencies: [], staff: [], teams: [], psets: [], matrix: [], vgroups: [], visDefaults: [], usage: [], ents: [], sandboxRows: [] };
+    const sections = [['rules', 'Rules and limits'], ['modules', 'Modules'], ['fields', 'Data fields'], ['pipelines', 'Pipelines and stages'], ['acttypes', 'Activity types'], ['locale', 'Language and currencies'], ['users', 'Users and teams'], ['perms', 'Permission sets'], ['groups', 'Visibility groups'], ['plans', 'Plans and usage'], ['sandbox', 'Sandbox']].map(([k, n]) => ({ n, pick: () => this.setState({ sec: k }), bg: st.sec === k ? '#FBEBBE' : 'transparent', fw: st.sec === k ? 700 : 500 }));
+    const groupsOrder = ['Contacts and consent', 'Tracking', 'Approvals and audit', 'Limits', 'Technical safeguards', 'Meetings', 'Platform constant'];
+    const rules = groupsOrder.map((h) => ({ h, items: D.settings.filter((s) => s.group === h).map((s) => { const cur = st.vals[s.key] || s.def; const changed = cur !== s.def; return { ...s, rowBg: s.fixed ? '#FCF6E9' : changed ? '#FFFBEF' : 'transparent', state: s.fixed ? 'Fixed — cannot be switched off' : changed ? 'Changed · ' + cur : 'Default — unrestricted', sc: s.fixed ? '#A33A16' : changed ? '#8A6A00' : '#2F5D2A',
+      opts: s.opts.map((o) => ({ n: o, bg: cur === o ? '#191510' : 'transparent', c: cur === o ? '#FCF6E9' : '#191510', bc: cur === o ? '#191510' : '#C4BCA8', fw: cur === o ? 700 : 500, pick: () => { if (s.fixed) return; this.setState({ vals: { ...st.vals, [s.key]: o }, log: [{ when: 'Just now', who: 'Tor Lambrechts', what: s.n + ': ' + cur + ' → ' + o }, ...st.log] }); this.flash('Setting changed · logged'); } })) }; }) }));
+    const changedCount = Object.keys(st.vals).filter((k) => { const s = D.settings.find((x) => x.key === k); return s && st.vals[k] !== s.def; }).length;
+    const ruleLog = [...st.log, { when: '1 Oct', who: 'Tor Lambrechts', what: 'Recording consent notices: kept at default (24 hours)' }, { when: '3 Oct', who: 'System', what: 'Settings register created with unrestricted defaults (decision 3 October)' }];
+    const mods = this.props.modules || {};
+    const setModule = this.props.setModule || (() => {});
+    const modules = [['deals', 'Deals and pipelines', 'Pipeline, list, forecast, products'], ['leads', 'Leads', 'Leads inbox and conversion'], ['projects', 'Projects', 'Boards, timeline, templates'], ['campaigns', 'Campaigns', 'Email marketing'], ['documents', 'Documents and e-sign', 'Templates, links, signatures'], ['meetings', 'Meeting intelligence', 'Briefs, notetaker, recaps'], ['leadgen', 'Lead capture', 'Forms, chatbot, live chat, prospect search'], ['visitors', 'Web visitors', 'Company identification'], ['mobile', 'Mobile app', 'iOS and Android clients']].map(([k, n, d]) => { const on = !mods[k]; return { n, d, ...this.sw(on), toggle: () => { setModule(k, on); this.flash(n + (on ? ' switched off for every user' : ' switched on')); } }; });
+    const entities = ['Deals', 'Leads', 'People', 'Organizations', 'Products', 'Projects', 'Activities'].map((n) => ({ n, pick: () => this.setState({ entity: n, field: 0 }), bg: st.entity === n ? '#FBEBBE' : 'transparent', bc: st.entity === n ? '#191510' : '#C4BCA8', fw: st.entity === n ? 700 : 500 }));
+    const FL = [['Decision maker', 'Person', 'Required from Negotiation', 'Everyone', 'Who signs on the customer side.', null, 'Negotiation'], ['Competitor', 'Single option', 'Important (nudge)', 'Everyone', 'Main alternative they compare with.', null, '—'], ['Weighted value', 'Monetary', 'Formula · read-only', 'Everyone', 'Calculated: value × stage probability.', '[deal.value] * [deal.probability] / 100', '—'], ['Employees in scope', 'Numerical', 'Optional', 'Everyone', 'People on the employee list covered by this deal.', null, '—'], ['Board meeting', 'Date', 'Important (nudge)', 'New business only', 'When the decision is taken.', null, '—'], ['Internal margin', 'Monetary', 'Optional', 'Hidden from Sales · read-only for analyst', 'Finance only.', null, '—'], ['Tender reference', 'Text', 'Required from Bid preparation', 'Public sector tenders only', 'Doffin reference number.', null, 'Bid preparation']];
+    const fields = FL.map(([n, type, rule, access, desc, formula, stage], i) => ({ n, type, rule, access, sys: 'field_' + n.toLowerCase().replace(/\s+/g, '_'), qc: rule.startsWith('Required') ? '#A33A16' : rule.startsWith('Important') ? '#8A6A00' : '#5F5849', bg: st.field === i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ field: i }) }));
+    const F0 = FL[st.field];
+    const field = { n: F0[0], formula: F0[5], q: F0[2].startsWith('Required') ? 'Required' : F0[2].startsWith('Important') ? 'Important (nudge)' : 'Optional', stage: F0[6], pipes: F0[3].includes('only') ? F0[3] : 'All pipelines', ro: F0[3].includes('read-only') ? 'Read-only analyst' : 'Nobody', desc: F0[4] };
+    const TY = ['Text', 'Large text', 'Single option', 'Multiple options', 'Autocomplete', 'Numerical', 'Monetary', 'User', 'Organization', 'Person', 'Phone', 'Time', 'Time range', 'Date', 'Date range', 'Address'];
+    const types = TY.map((n) => ({ n, bg: n === F0[1] ? '#FBEBBE' : 'transparent', bc: n === F0[1] ? '#191510' : '#E8DFC9', fw: n === F0[1] ? 700 : 500 }));
+    const pl = D.pipelines.find((p) => p.id === st.pl);
+    const stagesSrc = st.stages[st.pl] || pl.stages.map((s) => ({ ...s }));
+    const setStages = (fn) => this.setState({ stages: { ...st.stages, [st.pl]: fn(stagesSrc.map((s) => ({ ...s }))) } });
+    const plTabs = D.pipelines.map((p) => ({ n: p.name, pick: () => this.setState({ pl: p.id }), bg: st.pl === p.id ? '#FBEBBE' : 'transparent', bc: st.pl === p.id ? '#191510' : '#C4BCA8', fw: st.pl === p.id ? 700 : 500 }));
+    const stages = stagesSrc.map((s, i) => ({ ...s, up: () => setStages((a) => { if (i > 0) [a[i - 1], a[i]] = [a[i], a[i - 1]]; return a; }), down: () => setStages((a) => { if (i < a.length - 1) [a[i + 1], a[i]] = [a[i], a[i + 1]]; return a; }), setName: (e) => setStages((a) => { a[i].name = e.target.value; return a; }), setProb: (e) => setStages((a) => { a[i].prob = Math.max(0, Math.min(100, parseInt(e.target.value, 10) || 0)); return a; }), setRot: (e) => setStages((a) => { a[i].rot = e.target.value; return a; }),
+      del: () => { const target = stagesSrc[i === 0 ? 1 : i - 1]; const n = D.deals.filter((d) => d.stage === s.id && d.status === 'open').length; setStages((a) => a.filter((_, j) => j !== i)); this.flash(n + ' deals moved to «' + target.name + '» · reorder shows for every user'); } }));
+    const actTypes = [...D.actTypes, ...Array.from({ length: st.extraTypes }, (_, i) => ({ id: 'x' + i, n: 'Site visit', g: '⌂' }))].map((t, i) => { const on = !st.typeOff[t.id]; return { ...t, cf: ['Outcome, duration', 'Outcome, attendees', 'Due reason', 'Deadline type', 'Template used', '—', 'Product shown', 'Address'][i % 8], c: on ? '#191510' : '#8A8272', ...this.sw(on), toggle: () => this.setState({ typeOff: { ...st.typeOff, [t.id]: on } }) }; });
+    const langs = ['English', 'Norsk bokmål', 'Svenska'].map((n) => ({ n, pick: () => this.setState({ lang: n }), bg: st.lang === n ? '#FFFDF6' : 'transparent', fw: st.lang === n ? 700 : 500 }));
+    const localeRows = [['Date format', st.lang === 'English' ? '5 Oct 2026' : '5. okt. 2026'], ['Number format', '12 345,67'], ['Time zone', 'Europe/Oslo'], ['First day of week', 'Monday']].map(([k, vv]) => ({ k, v: vv }));
+    const currencies = [['NOK', 'Norwegian krone', '1,000', 'Default', '#2F5D2A'], ['EUR', 'Euro', '11,62', 'Active', '#5F5849'], ['SEK', 'Swedish krona', '0,98', 'Active', '#5F5849'], ['DKK', 'Danish krone', '1,56', 'Active', '#5F5849'], ['USD', 'US dollar', '10,74', 'Active', '#5F5849']].map(([code, n, rate, tag, c]) => ({ code, n, rate: rate + ' NOK', tag, c }));
+    const PS = { 'Super-admin': 'Admin (full)', Sales: 'Regular — Sales', Support: 'Custom — Support', Finance: 'Custom — Finance', Marketing: 'Regular — Marketing', Project: 'Regular — Projects', 'Read-only analyst': 'Custom — Read-only' };
+    const GR = { Leadership: 'Everyone', Sales: 'Sales Norway', Support: 'Support', Finance: 'Finance', Growth: 'Growth', Delivery: 'Delivery' };
+    const staff = D.staff.map((u) => { const off = !!st.deact[u.id]; return { ...u, pset: PS[u.role], group: GR[u.team], op: off ? 0.5 : 1, deactLabel: off ? 'Reactivate' : 'Deactivate', copy: () => this.flash('Access copied from ' + u.name), replace: () => this.flash(u.name + ' replaced · records reassigned to the new user'), deact: () => this.setState({ deact: { ...st.deact, [u.id]: !off } }) }; });
+    const teams = [['Sales Norway', 'Tor Lambrechts', 'Ingrid Solberg · Eirik Moen'], ['Support', 'Magnus Berg', 'Hanna Vik'], ['Growth', 'Jonas Dahl', '—'], ['Delivery', 'Emma Lie', 'Magnus Berg']].map(([n, mgr, members]) => ({ n, mgr, members }));
+    const psets = ['Admin (full)', 'Regular — Sales', 'Regular — Marketing', 'Regular — Projects', 'Custom — Support', 'Custom — Finance', 'Custom — Read-only'].map((n) => ({ n, pick: () => this.setState({ pset: n }), bg: st.pset === n ? '#FBEBBE' : 'transparent', bc: st.pset === n ? '#191510' : '#C4BCA8', fw: st.pset === n ? 700 : 500 }));
+    const ACTS = ['See records', 'Add records', 'Edit others’ records', 'Delete records', 'Bulk edit and merge', 'Export lists', 'Manage pipelines and fields', 'Manage workflows', 'See reports of others', 'Use AI features', 'Manage users and security'];
+    const base = st.pset.startsWith('Admin') ? [1, 1, 1, 1] : st.pset.includes('Read-only') ? [1, 0, 0, 0] : st.pset.includes('Sales') ? [1, 1, 0, 1] : st.pset.includes('Marketing') ? [0, 1, 1, 0] : st.pset.includes('Projects') ? [0, 1, 0, 0] : [1, 0, 0, 1];
+    const matrix = ACTS.map((n, ai) => ({ n, cells: [0, 1, 2, 3].map((ci) => { const k = st.pset + '|' + ai + '|' + ci; const def = st.pset.startsWith('Admin') ? true : base[ci] && (ai < 3 || (ai < 6 && !st.pset.includes('Read')) || (ai === 9)) && !(ai === 10); const on = st.perms[k] != null ? st.perms[k] : !!def; return { mark: on ? '✓' : '', bg: on ? '#CFE7E4' : 'transparent', bc: on ? '#2F5D2A' : '#C4BCA8', toggle: () => this.setState({ perms: { ...st.perms, [k]: !on } }) }; }) }));
+    const vgroups = [['Everyone', 0, 9, 700], ['Sales', 18, 3, 600], ['Sales Norway', 36, 3, 500], ['Public sector', 36, 1, 500], ['Support', 18, 2, 600], ['Finance', 18, 2, 600], ['Growth', 18, 1, 600], ['Delivery', 18, 1, 600]].map(([n, pl2, m, fw]) => ({ n, pl: pl2, m: m + ' users', fw }));
+    const visDefaults = ['Deals', 'Leads', 'People', 'Organizations', 'Projects', 'Activities', 'Products'].map((n, i) => ({ n, v: st.vis[n] || (i < 2 ? 'Owner’s group and sub-groups' : 'Everyone'), set: (e) => this.setState({ vis: { ...st.vis, [n]: e.target.value } }) }));
+    const usage = [['Leads and deals', 412], ['Custom fields', 38], ['Reports', 64], ['Active workflows', 12], ['Sequences', 3], ['Mailboxes', 11], ['Team inboxes', 2], ['Teams', 4], ['Visibility groups', 8], ['Permission sets', 7], ['Scoring models', 3], ['Enrichment credits (cycle)', 382], ['Formula fields', 2], ['API tokens', 4]].map(([n, vv]) => ({ n, v: D.nb(vv), lim: 'unlimited', w: Math.min(30, vv / 15 + 4) }));
+    const ents = ['Pipelines and deals', 'Projects', 'Campaigns', 'Meeting intelligence', 'AI assistant and connector', 'Web visitors', 'Documents and e-sign', 'Prospect search', 'Single sign-on'].map((n) => ({ n, c: ['On', 'On', 'On'] }));
+    const sandboxRows = [['Sample organizations', '46'], ['Sample people', '32'], ['Sample deals', '36'], ['Workflows under test', '3'], ['Last reset', '1 Oct 2026']].map(([k, vv]) => ({ k, v: vv }));
+    return { sections, v: { [st.sec]: true }, rules, changedCount, ruleLog, modules, entities, fields, field, types, plTabs, plVis: st.pl === 'pub' ? 'Public sector group' : 'Everyone', addPipeline: () => this.flash('Pipeline added · pipelines: unlimited'), stages, addStage: () => setStages((a) => [...a, { id: 'n' + a.length, name: 'New stage', prob: 50, rot: '' }]),
+      actTypes, addType: () => this.setState({ extraTypes: st.extraTypes + 1 }), langs, localeRows, currencies, staff, teams, invite: () => this.flash('Invite sent · MFA required at first login'), psets, matrix, vgroups, visDefaults, usage, ents, sandboxRows,
+      removeSamples: () => this.flash('Sample records removed in one step'), resetSandbox: () => this.flash('Sandbox reset from the demo seed'), toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

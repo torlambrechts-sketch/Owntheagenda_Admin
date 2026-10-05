@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://zuvqbaejoktpekfsiyyr.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_8-XdpfbFNliUG37E4fBHiA_mLCDzGcH
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run verify:i18n
+      - run: npm run functions:check
+      - run: npm run build

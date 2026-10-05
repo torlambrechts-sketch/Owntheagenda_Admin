@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<script src="coverage-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+  <div style="max-width:860px"><div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">CRM enrichment brief · 3 October 2026</div><div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600; margin-top:6px; line-height:1.2">Every feature and flow in the brief has a home in this prototype. Click one to open where it lives.</div></div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px"><sc-for list="{{ stats }}" as="s" hint-placeholder-count="5"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ s.n }}</div><div style="font-family:'Playfair Display',serif; font-size:28px; font-weight:600; margin-top:6px">{{ s.v }}</div><div style="font-size:11.5px; color:#5F5849">{{ s.s }}</div></div></sc-for></div>
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+    <div style="display:flex; padding:3px; border-radius:11px; background:#F2EAD6"><sc-for list="{{ tabs }}" as="t"><button onClick="{{ t.pick }}" style="padding:7px 13px; border-radius:8px; border:none; font-size:12.5px; cursor:pointer; background:{{ t.bg }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for></div>
+    <input value="{{ q }}" onChange="{{ setQ }}" placeholder="Search ID, name or text" style="flex:1 1 240px; height:36px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:13px"></input>
+  </div>
+
+  <sc-if value="{{ v.features }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; flex-wrap:wrap; gap:5px"><sc-for list="{{ mods }}" as="m" hint-placeholder-count="21"><button onClick="{{ m.pick }}" style="padding:5px 10px; border-radius:999px; font-size:11.5px; border:1px solid {{ m.bc }}; background:{{ m.bg }}; font-weight:{{ m.fw }}; cursor:pointer">{{ m.n }} <span style="color:#5F5849">{{ m.c }}</span></button></sc-for></div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <sc-for list="{{ feats }}" as="f" hint-placeholder-count="12">
+          <div style="border-bottom:1px solid #E8DFC9">
+            <div style="display:grid; grid-template-columns:82px minmax(0,1fr) 150px; gap:12px; align-items:flex-start; padding:11px 16px">
+              <button onClick="{{ f.toggle }}" style="padding:3px 8px; border-radius:6px; border:none; background:#191510; color:#FBEBBE; font-family:ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; cursor:pointer">{{ f.id }}</button>
+              <button onClick="{{ f.toggle }}" style="display:flex; flex-direction:column; gap:3px; border:none; background:transparent; padding:0; text-align:left; cursor:pointer; min-width:0"><b style="font-size:13px">{{ f.n }}</b><span style="font-size:12px; color:#5F5849; line-height:1.45; overflow:hidden; text-overflow:ellipsis; white-space:{{ f.ws }}">{{ f.d }}</span></button>
+              <button onClick="{{ f.open }}" style="justify-self:end; height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap">{{ f.where }} →</button>
+            </div>
+            <sc-if value="{{ f.expanded }}"><div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:10px; padding:0 16px 14px 110px"><div style="border-radius:12px; background:#FCF6E9; border:1px solid #E8DFC9; padding:10px 12px; font-size:12px; line-height:1.5"><b style="font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">Rules and edge cases</b><div>{{ f.ru }}</div></div><div style="border-radius:12px; background:#CFE7E4; padding:10px 12px; font-size:12px; line-height:1.5; color:#20431C"><b style="font-size:10.5px; letter-spacing:.09em; text-transform:uppercase">Acceptance</b><div>{{ f.a }}</div></div></div></sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.flows }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:12px; align-items:flex-start">
+      <sc-for list="{{ flows }}" as="f"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:7px"><div style="display:flex; gap:8px; align-items:center"><span style="padding:3px 8px; border-radius:6px; background:{{ f.bg }}; color:{{ f.c }}; font-family:ui-monospace,Menlo,monospace; font-size:11px; font-weight:700">{{ f.id }}</span><b style="font-size:13.5px">{{ f.n }}</b></div><span style="font-size:11.5px; color:#5F5849; line-height:1.45">{{ f.h }}</span><sc-for list="{{ f.steps }}" as="s"><div style="display:grid; grid-template-columns:18px minmax(0,1fr); gap:6px; font-size:12px; line-height:1.45"><b style="color:#8A8272">{{ s.i }}</b><span>{{ s.t }}</span></div></sc-for></div></sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.baseline }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:12px">
+      <sc-for list="{{ baseline }}" as="b"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:7px"><b style="font-size:14px">{{ b.n }}</b><sc-for list="{{ b.items }}" as="i"><span style="font-size:12px; line-height:1.45">✓ {{ i }}</span></sc-for><button onClick="{{ b.open }}" style="align-self:flex-start; height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">{{ b.where }} →</button></div></sc-for>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'features', mod: 'All', q: '', open: {}, ready: !!window.SA_COVERAGE };
+  componentDidMount() { if (!window.SA_COVERAGE) this.t = setInterval(() => { if (window.SA_COVERAGE) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  renderVals() {
+    const C = window.SA_COVERAGE; const st = this.state; const go = this.props.go || (() => {});
+    if (!C) return { stats: [], tabs: [], v: {}, mods: [], feats: [], flows: [], baseline: [] };
+    const RL = { deals: 'Deals', activities: 'Activities', contacts: 'Contacts', leads: 'Leads', settings: 'Settings', inbox: 'Inbox', automation: 'Automation', insights: 'Insights', feed: 'Feed', home: 'Header · Assistant', meetings: 'Meetings', platform: 'API and integrations', campaigns: 'Campaigns', leadgen: 'Lead capture', visitors: 'Web visitors', projects: 'Projects', documents: 'Documents', security: 'Security', mobile: 'Mobile app' };
+    const routeOf = (f) => (f.m === 'LGN' ? 'leadgen' : f.m === 'WEB' ? 'visitors' : f.m === 'CMP' ? 'campaigns' : f.m === 'LEA' && f.id !== 'LEA-06' ? 'leads' : f.r === 'assistant' ? 'home' : f.r === 'marketing' ? 'campaigns' : f.r);
+    const uf = C.flows.filter((f) => f.id.startsWith('UF')).length, sf = C.flows.filter((f) => f.id.startsWith('SF')).length;
+    const stats = [['Features', C.feats.length, 'all mapped to a screen'], ['Modules', Object.keys(C.mods).length, 'from the inventory'], ['User flows', uf, 'UF-01 to UF-' + uf], ['System flows', sf, 'SF-01 to SF-' + sf], ['Settings', 15, 'every default unrestricted']].map(([n, vv, s]) => ({ n, v: String(vv), s }));
+    const tabs = [['features', 'Features'], ['flows', 'User and system flows'], ['baseline', 'Admin baseline, extended']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), bg: st.tab === k ? '#FFFDF6' : 'transparent', fw: st.tab === k ? 700 : 500 }));
+    const counts = {}; C.feats.forEach((f) => { counts[f.m] = (counts[f.m] || 0) + 1; });
+    const mods = [['All', 'All modules', C.feats.length], ...Object.keys(C.mods).map((k) => [k, C.mods[k], counts[k]])].map(([k, n, c]) => ({ n, c, pick: () => this.setState({ mod: k }), bg: st.mod === k ? '#FBEBBE' : 'transparent', bc: st.mod === k ? '#191510' : '#C4BCA8', fw: st.mod === k ? 700 : 500 }));
+    const q = st.q.toLowerCase();
+    const feats = C.feats.filter((f) => (st.mod === 'All' || f.m === st.mod) && (!q || (f.id + ' ' + f.n + ' ' + (f.d || '')).toLowerCase().includes(q))).map((f) => { const r = routeOf(f); const ex = !!st.open[f.id]; return { id: f.id, n: f.n, d: f.d || '', ru: f.ru || '—', a: f.a || '—', where: RL[r] || r, expanded: ex, ws: ex ? 'normal' : 'nowrap', toggle: () => this.setState({ open: { ...st.open, [f.id]: !ex } }), open: () => go(r) }; });
+    const flows = C.flows.filter((f) => !q || (f.id + ' ' + f.n + ' ' + (f.h || '')).toLowerCase().includes(q)).map((f) => ({ id: f.id, n: f.n, h: f.h || '', bg: f.id.startsWith('UF') ? '#FBEBBE' : '#E4EEEC', c: f.id.startsWith('UF') ? '#5C4600' : '#20431C', steps: f.s.map((t, i) => ({ i: i + 1, t })) }));
+    const baseline = [
+      ['Organizations', 'customers', ['List with search, status, tier, band, industry, fylke, source, trial days and health filters', 'Saved views, bulk tag, owner and broadcast', 'Detail: Brreg header, cross-product view, health breakdown, activation, structure, surveys metadata, billing, timeline, notes, tickets, audit', 'Actions with reason: trial, plan, discount, complimentary, suspend, re-sync, transfer, merge, export, delete by typing org.nr']],
+      ['Users, support access and personvern', 'customers', ['Cross-org user search with memberships, MFA and auth method', 'Support access requested by admin, approved by customer, time-boxed and logged', 'Personvern queue with 30-day clock, deletion queue, DPA tracking']],
+      ['Billing', 'customers', ['Subscription lifecycle, failed payments and dunning with retry', 'Band reconciliation with customer confirmation', 'Plan catalogue with price versions, coupons, credits, complimentary accounts, accounting export']],
+      ['Analytics', 'analytics', ['Business KPIs, net new MRR, ARPA and tiers', 'Activation funnel per cohort with median time per step and the 20-minute promise', 'Cohort retention, churn and reasons', 'Product usage across applications', 'Health score distribution and at-risk list', 'Metric definitions as versioned SQL views']],
+      ['Web analytics and attribution', 'analytics', ['Cookieless traffic, sources, landing pages, Search Console', 'Website funnel incl. failed Brønnøysund lookups', 'Campaign spend to cost per paid customer', 'First- and last-touch attribution']],
+      ['Ticketing (ITSM)', 'tickets', ['Question, service request, incident, problem', 'Priority from impact × urgency', 'Queues, routing, escalation, SLA timers', 'Service requests executed from the ticket', 'Problems, known errors, status banner, help centre, macros, CSAT, reporting']],
+      ['Multi-application platform', 'apps', ['Application registry with health, sync, events and remote actions', 'One admin API, tokens, OAuth apps, webhooks', 'Job monitor, feature flags, maintenance mode, content versioning']],
+    ].map(([n, r, items]) => ({ n, items, where: RL[r] || { customers: 'Organizations', analytics: 'Analytics', tickets: 'Tickets', apps: 'Applications' }[r], open: () => go(r) }));
+    return { stats, tabs, v: { [st.tab]: true }, mods, feats, flows, baseline, q: st.q, setQ: (e) => this.setState({ q: e.target.value }) };
+  }
+}
+</script>
+</body>
+</html>

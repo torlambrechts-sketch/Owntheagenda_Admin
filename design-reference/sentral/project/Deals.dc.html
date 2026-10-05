@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:18px 28px 60px; display:flex; flex-direction:column; gap:12px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+    <div style="display:flex; padding:3px; border-radius:11px; background:#F2EAD6">
+      <sc-for list="{{ views }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.pick }}" style="padding:7px 13px; border-radius:8px; border:none; font-size:12.5px; cursor:pointer; background:{{ t.bg }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for>
+    </div>
+    <select value="{{ pipeline }}" onChange="{{ setPipeline }}" style="height:36px; padding:0 10px; border-radius:10px; border:1px solid #191510; background:#FFFDF6; font-size:13px; font-weight:700"><sc-for list="{{ pipelines }}" as="p"><option value="{{ p.id }}">{{ p.name }}</option></sc-for></select>
+    <sc-for list="{{ quick }}" as="f"><label style="display:flex; align-items:center; gap:5px; height:34px; padding:0 4px 0 10px; border-radius:10px; border:1px solid {{ f.bc }}; background:#FFFDF6; font-size:12px; color:#5F5849">{{ f.n }}<select value="{{ f.value }}" onChange="{{ f.set }}" style="border:none; background:transparent; font-size:12.5px; font-weight:600"><sc-for list="{{ f.opts }}" as="o"><option>{{ o }}</option></sc-for></select></label></sc-for>
+    <div style="position:relative">
+      <button onClick="{{ toggleAdv }}" style="height:34px; padding:0 12px; border-radius:10px; border:1px solid {{ advBc }}; background:{{ advBg }}; font-size:12.5px; font-weight:600; cursor:pointer">Filter{{ advLabel }}</button>
+      <sc-if value="{{ advOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; left:0; top:42px; z-index:30; width:520px; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px; box-shadow:0 18px 40px -24px rgba(25,21,16,.45); display:flex; flex-direction:column; gap:10px">
+          <div style="display:flex; justify-content:space-between; align-items:center"><b style="font-size:13.5px">Advanced filter</b><span style="font-size:11.5px; color:#5F5849">Same result in pipeline, list and forecast</span></div>
+          <sc-for list="{{ conds }}" as="c"><div style="display:flex; gap:6px; align-items:center"><span style="width:44px; font-size:11px; font-weight:700; color:#5F5849; text-transform:uppercase">{{ c.join }}</span><select value="{{ c.field }}" onChange="{{ c.setField }}" style="flex:1; height:32px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>Value</option><option>Score</option><option>Idle days</option><option>Source</option><option>Label</option></select><select value="{{ c.op }}" onChange="{{ c.setOp }}" style="width:90px; height:32px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>is</option><option>&gt;</option><option>&lt;</option><option>contains</option></select><input value="{{ c.val }}" onChange="{{ c.setVal }}" style="width:120px; height:32px; padding:0 8px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input><button onClick="{{ c.remove }}" style="width:28px; height:28px; border-radius:999px; border:1px solid #E8DFC9; background:transparent; cursor:pointer">×</button></div></sc-for>
+          <div style="display:flex; gap:6px"><button onClick="{{ addAnd }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px dashed #C4BCA8; background:transparent; font-size:12px; font-weight:600; cursor:pointer">＋ AND condition</button><button onClick="{{ addOr }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px dashed #C4BCA8; background:transparent; font-size:12px; font-weight:600; cursor:pointer">＋ OR group</button><span style="flex:1"></span><button onClick="{{ saveFilter }}" style="height:30px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Save as filter</button></div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; border-top:1px solid #E8DFC9; padding-top:10px"><span style="font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">Saved</span><sc-for list="{{ savedFilters }}" as="s"><button onClick="{{ s.apply }}" style="padding:4px 10px; border-radius:999px; border:1px solid #C4BCA8; background:transparent; font-size:11.5px; cursor:pointer">{{ s.n }}</button></sc-for></div>
+        </div>
+      </sc-if>
+    </div>
+    <button onClick="{{ toggleClosed }}" style="display:flex; align-items:center; gap:7px; height:34px; padding:0 11px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer"><span style="position:relative; width:26px; height:16px; border-radius:999px; background:{{ closedTrack }}"><span style="position:absolute; top:2px; left:{{ closedKnob }}px; width:12px; height:12px; border-radius:999px; background:#FFFDF6"></span></span>Won and lost</button>
+    <span style="flex:1"></span>
+    <label style="display:flex; align-items:center; gap:5px; height:34px; padding:0 4px 0 10px; border-radius:10px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px; color:#5F5849">View as<select value="{{ viewAs }}" onChange="{{ setViewAs }}" style="border:none; background:transparent; font-size:12.5px; font-weight:600"><option value="tor">Tor · super-admin</option><option value="ingrid">Ingrid · sales</option><option value="ola">Ola · read-only</option></select></label>
+    <button onClick="{{ newDeal }}" style="height:36px; padding:0 15px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">＋ Deal</button>
+  </div>
+  <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:center; font-size:12px; color:#5F5849">
+    <span><b style="color:#191510">{{ summary.count }}</b> deals · <b style="color:#191510">{{ summary.value }}</b> · weighted <b style="color:#191510">{{ summary.weighted }}</b></span>
+    <span>Capacity: <b style="color:#191510">unlimited</b> (setting) · waitlist <b style="color:#191510">0</b></span>
+    <span style="display:flex; gap:10px"><span>◷ planned</span><span style="color:#A33A16">! overdue</span><span style="color:#8A6A00">⚠ no next step</span></span>
+    <sc-if value="{{ readOnly }}"><span style="padding:3px 10px; border-radius:999px; background:#FBD5C4; color:#6B240C; font-weight:700">View rights only — cards cannot be moved</span></sc-if>
+  </div>
+
+  <sc-if value="{{ v.pipeline }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; justify-content:flex-end; position:relative">
+        <button onClick="{{ toggleCustom }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Customize cards</button>
+        <sc-if value="{{ customOpen }}"><div style="position:absolute; right:0; top:36px; z-index:30; width:240px; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:16px; padding:10px; box-shadow:0 18px 40px -24px rgba(25,21,16,.45)"><div style="font-size:11px; color:#5F5849; padding:2px 6px 8px">Fields on cards in {{ pipelineName }}</div><sc-for list="{{ cardFields }}" as="f"><label style="display:flex; gap:8px; align-items:center; padding:6px; font-size:12.5px; cursor:pointer"><input type="checkbox" checked="{{ f.on }}" onChange="{{ f.toggle }}" style="accent-color:#191510"></input>{{ f.n }}</label></sc-for></div></sc-if>
+      </div>
+      <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px; align-items:flex-start">
+        <sc-for list="{{ columns }}" as="col" hint-placeholder-count="5">
+          <div onDragOver="{{ allowDrop }}" onDrop="{{ col.drop }}" style="flex:0 0 250px; display:flex; flex-direction:column; gap:8px; border-radius:18px; padding:8px; background:{{ col.bg }}; border:1px solid {{ col.bc }}; min-height:420px">
+            <div style="padding:6px 6px 8px; border-bottom:3px solid {{ col.c }}">
+              <div style="display:flex; justify-content:space-between; gap:6px"><b style="font-size:13px">{{ col.name }}</b><span style="font-size:11px; color:#5F5849">{{ col.prob }} %</span></div>
+              <div style="display:flex; justify-content:space-between; gap:6px; font-size:12px; color:#5F5849; margin-top:3px; white-space:nowrap"><span><b style="color:#191510">{{ col.sum }}</b> · {{ col.count }}</span><span>rots {{ col.rot }} d</span></div>
+            </div>
+            <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="3">
+              <div draggable="{{ c.draggable }}" onDragStart="{{ c.dragStart }}" onClick="{{ c.open }}" style="display:flex; flex-direction:column; gap:6px; padding:10px 11px; border-radius:14px; background:{{ c.bg }}; border:1px solid {{ c.bc }}; cursor:pointer">
+                <div style="display:flex; justify-content:space-between; gap:6px"><b style="font-size:12.5px; line-height:1.3">{{ c.title }}</b><span title="{{ c.actTip }}" style="flex:none; font-size:12px; font-weight:700; color:{{ c.actC }}">{{ c.actG }}</span></div>
+                <sc-if value="{{ c.f.org }}"><span style="font-size:11.5px; color:#5F5849">{{ c.orgName }}</span></sc-if>
+                <sc-if value="{{ c.labels.length }}"><span style="display:flex; flex-wrap:wrap; gap:4px"><sc-for list="{{ c.labels }}" as="l"><span style="font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:999px; background:{{ l.bg }}; color:{{ l.c }}">{{ l.n }}</span></sc-for></span></sc-if>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; font-size:11.5px">
+                  <span style="display:flex; align-items:center; gap:6px"><span style="width:20px; height:20px; border-radius:999px; background:#F2EAD6; display:flex; align-items:center; justify-content:center; font-size:9.5px; font-weight:700">{{ c.ownerIni }}</span><sc-if value="{{ c.f.value }}"><b style="font-variant-numeric:tabular-nums">{{ c.valueF }}</b></sc-if></span>
+                  <span style="display:flex; gap:4px; align-items:center"><sc-if value="{{ c.f.close }}"><span style="color:#5F5849">{{ c.close }}</span></sc-if><sc-if value="{{ c.f.score }}"><span style="padding:1px 6px; border-radius:6px; font-weight:700; background:{{ c.sbg }}">{{ c.score }}</span></sc-if></span>
+                </div>
+                <sc-if value="{{ c.rotting }}"><span style="font-size:11px; font-weight:700; color:#A33A16">Rotting · idle {{ c.idle }} days</span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ dragging }}" hint-placeholder-val="{{ false }}">
+        <div style="position:sticky; bottom:12px; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; z-index:20">
+          <sc-for list="{{ dropZones }}" as="z"><div onDragOver="{{ allowDrop }}" onDrop="{{ z.drop }}" style="height:60px; border-radius:16px; border:2px dashed {{ z.bc }}; background:{{ z.bg }}; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:{{ z.c }}">{{ z.n }}</div></sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.list }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 16px; border-bottom:1px solid #E8DFC9; font-size:12.5px">
+        <span style="color:#5F5849">Sort: <b style="color:#191510">{{ sortLabel }}</b> · shift-click a header to add a sort</span>
+        <span style="flex:1"></span>
+        <sc-if value="{{ selCount }}"><span style="display:flex; gap:6px; align-items:center"><b>{{ selCount }} selected</b><select onChange="{{ bulkStage }}" value="" style="height:30px; border-radius:9px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px"><option value="">Move to stage …</option><sc-for list="{{ stageOpts }}" as="s"><option value="{{ s.id }}">{{ s.name }}</option></sc-for></select><select onChange="{{ bulkOwner }}" value="" style="height:30px; border-radius:9px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px"><option value="">Set owner …</option><option value="ingrid">Ingrid Solberg</option><option value="eirik">Eirik Moen</option><option value="tor">Tor Lambrechts</option></select><button onClick="{{ bulkDelete }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:12px; font-weight:600; cursor:pointer">Delete</button></span></sc-if>
+        <div style="position:relative"><button onClick="{{ toggleCols }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Columns</button>
+          <sc-if value="{{ colsOpen }}"><div style="position:absolute; right:0; top:36px; z-index:30; width:200px; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:16px; padding:8px; box-shadow:0 18px 40px -24px rgba(25,21,16,.45)"><sc-for list="{{ colOpts }}" as="c"><label style="display:flex; gap:8px; align-items:center; padding:5px 6px; font-size:12.5px"><input type="checkbox" checked="{{ c.on }}" onChange="{{ c.toggle }}" style="accent-color:#191510"></input>{{ c.n }}</label></sc-for></div></sc-if>
+        </div>
+        <button onClick="{{ exportCsv }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Export CSV</button>
+        <button onClick="{{ exportXlsx }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">XLSX</button>
+      </div>
+      <div style="overflow-x:auto"><div style="min-width:980px">
+        <div style="display:grid; grid-template-columns:{{ gridCols }}; gap:10px; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span></span><sc-for list="{{ heads }}" as="h"><button onClick="{{ h.sort }}" style="border:none; background:transparent; padding:0; text-align:left; font:inherit; letter-spacing:inherit; text-transform:inherit; color:inherit; cursor:pointer">{{ h.n }} {{ h.arrow }}</button></sc-for></div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+          <div style="display:grid; grid-template-columns:{{ gridCols }}; gap:10px; align-items:center; padding:8px 16px; border-bottom:1px solid #E8DFC9; font-size:12.5px; background:{{ r.bg }}">
+            <input type="checkbox" checked="{{ r.sel }}" onChange="{{ r.toggle }}" style="accent-color:#191510"></input>
+            <sc-for list="{{ r.cells }}" as="cell"><span style="min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:{{ cell.fw }}; color:{{ cell.c }}">
+              <sc-if value="{{ cell.edit }}"><input value="{{ cell.v }}" onChange="{{ cell.onEdit }}" style="width:100%; height:28px; padding:0 6px; border-radius:7px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; font-weight:600"></input></sc-if>
+              <sc-if value="{{ cell.link }}"><a href="#" onClick="{{ cell.link }}">{{ cell.v }}</a></sc-if>
+              <sc-if value="{{ cell.plain }}">{{ cell.v }}</sc-if>
+            </span></sc-for>
+          </div>
+        </sc-for>
+      </div></div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.forecast }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; gap:12px; overflow-x:auto; padding-bottom:10px; align-items:flex-start">
+      <sc-for list="{{ fcols }}" as="col">
+        <div onDragOver="{{ allowDrop }}" onDrop="{{ col.drop }}" style="flex:0 0 270px; display:flex; flex-direction:column; gap:8px; border-radius:18px; padding:10px; background:#F2EAD6; min-height:380px">
+          <div style="padding:4px 4px 10px; border-bottom:1px solid #E8DFC9"><b style="font-size:14px">{{ col.m }}</b>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-top:8px; font-size:11px; color:#5F5849"><span style="display:flex; flex-direction:column">Open<b style="font-size:12.5px; color:#191510">{{ col.open }}</b></span><span style="display:flex; flex-direction:column">Won<b style="font-size:12.5px; color:#2F5D2A">{{ col.won }}</b></span><span style="display:flex; flex-direction:column">Projected<b style="font-size:12.5px; color:#191510">{{ col.proj }}</b></span></div>
+          </div>
+          <sc-for list="{{ col.cards }}" as="c"><div draggable="{{ c.draggable }}" onDragStart="{{ c.dragStart }}" onClick="{{ c.open }}" style="padding:9px 11px; border-radius:13px; background:{{ c.bg }}; border:1px solid #E8DFC9; cursor:pointer; display:flex; flex-direction:column; gap:4px"><b style="font-size:12.5px">{{ c.title }}</b><span style="display:flex; justify-content:space-between; font-size:11.5px; color:#5F5849"><span>{{ c.stageName }} · {{ c.prob }} %</span><b style="color:#191510">{{ c.valueF }}</b></span></div></sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.archive }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:16px">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Archived deals</b><span style="font-size:12px; color:#5F5849">Out of active views · history kept</span></div>
+        <sc-for list="{{ archived }}" as="d"><div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><span style="display:flex; flex-direction:column"><b>{{ d.title }}</b><span style="font-size:11.5px; color:#5F5849">{{ d.valueF }} · archived {{ d.when }}</span></span><button onClick="{{ d.unarchive }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Unarchive</button></div></sc-for>
+        <sc-if value="{{ noArchived }}"><div style="padding:24px; text-align:center; font-size:13px; color:#5F5849">Nothing archived yet.</div></sc-if>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Deleted — restorable for 30 days</b><span style="font-size:12px; color:#5F5849">Returns to the stage it left</span></div>
+        <sc-for list="{{ deleted }}" as="d"><div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><span style="display:flex; flex-direction:column"><b>{{ d.title }}</b><span style="font-size:11.5px; color:#5F5849">{{ d.stageName }} · deleted by {{ d.by }} · {{ d.left }} days left</span></span><button onClick="{{ d.restore }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Restore</button></div></sc-for>
+        <sc-if value="{{ noDeleted }}"><div style="padding:24px; text-align:center; font-size:13px; color:#5F5849">No deleted deals in the last 30 days.</div></sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.products }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+      <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:center"><b style="font-size:15px">Product catalog</b><div style="display:flex; gap:8px; align-items:center"><span style="font-size:12px; color:#5F5849">Default currency NOK · EUR and SEK converted daily</span><button style="height:32px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700">＋ Product</button></div></div>
+      <div style="display:grid; grid-template-columns:minmax(0,1.6fr) 110px 80px 100px 90px 90px 70px 110px minmax(0,1fr); gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Product</span><span>Code</span><span>Unit</span><span>NOK</span><span>EUR</span><span>SEK</span><span>Tax</span><span>Billing</span><span>Variations</span></div>
+      <sc-for list="{{ catalog }}" as="p"><div style="display:grid; grid-template-columns:minmax(0,1.6fr) 110px 80px 100px 90px 90px 70px 110px minmax(0,1fr); gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; align-items:center; gap:8px"><span style="width:10px; height:10px; border-radius:3px; background:{{ p.color }}; border:1px solid rgba(25,21,16,.15)"></span><b>{{ p.n }}</b></span><span style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px">{{ p.code }}</span><span>{{ p.unit }}</span><b>{{ p.nok }}</b><span>{{ p.eur }}</span><span>{{ p.sek }}</span><span>{{ p.tax }}</span><span>{{ p.bill }}</span><span style="color:#5F5849; font-size:12px">{{ p.vars }}</span></div></sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ deal }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDeal }}" style="position:fixed; inset:0; z-index:80; background:rgba(25,21,16,.42); display:flex; justify-content:flex-end">
+      <div onClick="{{ stop }}" style="width:min(980px,100%); height:100%; overflow:auto; background:#FCF6E9; box-shadow:0 34px 80px rgba(25,21,16,.3); display:flex; flex-direction:column">
+        <div style="position:sticky; top:0; z-index:5; background:#FFFDF6; border-bottom:1px solid #E8DFC9; padding:16px 22px; display:flex; flex-direction:column; gap:12px">
+          <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:flex-start">
+            <div style="flex:1 1 320px; min-width:0"><div style="font-size:12px; color:#5F5849">{{ deal.idLabel }} · {{ deal.pipelineName }} · source {{ deal.source }}</div><div style="font-family:'Playfair Display',serif; font-size:23px; font-weight:600; line-height:1.2; margin-top:3px">{{ deal.title }}</div><div style="font-size:13px; color:#3A342A; margin-top:3px"><b>{{ deal.valueF }}</b> · {{ deal.orgName }} · {{ deal.personName }}</div></div>
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap">
+              <select value="{{ deal.owner }}" onChange="{{ setOwner }}" style="height:34px; border-radius:10px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12.5px; font-weight:600"><option value="ingrid">Ingrid Solberg</option><option value="eirik">Eirik Moen</option><option value="tor">Tor Lambrechts</option></select>
+              <button onClick="{{ toggleFollow }}" style="height:34px; padding:0 11px; border-radius:10px; border:1px solid {{ deal.fbc }}; background:{{ deal.fbg }}; font-size:12.5px; font-weight:600; cursor:pointer">{{ deal.followLabel }} · {{ deal.followers }}</button>
+              <button onClick="{{ markWon }}" style="height:34px; padding:0 14px; border-radius:10px; border:1px solid #2F5D2A; background:#CFE7E4; color:#20431C; font-size:12.5px; font-weight:700; cursor:pointer">Won</button>
+              <button onClick="{{ markLost }}" style="height:34px; padding:0 14px; border-radius:10px; border:1px solid #E38258; background:#FBD5C4; color:#6B240C; font-size:12.5px; font-weight:700; cursor:pointer">Lost</button>
+              <select onChange="{{ moreAction }}" value="" style="height:34px; border-radius:10px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12.5px"><option value="">More …</option><option value="dup">Duplicate with products</option><option value="lead">Convert back to lead</option><option value="archive">Archive</option><option value="delete">Delete</option></select>
+              <button onClick="{{ closeDeal }}" style="width:32px; height:32px; border-radius:999px; border:1px solid #191510; background:transparent; cursor:pointer">×</button>
+            </div>
+          </div>
+          <div style="display:flex; gap:3px">
+            <sc-for list="{{ deal.progress }}" as="s"><button onClick="{{ s.go }}" title="{{ s.tip }}" style="flex:1; display:flex; flex-direction:column; align-items:flex-start; gap:2px; padding:7px 10px; border:none; border-radius:9px; background:{{ s.bg }}; cursor:pointer; text-align:left"><span style="font-size:11.5px; font-weight:{{ s.fw }}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%">{{ s.name }}</span><span style="font-size:10.5px; color:#5F5849">{{ s.days }}</span></button></sc-for>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:minmax(280px,330px) minmax(0,1fr); gap:16px; padding:18px 22px">
+          <div style="display:flex; flex-direction:column; gap:12px">
+            <div style="background:#191510; color:#FCF6E9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:8px">
+              <div style="display:flex; gap:8px; align-items:center"><img src="assets/assistant.png" alt="" width="24" height="24" style="border-radius:7px; background:#FCF6E9"></img><b style="font-size:12.5px">{{ deal.ai.head }}</b></div>
+              <div style="font-size:12.5px; line-height:1.5; color:#F2EAD6">{{ deal.ai.text }}</div>
+              <button onClick="{{ aiAction }}" style="align-self:flex-start; height:30px; padding:0 12px; border-radius:9px; border:1px solid #F5C64A; background:#F5C64A; color:#191510; font-size:12px; font-weight:700; cursor:pointer">{{ deal.ai.cta }}</button>
+            </div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:8px">
+              <div style="display:flex; justify-content:space-between"><span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">Summary</span><span style="font-size:11px; color:#8A8272">drag sections to reorder</span></div>
+              <sc-for list="{{ deal.summary }}" as="r"><div style="display:flex; justify-content:space-between; gap:10px; font-size:12.5px"><span style="color:#5F5849">{{ r.k }}</span><b style="text-align:right; color:{{ r.c }}">{{ r.v }}</b></div></sc-for>
+              <div style="display:flex; flex-wrap:wrap; gap:4px; padding-top:4px"><sc-for list="{{ deal.labelOpts }}" as="l"><button onClick="{{ l.toggle }}" style="font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; border:1px solid {{ l.bc }}; background:{{ l.bg }}; color:{{ l.c }}; cursor:pointer">{{ l.n }}</button></sc-for></div>
+            </div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:7px">
+              <span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">Score {{ deal.score }} — why</span>
+              <sc-for list="{{ deal.scoreWhy }}" as="w"><div style="display:flex; justify-content:space-between; gap:8px; font-size:12px"><span style="color:{{ w.c }}">{{ w.mark }} {{ w.n }}</span><b style="color:{{ w.c }}">{{ w.p }}</b></div></sc-for>
+            </div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:7px">
+              <span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">Details · custom fields</span>
+              <sc-for list="{{ deal.details }}" as="r"><div style="display:flex; justify-content:space-between; gap:10px; font-size:12.5px"><span style="color:#5F5849">{{ r.k }} <span style="color:#8A8272">{{ r.tag }}</span></span><b style="text-align:right">{{ r.v }}</b></div></sc-for>
+            </div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:7px">
+              <span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">Person · organization · participants</span>
+              <sc-for list="{{ deal.people }}" as="p"><div style="display:flex; gap:8px; align-items:center; font-size:12.5px"><span style="width:26px; height:26px; border-radius:8px; background:#F2EAD6; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700">{{ p.ini }}</span><span style="display:flex; flex-direction:column; min-width:0"><b>{{ p.name }}</b><span style="font-size:11.5px; color:#5F5849">{{ p.line }}</span></span></div></sc-for>
+              <button onClick="{{ addParticipant }}" style="align-self:flex-start; height:28px; padding:0 10px; border-radius:9px; border:1px dashed #C4BCA8; background:transparent; font-size:12px; font-weight:600; cursor:pointer">＋ Participant</button>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0">
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px"><b style="font-size:14px">Products</b><span style="font-size:12px; color:#5F5849">Deal value is calculated from lines</span></div>
+              <div style="display:grid; grid-template-columns:minmax(0,1.6fr) 60px 90px 70px 100px 100px; gap:8px; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#5F5849; padding-bottom:6px; border-bottom:1px solid #E8DFC9"><span>Product</span><span>Qty</span><span>Price</span><span>Disc. %</span><span>Billing</span><span style="text-align:right">Total</span></div>
+              <sc-for list="{{ deal.lines }}" as="l"><div style="display:grid; grid-template-columns:minmax(0,1.6fr) 60px 90px 70px 100px 100px; gap:8px; align-items:center; font-size:12.5px; padding:6px 0; border-bottom:1px solid #E8DFC9"><b>{{ l.n }}</b><input value="{{ l.qty }}" onChange="{{ l.setQty }}" style="width:52px; height:28px; padding:0 6px; border-radius:7px; border:1px solid #E8DFC9; background:#FCF6E9"></input><span>{{ l.price }}</span><input value="{{ l.disc }}" onChange="{{ l.setDisc }}" style="width:52px; height:28px; padding:0 6px; border-radius:7px; border:1px solid #E8DFC9; background:#FCF6E9"></input><span style="color:#5F5849">{{ l.bill }}</span><b style="text-align:right">{{ l.total }}</b></div></sc-for>
+              <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:10px"><sc-for list="{{ deal.rev }}" as="r"><div style="border-radius:12px; background:#FCF6E9; border:1px solid #E8DFC9; padding:8px 10px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; color:#5F5849">{{ r.k }}</div><b style="font-size:14px">{{ r.v }}</b></div></sc-for></div>
+            </div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; overflow:hidden">
+              <div style="display:flex; gap:2px; padding:6px; border-bottom:1px solid #E8DFC9; background:#FCF6E9"><sc-for list="{{ composerTabs }}" as="c"><button onClick="{{ c.pick }}" style="padding:6px 11px; border-radius:9px; border:none; font-size:12.5px; cursor:pointer; background:{{ c.bg }}; font-weight:{{ c.fw }}">{{ c.n }}</button></sc-for></div>
+              <textarea value="{{ cDraft }}" onChange="{{ setCDraft }}" placeholder="{{ cPh }}" style="display:block; width:100%; min-height:80px; padding:12px 14px; border:none; background:transparent; font-size:13px; resize:vertical; outline:none"></textarea>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-top:1px solid #E8DFC9"><span style="font-size:11.5px; color:#8A8272">{{ cHint }}</span><button onClick="{{ cSave }}" style="height:32px; padding:0 14px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">{{ cCta }}</button></div>
+            </div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px">
+              <div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849; margin-bottom:8px">Focus</div>
+              <sc-for list="{{ deal.focus }}" as="f"><div style="display:flex; gap:10px; align-items:center; padding:7px 0; border-bottom:1px solid #E8DFC9; font-size:12.5px"><button onClick="{{ f.done }}" style="width:20px; height:20px; border-radius:999px; border:1.5px solid #191510; background:transparent; cursor:pointer"></button><span style="flex:1"><b>{{ f.subject }}</b> <span style="color:#5F5849">· {{ f.when }}</span></span><span style="font-size:11.5px; font-weight:700; color:{{ f.pc }}">{{ f.prio }}</span></div></sc-for>
+              <sc-if value="{{ deal.noFocus }}"><div style="font-size:12.5px; color:#8A6A00; padding:6px 0">⚠ No next step planned — schedule an activity to keep the deal moving.</div></sc-if>
+            </div>
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px">
+              <div style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px"><sc-for list="{{ histFilters }}" as="h"><button onClick="{{ h.pick }}" style="padding:4px 10px; border-radius:999px; font-size:11.5px; cursor:pointer; border:1px solid {{ h.bc }}; background:{{ h.bg }}; color:{{ h.c }}; font-weight:{{ h.fw }}">{{ h.n }}</button></sc-for></div>
+              <sc-for list="{{ deal.history }}" as="h"><div style="display:grid; grid-template-columns:26px minmax(0,1fr) auto; gap:10px; padding:9px 0; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="width:24px; height:24px; border-radius:7px; background:{{ h.bg }}; display:flex; align-items:center; justify-content:center; font-size:11px">{{ h.g }}</span><span style="display:flex; flex-direction:column; gap:2px; min-width:0"><b>{{ h.t }}</b><span style="color:#5F5849; line-height:1.45">{{ h.s }}</span></span><span style="font-size:11px; color:#8A8272; white-space:nowrap">{{ h.when }}</span></div></sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed; inset:0; z-index:90; background:rgba(25,21,16,.42); display:flex; align-items:center; justify-content:center; padding:20px">
+      <div onClick="{{ stop }}" style="width:460px; max-width:100%; background:#FFFDF6; border-radius:22px; box-shadow:0 34px 80px rgba(25,21,16,.3); padding:22px 24px; display:flex; flex-direction:column; gap:12px">
+        <div style="font-family:'Playfair Display',serif; font-size:21px; font-weight:600">{{ modal.title }}</div>
+        <div style="font-size:13px; color:#3A342A; line-height:1.5">{{ modal.text }}</div>
+        <sc-if value="{{ modal.reasons }}"><div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ lostReasons }}" as="r"><button onClick="{{ r.pick }}" style="padding:7px 12px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ r.bc }}; background:{{ r.bg }}; font-weight:{{ r.fw }}">{{ r.n }}</button></sc-for></div></sc-if>
+        <input value="{{ mInput }}" onChange="{{ setMInput }}" placeholder="{{ modal.ph }}" style="height:40px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></input>
+        <div style="display:flex; justify-content:flex-end; gap:8px"><button onClick="{{ closeModal }}" style="height:38px; padding:0 15px; border-radius:11px; border:1px solid #E8DFC9; background:transparent; font-size:13px; font-weight:600; cursor:pointer">Cancel</button><button onClick="{{ modalOk }}" style="height:38px; padding:0 17px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">{{ modal.cta }}</button></div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { view: 'pipeline', pipeline: 'new', deals: null, owner: 'Everyone', label: 'Any label', status: 'Open', showClosed: false, advOpen: false, conds: [], customOpen: false, cardF: { org: true, value: true, close: true, score: true }, viewAs: 'tor', drag: null, open: null, modal: null, mInput: '', lostReason: null, toast: null, log: {}, sel: {}, sort: [['value', -1]], colsOpen: false, cols: { id: false, title: true, org: true, value: true, stage: true, owner: true, close: true, score: true, source: true, labels: true }, archived: [], deleted: [], ctab: 'Note', cDraft: '', hist: 'All', lines: {}, follow: {}, ready: !!window.SA };
+  componentDidMount() {
+    const init = () => { const f = this.props.focus; this.setState({ deals: window.SA.deals.map((d) => ({ ...d, decisionMaker: d.score > 50 ? 'Daglig leder' : null })), open: f && f.deal ? f.deal : null }); };
+    if (window.SA) init(); else this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); init(); } }, 40);
+  }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  stageOf(id) { for (const p of window.SA.pipelines) for (const s of p.stages) if (s.id === id) return { ...s, pipeline: p }; return null; }
+  addLog(id, entry) { this.setState((s) => ({ log: { ...s.log, [id]: [{ when: 'Just now', ...entry }, ...(s.log[id] || [])] } })); }
+  update(id, patch, logEntries) {
+    this.setState((s) => { const deals = s.deals.map((d) => (d.id === id ? { ...d, ...patch } : d)); window.SA.deals = deals; return { deals }; });
+    (logEntries || []).forEach((e) => this.addLog(id, e));
+  }
+  moveStage(d, stageId) {
+    const to = this.stageOf(stageId), from = this.stageOf(d.stage);
+    if (to.id === 's5' && !d.decisionMaker) { this.setState({ modal: { kind: 'required', id: d.id, stage: stageId, title: 'Required before Negotiation', text: '«Decision maker» is required from the Negotiation stage (field quality rule). Fill it to complete the move.', ph: 'e.g. Daglig leder', cta: 'Save and move' }, mInput: '' }); return; }
+    this.update(d.id, { stage: stageId, idle: 0, act: d.act === 'overdue' ? 'planned' : d.act }, [{ k: 'Changelog', t: 'Stage changed', s: 'Stage: ' + from.name + ' → ' + to.name + ' · source: user · event deal.stage_changed', g: '↔' }]);
+    this.flash('Moved to ' + to.name + (d.followers.length ? ' · followers notified' : ''));
+  }
+  renderVals() {
+    const D = window.SA; const st = this.state; const go = this.props.go || (() => {});
+    if (!D || !st.deals) return { views: [], pipelines: [], quick: [], conds: [], savedFilters: [], columns: [], dropZones: [], cardFields: [], summary: { count: '', value: '', weighted: '' }, advLabel: '', v: {}, heads: [], rows: [], colOpts: [], stageOpts: [], fcols: [], archived: [], deleted: [], catalog: [], composerTabs: [], histFilters: [], lostReasons: [] };
+    const readOnly = st.viewAs === 'ola';
+    const views = [['pipeline', 'Pipeline'], ['list', 'List'], ['forecast', 'Forecast'], ['archive', 'Archive and restore'], ['products', 'Products']].map(([k, n]) => ({ n, pick: () => this.setState({ view: k }), bg: st.view === k ? '#FFFDF6' : 'transparent', fw: st.view === k ? 700 : 500 }));
+    const pl = D.pipelines.find((p) => p.id === st.pipeline);
+    const viz = ['#F6D9C6', '#DCEBD3', '#CFE0F5', '#F3E2C9', '#E7DAF2'];
+    const labelBy = Object.fromEntries(D.labelDefs.map((l) => [l.n, l]));
+    const quick = [['owner', 'Owner', ['Everyone', 'Ingrid Solberg', 'Eirik Moen', 'Tor Lambrechts']], ['label', 'Label', ['Any label', ...D.labelDefs.map((l) => l.n)]], ['status', 'Status', ['Open', 'Won', 'Lost', 'All']]].map(([k, n, opts]) => ({ n, opts, value: st[k], bc: st[k] !== opts[0] ? '#191510' : '#E8DFC9', set: (e) => this.setState({ [k]: e.target.value }) }));
+    const condTest = (d) => { if (!st.conds.length) return true; const groups = []; st.conds.forEach((c) => { if (c.join === 'OR' || !groups.length) groups.push([c]); else groups[groups.length - 1].push(c); });
+      return groups.some((g) => g.every((c) => { const val = { Value: d.value, Score: d.score, 'Idle days': d.idle, Source: d.source, Label: d.labels.join(',') }[c.field]; const n = parseFloat(c.val); if (c.op === '>') return val > n; if (c.op === '<') return val < n; if (c.op === 'contains') return String(val).toLowerCase().includes(c.val.toLowerCase()); return String(val).toLowerCase() === c.val.toLowerCase(); })); };
+    const ownerId = { 'Ingrid Solberg': 'ingrid', 'Eirik Moen': 'eirik', 'Tor Lambrechts': 'tor' }[st.owner];
+    const statusOk = (d) => st.status === 'All' || st.showClosed || d.status === st.status.toLowerCase();
+    const filtered = st.deals.filter((d) => !st.archived.includes(d.id) && !(d.id === 'd130' && !st.restoredSeed) && !st.deleted.some((x) => x.id === d.id) && statusOk(d) && (!ownerId || d.owner === ownerId) && (st.label === 'Any label' || d.labels.includes(st.label)) && condTest(d));
+    const inPl = filtered.filter((d) => d.pipeline === st.pipeline);
+    const sumV = inPl.reduce((a, d) => a + d.value, 0), wV = inPl.reduce((a, d) => a + d.value * (this.stageOf(d.stage).prob / 100), 0);
+    const cardOf = (d) => { const s = this.stageOf(d.stage); const rot = d.status === 'open' && d.idle > s.rot; const actG = d.act === 'overdue' ? '!' : d.act === 'none' ? '⚠' : '◷';
+      return { ...d, f: st.cardF, orgName: D.orgById[d.org].name, ownerIni: D.staffById[d.owner].ini, valueF: D.kr(d.value), labels: d.labels.map((n) => labelBy[n] || { n, bg: '#F2EAD6', c: '#191510' }), actG, actC: d.act === 'overdue' ? '#A33A16' : d.act === 'none' ? '#8A6A00' : '#2F5D2A', actTip: d.act === 'overdue' ? 'Activity overdue' : d.act === 'none' ? 'No planned activity' : 'Next activity planned', rotting: rot, bg: d.status === 'won' ? '#CFE7E4' : d.status === 'lost' ? '#EFE6D2' : rot ? '#FBD5C4' : '#FFFDF6', bc: rot ? '#E38258' : '#E8DFC9', sbg: d.score >= 70 ? '#CFE7E4' : d.score >= 40 ? '#FBEBBE' : '#FBD5C4', stageName: s.name, prob: s.prob, draggable: !readOnly,
+        dragStart: (e) => { if (readOnly) { e.preventDefault(); this.flash('View rights only — you cannot move this deal'); return; } e.dataTransfer.setData('text/plain', d.id); this.setState({ drag: d.id }); }, open: () => this.setState({ open: d.id }) }; };
+    const dropOn = (fn) => (e) => { e.preventDefault(); const id = e.dataTransfer.getData('text/plain') || st.drag; const d = st.deals.find((x) => x.id === id); this.setState({ drag: null }); if (d && !readOnly) fn(d); };
+    const columns = pl.stages.map((s, i) => { const cs = inPl.filter((d) => d.stage === s.id); return { ...s, c: viz[i % 5], count: cs.length, sum: D.kr(cs.reduce((a, d) => a + d.value, 0)), cards: cs.map(cardOf), bg: st.drag ? '#F7EDD2' : '#F2EAD6', bc: st.drag ? '#C4BCA8' : 'transparent', drop: dropOn((d) => { if (d.stage !== s.id) this.moveStage(d, s.id); }) }; });
+    const dropZones = [
+      { n: 'Won', bc: '#2F5D2A', bg: '#CFE7E4', c: '#20431C', drop: dropOn((d) => { this.update(d.id, { status: 'won' }, [{ k: 'Changelog', t: 'Marked as won', s: 'Status: open → won · source: user', g: '✓' }]); this.flash('Won · ' + d.title); }) },
+      { n: 'Lost', bc: '#E38258', bg: '#FBD5C4', c: '#6B240C', drop: dropOn((d) => this.setState({ open: d.id, modal: { kind: 'lost', id: d.id, title: 'Why was it lost?', text: 'The reason becomes a reporting dimension. An optional comment is saved as a note.', ph: 'Comment (optional)', cta: 'Mark as lost', reasons: true }, mInput: '', lostReason: null })) },
+      { n: 'Archive', bc: '#C4BCA8', bg: '#FFFDF6', c: '#5F5849', drop: dropOn((d) => { this.setState({ archived: [...st.archived, d.id] }); this.flash('Archived · findable in the archive view'); }) },
+      { n: 'Delete', bc: '#A33A16', bg: '#FFFDF6', c: '#A33A16', drop: dropOn((d) => { this.setState({ deleted: [...st.deleted, { id: d.id, by: D.staffById[st.viewAs].name }] }); this.flash('Deleted · restorable for 30 days'); }) },
+    ];
+    const cardFields = [['org', 'Organization'], ['value', 'Value'], ['close', 'Expected close date'], ['score', 'Deal score']].map(([k, n]) => ({ n, on: !!st.cardF[k], toggle: () => this.setState({ cardF: { ...st.cardF, [k]: !st.cardF[k] } }) }));
+    const conds = st.conds.map((c, i) => ({ ...c, join: i === 0 ? 'Where' : c.join, setField: (e) => this.setC(i, 'field', e.target.value), setOp: (e) => this.setC(i, 'op', e.target.value), setVal: (e) => this.setC(i, 'val', e.target.value), remove: () => this.setState({ conds: st.conds.filter((_, j) => j !== i) }) }));
+    const savedFilters = [['Big and stuck', [{ join: 'AND', field: 'Value', op: '>', val: '80000' }, { join: 'AND', field: 'Idle days', op: '>', val: '10' }]], ['Hot or high score', [{ join: 'AND', field: 'Label', op: 'contains', val: 'Hot' }, { join: 'OR', field: 'Score', op: '>', val: '80' }]], ['From prospect search', [{ join: 'AND', field: 'Source', op: 'is', val: 'Prospect search' }]]].map(([n, c]) => ({ n, apply: () => this.setState({ conds: c }) }));
+    // list
+    const COLS = [['id', 'System ID', '80px'], ['title', 'Title', 'minmax(200px,2fr)'], ['org', 'Organization', 'minmax(140px,1.2fr)'], ['value', 'Value', '110px'], ['stage', 'Stage', '120px'], ['owner', 'Owner', '110px'], ['close', 'Close', '70px'], ['score', 'Score', '60px'], ['source', 'Source', '120px'], ['labels', 'Labels', '110px']].filter(([k]) => st.cols[k]);
+    const key = { id: (d) => d.id, title: (d) => d.title, org: (d) => D.orgById[d.org].name, value: (d) => d.value, stage: (d) => this.stageOf(d.stage).prob, owner: (d) => d.owner, close: (d) => d.close, score: (d) => d.score, source: (d) => d.source, labels: (d) => d.labels.join() };
+    const sorted = [...filtered].sort((a, b) => { for (const [k, dir] of st.sort) { const x = key[k](a), y = key[k](b); if (x < y) return -dir; if (x > y) return dir; } return 0; });
+    const heads = COLS.map(([k, n]) => { const i = st.sort.findIndex((s) => s[0] === k); return { n, arrow: i >= 0 ? (st.sort[i][1] > 0 ? '↑' : '↓') + (st.sort.length > 1 ? i + 1 : '') : '', sort: (e) => { const cur = st.sort.find((s) => s[0] === k); const nd = cur ? -cur[1] : 1; this.setState({ sort: e.shiftKey ? [...st.sort.filter((s) => s[0] !== k), [k, nd]] : [[k, nd]] }); } }; });
+    const rows = sorted.map((d) => ({ sel: !!st.sel[d.id], bg: st.sel[d.id] ? '#FBEBBE' : 'transparent', toggle: () => this.setState({ sel: { ...st.sel, [d.id]: !st.sel[d.id] } }),
+      cells: COLS.map(([k]) => { const s = this.stageOf(d.stage);
+        if (k === 'value') return { edit: !readOnly, plain: readOnly, v: readOnly ? D.kr(d.value) : String(d.value), fw: 600, onEdit: (e) => { const n = parseInt(e.target.value.replace(/\D/g, ''), 10) || 0; this.update(d.id, { value: n }, [{ k: 'Changelog', t: 'Value edited inline', s: 'Value: ' + D.kr(d.value) + ' → ' + D.kr(n) + ' · source: user', g: '✎' }]); } };
+        if (k === 'title') return { link: (e) => { e.preventDefault(); this.setState({ open: d.id }); }, v: d.title, fw: 600 };
+        const v = { id: d.id, org: D.orgById[d.org].name, stage: s.name + (d.status !== 'open' ? ' · ' + d.status : ''), owner: D.staffById[d.owner].name, close: d.close, score: String(d.score), source: d.source, labels: d.labels.join(', ') || '—' }[k];
+        return { plain: true, v, fw: 400, c: k === 'id' ? '#8A8272' : '#191510' }; }) }));
+    const gridCols = '26px ' + COLS.map((c) => c[2]).join(' ');
+    const selIds = Object.keys(st.sel).filter((k) => st.sel[k]);
+    const bulk = (patch, label) => { selIds.forEach((id) => { const d = st.deals.find((x) => x.id === id); this.update(id, patch, [{ k: 'Changelog', t: 'Bulk edit', s: label(d) + ' · source: user (bulk)', g: '✎' }]); }); this.setState({ sel: {} }); this.flash('Bulk edit · one changelog entry per changed deal (' + selIds.length + ')'); };
+    const colOpts = [['id', 'System ID'], ['org', 'Organization'], ['value', 'Value'], ['stage', 'Stage'], ['owner', 'Owner'], ['close', 'Close'], ['score', 'Score'], ['source', 'Source'], ['labels', 'Labels']].map(([k, n]) => ({ n, on: !!st.cols[k], toggle: () => this.setState({ cols: { ...st.cols, [k]: !st.cols[k] } }) }));
+    // forecast
+    const months = ['Oct', 'Nov', 'Dec', 'Jan'];
+    const fcols = months.map((m) => { const cs = filtered.filter((d) => d.pipeline === st.pipeline && d.closeMonth === m); const open = cs.filter((d) => d.status === 'open'), won = cs.filter((d) => d.status === 'won');
+      return { m: m + (m === 'Jan' ? ' 2027' : ' 2026'), open: D.kr(open.reduce((a, d) => a + d.value, 0)), won: D.kr(won.reduce((a, d) => a + d.value, 0)), proj: D.kr(won.reduce((a, d) => a + d.value, 0) + open.reduce((a, d) => a + d.value * this.stageOf(d.stage).prob / 100, 0)), cards: cs.map(cardOf),
+        drop: dropOn((d) => { if (d.closeMonth !== m) { this.update(d.id, { closeMonth: m, close: '15 ' + m }, [{ k: 'Changelog', t: 'Expected close date changed', s: 'Close: ' + d.close + ' → 15 ' + m + ' · source: user (forecast)', g: '↔' }]); this.flash('Expected close moved to ' + m); } }) }; });
+    const archived = st.archived.map((id) => { const d = st.deals.find((x) => x.id === id); return { ...d, valueF: D.kr(d.value), when: 'today', unarchive: () => { this.setState({ archived: st.archived.filter((x) => x !== id) }); this.flash('Back in the pipeline'); } }; });
+    const deleted = [...st.deleted, { id: 'd130', by: 'Eirik Moen', seed: true }].map((x) => { const d = st.deals.find((y) => y.id === x.id); return { ...d, by: x.by, stageName: this.stageOf(d.stage).name, left: x.seed ? 22 : 30, restore: () => { this.setState({ deleted: st.deleted.filter((y) => y.id !== x.id), restoredSeed: x.seed ? true : st.restoredSeed }); this.flash('Restored to ' + this.stageOf(d.stage).name + ' with links intact'); } }; }).filter((x) => !(x.left === 22 && st.restoredSeed));
+    const catalog = [['Orgpuls — 1–25 employees', 'OP-B1', 'org / month', 265, '#DCEBD3', 'Monthly', 'Annual −2 months'], ['Orgpuls — 26–100 employees', 'OP-B2', 'org / month', 565, '#DCEBD3', 'Monthly', 'Annual −2 months · Partner −20 %'], ['Orgpuls — 101–250 employees', 'OP-B3', 'org / month', 1190, '#DCEBD3', 'Monthly', 'Annual −2 months'], ['Skiftly — per seat', 'SK-SEAT', 'seat / month', 39, '#CFE0F5', 'Monthly', 'Volume 50+ seats 32 kr'], ['Avvikspunkt — company', 'AV-CO', 'org / month', 390, '#F6D9C6', 'Monthly', 'Municipality price'], ['Kursrom — course pack', 'KR-PACK', 'pack', 4900, '#E7DAF2', 'One-off', 'Installments 3 × 1 700'], ['Onboarding workshop', 'SRV-ONB', 'session', 7500, '#F3E2C9', 'One-off', 'Remote / on site'], ['Verneombud training', 'SRV-VO', 'participant', 1490, '#F3E2C9', 'One-off', '—']].map(([n, code, unit, nok, color, bill, vars]) => ({ n, code, unit, nok: D.kr(nok), eur: '€ ' + Math.round(nok / 11.6), sek: Math.round(nok * 1.02) + ' SEK', tax: '25 %', color, bill, vars }));
+    // deal detail
+    let deal = null;
+    const od = st.open ? st.deals.find((x) => x.id === st.open) : null;
+    if (od) {
+      const s = this.stageOf(od.stage); const p = D.personById[od.person]; const o = D.orgById[od.org];
+      const stages = s.pipeline.stages; const idx = stages.findIndex((x) => x.id === od.stage);
+      const progress = stages.map((x, i) => ({ name: x.name, days: i < idx ? (od.days[i % 3] || 3) + ' d' : i === idx ? (od.idle + 2) + ' d · now' : '', tip: x.name + ' · ' + x.prob + ' %', bg: i < idx ? '#CFE7E4' : i === idx ? '#F5C64A' : '#F2EAD6', fw: i === idx ? 700 : 500, go: () => (readOnly ? this.flash('View rights only') : this.moveStage(od, x.id)) }));
+      const defLines = od.id === 'd101' ? [{ n: 'Skiftly — per seat', qty: 48, price: 39, disc: 10, bill: 'Monthly · until canceled', rec: 12 }, { n: 'Onboarding workshop', qty: 1, price: 7500, disc: 0, bill: 'One-off', rec: 0 }] : [{ n: D.productById[od.product].name + ' — subscription', qty: 1, price: Math.round(od.value / 12), disc: 0, bill: 'Monthly · 12 cycles', rec: 12 }];
+      const lines = (st.lines[od.id] || defLines);
+      const setLine = (i, k) => (e) => { const n = parseFloat(e.target.value) || 0; const nl = lines.map((l, j) => (j === i ? { ...l, [k]: n } : l)); const val = nl.reduce((a, l) => a + l.qty * l.price * (1 - l.disc / 100) * (l.rec || 1), 0); this.setState({ lines: { ...st.lines, [od.id]: nl } }); this.update(od.id, { value: Math.round(val) }, [{ k: 'Changelog', t: 'Product line changed', s: l0(k) + ' on ' + lines[i].n + ' → ' + n + ' · deal value recalculated to ' + D.kr(val), g: '▦' }]); };
+      function l0(k) { return k === 'qty' ? 'Quantity' : 'Discount'; }
+      const mrr = lines.filter((l) => l.rec).reduce((a, l) => a + l.qty * l.price * (1 - l.disc / 100), 0);
+      const oneOff = lines.filter((l) => !l.rec).reduce((a, l) => a + l.qty * l.price * (1 - l.disc / 100), 0);
+      const why = [['Organization health ≥ 70', 25, o.health >= 70], ['Proposal link opened', 25, od.score > 60], ['Decision maker is a participant', 10, !!od.decisionMaker], ['Uses another application already', 10, o.products.length > 1], ['No reply in 5 days', -10, od.idle > 5], ['Value above 100 000 kr', 10, od.value > 100000]].map(([n, pts, hit]) => ({ n, p: (pts > 0 ? '+' : '−') + Math.abs(pts), mark: hit ? '✓' : '○', c: hit ? (pts > 0 ? '#20431C' : '#A33A16') : '#8A8272' }));
+      const acts = D.activities.filter((a) => a.deal === od.id);
+      const baseHist = [
+        { k: 'Emails', t: 'Email opened — «Forslag: Skiftly for lageret»', s: p.name + ' opened 2 times · clicked pricing link', g: '✉', bg: '#CFE0F5', when: 'Yesterday 18:42' },
+        { k: 'Documents', t: 'Proposal sent for signature', s: 'Tilbud-' + od.id + '.pdf · tracked link · 2 of 2 signers pending', g: '▤', bg: '#F3E2C9', when: '2 Oct' },
+        { k: 'Notes', t: 'Note by Ingrid Solberg — pinned', s: 'Budget decision at the October board meeting. Start with the two warehouse teams.', g: '✎', bg: '#FBEBBE', when: '28 Sep' },
+        { k: 'Activities', t: 'Discovery call — done', s: '30 min · outcome: interested · next: demo', g: '☎', bg: '#DCEBD3', when: '24 Sep' },
+        { k: 'Files', t: 'Skiftly-sikkerhet.pdf attached', s: '412 kB · visible to users who can see this deal', g: '▦', bg: '#F2EAD6', when: '24 Sep' },
+        { k: 'Engagement', t: 'Visited /skiftly/pris from lumio.no IP range', s: 'Web visitors · 3 pages · 4 min', g: '◉', bg: '#E4EEEC', when: '22 Sep' },
+        { k: 'Invoices', t: 'No invoice yet', s: 'Created in the accounting system when the deal is won', g: 'kr', bg: '#F2EAD6', when: '—' },
+        { k: 'Changelog', t: 'Value changed', s: 'Value: 52 000 kr → 64 000 kr · source: automation «Recalculate from products»', g: '✎', bg: '#F2EAD6', when: '21 Sep' },
+        { k: 'Changelog', t: 'Deal created', s: 'Source: ' + od.source + ' · owner assigned by rule «Round-robin sales»', g: '＋', bg: '#F2EAD6', when: od.created + ' d ago' },
+      ];
+      const history = [...(st.log[od.id] || []).map((e) => ({ ...e, bg: '#F5DC96' })), ...baseHist].filter((h) => st.hist === 'All' || h.k === st.hist);
+      const following = st.follow[od.id] != null ? st.follow[od.id] : od.followers.includes('tor');
+      deal = { ...od, idLabel: 'ID ' + od.id, pipelineName: s.pipeline.name, valueF: D.kr(od.value), orgName: o.name, personName: p.name, progress,
+        followLabel: following ? '✓ Following' : 'Follow', followers: od.followers.length + (following && !od.followers.includes('tor') ? 1 : 0) + ' followers', fbg: following ? '#FBEBBE' : 'transparent', fbc: following ? '#191510' : '#E8DFC9',
+        ai: od.idle > 5 ? { head: 'Slipping — 41 % chance to advance', text: 'No reply in ' + od.idle + ' days and the close date is ' + od.close + '. Deals like this advance twice as often after a call within 48 hours.', cta: 'Schedule a call tomorrow' } : { head: '72 % chance to advance this month', text: p.name.split(' ')[0] + ' opened the proposal twice yesterday. Suggest booking the walkthrough while interest is high.', cta: 'Send booking link' },
+        summary: [{ k: 'Value', v: D.kr(od.value) }, { k: 'Probability', v: s.prob + ' % (stage)' }, { k: 'Expected close', v: od.close + ' 2026' }, { k: 'Status', v: od.status, c: od.status === 'won' ? '#2F5D2A' : od.status === 'lost' ? '#A33A16' : '#191510' }, { k: 'Source', v: od.source }, { k: 'Lost reason', v: od.lostReason || '—' }],
+        labelOpts: D.labelDefs.map((l) => { const on = od.labels.includes(l.n); return { n: l.n, bg: on ? l.bg : 'transparent', c: on ? l.c : '#5F5849', bc: on ? 'transparent' : '#C4BCA8', toggle: () => this.update(od.id, { labels: on ? od.labels.filter((x) => x !== l.n) : [...od.labels, l.n] }, [{ k: 'Changelog', t: 'Labels changed', s: (on ? 'Removed ' : 'Added ') + l.n + ' · source: user', g: '✎' }]) }; }),
+        score: od.score, scoreWhy: why,
+        details: [{ k: 'Decision maker', v: od.decisionMaker || '—', tag: 'required from Negotiation' }, { k: 'Employees in scope', v: String(o.employees), tag: '' }, { k: 'Weighted value', v: D.kr(od.value * s.prob / 100), tag: 'formula · value × probability' }, { k: 'Competitor', v: od.id === 'd101' ? 'Planday' : '—', tag: 'single option' }, { k: 'Board meeting', v: '14 Oct 2026', tag: 'date · important' }],
+        people: [{ ini: p.ini, name: p.name, line: p.role + ' · ' + p.phone + ' · primary' }, { ini: o.name.slice(0, 2), name: o.name, line: o.orgnr + ' · ' + o.city + ' · health ' + o.health }, ...(od.participants ? [{ ini: 'MH', name: 'Mona Hansen', line: 'HR · participant' }, { ini: 'PA', name: 'Petter Aas', line: 'Shift lead · participant' }] : [])],
+        lines: lines.map((l, i) => ({ ...l, price: D.kr(l.price), total: D.kr(l.qty * l.price * (1 - l.disc / 100)) + (l.rec ? '/mo' : ''), setQty: setLine(i, 'qty'), setDisc: setLine(i, 'disc') })),
+        rev: [{ k: 'MRR', v: D.kr(mrr) }, { k: 'ARR', v: D.kr(mrr * 12) }, { k: 'ACV', v: D.kr(mrr * 12 + oneOff) }, { k: 'TCV', v: D.kr(mrr * 12 + oneOff) }],
+        focus: acts.filter((a) => !a.done).map((a) => ({ subject: a.subject, when: a.day === 0 ? 'today ' + a.hour + ':00' : (a.day > 0 ? 'in ' + a.day + ' d' : Math.abs(a.day) + ' d overdue'), prio: a.prio, pc: a.prio === 'High' ? '#A33A16' : '#5F5849', done: () => this.setState({ modal: { kind: 'next', id: od.id, title: 'Done — what is the next step?', text: '«' + a.subject + '» is marked done. Plan the next activity so the deal keeps moving.', ph: 'e.g. Send revised proposal Thursday', cta: 'Schedule next activity' }, mInput: '' }) })),
+        noFocus: acts.filter((a) => !a.done).length === 0, history };
+    }
+    const composerTabs = ['Note', 'Activity', 'Call', 'Email', 'Files', 'Documents', 'Invoice'].map((n) => ({ n, pick: () => this.setState({ ctab: n }), bg: st.ctab === n ? '#FFFDF6' : 'transparent', fw: st.ctab === n ? 700 : 500 }));
+    const C = { Note: ['Write a note — @mention to notify, pin to keep on top', 'Rich text · pinned notes stay on top', 'Save note'], Activity: ['Subject, e.g. «Walkthrough with shift leads»', 'Call · meeting · task · deadline · email · lunch', 'Schedule'], Call: ['Call outcome and notes', 'Click-to-call via the default calling app · logged with duration and recording', 'Log call'], Email: ['Write to ' + (od ? D.personById[od.person].name : '') + ' — participants are suggested', 'Templates · merge fields · open and click tracking on', 'Send'], Files: ['Drop files here', 'Files follow the deal’s visibility', 'Upload'], Documents: ['Create from template «Tilbud — standard»', 'Product table fills from the deal · e-signature', 'Create document'], Invoice: ['Create invoice in the accounting system', 'Uses person, organization and products of this deal', 'Create invoice'] }[st.ctab];
+    const histFilters = ['All', 'Notes', 'Activities', 'Emails', 'Files', 'Documents', 'Invoices', 'Engagement', 'Changelog'].map((n) => ({ n, pick: () => this.setState({ hist: n }), bg: st.hist === n ? '#191510' : 'transparent', c: st.hist === n ? '#FCF6E9' : '#191510', bc: st.hist === n ? '#191510' : '#C4BCA8', fw: st.hist === n ? 700 : 500 }));
+    const lostReasons = ['Price', 'Chose a competitor', 'No budget', 'Timing', 'No decision', 'Other'].map((n) => ({ n, pick: () => this.setState({ lostReason: n }), bg: st.lostReason === n ? '#FBEBBE' : 'transparent', bc: st.lostReason === n ? '#191510' : '#C4BCA8', fw: st.lostReason === n ? 700 : 500 }));
+    const modalOk = () => { const m = st.modal; const d = st.deals.find((x) => x.id === m.id);
+      if (m.kind === 'lost') { this.update(d.id, { status: 'lost', lostReason: st.lostReason || st.mInput || 'Other' }, [{ k: 'Changelog', t: 'Marked as lost', s: 'Reason: ' + (st.lostReason || 'Other') + (st.mInput ? ' · comment saved as note' : '') + ' · source: user', g: '×' }]); this.flash('Lost · reason recorded'); }
+      if (m.kind === 'required') { this.setState((s) => ({ deals: s.deals.map((x) => (x.id === d.id ? { ...x, decisionMaker: st.mInput || 'Daglig leder' } : x)) })); setTimeout(() => this.moveStage({ ...d, decisionMaker: st.mInput || 'Daglig leder' }, m.stage), 0); }
+      if (m.kind === 'next') { this.addLog(d.id, { k: 'Activities', t: 'Next activity scheduled', s: st.mInput || 'Follow-up', g: '◷' }); this.update(d.id, { act: 'planned', idle: 0 }); this.flash('Next step planned'); }
+      this.setState({ modal: null }); };
+    return {
+      views, v: { [st.view]: true }, pipelines: D.pipelines, pipeline: st.pipeline, pipelineName: pl.name, setPipeline: (e) => this.setState({ pipeline: e.target.value }), quick,
+      advOpen: st.advOpen, toggleAdv: () => this.setState({ advOpen: !st.advOpen }), advLabel: st.conds.length ? ' · ' + st.conds.length : '', advBc: st.conds.length ? '#191510' : '#E8DFC9', advBg: st.conds.length ? '#FBEBBE' : 'transparent', conds,
+      addAnd: () => this.setState({ conds: [...st.conds, { join: 'AND', field: 'Value', op: '>', val: '50000' }] }), addOr: () => this.setState({ conds: [...st.conds, { join: 'OR', field: 'Score', op: '>', val: '70' }] }), saveFilter: () => this.flash('Filter saved · shared with Sales team'), savedFilters,
+      toggleClosed: () => this.setState({ showClosed: !st.showClosed }), closedTrack: st.showClosed ? '#191510' : '#C4BCA8', closedKnob: st.showClosed ? 12 : 2,
+      viewAs: st.viewAs, setViewAs: (e) => this.setState({ viewAs: e.target.value }), readOnly,
+      newDeal: () => this.setState({ modal: { kind: 'new', title: 'New deal', text: 'A title is enough. Everything else can be added later, and every change is in the history.', ph: 'Deal title', cta: 'Create deal' }, mInput: '' }),
+      summary: { count: inPl.length, value: D.kr(sumV), weighted: D.kr(wV) }, columns, dropZones, dragging: !!st.drag, allowDrop: (e) => e.preventDefault(),
+      customOpen: st.customOpen, toggleCustom: () => this.setState({ customOpen: !st.customOpen }), cardFields,
+      heads, rows, gridCols, sortLabel: st.sort.map(([k, d]) => k + (d > 0 ? ' ↑' : ' ↓')).join(', then '), selCount: selIds.length || null, stageOpts: pl.stages,
+      bulkStage: (e) => { const sid = e.target.value; if (sid) bulk({ stage: sid }, (d) => 'Stage: ' + this.stageOf(d.stage).name + ' → ' + this.stageOf(sid).name); }, bulkOwner: (e) => { const o = e.target.value; if (o) bulk({ owner: o }, (d) => 'Owner: ' + D.staffById[d.owner].name + ' → ' + D.staffById[o].name); },
+      bulkDelete: () => { this.setState({ deleted: [...st.deleted, ...selIds.map((id) => ({ id, by: 'Tor Lambrechts' }))], sel: {} }); this.flash(selIds.length + ' deals deleted · preview shown · restorable 30 days'); },
+      colsOpen: st.colsOpen, toggleCols: () => this.setState({ colsOpen: !st.colsOpen }), colOpts, exportCsv: () => this.flash('CSV with ' + rows.length + ' visible rows and ' + COLS.length + ' columns · formulas neutralized'), exportXlsx: () => this.flash('XLSX export ready'),
+      fcols, archived, noArchived: archived.length === 0, deleted, noDeleted: deleted.length === 0, catalog,
+      deal, closeDeal: () => this.setState({ open: null }), stop: (e) => e.stopPropagation(),
+      setOwner: (e) => this.update(od.id, { owner: e.target.value }, [{ k: 'Changelog', t: 'Owner changed', s: 'Owner: ' + D.staffById[od.owner].name + ' → ' + D.staffById[e.target.value].name + ' · source: user', g: '✎' }]),
+      toggleFollow: () => this.setState({ follow: { ...st.follow, [od.id]: !(st.follow[od.id] != null ? st.follow[od.id] : od.followers.includes('tor')) } }),
+      markWon: () => { this.update(od.id, { status: 'won' }, [{ k: 'Changelog', t: 'Marked as won', s: 'Status: open → won · workflow «Won → create project» queued', g: '✓' }]); this.flash('Won · project created by workflow · invoice can be created'); },
+      markLost: () => this.setState({ modal: { kind: 'lost', id: od.id, title: 'Why was it lost?', text: 'The reason becomes a reporting dimension. An optional comment is saved as a note.', ph: 'Comment (optional)', cta: 'Mark as lost', reasons: true }, mInput: '', lostReason: null }),
+      moreAction: (e) => { const a = e.target.value; if (a === 'dup') { const nd = { ...od, id: 'd' + (300 + st.deals.length), title: od.title + ' (copy)', created: 0 }; this.setState({ deals: [...st.deals, nd] }); this.flash('Duplicated with fields and products'); } if (a === 'archive') { this.setState({ archived: [...st.archived, od.id], open: null }); this.flash('Archived'); } if (a === 'delete') { this.setState({ deleted: [...st.deleted, { id: od.id, by: 'Tor Lambrechts' }], open: null }); this.flash('Deleted · restorable for 30 days'); } if (a === 'lead') { this.flash('Converted back to a lead · history kept'); go('leads'); } },
+      aiAction: () => { this.addLog(od.id, { k: 'Activities', t: 'Call scheduled by assistant suggestion', s: 'Tomorrow 10:00 · approved by Tor Lambrechts', g: '☎' }); this.update(od.id, { act: 'planned', idle: 0 }); this.flash('Activity scheduled'); },
+      addParticipant: () => this.flash('Participant added · suggested in scheduling and email'),
+      composerTabs, cDraft: st.cDraft, setCDraft: (e) => this.setState({ cDraft: e.target.value }), cPh: C[0], cHint: C[1], cCta: C[2],
+      cSave: () => { this.addLog(od.id, { k: st.ctab === 'Note' ? 'Notes' : st.ctab === 'Email' ? 'Emails' : st.ctab === 'Files' ? 'Files' : st.ctab === 'Documents' ? 'Documents' : st.ctab === 'Invoice' ? 'Invoices' : 'Activities', t: st.ctab + ' added by Tor Lambrechts', s: st.cDraft || C[1], g: '✎' }); this.setState({ cDraft: '' }); this.flash(st.ctab + ' saved on the deal'); },
+      histFilters, modal: st.modal, mInput: st.mInput, setMInput: (e) => this.setState({ mInput: e.target.value }), closeModal: () => this.setState({ modal: null }), lostReasons,
+      modalOk: () => { if (st.modal.kind === 'new') { const id = 'd' + (400 + st.deals.length); this.setState({ deals: [{ ...st.deals[2], id, title: st.mInput || 'Untitled deal', value: 0, labels: [], stage: pl.stages[0].id, pipeline: pl.id, status: 'open', idle: 0, act: 'none', source: 'Manual', created: 0, owner: st.viewAs === 'ola' ? 'tor' : st.viewAs }, ...st.deals], modal: null, open: id }); this.flash('Deal created · owner set by assignment rule'); return; } modalOk(); },
+      toast: st.toast,
+    };
+  }
+  setC(i, k, v) { this.setState((s) => ({ conds: s.conds.map((c, j) => (j === i ? { ...c, [k]: v } : c)) })); }
+}
+</script>
+</body>
+</html>

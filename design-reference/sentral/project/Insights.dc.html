@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:20px 28px 60px; display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+    <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.pick }}" style="padding:8px 14px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for></div>
+    <span style="flex:1"></span>
+    <span style="font-size:12px; color:#5F5849">Live data · same visibility rules · reports per user: unlimited (entitlement)</span>
+  </div>
+
+  <sc-if value="{{ v.dash }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+        <select value="{{ dash }}" onChange="{{ setDash }}" style="height:36px; padding:0 10px; border-radius:10px; border:1px solid #191510; background:#FFFDF6; font-size:13px; font-weight:700"><sc-for list="{{ dashOpts }}" as="d"><option>{{ d }}</option></sc-for></select>
+        <button onClick="{{ toggleEdit }}" style="height:34px; padding:0 12px; border-radius:10px; border:1px solid {{ editBc }}; background:{{ editBg }}; font-size:12.5px; font-weight:600; cursor:pointer">{{ editLabel }}</button>
+        <button onClick="{{ dup }}" style="height:34px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer">Duplicate</button>
+        <div style="position:relative"><button onClick="{{ toggleShare }}" style="height:34px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer">Share</button>
+          <sc-if value="{{ shareOpen }}"><div style="position:absolute; left:0; top:40px; z-index:30; width:330px; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px; box-shadow:0 18px 40px -24px rgba(25,21,16,.45); display:flex; flex-direction:column; gap:8px">
+            <sc-for list="{{ shares }}" as="s"><div style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px"><b>{{ s.n }}</b><select value="{{ s.r }}" style="height:28px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"><option>Viewer</option><option>Editor</option></select></div></sc-for>
+            <div style="border-top:1px solid #E8DFC9; padding-top:8px; display:flex; flex-direction:column; gap:6px"><b style="font-size:12.5px">Public live link</b><span style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; color:#2F5D2A">{{ publicLink }}</span><span style="display:flex; gap:6px"><button onClick="{{ togglePublic }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">{{ publicCta }}</button></span></div>
+          </div></sc-if>
+        </div>
+        <span style="flex:1"></span>
+        <button onClick="{{ exportPng }}" style="height:34px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer">PNG · PDF</button>
+        <button onClick="{{ addReport }}" style="height:34px; padding:0 14px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">＋ Report</button>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:12px">
+        <sc-for list="{{ tiles }}" as="r" hint-placeholder-count="6">
+          <div style="grid-column:span {{ r.span }}; background:#FFFDF6; border:1px solid {{ r.bc }}; border-radius:20px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; min-width:0">
+            <div style="display:flex; justify-content:space-between; gap:8px; align-items:flex-start"><span style="display:flex; flex-direction:column"><b style="font-size:13.5px">{{ r.title }}</b><span style="font-size:11.5px; color:#5F5849">{{ r.sub }}</span></span>
+              <sc-if value="{{ editing }}"><span style="display:flex; gap:3px"><button onClick="{{ r.left }}" style="width:24px; height:24px; border-radius:7px; border:1px solid #E8DFC9; background:transparent; cursor:pointer; font-size:11px">←</button><button onClick="{{ r.right }}" style="width:24px; height:24px; border-radius:7px; border:1px solid #E8DFC9; background:transparent; cursor:pointer; font-size:11px">→</button><button onClick="{{ r.shrink }}" style="width:24px; height:24px; border-radius:7px; border:1px solid #E8DFC9; background:transparent; cursor:pointer; font-size:12px">−</button><button onClick="{{ r.grow }}" style="width:24px; height:24px; border-radius:7px; border:1px solid #E8DFC9; background:transparent; cursor:pointer; font-size:12px">+</button></span></sc-if>
+            </div>
+            <sc-if value="{{ r.isScore }}"><div style="display:flex; align-items:baseline; gap:10px"><span style="font-family:'Playfair Display',serif; font-size:34px; font-weight:600">{{ r.value }}</span><span style="font-size:13px; font-weight:700; color:{{ r.dc }}">{{ r.delta }}</span></div><span style="font-size:11.5px; color:#5F5849">vs previous period</span></sc-if>
+            <sc-if value="{{ r.isColumn }}"><div style="display:flex; align-items:flex-end; gap:6px; height:150px"><sc-for list="{{ r.data }}" as="d"><button onClick="{{ d.drill }}" title="{{ d.tip }}" style="flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:4px; height:100%; border:none; background:transparent; padding:0; cursor:pointer"><b style="font-size:10.5px">{{ d.vl }}</b><span style="width:100%; height:{{ d.h }}%; border-radius:6px 6px 0 0; background:{{ d.c }}; border:1px solid rgba(25,21,16,.1)"></span><span style="font-size:10px; color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%">{{ d.l }}</span></button></sc-for></div></sc-if>
+            <sc-if value="{{ r.isBar }}"><div style="display:flex; flex-direction:column; gap:6px"><sc-for list="{{ r.data }}" as="d"><button onClick="{{ d.drill }}" style="display:grid; grid-template-columns:110px minmax(0,1fr) 60px; gap:8px; align-items:center; border:none; background:transparent; padding:0; cursor:pointer; font-size:12px; text-align:left"><span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ d.l }}</span><span style="height:14px; border-radius:5px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ d.h }}%; background:{{ d.c }}"></span></span><b style="text-align:right">{{ d.vl }}</b></button></sc-for></div></sc-if>
+            <sc-if value="{{ r.isPie }}"><div style="display:flex; gap:16px; align-items:center"><span style="width:120px; height:120px; flex:none; border-radius:999px; background:{{ r.conic }}; border:1px solid #E8DFC9"></span><div style="display:flex; flex-direction:column; gap:5px"><sc-for list="{{ r.data }}" as="d"><button onClick="{{ d.drill }}" style="display:flex; align-items:center; gap:7px; border:none; background:transparent; padding:0; cursor:pointer; font-size:12px"><span style="width:10px; height:10px; border-radius:3px; background:{{ d.c }}"></span>{{ d.l }} <b>{{ d.vl }}</b></button></sc-for></div></div></sc-if>
+            <sc-if value="{{ r.isTable }}"><div style="display:flex; flex-direction:column"><sc-for list="{{ r.data }}" as="d"><button onClick="{{ d.drill }}" style="display:flex; justify-content:space-between; gap:10px; padding:6px 0; border:none; border-bottom:1px solid #E8DFC9; background:transparent; cursor:pointer; font-size:12.5px; text-align:left"><span>{{ d.l }}</span><b>{{ d.vl }}</b></button></sc-for></div></sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.builder }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:minmax(260px,320px) minmax(0,1fr); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <sc-for list="{{ bFields }}" as="f"><label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; font-weight:600; color:#5F5849">{{ f.n }}<select value="{{ f.value }}" onChange="{{ f.set }}" style="height:36px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; color:#191510"><sc-for list="{{ f.opts }}" as="o"><option>{{ o }}</option></sc-for></select></label></sc-for>
+        <div style="font-size:11.5px; font-weight:600; color:#5F5849">Chart</div>
+        <div style="display:flex; flex-wrap:wrap; gap:5px"><sc-for list="{{ chartTypes }}" as="c"><button onClick="{{ c.pick }}" style="padding:5px 11px; border-radius:999px; font-size:12px; border:1px solid {{ c.bc }}; background:{{ c.bg }}; font-weight:{{ c.fw }}; cursor:pointer">{{ c.n }}</button></sc-for></div>
+        <div style="font-size:11.5px; font-weight:600; color:#5F5849">Filters</div>
+        <sc-for list="{{ bFilters }}" as="f"><div style="font-size:12px; padding:7px 9px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9">{{ f }}</div></sc-for>
+        <div style="display:flex; gap:6px"><input value="#F5C64A" style="width:90px; height:30px; padding:0 8px; border-radius:8px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px; font-family:ui-monospace,Menlo,monospace"></input><span style="font-size:11.5px; color:#5F5849; align-self:center">Series colour</span></div>
+        <button onClick="{{ saveReport }}" style="height:38px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">Save to dashboard</button>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:12px">
+        <b style="font-size:15px">{{ bTitle }}</b>
+        <sc-if value="{{ bp.isColumn }}"><div style="display:flex; align-items:flex-end; gap:8px; height:220px"><sc-for list="{{ bp.data }}" as="d"><div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:4px; height:100%"><b style="font-size:11px">{{ d.vl }}</b><span style="width:100%; height:{{ d.h }}%; border-radius:6px 6px 0 0; background:{{ d.c }}"></span><span style="font-size:10.5px; color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%">{{ d.l }}</span></div></sc-for></div></sc-if>
+        <sc-if value="{{ bp.isBar }}"><div style="display:flex; flex-direction:column; gap:7px"><sc-for list="{{ bp.data }}" as="d"><div style="display:grid; grid-template-columns:140px minmax(0,1fr) 70px; gap:8px; align-items:center; font-size:12.5px"><span>{{ d.l }}</span><span style="height:16px; border-radius:5px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ d.h }}%; background:{{ d.c }}"></span></span><b style="text-align:right">{{ d.vl }}</b></div></sc-for></div></sc-if>
+        <sc-if value="{{ bp.isPie }}"><div style="display:flex; gap:18px; align-items:center"><span style="width:180px; height:180px; border-radius:999px; background:{{ bp.conic }}"></span><div style="display:flex; flex-direction:column; gap:6px"><sc-for list="{{ bp.data }}" as="d"><span style="display:flex; gap:7px; align-items:center; font-size:12.5px"><span style="width:10px; height:10px; border-radius:3px; background:{{ d.c }}"></span>{{ d.l }} <b>{{ d.vl }}</b></span></sc-for></div></div></sc-if>
+        <sc-if value="{{ bp.isScore }}"><div style="display:flex; align-items:baseline; gap:10px"><span style="font-family:'Playfair Display',serif; font-size:56px; font-weight:600">{{ bp.value }}</span><span style="font-size:14px; font-weight:700; color:#2F5D2A">+12 %</span></div></sc-if>
+        <sc-if value="{{ bp.isTable }}"><div style="display:flex; flex-direction:column"><sc-for list="{{ bp.data }}" as="d"><div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span>{{ d.l }}</span><b>{{ d.vl }}</b></div></sc-for></div></sc-if>
+        <div style="font-size:11.5px; color:#8A8272">Custom fields are available as dimensions, filters and measures · click any segment to see and export its rows</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.goals }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:12px">
+      <sc-for list="{{ goals }}" as="g"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px"><div style="display:flex; justify-content:space-between; gap:8px"><b style="font-size:14px">{{ g.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ g.freq }}</span></div><span style="font-size:12px; color:#5F5849">{{ g.who }} · {{ g.pipe }}</span><div style="display:flex; align-items:baseline; gap:8px"><span style="font-family:'Playfair Display',serif; font-size:26px; font-weight:600">{{ g.cur }}</span><span style="font-size:12.5px; color:#5F5849">of {{ g.target }}</span></div><div style="height:10px; border-radius:999px; background:#F2EAD6; overflow:hidden"><div style="height:100%; width:{{ g.w }}%; background:{{ g.c }}"></div></div><span style="font-size:11.5px; font-weight:700; color:{{ g.tc }}">{{ g.pace }}</span></div></sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.forecast }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr)); gap:14px">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px">
+        <b style="font-size:14px">Deal revenue forecast</b><div style="font-size:12px; color:#5F5849; margin-bottom:12px">From values and expected close dates · weighted by stage probability</div>
+        <div style="display:flex; gap:10px; align-items:flex-end; height:190px"><sc-for list="{{ dealFc }}" as="f"><div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end"><b style="font-size:11px">{{ f.wl }}</b><div style="width:100%; display:flex; flex-direction:column; justify-content:flex-end; height:{{ f.th }}%; border-radius:7px 7px 0 0; background:#F2EAD6; border:1px dashed #C4BCA8; overflow:hidden"><div style="height:{{ f.wp }}%; background:#F5C64A"></div></div><span style="font-size:11px; color:#5F5849">{{ f.m }}</span></div></sc-for></div>
+        <div style="display:flex; gap:14px; margin-top:10px; font-size:11.5px; color:#5F5849"><span style="display:flex; gap:6px; align-items:center"><span style="width:10px; height:10px; border-radius:3px; background:#F5C64A"></span>Weighted</span><span style="display:flex; gap:6px; align-items:center"><span style="width:10px; height:10px; border-radius:3px; border:1px dashed #C4BCA8"></span>Best case (open total)</span></div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px">
+        <b style="font-size:14px">Product revenue forecast</b><div style="font-size:12px; color:#5F5849; margin-bottom:12px">Recurring products and installments on won deals · MRR by month</div>
+        <div style="display:flex; gap:6px; align-items:flex-end; height:190px"><sc-for list="{{ prodFc }}" as="f"><div title="{{ f.tip }}" style="flex:1; display:flex; flex-direction:column; justify-content:flex-end; height:100%"><div style="height:{{ f.inst }}%; background:#E7DAF2"></div><div style="height:{{ f.rec }}%; background:#DCEBD3; border-radius:5px 5px 0 0"></div></div></sc-for></div>
+        <div style="display:flex; gap:6px; margin-top:4px"><sc-for list="{{ prodFc }}" as="f"><span style="flex:1; text-align:center; font-size:10.5px; color:#8A8272">{{ f.m }}</span></sc-for></div>
+        <div style="display:flex; gap:14px; margin-top:10px; font-size:11.5px; color:#5F5849"><span style="display:flex; gap:6px; align-items:center"><span style="width:10px; height:10px; border-radius:3px; background:#DCEBD3"></span>Recurring</span><span style="display:flex; gap:6px; align-items:center"><span style="width:10px; height:10px; border-radius:3px; background:#E7DAF2"></span>Installments</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.ai }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <b style="font-size:15px">Describe the report</b>
+        <textarea value="{{ aiQ }}" onChange="{{ setAiQ }}" style="min-height:90px; padding:10px 12px; border-radius:12px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; line-height:1.5"></textarea>
+        <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ aiPrompts }}" as="p"><button onClick="{{ p.use }}" style="padding:6px 11px; border-radius:999px; border:1px solid #C4BCA8; background:transparent; font-size:12px; cursor:pointer">{{ p.n }}</button></sc-for></div>
+        <button onClick="{{ generate }}" style="height:38px; border-radius:11px; border:1px solid #191510; background:#191510; color:#FCF6E9; font-size:13px; font-weight:700; cursor:pointer">Generate report definition</button>
+        <sc-for list="{{ aiChat }}" as="m"><div style="font-size:12.5px; padding:9px 11px; border-radius:12px; background:{{ m.bg }}; line-height:1.5">{{ m.t }}</div></sc-for>
+        <input value="{{ refine }}" onChange="{{ setRefine }}" onKeyDown="{{ refineKey }}" placeholder="Refine: «only Expansion pipeline», «split by owner» …" style="height:36px; padding:0 11px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #191510; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+        <span style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">Generated definition — editable</span>
+        <sc-for list="{{ aiDef }}" as="d"><div style="display:flex; justify-content:space-between; gap:10px; padding:7px 0; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="color:#5F5849">{{ d.k }}</span><b style="text-align:right">{{ d.v }}</b></div></sc-for>
+        <div style="display:flex; gap:8px"><button onClick="{{ openInBuilder }}" style="height:34px; padding:0 13px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">Open in builder</button><button onClick="{{ saveReport }}" style="height:34px; padding:0 13px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer">Save as is</button></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ drill }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDrill }}" style="position:fixed; inset:0; z-index:90; background:rgba(25,21,16,.42); display:flex; align-items:center; justify-content:center; padding:20px">
+      <div onClick="{{ stop }}" style="width:620px; max-width:100%; max-height:80vh; overflow:auto; background:#FFFDF6; border-radius:22px; padding:20px 22px; display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; justify-content:space-between; align-items:center"><b style="font-family:'Playfair Display',serif; font-size:20px">{{ drill.title }}</b><span style="display:flex; gap:6px"><button onClick="{{ exportRows }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Export rows</button><button onClick="{{ closeDrill }}" style="width:30px; height:30px; border-radius:999px; border:1px solid #191510; background:transparent; cursor:pointer">×</button></span></div>
+        <sc-for list="{{ drill.rows }}" as="r"><div style="display:grid; grid-template-columns:minmax(0,1.6fr) 110px 110px; gap:10px; padding:8px 0; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b>{{ r.t }}</b><span style="color:#5F5849">{{ r.s }}</span><span style="text-align:right">{{ r.v }}</span></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'dash', dash: 'Sales manager', editing: false, shareOpen: false, pub: true, layout: null, b: { entity: 'Deals', type: 'Performance', dim: 'Owner', measure: 'Sum of value', period: 'This quarter' }, chart: 'Column', drill: null, aiQ: 'Won deal value by month this year, split by pipeline', aiChat: [], refine: '', toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  chartOf(type, data, D, title) {
+    const max = Math.max(...data.map((d) => d.v), 1); const viz = ['#F5C64A', '#DCEBD3', '#CFE0F5', '#F6D9C6', '#E7DAF2', '#F3E2C9', '#B5DAD4', '#EC9B77'];
+    const tot = data.reduce((a, d) => a + d.v, 0) || 1; let acc = 0;
+    const conic = 'conic-gradient(' + data.map((d, i) => { const a0 = acc; acc += (d.v / tot) * 360; return viz[i % 8] + ' ' + a0 + 'deg ' + acc + 'deg'; }).join(',') + ')';
+    return { isColumn: type === 'Column', isBar: type === 'Bar', isPie: type === 'Pie', isScore: type === 'Scorecard', isTable: type === 'Table', conic,
+      data: data.map((d, i) => ({ ...d, h: (d.v / max) * 88 + 2, c: d.c || viz[i % 8], tip: d.l + ': ' + d.vl, drill: () => this.setState({ drill: { title: title + ' — ' + d.l, rows: D.deals.filter((x, j) => (j + i) % 4 === 0).slice(0, 8).map((x) => ({ t: x.title, s: D.staffById[x.owner].name.split(' ')[0], v: D.kr(x.value) })) } }) })) };
+  }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { tabs: [], v: {}, dashOpts: [], tiles: [], shares: [], bFields: [], chartTypes: [], bFilters: [], bp: { data: [] }, goals: [], dealFc: [], prodFc: [], aiPrompts: [], aiChat: [], aiDef: [] };
+    const pill = (cur, k) => ({ bg: cur === k ? '#191510' : 'transparent', c: cur === k ? '#FCF6E9' : '#191510', bc: cur === k ? '#191510' : '#C4BCA8', fw: cur === k ? 700 : 500 });
+    const tabs = [['dash', 'Dashboards'], ['builder', 'Report builder'], ['goals', 'Goals'], ['forecast', 'Forecast'], ['ai', 'Ask for a report']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(st.tab, k) }));
+    const open = D.deals.filter((d) => d.status === 'open');
+    const byOwner = ['ingrid', 'eirik', 'tor'].map((o) => { const v = open.filter((d) => d.owner === o).reduce((a, d) => a + d.value, 0); return { l: D.staffById[o].name.split(' ')[0], v, vl: D.nb(v / 1000) + 'k' }; });
+    const st1 = D.pipelines[0].stages.map((s) => { const n = open.filter((d) => d.stage === s.id).length; return { l: s.name, v: n, vl: String(n) }; });
+    const conv = [['Qualified → Discovery', 72], ['Discovery → Demo', 58], ['Demo → Proposal', 49], ['Proposal → Negotiation', 61], ['Negotiation → Won', 68]].map(([l, v]) => ({ l, v, vl: v + ' %' }));
+    const lost = [['Price', 9], ['Chose a competitor', 6], ['No budget', 5], ['Timing', 4], ['No decision', 3]].map(([l, v]) => ({ l, v, vl: String(v) }));
+    const src = {}; D.deals.forEach((d) => { src[d.source] = (src[d.source] || 0) + 1; });
+    const bySrc = Object.entries(src).map(([l, v]) => ({ l, v, vl: String(v) })).sort((a, b) => b.v - a.v);
+    const acts = [['Calls', 64], ['Meetings', 31], ['Tasks', 88], ['Emails', 142], ['Demos', 12]].map(([l, v]) => ({ l, v, vl: String(v) }));
+    const T = [
+      { id: 'won', title: 'Won value', sub: 'This quarter', type: 'Scorecard', value: D.kr(312000), delta: '+18 %', dc: '#2F5D2A', data: [] },
+      { id: 'open', title: 'Open pipeline', sub: 'All pipelines', type: 'Scorecard', value: D.kr(open.reduce((a, d) => a + d.value, 0)), delta: '+6 %', dc: '#2F5D2A', data: [] },
+      { id: 'cycle', title: 'Average sales cycle', sub: 'Won deals · days', type: 'Scorecard', value: '34 d', delta: '−4 d', dc: '#2F5D2A', data: [] },
+      { id: 'owner', title: 'Open value by owner', sub: 'Deals · performance', type: 'Column', data: byOwner },
+      { id: 'stage', title: 'Deals per stage', sub: 'New business · progress', type: 'Bar', data: st1 },
+      { id: 'conv', title: 'Stage conversion', sub: 'Last 90 days · conversion', type: 'Table', data: conv },
+      { id: 'lost', title: 'Lost reasons', sub: 'Dimension: lost reason', type: 'Pie', data: lost },
+      { id: 'src', title: 'Deals by source', sub: 'Dimension: source field', type: 'Bar', data: bySrc },
+      { id: 'acts', title: 'Activities completed', sub: 'This month · by type', type: 'Column', data: acts },
+    ];
+    const defaultSpans = { won: 4, open: 4, cycle: 4, owner: 6, stage: 6, conv: 4, lost: 4, src: 4, acts: 12 };
+    const layout = st.layout || T.map((t) => ({ id: t.id, span: defaultSpans[t.id] }));
+    const tiles = layout.map((L, i) => { const t = T.find((x) => x.id === L.id); const mv = (d) => () => { const l = [...layout]; const j = i + d; if (j < 0 || j >= l.length) return; [l[i], l[j]] = [l[j], l[i]]; this.setState({ layout: l }); }; const rs = (d) => () => this.setState({ layout: layout.map((x, j) => (j === i ? { ...x, span: Math.max(3, Math.min(12, x.span + d * 2)) } : x)) });
+      return { ...t, ...this.chartOf(t.type, t.data, D, t.title), value: t.value, delta: t.delta, dc: t.dc, span: L.span, bc: st.editing ? '#C4BCA8' : '#E8DFC9', left: mv(-1), right: mv(1), shrink: rs(-1), grow: rs(1) }; });
+    const B = st.b;
+    const bDefs = [['entity', 'Entity', ['Deals', 'Activities', 'Leads', 'People', 'Organizations', 'Campaigns', 'Projects', 'Revenue']], ['type', 'Report type', ['Performance', 'Conversion', 'Duration', 'Progress', 'Products']], ['dim', 'Group by', ['Owner', 'Stage', 'Source', 'Lost reason', 'Label', 'Competitor (custom)', 'Board meeting month (custom)']], ['measure', 'Measure', ['Count', 'Sum of value', 'Average value', 'Average «Employees in scope» (custom)', 'Weighted value']], ['period', 'Period', ['This month', 'This quarter', 'This year', 'Custom range']]];
+    const bFields = bDefs.map(([k, n, opts]) => ({ n, opts, value: B[k], set: (e) => this.setState({ b: { ...B, [k]: e.target.value } }) }));
+    const chartTypes = ['Column', 'Bar', 'Pie', 'Scorecard', 'Table'].map((n) => ({ n, pick: () => this.setState({ chart: n }), bg: st.chart === n ? '#FBEBBE' : 'transparent', bc: st.chart === n ? '#191510' : '#C4BCA8', fw: st.chart === n ? 700 : 500 }));
+    const bdata = B.dim === 'Stage' ? st1 : B.dim === 'Source' ? bySrc : B.dim === 'Lost reason' ? lost : B.dim.startsWith('Competitor') ? [['Planday', 6], ['Quinyx', 4], ['Excel', 9], ['None', 12]].map(([l, v]) => ({ l, v, vl: String(v) })) : byOwner;
+    const bp = { ...this.chartOf(st.chart, bdata, D, 'Report'), value: D.kr(312000) };
+    const goals = [['Won value', 'Company', 'New business', 'Quarterly', 312000, 500000, true], ['Deals added', 'Ingrid Solberg', 'All pipelines', 'Monthly', 9, 12, false], ['Activities completed', 'Sales team', '—', 'Weekly', 41, 50, false], ['Weighted forecast', 'Eirik Moen', 'Expansion', 'Quarterly', 180000, 250000, true], ['Deals progressed', 'Tor Lambrechts', 'Public sector', 'Monthly', 3, 4, false]].map(([n, who, pipe, freq, cur, target, money]) => { const w = Math.min(100, (cur / target) * 100); return { n, who, pipe, freq, cur: money ? D.kr(cur) : String(cur), target: money ? D.kr(target) : String(target), w, c: w >= 75 ? '#5C9A55' : w >= 50 ? '#E0A21F' : '#D4633A', pace: w >= 60 ? 'On pace' : 'Behind pace — ' + Math.round(100 - w) + ' % to go', tc: w >= 60 ? '#2F5D2A' : '#A33A16' }; });
+    const months = ['Oct', 'Nov', 'Dec', 'Jan'];
+    const prob = {}; D.pipelines.forEach((p) => p.stages.forEach((s) => (prob[s.id] = s.prob)));
+    const fcRaw = months.map((m) => { const ds = open.filter((d) => d.closeMonth === m); return { m, tot: ds.reduce((a, d) => a + d.value, 0), w: ds.reduce((a, d) => a + d.value * prob[d.stage] / 100, 0) }; });
+    const fmax = Math.max(...fcRaw.map((f) => f.tot), 1);
+    const dealFc = fcRaw.map((f) => ({ m: f.m, th: (f.tot / fmax) * 90 + 4, wp: f.tot ? (f.w / f.tot) * 100 : 0, wl: D.nb(f.w / 1000) + 'k' }));
+    const prodFc = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'].map((m, i) => { const rec = 30 + i * 4.5, inst = i < 3 ? 12 : i < 6 ? 6 : 0; return { m, rec, inst, tip: m + ' · recurring ' + D.nb(rec * 1000) + ' · installments ' + D.nb(inst * 1000) }; });
+    const aiPrompts = ['Win rate by source this year', 'Average deal size by employee band', 'Activities per rep per week', 'Campaign conversion to deals'].map((n) => ({ n, use: () => this.setState({ aiQ: n }) }));
+    const aiDef = [['Entity', 'Deals'], ['Report type', 'Performance'], ['Filter', 'Status = won · close date in 2026'], ['Group by', 'Won month, then pipeline'], ['Measure', 'Sum of value (NOK, converted)'], ['Chart', 'Stacked column']].map(([k, vv]) => ({ k, v: vv }));
+    return { tabs, v: { [st.tab]: true }, dash: st.dash, dashOpts: ['Default', 'Sales manager', 'Sales rep', 'Marketing', 'My dashboard'], setDash: (e) => this.setState({ dash: e.target.value }),
+      editing: st.editing, toggleEdit: () => this.setState({ editing: !st.editing }), editLabel: st.editing ? 'Done arranging' : 'Arrange and resize', editBc: st.editing ? '#191510' : '#E8DFC9', editBg: st.editing ? '#FBEBBE' : 'transparent',
+      dup: () => this.flash('Dashboard duplicated as «' + st.dash + ' (copy)»'), shareOpen: st.shareOpen, toggleShare: () => this.setState({ shareOpen: !st.shareOpen }), shares: [{ n: 'Sales team', r: 'Viewer' }, { n: 'Ingrid Solberg', r: 'Editor' }, { n: 'Ola Nilsen', r: 'Viewer' }],
+      publicLink: st.pub ? 'sentral.orgpuls.no/d/pub_7Gx2kQ9…' : 'Off', publicCta: st.pub ? 'Revoke link' : 'Create link', togglePublic: () => this.setState({ pub: !st.pub }),
+      exportPng: () => this.flash('Dashboard exported as PNG and PDF'), addReport: () => this.setState({ tab: 'builder' }), tiles,
+      bFields, chartTypes, bFilters: ['Pipeline is New business OR Expansion', 'Value > 10 000 AND value < 500 000 (one field, two conditions)', 'Competitor (custom) is not empty'], bTitle: B.measure + ' by ' + B.dim.toLowerCase() + ' · ' + B.period.toLowerCase(), bp, saveReport: () => { this.setState({ tab: 'dash' }); this.flash('Report saved to «' + st.dash + '»'); },
+      goals, dealFc, prodFc, aiQ: st.aiQ, setAiQ: (e) => this.setState({ aiQ: e.target.value }), aiPrompts, generate: () => this.setState({ aiChat: [{ t: 'You: ' + st.aiQ, bg: '#FBEBBE' }, { t: 'Built a stacked column report of won deal value per month in 2026, split by pipeline. Values converted to NOK.', bg: '#FCF6E9' }] }),
+      aiChat: st.aiChat, aiDef, refine: st.refine, setRefine: (e) => this.setState({ refine: e.target.value }), refineKey: (e) => { if (e.key === 'Enter' && st.refine) this.setState({ aiChat: [...st.aiChat, { t: 'You: ' + st.refine, bg: '#FBEBBE' }, { t: 'Updated the definition: ' + st.refine + '.', bg: '#FCF6E9' }], refine: '' }); }, openInBuilder: () => this.setState({ tab: 'builder' }),
+      drill: st.drill, closeDrill: () => this.setState({ drill: null }), stop: (e) => e.stopPropagation(), exportRows: () => this.flash('Rows exported as XLSX'), toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

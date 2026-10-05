@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:22px 28px 60px; display:flex; flex-direction:column; gap:16px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+      <button onClick="{{ t.pick }}" style="display:flex; align-items:center; gap:7px; padding:8px 15px; border-radius:999px; font-size:12.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}">{{ t.n }}<sc-if value="{{ t.count }}"><span style="font-size:11px; opacity:.75">{{ t.count }}</span></sc-if></button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ v.list }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+        <div style="display:flex; align-items:center; gap:8px; flex:1 1 280px; height:38px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FFFDF6">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5F5849" stroke-width="1.8" stroke-linecap="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14M20 20l-4-4"></path></svg>
+          <input value="{{ q }}" onChange="{{ setQ }}" placeholder="Search by name, org.nr or admin e-mail" style="flex:1; border:none; background:transparent; font-size:13px; outline:none"></input>
+        </div>
+        <button onClick="{{ exportCsv }}" style="height:36px; padding:0 14px; border-radius:10px; border:1px solid #E8DFC9; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer">Export CSV</button>
+        <button onClick="{{ saveView }}" style="height:36px; padding:0 14px; border-radius:10px; border:1px solid #191510; background:#FFFDF6; font-size:12.5px; font-weight:700; cursor:pointer">Save view</button>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center">
+        <span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849; margin-right:4px">Saved views</span>
+        <sc-for list="{{ views }}" as="sv" hint-placeholder-count="5">
+          <button onClick="{{ sv.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12px; cursor:pointer; border:1px solid {{ sv.bc }}; background:{{ sv.bg }}; font-weight:{{ sv.fw }}">{{ sv.n }} <span style="color:#5F5849">{{ sv.count }}</span></button>
+        </sc-for>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="7">
+          <label style="display:flex; align-items:center; gap:6px; height:34px; padding:0 4px 0 11px; border-radius:10px; border:1px solid {{ f.bc }}; background:#FFFDF6; font-size:12px; color:#5F5849">
+            {{ f.label }}
+            <select value="{{ f.value }}" onChange="{{ f.set }}" style="border:none; background:transparent; font-size:12.5px; font-weight:600; color:#191510; padding:4px; outline:none">
+              <sc-for list="{{ f.opts }}" as="o"><option value="{{ o }}">{{ o }}</option></sc-for>
+            </select>
+          </label>
+        </sc-for>
+        <sc-if value="{{ anyFilter }}"><button onClick="{{ clearFilters }}" style="height:34px; padding:0 12px; border-radius:10px; border:none; background:transparent; font-size:12.5px; font-weight:600; color:#2F5D2A; cursor:pointer">Clear filters</button></sc-if>
+      </div>
+
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="display:flex; align-items:center; gap:12px; padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px; color:#5F5849">
+          <span><b style="color:#191510">{{ list.length }}</b> organizations · MRR <b style="color:#191510">{{ listMrr }}</b></span>
+          <span style="flex:1"></span>
+          <sc-if value="{{ selCount }}"><span style="display:flex; gap:6px; align-items:center"><b style="color:#191510">{{ selCount }} selected</b>
+            <button onClick="{{ bulkTag }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Add tag</button>
+            <button onClick="{{ bulkOwner }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Assign owner</button>
+            <button onClick="{{ bulkBroadcast }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Send broadcast</button></span></sc-if>
+        </div>
+        <div style="overflow-x:auto">
+          <div style="min-width:1120px">
+            <div style="display:grid; grid-template-columns:34px minmax(220px,2.2fr) 110px 96px 80px 80px 96px 80px 120px 96px 84px; gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">
+              <span></span><span>Name</span><span>Org.nr</span><span>Status</span><span>Plan</span><span>Staff</span><span>Last survey</span><span>Response</span><span>Health</span><span>MRR</span><span>Signup</span>
+            </div>
+            <sc-for list="{{ list }}" as="o" hint-placeholder-count="10">
+              <div style="display:grid; grid-template-columns:34px minmax(220px,2.2fr) 110px 96px 80px 80px 96px 80px 120px 96px 84px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; background:{{ o.rowBg }}">
+                <input type="checkbox" checked="{{ o.sel }}" onChange="{{ o.toggle }}" aria-label="Select" style="width:16px; height:16px; accent-color:#191510"></input>
+                <button onClick="{{ o.open }}" style="display:flex; flex-direction:column; gap:3px; border:none; background:transparent; padding:0; cursor:pointer; text-align:left; min-width:0">
+                  <span style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ o.name }}</span>
+                  <span style="display:flex; gap:4px; flex-wrap:wrap">
+                    <sc-for list="{{ o.prods }}" as="p"><span style="font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:999px; background:{{ p.color }}; color:{{ p.ink }}">{{ p.name }}</span></sc-for>
+                    <sc-for list="{{ o.labels }}" as="l"><span style="font-size:10.5px; font-weight:600; padding:1px 7px; border-radius:999px; border:1px solid #C4BCA8; color:#5F5849">{{ l }}</span></sc-for>
+                  </span>
+                </button>
+                <span style="font-variant-numeric:tabular-nums; color:#3A342A">{{ o.orgnr }}</span>
+                <span><span style="display:inline-block; padding:3px 10px; border-radius:999px; font-size:11.5px; font-weight:700; background:{{ o.sbg }}; color:{{ o.sc }}">{{ o.status }}</span></span>
+                <span style="color:#3A342A">{{ o.band }}</span>
+                <span style="font-variant-numeric:tabular-nums">{{ o.employees }}</span>
+                <span style="color:{{ o.lsC }}">{{ o.ls }}</span>
+                <span style="font-variant-numeric:tabular-nums">{{ o.resp }}</span>
+                <span style="display:flex; align-items:center; gap:8px"><span style="flex:1; height:6px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ o.health }}%; background:{{ o.hc }}"></span></span><b style="font-variant-numeric:tabular-nums; width:22px; text-align:right">{{ o.health }}</b></span>
+                <span style="font-variant-numeric:tabular-nums; font-weight:600">{{ o.mrrF }}</span>
+                <span style="color:#5F5849">{{ o.signup }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.detail }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <button onClick="{{ back }}" style="align-self:flex-start; border:none; background:transparent; padding:0; font-size:13px; font-weight:600; color:#2F5D2A; cursor:pointer">← Organizations</button>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:22px 24px; display:flex; flex-wrap:wrap; gap:22px; align-items:flex-start">
+        <span style="width:56px; height:56px; flex:none; border-radius:16px; background:#191510; color:#FCF6E9; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:22px; font-weight:700">{{ o.ini }}</span>
+        <div style="flex:1 1 360px; min-width:0; display:flex; flex-direction:column; gap:8px">
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px">
+            <h2 style="margin:0; font-family:'Playfair Display',serif; font-size:28px; font-weight:600; line-height:1.1">{{ o.name }}</h2>
+            <span style="padding:4px 11px; border-radius:999px; font-size:11.5px; font-weight:700; background:{{ o.sbg }}; color:{{ o.sc }}">{{ o.status }}</span>
+            <sc-for list="{{ o.labels }}" as="l"><span style="font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; border:1px solid #C4BCA8; color:#5F5849">{{ l }}</span></sc-for>
+          </div>
+          <div style="font-size:13px; color:#3A342A">{{ o.orgnr }} · {{ o.address }} · NACE {{ o.nace }} · {{ o.employees }} employees registered</div>
+          <div style="font-size:12px; color:#5F5849">From Brønnøysundregistrene · synced {{ o.brreg }} · owner {{ o.ownerName }} · CSM {{ o.csmName }}</div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px">
+            <sc-for list="{{ o.prods }}" as="p"><span style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; padding:5px 11px; border-radius:999px; background:{{ p.color }}; color:{{ p.ink }}">{{ p.name }} · {{ p.state }}</span></sc-for>
+          </div>
+        </div>
+        <div style="display:flex; gap:22px; align-items:center">
+          <div style="display:flex; flex-direction:column; align-items:flex-end"><span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">Health</span><span style="font-family:'Playfair Display',serif; font-size:40px; font-weight:600; line-height:1; color:{{ o.hInk }}">{{ o.health }}</span></div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end"><span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">MRR</span><span style="font-family:'Playfair Display',serif; font-size:26px; font-weight:600; line-height:1.2">{{ o.mrrF }}</span><span style="font-size:12px; color:#5F5849">{{ o.band }} band</span></div>
+          <div style="position:relative">
+            <button onClick="{{ toggleActions }}" style="height:40px; padding:0 17px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">Actions ▾</button>
+            <sc-if value="{{ actionsOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute; right:0; top:46px; z-index:30; width:270px; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:6px; box-shadow:0 18px 40px -24px rgba(25,21,16,.45)">
+                <sc-for list="{{ actions }}" as="a" hint-placeholder-count="10">
+                  <button onClick="{{ a.pick }}" style="display:flex; width:100%; flex-direction:column; gap:1px; padding:8px 11px; border:none; border-radius:10px; background:transparent; cursor:pointer; text-align:left"><span style="font-size:13px; font-weight:600; color:{{ a.c }}">{{ a.n }}</span><span style="font-size:11px; color:#8A8272">{{ a.s }}</span></button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:2px; border-bottom:1px solid #E8DFC9">
+        <sc-for list="{{ dtabs }}" as="t" hint-placeholder-count="9">
+          <button onClick="{{ t.pick }}" style="padding:10px 14px; border:none; border-bottom:2px solid {{ t.bc }}; background:transparent; font-size:13px; cursor:pointer; font-weight:{{ t.fw }}; color:{{ t.c }}">{{ t.n }}</button>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ d.overview }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr)); gap:16px">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px">
+            <div style="font-size:15px; font-weight:700; margin-bottom:4px">Health score breakdown</div>
+            <div style="font-size:12px; color:#5F5849; margin-bottom:14px">Feeds the org list and the CRM scoring model</div>
+            <div style="display:flex; flex-direction:column; gap:11px">
+              <sc-for list="{{ o.healthParts }}" as="h"><div style="display:grid; grid-template-columns:minmax(0,1fr) 90px 34px; gap:10px; align-items:center; font-size:12.5px"><span style="display:flex; flex-direction:column"><span style="font-weight:600">{{ h.n }}</span><span style="font-size:11.5px; color:#5F5849">{{ h.s }}</span></span><span style="height:6px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ h.v }}%; background:{{ h.c }}"></span></span><b style="text-align:right; font-variant-numeric:tabular-nums">{{ h.v }}</b></div></sc-for>
+            </div>
+          </div>
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px">
+            <div style="font-size:15px; font-weight:700; margin-bottom:14px">Activation</div>
+            <div style="display:flex; flex-direction:column; gap:7px">
+              <sc-for list="{{ o.activation }}" as="s"><div style="display:flex; align-items:center; gap:10px; font-size:12.5px"><span style="width:20px; height:20px; flex:none; border-radius:999px; border:1.5px solid {{ s.bc }}; background:{{ s.bg }}; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#20431C">{{ s.mark }}</span><span style="flex:1; font-weight:{{ s.fw }}">{{ s.n }}</span><span style="color:#5F5849; font-size:11.5px">{{ s.when }}</span></div></sc-for>
+            </div>
+          </div>
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px; display:flex; flex-direction:column; gap:14px">
+            <div style="font-size:15px; font-weight:700">Structure</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+              <sc-for list="{{ o.structure }}" as="s"><div style="border:1px solid #E8DFC9; border-radius:15px; padding:12px 14px; background:#FCF6E9"><div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600; color:{{ s.c }}">{{ s.v }}</div><div style="font-size:12px; color:#5F5849">{{ s.n }}</div></div></sc-for>
+            </div>
+            <div style="font-size:12px; color:#5F5849; line-height:1.5; border:1px dashed #C4BCA8; border-radius:12px; padding:10px 12px">Anonymity holds for staff too: groups under 5 answers show as «—» here and in every export and support session.</div>
+          </div>
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px">
+            <div style="font-size:15px; font-weight:700; margin-bottom:12px">Cross-product view</div>
+            <div style="display:flex; flex-direction:column; gap:8px">
+              <sc-for list="{{ o.allProds }}" as="p"><div style="display:flex; align-items:center; gap:10px; border:1px solid #E8DFC9; border-radius:15px; padding:10px 12px; background:{{ p.rowBg }}"><span style="width:28px; height:28px; border-radius:9px; background:{{ p.color }}; color:{{ p.ink }}; display:flex; align-items:center; justify-content:center; font-weight:700; font-family:'Playfair Display',serif">{{ p.ini }}</span><span style="flex:1; display:flex; flex-direction:column"><span style="font-size:13px; font-weight:700">{{ p.name }}</span><span style="font-size:11.5px; color:#5F5849">{{ p.line }}</span></span><span style="font-size:12px; font-weight:700">{{ p.mrr }}</span></div></sc-for>
+            </div>
+            <div style="font-size:11.5px; color:#8A8272; margin-top:10px">Joined on org.nr — the shared customer key across applications</div>
+          </div>
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px">
+            <div style="font-size:15px; font-weight:700; margin-bottom:12px">Tiltak and feedback</div>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px">
+              <sc-for list="{{ o.tiltak }}" as="s"><div style="border:1px solid #E8DFC9; border-radius:15px; padding:12px 14px; background:#FCF6E9"><div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600; color:{{ s.c }}">{{ s.v }}</div><div style="font-size:12px; color:#5F5849">{{ s.n }}</div></div></sc-for>
+            </div>
+            <div style="font-size:12px; color:#5F5849; margin-bottom:8px">Titles only with an active support-access grant</div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; padding:10px 0; border-top:1px solid #E8DFC9"><span>NPS (last 90 days)</span><b>{{ o.nps }}</b></div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; padding:10px 0; border-top:1px solid #E8DFC9"><span>In-app feedback</span><b>{{ o.feedback }}</b></div>
+          </div>
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px"><span style="font-size:15px; font-weight:700">CRM</span><a href="#" onClick="{{ goDeals }}" style="font-size:12.5px; font-weight:600">Open in Deals →</a></div>
+            <sc-for list="{{ o.deals }}" as="x"><div style="display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid #E8DFC9; font-size:13px"><span style="display:flex; flex-direction:column"><span style="font-weight:600">{{ x.title }}</span><span style="font-size:11.5px; color:#5F5849">{{ x.stage }}</span></span><b style="white-space:nowrap">{{ x.value }}</b></div></sc-for>
+            <sc-for list="{{ o.contacts }}" as="x"><div style="display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid #E8DFC9; font-size:13px"><span style="display:flex; flex-direction:column"><span style="font-weight:600">{{ x.name }}</span><span style="font-size:11.5px; color:#5F5849">{{ x.role }} · {{ x.email }}</span></span><span style="font-size:11.5px; color:#5F5849; white-space:nowrap">{{ x.consent }}</span></div></sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ d.users }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="display:grid; grid-template-columns:minmax(180px,1.6fr) 120px 110px 90px 100px 120px 230px; gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>User</span><span>Role</span><span>Last login</span><span>MFA</span><span>Auth</span><span>Invited by</span><span></span></div>
+          <sc-for list="{{ o.users }}" as="u">
+            <div style="display:grid; grid-template-columns:minmax(180px,1.6fr) 120px 110px 90px 100px 120px 230px; gap:10px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:13px">
+              <span style="display:flex; flex-direction:column"><span style="font-weight:600">{{ u.name }} <sc-if value="{{ u.billing }}"><span style="font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:999px; background:#FBEBBE; color:#5C4600">Billing contact</span></sc-if></span><span style="font-size:11.5px; color:#5F5849">{{ u.email }}</span></span>
+              <span>{{ u.role }}</span><span style="color:{{ u.lc }}">{{ u.last }}</span><span style="color:{{ u.mc }}">{{ u.mfa }}</span><span style="color:#5F5849">{{ u.auth }}</span><span style="color:#5F5849">{{ u.by }}</span>
+              <span style="display:flex; gap:6px; justify-content:flex-end"><button onClick="{{ u.resend }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">{{ u.resendLabel }}</button><button onClick="{{ u.reset }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Reset MFA</button><button onClick="{{ u.deact }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:12px; font-weight:600; cursor:pointer">Deactivate</button></span>
+            </div>
+          </sc-for>
+          <div style="padding:12px 18px; font-size:12px; color:#5F5849">Respondents are never listed — only counts and delivery status per survey.</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ d.surveys }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:12px">
+          <div style="display:flex; gap:10px; align-items:center; padding:12px 16px; border-radius:16px; background:#FBEBBE; font-size:12.5px; color:#5C4600"><b style="color:#191510">Metadata only.</b> Answers and respondent identities are unreachable from the admin. Bounced addresses are fixed by the customer, not here.</div>
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+            <div style="display:grid; grid-template-columns:minmax(160px,1.4fr) 80px 120px 70px 70px 70px 70px 80px 120px; gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Survey</span><span>Type</span><span>Dates</span><span>Invited</span><span>Deliv.</span><span>Bounced</span><span>Answered</span><span>Rate</span><span>Reminders</span></div>
+            <sc-for list="{{ o.surveys }}" as="s">
+              <div style="display:grid; grid-template-columns:minmax(160px,1.4fr) 80px 120px 70px 70px 70px 70px 80px 120px; gap:10px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; font-variant-numeric:tabular-nums">
+                <span style="font-weight:600">{{ s.n }}</span><span><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ s.tbg }}">{{ s.type }}</span></span><span style="color:#5F5849">{{ s.dates }}</span><span>{{ s.inv }}</span><span>{{ s.del }}</span><span style="color:{{ s.bc }}">{{ s.bounced }}</span><span>{{ s.ans }}</span><b>{{ s.rate }}</b><span style="color:#5F5849">{{ s.rem }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ d.billing }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr)); gap:16px">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px; display:flex; flex-direction:column; gap:10px">
+            <div style="font-size:15px; font-weight:700">Subscription</div>
+            <sc-for list="{{ o.sub }}" as="r"><div style="display:flex; justify-content:space-between; gap:10px; font-size:13px; padding:8px 0; border-bottom:1px solid #E8DFC9"><span style="color:#5F5849">{{ r.k }}</span><b style="color:{{ r.c }}; text-align:right">{{ r.v }}</b></div></sc-for>
+            <sc-if value="{{ o.bandFlag }}"><div style="border-radius:14px; background:#F5DC96; padding:11px 13px; font-size:12.5px; color:#5C4600"><b style="color:#191510">Band crossed.</b> {{ o.bandFlag }} The customer confirms before the price changes. <a href="#" onClick="{{ notifyBand }}">Notify customer →</a></div></sc-if>
+          </div>
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden; grid-column:span 2">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #E8DFC9"><span style="font-size:15px; font-weight:700">Invoices</span><span style="font-size:12px; color:#5F5849">Mirrored from Stripe · EHF via the accounting system</span></div>
+            <sc-for list="{{ o.invoices }}" as="i">
+              <div style="display:grid; grid-template-columns:100px 100px minmax(0,1fr) 110px 100px 200px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; font-variant-numeric:tabular-nums">
+                <span style="font-weight:600">{{ i.no }}</span><span style="color:#5F5849">{{ i.date }}</span><span style="color:#5F5849">{{ i.desc }}</span><b>{{ i.amount }}</b><span><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ i.sbg }}; color:{{ i.sc }}">{{ i.status }}</span></span>
+                <span style="display:flex; gap:6px; justify-content:flex-end"><button style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">PDF</button><button onClick="{{ i.resend }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Resend</button><sc-if value="{{ i.failed }}"><button onClick="{{ i.retry }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Retry</button></sc-if></span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ d.timeline }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 24px">
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px"><sc-for list="{{ tlFilters }}" as="f"><button onClick="{{ f.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12px; cursor:pointer; border:1px solid {{ f.bc }}; background:{{ f.bg }}; color:{{ f.c }}; font-weight:{{ f.fw }}">{{ f.n }}</button></sc-for></div>
+          <div style="display:flex; flex-direction:column">
+            <sc-for list="{{ o.timeline }}" as="e">
+              <div style="display:grid; grid-template-columns:110px 22px minmax(0,1fr); gap:12px; align-items:flex-start; padding-bottom:16px">
+                <span style="font-size:12px; color:#5F5849; text-align:right; padding-top:2px">{{ e.when }}</span>
+                <span style="display:flex; flex-direction:column; align-items:center; align-self:stretch"><span style="width:12px; height:12px; border-radius:999px; background:{{ e.c }}; border:1.5px solid #191510"></span><span style="flex:1; width:1px; background:#E8DFC9"></span></span>
+                <span style="display:flex; flex-direction:column; gap:2px"><span style="font-size:13.5px; font-weight:600">{{ e.t }}</span><span style="font-size:12px; color:#5F5849">{{ e.s }}</span></span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ d.tickets }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <sc-for list="{{ o.tickets }}" as="t">
+            <button onClick="{{ t.open }}" style="display:grid; width:100%; grid-template-columns:80px minmax(0,1fr) 120px 90px 140px; gap:10px; align-items:center; padding:12px 18px; border:none; border-bottom:1px solid #E8DFC9; background:transparent; cursor:pointer; text-align:left; font-size:13px">
+              <b>{{ t.id }}</b><span style="display:flex; flex-direction:column"><span style="font-weight:600">{{ t.subject }}</span><span style="font-size:11.5px; color:#5F5849">{{ t.type }} · {{ t.cat }} · {{ t.channel }}</span></span><span style="color:#5F5849">{{ t.queue }}</span><span style="font-weight:700; color:{{ t.pc }}">{{ t.prio }}</span><span style="color:#5F5849">{{ t.status }}</span>
+            </button>
+          </sc-for>
+          <sc-if value="{{ o.noTickets }}"><div style="padding:26px; text-align:center; color:#5F5849; font-size:13px">No tickets from this organization.</div></sc-if>
+          <div style="padding:12px 18px"><button onClick="{{ newTicket }}" style="height:32px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12.5px; font-weight:700; cursor:pointer">＋ New ticket for {{ o.name }}</button></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ d.notes }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:16px">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px; display:flex; flex-direction:column; gap:10px">
+            <div style="font-size:15px; font-weight:700">Internal notes</div>
+            <textarea value="{{ noteDraft }}" onChange="{{ setNote }}" placeholder="Write a note — @mention a colleague to notify them" style="min-height:84px; padding:10px 12px; border-radius:12px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; resize:vertical"></textarea>
+            <button onClick="{{ addNote }}" style="align-self:flex-end; height:32px; padding:0 14px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">Add note</button>
+            <sc-for list="{{ o.notes }}" as="n"><div style="border:1px solid #E8DFC9; border-radius:16px; padding:12px 14px; background:{{ n.bg }}"><div style="display:flex; justify-content:space-between; font-size:12px; color:#5F5849; margin-bottom:5px"><span><b style="color:#191510">{{ n.by }}</b> · {{ n.when }}</span><span>{{ n.pin }}</span></div><div style="font-size:13px; line-height:1.55">{{ n.text }}</div></div></sc-for>
+          </div>
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px; display:flex; flex-direction:column; gap:10px">
+            <div style="font-size:15px; font-weight:700">Tags</div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tagOptions }}" as="t"><button onClick="{{ t.toggle }}" style="padding:6px 12px; border-radius:999px; font-size:12px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; font-weight:{{ t.fw }}">{{ t.n }}</button></sc-for></div>
+            <div style="font-size:12px; color:#5F5849">Tags work as segment filters in Campaigns and saved views.</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ d.audit }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="display:grid; grid-template-columns:130px 140px minmax(0,1fr) minmax(0,1fr); gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>When</span><span>Who</span><span>Action</span><span>Reason</span></div>
+          <sc-for list="{{ o.audit }}" as="a"><div style="display:grid; grid-template-columns:130px 140px minmax(0,1fr) minmax(0,1fr); gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="color:#5F5849">{{ a.when }}</span><b>{{ a.who }}</b><span>{{ a.what }}</span><span style="color:#5F5849">{{ a.why }}</span></div></sc-for>
+          <div style="padding:12px 18px; font-size:12px; color:#5F5849">Append-only · reads of customer-scoped data are logged too · retained longer than product data</div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.users }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:16px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 16px; border-bottom:1px solid #E8DFC9"><input value="{{ uq }}" onChange="{{ setUq }}" placeholder="Search users by e-mail or name across all organizations" style="width:100%; height:36px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></input></div>
+        <sc-for list="{{ users }}" as="u" hint-placeholder-count="10">
+          <button onClick="{{ u.pick }}" style="display:grid; width:100%; grid-template-columns:minmax(0,1.5fr) minmax(0,1.2fr) 110px 90px 90px; gap:10px; align-items:center; padding:10px 16px; border:none; border-bottom:1px solid #E8DFC9; background:{{ u.bg }}; cursor:pointer; text-align:left; font-size:13px">
+            <span style="display:flex; flex-direction:column"><b>{{ u.name }}</b><span style="font-size:11.5px; color:#5F5849">{{ u.email }}</span></span><span style="color:#3A342A">{{ u.orgName }}</span><span>{{ u.role }}</span><span style="color:{{ u.mc }}">{{ u.mfa }}</span><span style="color:#5F5849">{{ u.last }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div style="position:sticky; top:80px; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px; display:flex; flex-direction:column; gap:12px">
+        <div style="display:flex; gap:12px; align-items:center"><span style="width:44px; height:44px; border-radius:13px; background:#191510; color:#FCF6E9; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:700">{{ user.ini }}</span><span style="display:flex; flex-direction:column"><b style="font-size:15px">{{ user.name }}</b><span style="font-size:12px; color:#5F5849">{{ user.email }}</span></span></div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">Memberships</div>
+        <sc-for list="{{ user.members }}" as="m"><div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid #E8DFC9"><span style="display:flex; flex-direction:column"><b>{{ m.org }}</b><span style="color:#5F5849; font-size:11.5px">{{ m.role }} · invited by {{ m.by }} · {{ m.when }}</span></span></div></sc-for>
+        <sc-for list="{{ user.facts }}" as="f"><div style="display:flex; justify-content:space-between; font-size:12.5px"><span style="color:#5F5849">{{ f.k }}</span><b>{{ f.v }}</b></div></sc-for>
+        <div style="display:flex; flex-wrap:wrap; gap:6px; padding-top:6px">
+          <sc-for list="{{ userActions }}" as="a"><button onClick="{{ a.run }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid {{ a.bc }}; background:transparent; color:{{ a.c }}; font-size:12px; font-weight:600; cursor:pointer">{{ a.n }}</button></sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.billing }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:13px">
+        <sc-for list="{{ bill.kpis }}" as="k"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px"><div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">{{ k.n }}</div><div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:600; margin-top:6px; color:{{ k.c }}">{{ k.v }}</div><div style="font-size:12px; color:#5F5849">{{ k.s }}</div></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+        <div style="font-size:15px; font-weight:700; margin-bottom:12px">Subscription lifecycle</div>
+        <div style="display:flex; height:30px; border-radius:9px; overflow:hidden; border:1px solid #E8DFC9"><sc-for list="{{ bill.life }}" as="l"><div title="{{ l.n }}" style="width:{{ l.w }}%; background:{{ l.c }}; border-right:1px solid rgba(25,21,16,.1)"></div></sc-for></div>
+        <div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:10px"><sc-for list="{{ bill.life }}" as="l"><span style="display:flex; align-items:center; gap:6px; font-size:12px"><span style="width:10px; height:10px; border-radius:3px; background:{{ l.c }}; border:1px solid rgba(25,21,16,.15)"></span>{{ l.n }} <b>{{ l.v }}</b></span></sc-for></div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:16px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><span style="font-size:15px; font-weight:700">Failed payments and dunning</span><span style="font-size:12px; color:#5F5849">Retries day 1 · 3 · 7</span></div>
+          <sc-for list="{{ bill.failed }}" as="f"><div style="display:grid; grid-template-columns:minmax(0,1fr) 100px 110px 70px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><span style="display:flex; flex-direction:column"><b>{{ f.org }}</b><span style="font-size:11.5px; color:#5F5849">{{ f.reason }}</span></span><b>{{ f.amount }}</b><span style="color:#A33A16; font-size:12px">{{ f.step }}</span><button onClick="{{ f.retry }}" style="height:28px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Retry</button></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><span style="font-size:15px; font-weight:700">Band reconciliation</span><span style="font-size:12px; color:#5F5849">Employee list decides the band</span></div>
+          <sc-for list="{{ bill.bands }}" as="b"><div style="display:grid; grid-template-columns:minmax(0,1fr) 150px 120px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><span style="display:flex; flex-direction:column"><b>{{ b.org }}</b><span style="font-size:11.5px; color:#5F5849">{{ b.emp }}</span></span><span>{{ b.from }} → <b>{{ b.to }}</b></span><span style="font-size:12px; color:{{ b.c }}">{{ b.state }}</span></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:center"><span style="font-size:15px; font-weight:700">Plan catalogue</span><span style="font-size:12px; color:#5F5849">MVA 25 % · price changes create a new version</span></div>
+          <div style="display:grid; grid-template-columns:90px 90px 100px minmax(0,1fr) 80px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Band</span><span>Monthly</span><span>Annual</span><span>Includes</span><span>Version</span></div>
+          <sc-for list="{{ bill.plans }}" as="p"><div style="display:grid; grid-template-columns:90px 90px 100px minmax(0,1fr) 80px; gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><b>{{ p.band }}</b><span>{{ p.m }}</span><span>{{ p.y }}</span><span style="color:#5F5849; font-size:12px">{{ p.inc }}</span><span style="color:#5F5849">{{ p.v }}</span></div></sc-for>
+          <div style="padding:10px 18px; font-size:12px; color:#5F5849">No binding · verneombud and tillitsvalgte free · 30-day trial without card</div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><span style="font-size:15px; font-weight:700">Coupons, credits and complimentary accounts</span></div>
+          <sc-for list="{{ bill.coupons }}" as="c"><div style="display:grid; grid-template-columns:130px minmax(0,1fr) 100px; gap:10px; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><b style="font-family:ui-monospace,Menlo,monospace; font-size:12px">{{ c.code }}</b><span style="color:#5F5849">{{ c.desc }}</span><span style="text-align:right">{{ c.used }}</span></div></sc-for>
+          <div style="padding:12px 18px; display:flex; gap:8px"><button onClick="{{ exportAccounting }}" style="height:32px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12.5px; font-weight:700; cursor:pointer">Export to accounting</button><button style="height:32px; padding:0 13px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12.5px; font-weight:600; cursor:pointer">＋ New coupon</button></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.access }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:16px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden; grid-column:1/-1">
+        <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:baseline"><span style="font-size:15px; font-weight:700">Support access — instead of impersonation</span><span style="font-size:12px; color:#5F5849">Customer approves · time-boxed · read-only by default · every page view logged</span></div>
+        <sc-for list="{{ access }}" as="a"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) 120px 150px 120px 110px 120px; gap:10px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><span style="display:flex; flex-direction:column"><b>{{ a.org }}</b><span style="font-size:11.5px; color:#5F5849">{{ a.reason }}</span></span><span>{{ a.staff }}</span><span style="color:#5F5849">{{ a.by }}</span><span><span style="padding:3px 10px; border-radius:999px; font-size:11.5px; font-weight:700; background:{{ a.sbg }}; color:{{ a.sc }}">{{ a.state }}</span></span><span style="color:#5F5849">{{ a.exp }}</span><span style="color:#5F5849">{{ a.views }}</span></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:20px 22px; display:flex; flex-direction:column; gap:12px">
+        <div style="font-size:15px; font-weight:700">Request access</div>
+        <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Organization<select style="height:38px; padding:0 10px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"><sc-for list="{{ orgOptions }}" as="o"><option>{{ o }}</option></sc-for></select></label>
+        <div style="display:flex; gap:6px"><sc-for list="{{ durOpts }}" as="d"><button onClick="{{ d.pick }}" style="flex:1; height:36px; border-radius:10px; border:1px solid {{ d.bc }}; background:{{ d.bg }}; font-size:12.5px; font-weight:{{ d.fw }}; cursor:pointer">{{ d.n }}</button></sc-for></div>
+        <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Reason (shown to the customer)<textarea placeholder="e.g. T-2310 — verify invitation settings" style="min-height:70px; padding:10px 12px; border-radius:12px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></textarea></label>
+        <button onClick="{{ requestAccess }}" style="height:40px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">Send request to customer</button>
+        <div style="font-size:12px; color:#5F5849; line-height:1.5">The session inherits the role scope of the user being viewed and the 5-answer threshold. A banner shows in the customer’s app while it is active.</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.privacy }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:baseline"><span style="font-size:15px; font-weight:700">Personvern requests</span><span style="font-size:12px; color:#5F5849">30-day clock · personvern tickets flow in here</span></div>
+        <sc-for list="{{ privacy }}" as="p"><div style="display:grid; grid-template-columns:90px 110px minmax(0,1.4fr) 120px 150px 110px 120px; gap:10px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><b>{{ p.id }}</b><span>{{ p.type }}</span><span style="display:flex; flex-direction:column"><span style="font-weight:600">{{ p.who }}</span><span style="font-size:11.5px; color:#5F5849">{{ p.org }}</span></span><span style="color:#5F5849">{{ p.recv }}</span><span style="display:flex; align-items:center; gap:8px"><span style="flex:1; height:6px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ p.w }}%; background:{{ p.c }}"></span></span><b style="font-size:12px; color:{{ p.dc }}">{{ p.due }}</b></span><span>{{ p.status }}</span><span style="color:#5F5849">{{ p.owner }}</span></div></sc-for>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:16px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; font-size:15px; font-weight:700">Deletion queue</div>
+          <sc-for list="{{ deletions }}" as="p"><div style="display:grid; grid-template-columns:minmax(0,1fr) 140px 110px; gap:10px; padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><span style="display:flex; flex-direction:column"><b>{{ p.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ p.s }}</span></span><span style="color:#5F5849">{{ p.exec }}</span><span style="color:{{ p.c }}; font-weight:600">{{ p.state }}</span></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><span style="font-size:15px; font-weight:700">Data processing agreements</span><span style="font-size:12px; color:#5F5849">Current version 3.1</span></div>
+          <sc-for list="{{ dpas }}" as="p"><div style="display:grid; grid-template-columns:minmax(0,1fr) 70px 140px 110px; gap:10px; padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:13px"><b>{{ p.org }}</b><span>{{ p.v }}</span><span style="color:#5F5849">{{ p.by }}</span><span style="color:{{ p.c }}; font-weight:600">{{ p.state }}</span></div></sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed; inset:0; z-index:90; background:rgba(25,21,16,.42); display:flex; align-items:center; justify-content:center; padding:20px">
+      <div onClick="{{ stop }}" style="width:520px; max-width:100%; background:#FFFDF6; border-radius:22px; box-shadow:0 34px 80px rgba(25,21,16,.3); padding:24px 26px; display:flex; flex-direction:column; gap:14px">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px"><div><div style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#5F5849">{{ o.name }}</div><div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:600; margin-top:4px">{{ modal.n }}</div></div><button onClick="{{ closeModal }}" style="width:30px; height:30px; border-radius:999px; border:1px solid #191510; background:transparent; cursor:pointer">×</button></div>
+        <div style="font-size:13px; color:#3A342A; line-height:1.55">{{ modal.preview }}</div>
+        <sc-if value="{{ modal.field }}"><label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">{{ modal.field }}<input value="{{ mField }}" onChange="{{ setMField }}" placeholder="{{ modal.ph }}" style="height:40px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></input></label></sc-if>
+        <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Reason (required, written to the audit log)<textarea value="{{ reason }}" onChange="{{ setReason }}" placeholder="e.g. Ticket T-2312 — board meeting moved" style="min-height:70px; padding:10px 12px; border-radius:12px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></textarea></label>
+        <sc-if value="{{ modal.danger }}"><div style="font-size:12px; color:#A33A16">Super-admin only · scheduled with a 30-day grace period · soft-deleted until then. Second-admin approval is off (setting).</div></sc-if>
+        <div style="display:flex; justify-content:flex-end; gap:8px"><button onClick="{{ closeModal }}" style="height:40px; padding:0 16px; border-radius:11px; border:1px solid #E8DFC9; background:transparent; font-size:13px; font-weight:600; cursor:pointer">Cancel</button><button onClick="{{ confirm }}" disabled="{{ cantConfirm }}" style="height:40px; padding:0 18px; border-radius:11px; border:1px solid #191510; background:{{ confirmBg }}; font-size:13px; font-weight:700; cursor:pointer; opacity:{{ confirmOp }}">{{ modal.cta }}</button></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600; box-shadow:0 18px 40px -24px rgba(25,21,16,.45)">{{ toast }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'orgs', q: '', f: {}, view: 'All', org: null, dtab: 'overview', sel: {}, actionsOpen: false, modal: null, reason: '', mField: '', toast: null, notes: {}, tags: {}, extra: {}, noteDraft: '', tl: 'All', uq: '', user: 'p1', dur: '24 h', ready: !!window.SA };
+  componentDidMount() {
+    if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40);
+    const f = this.props.focus; if (f && f.org) this.setState({ org: f.org }); if (f && f.tab) this.setState({ tab: f.tab });
+  }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  statusTone(s) { return { Active: ['#CFE7E4', '#20431C'], Trial: ['#FBEBBE', '#5C4600'], 'Past due': ['#F0B9A0', '#6B240C'], Suspended: ['#FBD5C4', '#6B240C'], Cancelled: ['rgba(25,21,16,.06)', '#5F5849'] }[s] || ['#F2EAD6', '#5F5849']; }
+  hc(h) { return h >= 70 ? '#5C9A55' : h >= 40 ? '#E0A21F' : '#D4633A'; }
+  detail(o) {
+    const D = window.SA; const n = parseInt(o.id.slice(1), 10);
+    const rr = (k) => ((n * 9301 + k * 49297) % 233280) / 233280;
+    const ex = this.state.extra[o.id] || {};
+    const people = D.people.filter((p) => p.org === o.id);
+    const roles = ['Daglig leder', 'HR', 'Avdelingsleder', 'Verneombud', 'Avdelingsleder', 'Tillitsvalgt'];
+    const users = [...people.map((p) => ({ name: p.name, email: p.email, role: p.role })), ...['Mona Lunde', 'Petter Aas', 'Siri Brekke', 'Tom Strand'].slice(0, 2 + Math.floor(rr(1) * 3)).map((nm, i) => ({ name: nm, email: nm.toLowerCase().replace(' ', '.') + '@' + (people[0] ? people[0].email.split('@')[1] : 'firma.no'), role: roles[(i + n) % roles.length] }))]
+      .map((u, i) => { const pending = i === 3; return { ...u, last: pending ? 'Invite pending' : ['Today', 'Yesterday', '3 days ago', '2 weeks ago', '41 days ago'][i % 5], lc: pending ? '#8A6A00' : i === 4 ? '#A33A16' : '#191510', mfa: i % 3 === 2 ? 'Off' : 'On', mc: i % 3 === 2 ? '#A33A16' : '#2F5D2A', auth: i === 0 ? 'Magic link' : i % 2 ? 'Password' : 'Google', by: i === 0 ? 'Signup' : users0(i), billing: i === 0, resendLabel: pending ? 'Resend invite' : 'Magic link',
+        resend: () => this.flash((pending ? 'Invite resent to ' : 'Magic link sent to ') + u.email + ' · audited'), reset: () => this.setMfa(u), deact: () => this.flash(u.name + ' deactivated · audited') }; });
+    function users0(i) { return i % 2 ? (people[0] ? people[0].name : 'Daglig leder') : 'HR'; }
+    const groupsUnder = 1 + Math.floor(rr(2) * 3);
+    const tStatus = ['Done', 'Done', 'Done', 'Done', 'Done', 'Done', 'Done', o.status === 'Trial' ? 'Open' : 'Done'];
+    const actNames = ['Account created — Brønnøysund lookup ok', 'Employee list uploaded', 'First survey scheduled', 'First survey sent', 'Result unlocked (≥ 5 answers)', 'Results viewed by daglig leder / HR', 'First tiltak created', 'Converted to paid'];
+    const doneUpTo = o.status === 'Trial' ? (o.lastSurvey ? 5 : 2) : 8;
+    const activation = actNames.map((s, i) => ({ n: s, mark: i < doneUpTo ? '✓' : i + 1, bg: i < doneUpTo ? '#CFE7E4' : 'transparent', bc: i < doneUpTo ? '#2F5D2A' : '#C4BCA8', fw: i < doneUpTo ? 400 : 600, when: i < doneUpTo ? (i === 3 ? '18 min after signup' : 'day ' + (i * 2)) : '' }));
+    const hp = [['Last admin login', 'Daglig leder · 2 days ago', 0], ['Survey cadence vs årshjul', 'On plan · next pulse in 3 weeks', 1], ['Response rate trend', o.response + ' % · ' + (rr(3) > .5 ? '+4' : '−3') + ' since last', 2], ['Tiltak activity', '6 open · 2 closed on time', 3], ['Payment status', o.status === 'Past due' ? 'Failed 2 times' : 'Paid on time', 4]]
+      .map(([nm, s, k]) => { const v = Math.max(5, Math.min(99, Math.round(o.health + (rr(k + 5) - .5) * 30))); return { n: nm, s, v: o.status === 'Past due' && k === 4 ? 12 : v, c: this.hc(v) }; });
+    const prods = o.products.map((p) => ({ ...D.productById[p], state: p === 'orgpuls' ? o.status : 'Active' }));
+    const allProds = D.products.map((p) => { const has = o.products.includes(p.id); return { ...p, ini: p.name[0], rowBg: has ? '#FFFDF6' : '#FCF6E9', line: has ? 'Active · ' + (p.id === 'orgpuls' ? o.employees + ' employees on the list' : Math.round(o.employees * .7) + ' seats') : 'Not used — cross-sell segment', mrr: has ? D.kr(p.id === 'orgpuls' ? o.price : Math.round(o.price * .7)) : '—' }; });
+    const surveys = ['Baseline 2026', 'Pulse — September', 'Pulse — June', 'Baseline 2025'].map((nm, i) => { const inv = Math.round(o.employees * .95); const del = inv - (i === 1 ? 3 : 1); const ans = Math.round(del * (o.response - i * 3) / 100); return { n: nm, type: nm.startsWith('Pulse') ? 'Pulse' : 'Main', tbg: nm.startsWith('Pulse') ? '#E4EEEC' : '#F2EAD6', dates: ['2–16 Sep', '8–15 Sep', '2–9 Jun', '1–15 Sep 25'][i], inv, del, bounced: inv - del, bc: inv - del > 2 ? '#A33A16' : '#191510', ans, rate: Math.round(ans / del * 100) + ' %', rem: (i % 2 ? 1 : 2) + ' · +' + (6 + i) + ' answers' }; });
+    const inv = ['Oct', 'Sep', 'Aug', 'Jul', 'Jun', 'May'].map((m, i) => { const failed = o.status === 'Past due' && i < 2; return { no: 'INV-' + (40210 - i * 37 - n), date: '1 ' + m + ' 2026', desc: o.band + ' band · ' + o.products.length + ' application' + (o.products.length > 1 ? 's' : '') + (o.ehf ? ' · EHF' : ' · card'), amount: D.kr(o.mrr * 1.25 || o.price * 1.25), status: failed ? 'Failed' : i === 0 && o.ehf ? 'Sent' : 'Paid', sbg: failed ? '#F0B9A0' : i === 0 && o.ehf ? '#FBEBBE' : '#CFE7E4', sc: failed ? '#6B240C' : i === 0 && o.ehf ? '#5C4600' : '#20431C', failed, resend: () => this.flash('Invoice resent to billing contact'), retry: () => this.flash('Payment retry queued · Stripe') }; });
+    const band = D.bands.find((b) => b.label === o.band);
+    const bandFlag = o.employees > band.max - 6 ? 'Employee list shows ' + (band.max + 3) + ' — above the ' + o.band + ' band.' : null;
+    const sub = [{ k: 'Plan', v: o.band + ' employees · ' + D.kr(o.price) + '/month' }, { k: 'Applications', v: o.products.map((p) => D.productById[p].name).join(', ') }, { k: 'Next invoice', v: o.status === 'Trial' ? 'After trial · ' + o.trialLeft + ' days' : '1 Nov 2026 · ' + D.kr(o.mrr * 1.25) }, { k: 'Payment method', v: o.ehf ? 'EHF invoice via PEPPOL' : 'Visa •••• 4242', c: o.status === 'Past due' ? '#A33A16' : '#191510' }, { k: 'Dunning', v: o.status === 'Past due' ? 'Step 2 of 3 · retry 8 Oct' : 'None', c: o.status === 'Past due' ? '#A33A16' : '#191510' }, { k: 'Discount', v: ex.discount || (o.labels.includes('Partner') ? 'Partner 20 %' : 'None') }];
+    const tl = [
+      { when: 'Today 09:12', t: 'Logged in — daglig leder', s: 'Product · Chrome on macOS', k: 'Logins', c: '#E4EEEC' },
+      { when: 'Yesterday', t: 'Proposal opened twice', s: 'CRM · tracked link · Skiftly expansion', k: 'CRM', c: '#FBEBBE' },
+      { when: '2 Oct', t: 'Ticket T-2312 resolved', s: 'Support · Magnus Berg · CSAT 5', k: 'Support', c: '#CFE0F5' },
+      { when: '16 Sep', t: 'Baseline 2026 closed — result unlocked', s: 'Activation · 84 % response', k: 'Activation', c: '#CFE7E4' },
+      { when: '1 Sep', t: 'Plan changed 1–25 → 26–100', s: 'Billing · customer confirmed band upgrade', k: 'Billing', c: '#F3E2C9' },
+      { when: '12 Mar 2024', t: 'Signed up', s: 'Source: ' + o.source + ' · first touch LinkedIn ad, last touch /pris', k: 'Activation', c: '#CFE7E4' },
+      ...((ex.timeline) || []),
+    ].filter((e) => this.state.tl === 'All' || e.k === this.state.tl);
+    const notes = [...(this.state.notes[o.id] || []), { by: 'Ingrid Solberg', when: '28 Sep', text: 'Kari wants Skiftly for the two warehouse teams first. Budget decision at the October board meeting.', pin: 'Pinned', bg: '#FBEBBE' }, { by: 'Magnus Berg', when: '2 Oct', text: 'Walked HR through verneombud access. Happy with response — asked for nynorsk survey option.', pin: '', bg: '#FFFDF6' }];
+    const audit = [...(ex.audit || []), { when: 'Today 08:40', who: 'Magnus Berg', what: 'Viewed users and roles', why: 'T-2312 follow-up' }, { when: '2 Oct 14:02', who: 'Magnus Berg', what: 'Support access session — 14 page views, read-only', why: 'Customer-approved, 24 h' }, { when: '1 Sep 10:15', who: 'Sara Haugen', what: 'Plan change 1–25 → 26–100', why: 'Band reconciliation, customer confirmed' }, { when: '12 Aug 11:30', who: 'Tor Lambrechts', what: 'Re-synced from Brønnøysund', why: 'Address change' }];
+    const tickets = D.tickets.filter((t) => t.org === o.id).map((t) => ({ ...t, pc: t.prio === 'Urgent' ? '#A33A16' : t.prio === 'High' ? '#8A6A00' : '#5F5849', open: () => this.props.go && this.props.go('tickets', { ticket: t.id }) }));
+    const [sbg, sc] = this.statusTone(o.status);
+    return { ...o, ini: o.name.split(' ').map((w) => w[0]).slice(0, 2).join(''), sbg, sc, address: ['Storgata', 'Kongens gate', 'Sjøgata', 'Fjordveien'][n % 4] + ' ' + (n + 3) + ', ' + o.city, nace: ['41.200', '86.102', '85.201', '55.101', '69.201'][n % 5], brreg: (n % 9) + 2 + ' days ago', ownerName: D.staffById[o.owner].name, csmName: D.staffById[o.csm].name, mrrF: o.mrr ? D.kr(o.mrr) : '—', hInk: this.hc(o.health) === '#5C9A55' ? '#2F5D2A' : this.hc(o.health) === '#E0A21F' ? '#8A6A00' : '#A33A16',
+      prods, allProds, healthParts: hp, activation, structure: [{ n: 'Departments', v: 3 + (n % 5) }, { n: 'Teams', v: 6 + (n % 9) }, { n: 'On employee list', v: o.employees }, { n: 'Groups below threshold', v: groupsUnder, c: groupsUnder > 2 ? '#A33A16' : '#191510' }],
+      tiltak: [{ n: 'Open', v: 6 }, { n: 'Closed', v: 11 }, { n: 'Overdue', v: 2, c: '#A33A16' }], nps: '+' + (20 + n % 40), feedback: (n % 6) + 2 + ' this quarter',
+      deals: D.deals.filter((d) => d.org === o.id).map((d) => ({ title: d.title, value: D.kr(d.value), stage: D.pipelines.flatMap((p) => p.stages).find((s) => s.id === d.stage).name + ' · ' + d.status })),
+      contacts: people.map((p) => ({ name: p.name, role: p.role, email: p.email, consent: p.consent })),
+      users, surveys, invoices: inv, sub, bandFlag, timeline: tl, notes, audit, tickets, noTickets: tickets.length === 0, labels: [...o.labels, ...Object.keys(this.state.tags[o.id] || {}).filter((k) => this.state.tags[o.id][k])] };
+  }
+  setMfa(u) { this.flash('MFA reset for ' + u.name + ' · they enrol again at next login'); }
+  renderVals() {
+    const D = window.SA; const st = this.state; const go = this.props.go || (() => {});
+    if (!D) return { tabs: [], v: {}, list: [], views: [], filters: [], d: {}, o: {}, dtabs: [], actions: [], users: [], user: {}, bill: { kpis: [], life: [], failed: [], bands: [], plans: [], coupons: [] }, access: [], privacy: [], deletions: [], dpas: [], tlFilters: [], tagOptions: [], userActions: [], orgOptions: [], durOpts: [] };
+    const product = this.props.product || 'all';
+    const base = D.orgs.filter((o) => product === 'all' || o.products.includes(product));
+    const tabs = [['orgs', 'Organizations', base.length], ['users', 'Users', null], ['billing', 'Subscriptions and billing', null], ['access', 'Support access', 2], ['privacy', 'Personvern requests', 4]].map(([k, n, count]) => ({ n, count, pick: () => this.setState({ tab: k, org: null }), bg: st.tab === k ? '#191510' : 'transparent', c: st.tab === k ? '#FCF6E9' : '#191510', bc: st.tab === k ? '#191510' : '#C4BCA8', fw: st.tab === k ? 700 : 500 }));
+    const viewDefs = { All: () => true, 'Trials expiring this week without a survey sent': (o) => o.status === 'Trial' && o.trialLeft <= 7 && !o.lastSurvey, 'At risk before renewal': (o) => o.health < 40 && o.status !== 'Cancelled', 'Past due': (o) => o.status === 'Past due', 'Multi-product': (o) => o.products.length > 1, 'Invoice (EHF) customers': (o) => o.ehf };
+    const views = Object.keys(viewDefs).map((n) => ({ n, count: base.filter(viewDefs[n]).length, pick: () => this.setState({ view: n }), bg: st.view === n ? '#FBEBBE' : 'transparent', bc: st.view === n ? '#191510' : '#C4BCA8', fw: st.view === n ? 700 : 500 }));
+    const fdefs = [['status', 'Status', ['Any', 'Trial', 'Active', 'Past due', 'Cancelled', 'Suspended']], ['band', 'Price tier', ['Any', ...D.bands.map((b) => b.label)]], ['industry', 'Industry', ['Any', ...D.industries]], ['fylke', 'Fylke', ['Any', ...D.fylker]], ['source', 'Signup source', ['Any', ...D.sources]], ['health', 'Health', ['Any', 'At risk (< 40)', 'Watch (40–69)', 'Healthy (70+)']], ['product', 'Uses', ['Any', ...D.products.map((p) => p.name)]]];
+    const filters = fdefs.map(([k, label, opts]) => ({ label, opts, value: st.f[k] || 'Any', bc: st.f[k] && st.f[k] !== 'Any' ? '#191510' : '#E8DFC9', set: (e) => this.setState({ f: { ...st.f, [k]: e.target.value } }) }));
+    const q = st.q.toLowerCase().trim();
+    const fv = st.f;
+    const list = base.filter(viewDefs[st.view]).filter((o) => {
+      if (q && !(o.name.toLowerCase().includes(q) || o.orgnr.replace(/\u00A0/g, '').includes(q.replace(/\s/g, '')) || D.people.some((p) => p.org === o.id && p.email.includes(q)))) return false;
+      if (fv.status && fv.status !== 'Any' && o.status !== fv.status) return false;
+      if (fv.band && fv.band !== 'Any' && o.band !== fv.band) return false;
+      if (fv.industry && fv.industry !== 'Any' && o.industry !== fv.industry) return false;
+      if (fv.fylke && fv.fylke !== 'Any' && o.fylke !== fv.fylke) return false;
+      if (fv.source && fv.source !== 'Any' && o.source !== fv.source) return false;
+      if (fv.health && fv.health !== 'Any') { if (fv.health.startsWith('At') && o.health >= 40) return false; if (fv.health.startsWith('Watch') && (o.health < 40 || o.health >= 70)) return false; if (fv.health.startsWith('Healthy') && o.health < 70) return false; }
+      if (fv.product && fv.product !== 'Any' && !o.products.includes(D.products.find((p) => p.name === fv.product).id)) return false;
+      return true;
+    }).map((o) => { const [sbg, sc] = this.statusTone(o.status); return { ...o, sbg, sc, prods: o.products.map((p) => D.productById[p]), mrrF: o.mrr ? D.kr(o.mrr) : '—', ls: o.lastSurvey ? o.lastSurvey + ' d ago' : 'Never', lsC: o.lastSurvey ? (o.lastSurvey > 90 ? '#A33A16' : '#3A342A') : '#A33A16', resp: o.lastSurvey ? o.response + ' %' : '—', hc: this.hc(o.health), signup: o.signupDaysAgo < 30 ? o.signupDaysAgo + ' d ago' : Math.round(o.signupDaysAgo / 30) + ' mo ago', sel: !!st.sel[o.id], rowBg: st.sel[o.id] ? '#FBEBBE' : 'transparent', toggle: () => this.setState({ sel: { ...st.sel, [o.id]: !st.sel[o.id] } }), open: () => this.setState({ org: o.id, dtab: 'overview' }) }; });
+    const selCount = Object.values(st.sel).filter(Boolean).length;
+    const org = st.org ? D.orgById[st.org] : null;
+    const o = org ? this.detail(org) : { name: '', labels: [], prods: [], allProds: [], healthParts: [], activation: [], structure: [], tiltak: [], deals: [], contacts: [], users: [], surveys: [], invoices: [], sub: [], timeline: [], notes: [], audit: [], tickets: [] };
+    const dtabs = [['overview', 'Overview'], ['users', 'Users and roles'], ['surveys', 'Surveys'], ['billing', 'Billing'], ['timeline', 'Timeline'], ['tickets', 'Tickets'], ['notes', 'Notes and tags'], ['audit', 'Audit trail']].map(([k, n]) => ({ n, pick: () => this.setState({ dtab: k }), bc: st.dtab === k ? '#191510' : 'transparent', fw: st.dtab === k ? 700 : 500, c: st.dtab === k ? '#191510' : '#5F5849' }));
+    const A = [
+      ['trial', 'Extend or reset trial', 'Adds days to the 30-day trial', 'Days to add', '14'], ['plan', 'Change plan', 'Band and price version', 'New band', '101–250'], ['discount', 'Apply discount', 'One-off or recurring', 'Discount', '20 % for 6 months'], ['comp', 'Mark as complimentary', 'Pilots and partners', null], ['suspend', org && org.status === 'Suspended' ? 'Reactivate' : 'Suspend', 'Read-only access to results', null], ['brreg', 'Re-sync from Brønnøysund', 'Name, address, NACE, employees', null], ['owner', 'Transfer ownership', 'To another user in the org', 'New owner e-mail', 'hr@firma.no'], ['merge', 'Merge duplicate', 'Same org.nr — preview first', 'Duplicate to merge into this', org ? org.name + ' (2)' : ''], ['export', 'Export organization data', 'Aggregates, tiltak, comments without identity', null], ['delete', 'Delete organization', 'Super-admin · confirm by typing org.nr', 'Type the org.nr to confirm', org ? org.orgnr.replace(/\u00A0/g, ' ') : '', true],
+    ];
+    const previews = { trial: 'Trial ends ' + (org && org.trialLeft != null ? 'in ' + org.trialLeft + ' days' : '—') + '. The customer gets the «trial extended» email.', plan: 'Price changes at next period. Existing price version is kept until migrated.', discount: 'Applied on the Stripe subscription and shown on the next invoice.', comp: 'MRR is excluded from revenue reports and the org is tagged Complimentary.', suspend: 'Users keep read-only access to results. Scheduled sends pause.', brreg: 'Fetches name, address, NACE and registered employees. Differences are shown before saving.', owner: 'The current owner becomes HR. Both receive an email.', merge: 'Users, surveys and tickets of the duplicate move here. The duplicate is soft-deleted for 30 days.', export: 'A ZIP with aggregates (n ≥ 5), tiltak and comments without identity. The export is logged.', delete: 'All data is scheduled for deletion with a 30-day grace period and confirmation to the customer.' };
+    const actions = A.map(([k, n, s, field, ph, danger]) => ({ n, s, c: danger ? '#A33A16' : '#191510', pick: () => this.setState({ actionsOpen: false, modal: { k, n, field, ph, danger, preview: previews[k], cta: danger ? 'Schedule deletion' : 'Confirm' }, reason: '', mField: '' }) }));
+    const cantConfirm = !st.reason.trim() || (st.modal && st.modal.danger && st.mField.replace(/\s/g, '') !== (org ? org.orgnr.replace(/\u00A0/g, '') : ''));
+    const confirm = () => { if (cantConfirm) return; const m = st.modal; const ex = st.extra[org.id] || {}; const row = { when: 'Just now', who: 'Tor Lambrechts', what: m.n + (st.mField ? ' — ' + st.mField : ''), why: st.reason };
+      this.setState({ modal: null, extra: { ...st.extra, [org.id]: { ...ex, discount: m.k === 'discount' ? st.mField || '20 %' : ex.discount, audit: [row, ...(ex.audit || [])], timeline: [{ when: 'Just now', t: m.n, s: 'Admin action · ' + st.reason, k: 'Support', c: '#F5C64A' }, ...(ex.timeline || [])] } } }); this.flash(m.n + ' · written to the audit log'); };
+    const tlFilters = ['All', 'Activation', 'Billing', 'Support', 'Logins', 'CRM'].map((n) => ({ n, pick: () => this.setState({ tl: n }), bg: st.tl === n ? '#191510' : 'transparent', c: st.tl === n ? '#FCF6E9' : '#191510', bc: st.tl === n ? '#191510' : '#C4BCA8', fw: st.tl === n ? 700 : 500 }));
+    const tagState = (org && st.tags[org.id]) || {};
+    const tagOptions = ['Champion', 'Renewal Q4', 'Expansion', 'Pilot', 'Reference customer', 'Needs onboarding'].map((n) => ({ n, toggle: () => this.setState({ tags: { ...st.tags, [org.id]: { ...tagState, [n]: !tagState[n] } } }), bg: tagState[n] ? '#FBEBBE' : 'transparent', bc: tagState[n] ? '#191510' : '#C4BCA8', fw: tagState[n] ? 700 : 500 }));
+    // users tab
+    const uq = st.uq.toLowerCase();
+    const users = D.people.filter((p) => p.type !== 'Prospect' && (!uq || p.name.toLowerCase().includes(uq) || p.email.includes(uq))).slice(0, 18).map((p, i) => ({ ...p, orgName: D.orgById[p.org].name, mfa: i % 4 === 2 ? 'Off' : 'On', mc: i % 4 === 2 ? '#A33A16' : '#2F5D2A', last: ['Today', 'Yesterday', '4 d ago', '3 w ago'][i % 4], bg: st.user === p.id ? '#FBEBBE' : 'transparent', pick: () => this.setState({ user: p.id }) }));
+    const up = D.personById[st.user] || D.people[0];
+    const user = { ...up, members: [{ org: D.orgById[up.org].name, role: up.role, by: 'Signup', when: 'Mar 2024' }, ...(up.id === 'p1' ? [{ org: 'Bergheim Bygg AS', role: 'Board observer', by: 'Ole Hansen', when: 'Jan 2026' }] : [])], facts: [{ k: 'Last login', v: 'Today 09:12' }, { k: 'MFA', v: 'Authenticator app' }, { k: 'Auth method', v: 'Magic link' }, { k: 'Pending invites', v: 'None' }] };
+    const userActions = [['Resend magic link', '#E8DFC9', '#191510'], ['Reset MFA', '#E8DFC9', '#191510'], ['Change e-mail', '#E8DFC9', '#191510'], ['Mark as billing contact', '#E8DFC9', '#191510'], ['Remove from org', '#E38258', '#8A3A16'], ['Deactivate', '#E38258', '#8A3A16']].map(([n, bc, c]) => ({ n, bc, c, run: () => this.flash(n + ' · ' + up.name + ' · audited') }));
+    // billing tab
+    const life = [['Trial', '#FBEBBE'], ['Active', '#CFE7E4'], ['Past due', '#F0B9A0'], ['Suspended', '#FBD5C4'], ['Cancelled', '#E8DFC9']].map(([n, c]) => { const v = base.filter((x) => x.status === n).length; return { n, c, v, w: (v / base.length) * 100 }; });
+    life.push({ n: 'Deleted (retention)', c: '#C4BCA8', v: 3, w: 3 });
+    const pastDue = base.filter((x) => x.status === 'Past due');
+    const bill = {
+      kpis: [{ n: 'MRR', v: D.kr(base.reduce((a, x) => a + x.mrr, 0)), s: 'Stripe is the source of truth' }, { n: 'Past due', v: D.kr(pastDue.reduce((a, x) => a + x.mrr * 1.25, 0)), s: pastDue.length + ' organizations in dunning', c: '#A33A16' }, { n: 'Invoice (EHF)', v: String(base.filter((x) => x.ehf).length), s: 'organizations via PEPPOL' }, { n: 'Refunds this month', v: D.kr(1590), s: '2 refunds · 1 credit note' }],
+      life, failed: pastDue.map((x, i) => ({ org: x.name, amount: D.kr(x.mrr * 1.25), reason: ['Card declined — insufficient funds', 'Card expired', 'Authentication required'][i % 3], step: 'Dunning step ' + ((i % 3) + 1) + ' of 3', retry: () => this.flash('Retry queued for ' + x.name) })),
+      bands: base.filter((x) => { const b = D.bands.find((y) => y.label === x.band); return x.employees > b.max - 6; }).slice(0, 5).map((x, i) => { const bi = D.bands.findIndex((y) => y.label === x.band); return { org: x.name, emp: (D.bands[bi].max + 2 + i) + ' on the employee list', from: x.band, to: (D.bands[bi + 1] || D.bands[bi]).label, state: ['Customer notified', 'Awaiting confirmation', 'Not yet notified'][i % 3], c: i % 3 === 2 ? '#A33A16' : '#8A6A00' }; }),
+      plans: D.bands.map((b, i) => ({ band: b.label, m: D.kr(b.price), y: D.kr(b.price * 10), inc: 'All Orgpuls features · ' + ['1 admin', '3 admins', '10 admins', 'Unlimited admins'][i], v: 'v' + (3 - (i > 1 ? 1 : 0)) + ' · active' })),
+      coupons: [{ code: 'HMS2026', desc: 'Campaign «Lovkrav» — 3 months 50 %', used: '41 used' }, { code: 'PARTNER20', desc: 'Partner accounts — 20 % recurring', used: '9 used' }, { code: 'PILOT-KOMMUNE', desc: 'Complimentary — municipality pilots', used: '3 accounts' }, { code: 'CREDIT-T2298', desc: 'Credit note — duplicate charge', used: '1 590 kr' }],
+    };
+    const access = [{ org: 'Lumio AS', reason: 'T-2312 — verify invitation settings', staff: 'Magnus Berg', by: 'Approved by Kari Nordmann', state: 'Active', sbg: '#CFE7E4', sc: '#20431C', exp: '14 h left', views: '14 page views' }, { org: 'Elvebakken kommune', reason: 'T-2316 — domain rejection', staff: 'Hanna Vik', by: 'Requested 09:40', state: 'Pending', sbg: '#FBEBBE', sc: '#5C4600', exp: '72 h when approved', views: '—' }, { org: 'Solstrand Helse AS', reason: 'Onboarding call', staff: 'Magnus Berg', by: 'Granted by customer', state: 'Expired', sbg: 'rgba(25,21,16,.06)', sc: '#5F5849', exp: 'Ended 1 Oct', views: '22 page views' }];
+    const privacy = [['PV-118', 'Deletion', 'Former employee (via employer)', 'Elvebakken kommune', '9 Sep', 26, 'In progress', 'Hanna Vik'], ['PV-119', 'Access', 'HR user', 'Solstrand Helse AS', '18 Sep', 17, 'Collecting data', 'Magnus Berg'], ['PV-120', 'Correction', 'Daglig leder', 'Kvamme Regnskap AS', '29 Sep', 6, 'New', 'Unassigned'], ['PV-121', 'Deletion', 'Newsletter contact', '—', '2 Oct', 3, 'New', 'Unassigned']].map(([id, type, who, org2, recv, days, status, owner]) => ({ id, type, who, org: org2, recv: 'Received ' + recv, w: (days / 30) * 100, c: days > 22 ? '#D4633A' : days > 14 ? '#E0A21F' : '#5C9A55', due: 30 - days + ' d left', dc: days > 22 ? '#A33A16' : '#191510', status, owner }));
+    const deletions = [{ n: 'Rimfrost Bakeri AS', s: 'Organization · cancelled, retention ended', exec: 'Executes 19 Oct', state: 'Grace period', c: '#8A6A00' }, { n: 'ole.olsen@kystlinje.no', s: 'User · requested via PV-114', exec: 'Executed 1 Oct', state: 'Confirmed to customer', c: '#2F5D2A' }, { n: 'Raw responses 2023', s: 'Retention job · reduced to aggregates · 12 orgs', exec: 'Ran 1 Oct 02:00', state: 'Done', c: '#2F5D2A' }];
+    const dpas = base.slice(0, 6).map((x, i) => ({ org: x.name, v: i % 3 === 2 ? '2.4' : '3.1', by: i % 3 === 2 ? 'Re-acceptance pending' : 'Accepted ' + (i + 2) + ' Sep · ' + (D.people.find((p) => p.org === x.id) || { name: 'Daglig leder' }).name.split(' ')[0], state: i % 3 === 2 ? 'Prompted' : 'Current', c: i % 3 === 2 ? '#A33A16' : '#2F5D2A' }));
+    const v = { list: st.tab === 'orgs' && !st.org, detail: st.tab === 'orgs' && !!st.org, users: st.tab === 'users', billing: st.tab === 'billing', access: st.tab === 'access', privacy: st.tab === 'privacy' };
+    const d = { [st.dtab]: true };
+    const anyFilter = Object.values(st.f).some((x) => x && x !== 'Any');
+    return {
+      tabs, v, d, list, listMrr: D.kr(list.reduce((a, x) => a + x.mrr, 0)), views, filters, anyFilter, clearFilters: () => this.setState({ f: {} }), q: st.q, setQ: (e) => this.setState({ q: e.target.value }),
+      exportCsv: () => this.flash('Exported ' + list.length + ' rows · formulas neutralized · logged'), saveView: () => this.flash('View saved with current filters'), selCount: selCount || null,
+      bulkTag: () => this.flash('Tag added to ' + selCount + ' organizations'), bulkOwner: () => this.flash('Owner assigned to ' + selCount + ' organizations'), bulkBroadcast: () => go('campaigns'),
+      o, dtabs, back: () => this.setState({ org: null }), actionsOpen: st.actionsOpen, toggleActions: () => this.setState({ actionsOpen: !st.actionsOpen }), actions,
+      modal: st.modal, reason: st.reason, setReason: (e) => this.setState({ reason: e.target.value }), mField: st.mField, setMField: (e) => this.setState({ mField: e.target.value }), closeModal: () => this.setState({ modal: null }), stop: (e) => e.stopPropagation(), confirm, cantConfirm, confirmBg: st.modal && st.modal.danger ? '#F0B9A0' : '#F5C64A', confirmOp: cantConfirm ? 0.55 : 1,
+      tlFilters, tagOptions, noteDraft: st.noteDraft, setNote: (e) => this.setState({ noteDraft: e.target.value }),
+      addNote: () => { if (!st.noteDraft.trim()) return; this.setState({ notes: { ...st.notes, [org.id]: [{ by: 'Tor Lambrechts', when: 'Just now', text: st.noteDraft, pin: '', bg: '#FFFDF6' }, ...(st.notes[org.id] || [])] }, noteDraft: '' }); this.flash(st.noteDraft.includes('@') ? 'Note saved · mention notified' : 'Note saved'); },
+      notifyBand: (e) => { e.preventDefault(); this.flash('Band notice sent — customer confirms before price changes'); },
+      goDeals: (e) => { e.preventDefault(); go('deals'); }, newTicket: () => go('tickets', { newFor: org && org.id }),
+      users, uq: st.uq, setUq: (e) => this.setState({ uq: e.target.value }), user, userActions, bill, exportAccounting: () => this.flash('Revenue export sent to the accounting system'),
+      access, orgOptions: base.map((x) => x.name), durOpts: ['24 h', '72 h'].map((n) => ({ n, pick: () => this.setState({ dur: n }), bg: st.dur === n ? '#FBEBBE' : 'transparent', bc: st.dur === n ? '#191510' : '#E8DFC9', fw: st.dur === n ? 700 : 500 })), requestAccess: () => this.flash('Request sent · customer approves in their settings'),
+      privacy, deletions, dpas, toast: st.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>

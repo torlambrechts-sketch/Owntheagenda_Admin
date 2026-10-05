@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:18px 28px 60px; display:flex; flex-wrap:wrap; gap:14px; align-items:flex-start; color:#191510; font-size:14px">
+  <div style="flex:0 0 200px; display:flex; flex-direction:column; gap:12px">
+    <button onClick="{{ compose }}" style="height:40px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">＋ Compose</button>
+    <sc-for list="{{ folders }}" as="g" hint-placeholder-count="4">
+      <div style="display:flex; flex-direction:column; gap:1px">
+        <div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#8A8272; padding:0 8px 4px">{{ g.h }}</div>
+        <sc-for list="{{ g.items }}" as="f"><button onClick="{{ f.pick }}" style="display:flex; align-items:center; gap:8px; padding:7px 9px; border:none; border-radius:10px; background:{{ f.bg }}; cursor:pointer; text-align:left; font-size:13px; font-weight:{{ f.fw }}"><span style="width:16px; text-align:center; font-size:12px">{{ f.g }}</span><span style="flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ f.n }}</span><sc-if value="{{ f.count }}"><span style="font-size:11px; font-weight:700; color:#5F5849">{{ f.count }}</span></sc-if></button></sc-for>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1 1 440px; min-width:0">
+    <sc-if value="{{ v.mail }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:10px 12px; border-bottom:1px solid #E8DFC9; display:flex; gap:6px; align-items:center"><b style="font-size:13.5px; flex:1">{{ folderName }}</b><span style="font-size:11.5px; color:#5F5849">{{ threads.length }}</span></div>
+          <sc-for list="{{ threads }}" as="t" hint-placeholder-count="8">
+            <button onClick="{{ t.pick }}" style="display:flex; width:100%; flex-direction:column; gap:3px; padding:11px 13px; border:none; border-bottom:1px solid #E8DFC9; background:{{ t.bg }}; cursor:pointer; text-align:left">
+              <span style="display:flex; justify-content:space-between; gap:8px; font-size:12px"><b style="font-weight:{{ t.fw }}">{{ t.from }}</b><span style="color:#8A8272">{{ t.when }}</span></span>
+              <span style="font-size:13px; font-weight:{{ t.fw }}; line-height:1.3">{{ t.subject }}</span>
+              <span style="font-size:12px; color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ t.snippet }}</span>
+              <span style="display:flex; gap:4px; flex-wrap:wrap; margin-top:2px"><sc-for list="{{ t.chips }}" as="c"><span style="font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:999px; background:{{ c.bg }}; color:{{ c.c }}">{{ c.n }}</span></sc-for></span>
+            </button>
+          </sc-for>
+          <sc-if value="{{ noThreads }}"><div style="padding:30px; text-align:center; font-size:13px; color:#5F5849">Nothing here.</div></sc-if>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px; min-width:0">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 20px; display:flex; flex-direction:column; gap:10px">
+            <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; align-items:flex-start">
+              <div style="min-width:0; flex:1 1 300px"><div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:600; line-height:1.2">{{ th.subject }}</div><div style="font-size:12px; color:#5F5849; margin-top:3px">{{ th.mailbox }} · {{ th.status }}</div></div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap">
+                <span style="display:flex; align-items:center; gap:6px; height:30px; padding:0 10px; border-radius:9px; background:#FBEBBE; font-size:12px; font-weight:700">◆ {{ th.linked }}</span>
+                <button onClick="{{ archive }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Archive · syncs to Gmail</button>
+                <button onClick="{{ toLead }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Create lead</button>
+              </div>
+            </div>
+            <div style="display:flex; gap:5px; flex-wrap:wrap"><sc-for list="{{ labelOpts }}" as="l"><button onClick="{{ l.toggle }}" style="padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700; border:1px solid {{ l.bc }}; background:{{ l.bg }}; cursor:pointer">{{ l.n }}</button></sc-for></div>
+          </div>
+          <div style="background:#191510; color:#FCF6E9; border-radius:20px; padding:16px 20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr)); gap:14px">
+            <div style="display:flex; flex-direction:column; gap:6px"><span style="display:flex; gap:8px; align-items:center"><img src="assets/assistant.png" alt="" width="22" height="22" style="border-radius:7px; background:#FCF6E9"></img><b style="font-size:12.5px">Thread summary</b></span><span style="font-size:12.5px; line-height:1.5; color:#F2EAD6">{{ ai.summary }}</span></div>
+            <div style="display:flex; flex-direction:column; gap:6px"><b style="font-size:12.5px">Readiness to buy</b><span style="display:flex; align-items:baseline; gap:6px"><span style="font-family:'Playfair Display',serif; font-size:32px; font-weight:600; color:#F5C64A">{{ ai.score }}</span><span style="font-size:12px; color:#F2EAD6">/ 10 · {{ ai.sentiment }}</span></span><span style="font-size:12px; color:#F2EAD6; line-height:1.45">{{ ai.reason }}</span></div>
+            <div style="display:flex; flex-direction:column; gap:6px"><b style="font-size:12.5px">Action items</b><sc-for list="{{ ai.actions }}" as="a"><span style="font-size:12px; color:#F2EAD6">○ {{ a }}</span></sc-for></div>
+          </div>
+          <sc-for list="{{ th.msgs }}" as="m">
+            <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 18px; display:flex; flex-direction:column; gap:8px">
+              <div style="display:flex; justify-content:space-between; gap:10px; font-size:12px; color:#5F5849"><span><b style="color:#191510">{{ m.from }}</b> → {{ m.to }}</span><span>{{ m.when }}</span></div>
+              <div style="font-size:13px; line-height:1.6; white-space:pre-wrap">{{ m.body }}</div>
+              <sc-if value="{{ m.track }}"><div style="display:flex; gap:10px; font-size:11.5px; color:#2F5D2A; font-weight:600">{{ m.track }}</div></sc-if>
+            </div>
+          </sc-for>
+          <div style="display:flex; gap:6px; flex-wrap:wrap"><span style="font-size:12px; color:#5F5849; align-self:center">Suggested replies</span><sc-for list="{{ ai.replies }}" as="r"><button onClick="{{ r.use }}" style="padding:6px 12px; border-radius:999px; border:1px solid #C4BCA8; background:#FFFDF6; font-size:12px; cursor:pointer">{{ r.n }}</button></sc-for></div>
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; overflow:hidden">
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:9px 12px; border-bottom:1px solid #E8DFC9; background:#FCF6E9; font-size:12px">
+              <label style="display:flex; align-items:center; gap:5px; color:#5F5849">From<select style="height:28px; border-radius:8px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px; font-weight:600"><option>tor@orgpuls.no (Gmail)</option><option>tor@orgpuls.onmicrosoft.com</option><option>salg@orgpuls.no (team)</option></select></label>
+              <span style="color:#5F5849">To</span><b>{{ th.replyTo }}</b>
+              <span style="color:#5F5849">· suggested:</span><sc-for list="{{ participants }}" as="p"><button onClick="{{ p.add }}" style="padding:2px 8px; border-radius:999px; border:1px dashed #C4BCA8; background:{{ p.bg }}; font-size:11.5px; cursor:pointer">{{ p.mark }} {{ p.n }}</button></sc-for>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:8px 12px; border-bottom:1px solid #E8DFC9">
+              <select onChange="{{ useTemplate }}" value="" style="height:30px; border-radius:9px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px"><option value="">Template …</option><sc-for list="{{ templates }}" as="t"><option value="{{ t.i }}">{{ t.n }}</option></sc-for></select>
+              <select onChange="{{ insertMerge }}" value="" style="height:30px; border-radius:9px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px"><option value="">Merge field …</option><sc-for list="{{ mergeFields }}" as="m"><option>{{ m }}</option></sc-for></select>
+              <span style="flex:1"></span>
+              <input value="{{ aiPrompt }}" onChange="{{ setAiPrompt }}" placeholder="Ask the AI writer, e.g. «confirm Thursday, mention partner price»" style="flex:1 1 220px; height:30px; padding:0 9px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12px"></input>
+              <select value="{{ tone }}" onChange="{{ setTone }}" style="height:30px; border-radius:9px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px"><option>Professional</option><option>Formal</option><option>Friendly</option></select>
+              <select value="{{ length }}" onChange="{{ setLength }}" style="height:30px; border-radius:9px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px"><option>Short</option><option>Standard</option><option>Long</option></select>
+              <button onClick="{{ aiWrite }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#191510; color:#FCF6E9; font-size:12px; font-weight:700; cursor:pointer">Draft</button>
+            </div>
+            <textarea value="{{ body }}" onChange="{{ setBody }}" placeholder="Write a reply" style="display:block; width:100%; min-height:140px; padding:12px 14px; border:none; background:transparent; font-size:13px; line-height:1.6; resize:vertical; outline:none"></textarea>
+            <sc-if value="{{ attachWarn }}"><div style="margin:0 12px 8px; padding:8px 12px; border-radius:10px; background:#F5DC96; font-size:12px; color:#5C4600"><b>Missing attachment?</b> You mention an attachment, but none is added.</div></sc-if>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:8px 12px; border-top:1px solid #E8DFC9; font-size:12px">
+              <button style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600">▤ Attach</button>
+              <button onClick="{{ toggleTrack }}" style="display:flex; align-items:center; gap:6px; height:30px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer"><span style="width:8px; height:8px; border-radius:999px; background:{{ trackDot }}"></span>Track opens and clicks</button>
+              <span style="color:#8A8272">Signature: Tor · Orgpuls</span>
+              <span style="flex:1"></span>
+              <select value="{{ sendAt }}" onChange="{{ setSendAt }}" style="height:32px; border-radius:9px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px"><option>Send now</option><option>Tomorrow 08:00</option><option>Monday 09:00</option></select>
+              <button onClick="{{ send }}" style="height:34px; padding:0 16px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">{{ sendLabel }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.outbox }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Scheduled and failed</div>
+        <sc-for list="{{ outbox }}" as="o"><div style="display:grid; grid-template-columns:minmax(0,1.5fr) 150px minmax(0,1.2fr) 180px; gap:10px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ o.s }}</b><span style="color:#5F5849; font-size:11.5px">to {{ o.to }}</span></span><span style="color:{{ o.c }}; font-weight:700">{{ o.state }}</span><span style="color:#5F5849">{{ o.reason }}</span><span style="display:flex; gap:6px; justify-content:flex-end"><sc-if value="{{ o.failed }}"><button onClick="{{ o.retry }}" style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Retry</button></sc-if><button style="height:28px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600">Edit</button></span></div></sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.group }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px; display:flex; flex-direction:column; gap:12px; max-width:860px">
+        <b style="font-size:15px">Group email — sent one by one, from your mailbox</b>
+        <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center"><span style="font-size:12px; color:#5F5849">Recipients from</span><sc-for list="{{ groupSources }}" as="g"><button onClick="{{ g.pick }}" style="padding:6px 12px; border-radius:999px; font-size:12px; border:1px solid {{ g.bc }}; background:{{ g.bg }}; font-weight:{{ g.fw }}; cursor:pointer">{{ g.n }}</button></sc-for></div>
+        <div style="display:flex; flex-wrap:wrap; gap:5px"><sc-for list="{{ groupRecipients }}" as="r"><span style="padding:4px 10px; border-radius:999px; background:#F2EAD6; font-size:12px">{{ r }}</span></sc-for></div>
+        <div style="font-size:12px; color:#5F5849">{{ groupCount }} recipients · template «Oppfølging etter webinar» · merge fields per person · consent checks on sales email: off (setting) · recipient limit: unlimited</div>
+        <div style="border-radius:14px; border:1px solid #E8DFC9; padding:12px 14px; background:#FCF6E9; font-size:13px; line-height:1.6; white-space:pre-wrap">{{ groupPreview }}</div>
+        <div style="display:flex; justify-content:flex-end; gap:8px"><button onClick="{{ sendGroup }}" style="height:38px; padding:0 16px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">Send {{ groupCount }} emails</button></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.messaging }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; grid-template-columns:minmax(240px,300px) minmax(0,1fr); gap:14px; align-items:flex-start">
+        <div style="display:flex; flex-direction:column; gap:10px">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+            <sc-for list="{{ chats }}" as="c"><button onClick="{{ c.pick }}" style="display:flex; width:100%; gap:10px; padding:11px 13px; border:none; border-bottom:1px solid #E8DFC9; background:{{ c.bg }}; cursor:pointer; text-align:left"><span style="width:34px; height:34px; border-radius:11px; background:#CFE7E4; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex:none">{{ c.ini }}</span><span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px"><span style="display:flex; justify-content:space-between; font-size:12.5px"><b>{{ c.n }}</b><span style="color:#8A8272; font-size:11px">{{ c.when }}</span></span><span style="font-size:12px; color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ c.last }}</span><span style="font-size:10.5px; font-weight:700; color:#5F5849">{{ c.channel }} · {{ c.link }}</span></span></button></sc-for>
+          </div>
+          <div style="background:#FFFDF6; border:1px dashed #C4BCA8; border-radius:20px; padding:14px 16px; display:flex; flex-direction:column; gap:6px"><b style="font-size:13px">LinkedIn connector</b><span style="font-size:12px; color:#5F5849; line-height:1.5">Listed beside the inbox. Its scope is an open point (LEA-06) — conversations will link to leads and contacts the same way once defined.</span><button style="align-self:flex-start; height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700">Connect</button></div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; display:flex; flex-direction:column; min-height:520px">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid #E8DFC9"><span style="display:flex; flex-direction:column"><b style="font-size:14px">{{ chat.n }}</b><span style="font-size:11.5px; color:#5F5849">WhatsApp Business · {{ chat.link }}</span></span><button onClick="{{ chatToLead }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Turn into lead</button></div>
+          <div style="flex:1; padding:14px 16px; display:flex; flex-direction:column; gap:8px; background:#FCF6E9">
+            <sc-for list="{{ chat.msgs }}" as="m"><div style="display:flex; justify-content:{{ m.align }}"><div style="max-width:70%; padding:9px 12px; border-radius:14px; background:{{ m.bg }}; border:1px solid #E8DFC9; font-size:13px; line-height:1.5"><sc-if value="{{ m.img }}"><div style="height:110px; width:200px; border-radius:10px; margin-bottom:6px; background:repeating-linear-gradient(135deg,#F2EAD6 0 8px,#FCF6E9 8px 16px); display:flex; align-items:center; justify-content:center; font-family:ui-monospace,Menlo,monospace; font-size:10.5px; color:#5F5849">image · skiftplan.jpg</div></sc-if>{{ m.t }}<div style="font-size:10.5px; color:#8A8272; text-align:right; margin-top:3px">{{ m.when }} {{ m.ticks }} {{ m.react }}</div></div></div></sc-for>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; padding:8px 12px; border-top:1px solid #E8DFC9"><sc-for list="{{ quickReplies }}" as="q"><button onClick="{{ q.use }}" style="padding:4px 10px; border-radius:999px; border:1px solid #C4BCA8; background:transparent; font-size:11.5px; cursor:pointer">{{ q.n }}</button></sc-for><span style="flex:1"></span><select style="height:28px; border-radius:8px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:11.5px"><option>Approved template …</option><option>demo_bekreftelse (nb)</option><option>tilbud_paaminnelse (nb)</option></select></div>
+          <div style="display:flex; gap:8px; padding:10px 12px; border-top:1px solid #E8DFC9"><input value="{{ chatDraft }}" onChange="{{ setChatDraft }}" placeholder="Message" style="flex:1; height:38px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></input><button onClick="{{ sendChat }}" style="height:38px; padding:0 15px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">Send</button></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.calls }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:12px 18px; border-bottom:1px solid #E8DFC9; font-size:14px; font-weight:700">Call log — logged as activities</div>
+          <sc-for list="{{ calls }}" as="c"><div style="display:grid; grid-template-columns:24px minmax(0,1.4fr) 110px 70px 120px 110px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="color:{{ c.dc }}; font-weight:700">{{ c.dir }}</span><span style="display:flex; flex-direction:column"><b>{{ c.who }}</b><span style="font-size:11.5px; color:#5F5849">{{ c.org }} · {{ c.num }}</span></span><span>{{ c.outcome }}</span><span>{{ c.dur }}</span><span style="color:#5F5849">{{ c.when }}</span><a href="#" onClick="{{ c.play }}">{{ c.rec }}</a></div></sc-for>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+            <b style="font-size:14px">Click-to-call</b>
+            <input value="+47 912 34 567" style="height:40px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:15px; font-weight:600; letter-spacing:.02em"></input>
+            <div style="font-size:12px; color:#5F5849">Matched: <b style="color:#191510">Kari Nordmann</b> · Lumio AS · open deal</div>
+            <button onClick="{{ call }}" style="height:40px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">☎ Call via default calling app</button>
+            <div style="font-size:11.5px; color:#8A8272">Telephony provider adapter · calls can continue on your phone</div>
+          </div>
+          <div style="background:#191510; color:#FCF6E9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:6px"><span style="font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#F5DC96">Incoming</span><b style="font-size:16px">Ole Hansen</b><span style="font-size:12.5px; color:#F2EAD6">Bergheim Bygg AS · deal «Group agreement» · last contact 3 days ago</span></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.settings }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+          <b style="font-size:14px">Connected mailboxes</b>
+          <sc-for list="{{ mailboxes }}" as="m"><div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ m.a }}</b><span style="color:#5F5849; font-size:11.5px">{{ m.p }}</span></span><span style="color:{{ m.c }}; font-weight:700">{{ m.s }}</span></div></sc-for>
+          <button style="align-self:flex-start; height:30px; padding:0 11px; border-radius:9px; border:1px dashed #C4BCA8; background:transparent; font-size:12px; font-weight:600">＋ Gmail · Microsoft 365 · Exchange · IMAP</button>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+          <b style="font-size:14px">BCC drop-box</b>
+          <span style="font-family:ui-monospace,Menlo,monospace; font-size:12.5px; padding:8px 10px; border-radius:9px; background:#FCF6E9; border:1px solid #E8DFC9">tor.k82h@inbox.sentral.orgpuls.no</span>
+          <span style="font-size:12px; color:#5F5849">Mail sent or forwarded here is stored and linked to the matching person and their open deal. Deal-specific: <span style="font-family:ui-monospace,Menlo,monospace">deal-d101@inbox…</span></span>
+          <b style="font-size:12.5px; margin-top:4px">Alternative sender addresses</b>
+          <sc-for list="{{ altSenders }}" as="a"><span style="font-size:12.5px">{{ a }}</span></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:6px">
+          <b style="font-size:14px">Templates</b>
+          <sc-for list="{{ templates }}" as="t"><div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b>{{ t.n }}</b><span style="color:#5F5849">{{ t.scope }}</span></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+          <b style="font-size:14px">Mail client add-ons</b>
+          <div style="font-size:12.5px; line-height:1.5">Gmail side panel and browser extension — view and add contacts, deals, notes and activities without leaving the mailbox. <b>14 users</b> installed.</div>
+          <div style="height:120px; border-radius:12px; border:1px solid #E8DFC9; background:repeating-linear-gradient(135deg,#F2EAD6 0 8px,#FCF6E9 8px 16px); display:flex; align-items:center; justify-content:center; font-family:ui-monospace,Menlo,monospace; font-size:11px; color:#5F5849">side panel screenshot</div>
+          <span style="font-size:12px; color:#5F5849">Open and click tracking: <b>on</b> (setting) · real-time notifications to the sender</span>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { folder: 'inbox', sel: 0, body: '', aiPrompt: '', tone: 'Friendly', length: 'Short', sendAt: 'Send now', track: true, added: {}, labels: { 0: ['Proposal'] }, archived: [], chat: 0, chatDraft: '', chatExtra: {}, groupSrc: 'Segment «Webinar attendees»', retried: [], toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+  renderVals() {
+    const D = window.SA; const st = this.state; const go = this.props.go || (() => {});
+    if (!D) return { folders: [], v: {}, threads: [], th: { msgs: [] }, ai: { actions: [], replies: [] }, labelOpts: [], participants: [], templates: [], mergeFields: [], outbox: [], groupSources: [], groupRecipients: [], chats: [], chat: { msgs: [] }, quickReplies: [], calls: [], mailboxes: [], altSenders: [] };
+    const P = D.people;
+    const T = [
+      { from: 'Kari Nordmann', to: 'tor@orgpuls.no', subject: 'Re: Forslag — Skiftly for lageret', snippet: 'Takk! Vi ser på dette i styremøtet 14. oktober. Kan dere …', when: '18:42', mailbox: 'tor@orgpuls.no · Gmail', status: 'Waiting on you', linked: 'Lumio AS — Expansion to Skiftly', replyTo: 'Kari Nordmann', unread: true, opens: 2, chips: [['Deal', '#FBEBBE', '#5C4600'], ['Opened 2×', '#CFE7E4', '#20431C']],
+        msgs: [{ from: 'Tor Lambrechts', to: 'Kari Nordmann', when: 'Fri 2 Oct 10:14', body: 'Hei Kari,\n\nVedlagt er forslaget for Skiftly for de to lagerteamene, med partnerpris de første seks månedene. Si gjerne fra hvis vi skal gå gjennom det med skiftlederne.\n\nVennlig hilsen\nTor', track: 'Opened 2× · clicked «Se prisene» · last open yesterday 18:40' }, { from: 'Kari Nordmann', to: 'Tor Lambrechts', when: 'Yesterday 18:42', body: 'Takk! Vi ser på dette i styremøtet 14. oktober. Kan dere bli med på en kort gjennomgang med skiftlederne torsdag? Mona og Petter fra HR og lager blir med.\n\nKari' }],
+        ai: { summary: 'Kari will take the Skiftly proposal to the board on 14 October and asks for a walkthrough with shift leads on Thursday. Mona and Petter join.', score: 8, sentiment: 'positive', reason: 'Board date set, asks for a meeting, brings two stakeholders', actions: ['Book Thursday walkthrough', 'Add Mona and Petter as participants', 'Prepare board summary'] } },
+      { from: 'Ole Hansen', to: 'salg@orgpuls.no', subject: 'Pris for tre lokasjoner?', snippet: 'Hei, vi er 140 ansatte fordelt på tre bygg. Hva blir prisen …', when: '14:05', mailbox: 'salg@orgpuls.no · team inbox', status: 'New', linked: 'Lead L-503', replyTo: 'Ole Hansen', unread: true, chips: [['Team inbox', '#E4EEEC', '#20431C'], ['Lead', '#E7DAF2', '#3E2A5C']],
+        msgs: [{ from: 'Ole Hansen', to: 'salg@orgpuls.no', when: 'Today 14:05', body: 'Hei, vi er 140 ansatte fordelt på tre bygg. Hva blir prisen, og kan hvert bygg få egne resultater?\n\nOle' }], ai: { summary: 'Price question for 140 employees across three sites; wants results per site.', score: 6, sentiment: 'neutral', reason: 'Concrete size and need, no timeline yet', actions: ['Send 101–250 band price', 'Explain departments and the 5-answer floor'] } },
+      { from: 'Marte Larsen', to: 'tor@orgpuls.no', subject: 'Kontrakt — signert', snippet: 'Hei, kontrakten er signert. Når kan vi starte?', when: 'Mon', mailbox: 'tor@orgpuls.no · Gmail', status: 'Replied', linked: 'Solstrand Helse — HR suite', replyTo: 'Marte Larsen', chips: [['Signed', '#CFE7E4', '#20431C']],
+        msgs: [{ from: 'Marte Larsen', to: 'Tor Lambrechts', when: 'Mon 09:30', body: 'Hei, kontrakten er signert. Når kan vi starte?' }], ai: { summary: 'Contract signed; asks about start date.', score: 10, sentiment: 'positive', reason: 'Signed', actions: ['Hand over to delivery', 'Create project from template'] } },
+      { from: 'Jon Pedersen', to: 'tor@orgpuls.no', subject: 'Vi venter litt', snippet: 'Vi har dessverre ikke budsjett før neste år …', when: '28 Sep', mailbox: 'tor@orgpuls.onmicrosoft.com · Microsoft 365', status: 'Waiting on contact', linked: 'Røros Kobber — baseline', replyTo: 'Jon Pedersen', chips: [['Cold', '#CFE0F5', '#1F3A5C']],
+        msgs: [{ from: 'Jon Pedersen', to: 'Tor Lambrechts', when: '28 Sep', body: 'Vi har dessverre ikke budsjett før neste år. Ta gjerne kontakt i januar.' }], ai: { summary: 'No budget this year; contact again in January.', score: 2, sentiment: 'negative', reason: 'Explicit postponement', actions: ['Set follow-up activity in January', 'Move deal close date'] } },
+    ];
+    const visible = T.map((t, i) => ({ ...t, i })).filter((t) => !st.archived.includes(t.i) && (st.folder === 'inbox' ? t.mailbox.includes('tor@') : st.folder === 'team' ? t.mailbox.includes('team') : st.folder === 'archive' ? false : true));
+    const folders = [
+      { h: 'Mail', items: [['inbox', 'Inbox', '✉', 3], ['team', 'Team inbox · salg@', '◎', 1], ['outbox', 'Scheduled and failed', '◷', 3], ['group', 'Group email', '⁂', null], ['archive', 'Archive', '▤', null]] },
+      { h: 'Channels', items: [['messaging', 'WhatsApp and LinkedIn', '◌', 2], ['calls', 'Calls', '☎', null]] },
+      { h: 'Labels', items: [['l1', 'Proposal', '●', null], ['l2', 'Follow-up', '●', null], ['l3', 'Billing', '●', null]] },
+      { h: 'Setup', items: [['settings', 'Mailboxes and templates', '⚙', null]] },
+    ].map((g) => ({ h: g.h, items: g.items.map(([k, n, gl, count]) => ({ n, g: gl, count, pick: () => this.setState({ folder: k.startsWith('l') ? 'inbox' : k, sel: 0 }), bg: st.folder === k ? '#FBEBBE' : 'transparent', fw: st.folder === k ? 700 : 500 })) }));
+    const selT = visible.find((t) => t.i === st.sel) || visible[0] || T[0];
+    const threads = visible.map((t) => ({ ...t, bg: t.i === selT.i ? '#FBEBBE' : 'transparent', fw: t.unread ? 700 : 500, chips: t.chips.map(([n, bg, c]) => ({ n, bg, c })), pick: () => this.setState({ sel: t.i, body: '' }) }));
+    const labs = st.labels[selT.i] || [];
+    const labelOpts = ['Proposal', 'Follow-up', 'Billing', 'Urgent'].map((n) => ({ n, bg: labs.includes(n) ? '#FBEBBE' : 'transparent', bc: labs.includes(n) ? '#191510' : '#C4BCA8', toggle: () => this.setState({ labels: { ...st.labels, [selT.i]: labs.includes(n) ? labs.filter((x) => x !== n) : [...labs, n] } }) }));
+    const participants = (selT.i === 0 ? ['Mona Hansen', 'Petter Aas', 'Ingrid Solberg'] : ['Ingrid Solberg']).map((n) => ({ n, mark: st.added[n] ? '✓' : '＋', bg: st.added[n] ? '#FBEBBE' : 'transparent', add: () => this.setState({ added: { ...st.added, [n]: !st.added[n] } }) }));
+    const TPL = [{ n: 'Oppfølging etter demo', scope: 'Shared · starter', text: 'Hei [Person.fornavn],\n\nTakk for en god demo i dag. Her er en kort oppsummering av det vi så på for [Organisasjon.navn] …\n\nVennlig hilsen\n[Bruker.navn]' }, { n: 'Pris for båndet', scope: 'Shared', text: 'Hei [Person.fornavn],\n\nFor [Organisasjon.ansatte] ansatte er prisen [Avtale.verdi] i måneden. Alt er inkludert, og det er ingen binding.\n\n[Bruker.signatur]' }, { n: 'Booking-lenke', scope: 'Private', text: 'Hei [Person.fornavn], finn et tidspunkt som passer her: [Bruker.bookinglenke]' }];
+    const templates = TPL.map((t, i) => ({ ...t, i: String(i) }));
+    const mergeFields = ['[Person.fornavn]', '[Organisasjon.navn]', '[Organisasjon.ansatte]', '[Avtale.verdi]', '[Avtale.fase]', '[Bruker.navn]', '[Bruker.bookinglenke]'];
+    const p0 = selT.replyTo.split(' ')[0];
+    const draftFor = () => { const base = { Friendly: 'Hei ' + p0 + ',\n\nSå fint! ', Professional: 'Hei ' + p0 + ',\n\nTakk for svaret. ', Formal: 'Hei ' + p0 + ',\n\nTakk for henvendelsen. ' }[st.tone]; const mid = st.aiPrompt ? st.aiPrompt.charAt(0).toUpperCase() + st.aiPrompt.slice(1) + '. ' : 'Torsdag kl. 10 passer fint for oss — jeg sender en invitasjon med Meet-lenke til deg, Mona og Petter. '; const tail = st.length === 'Long' ? 'Jeg tar med en kort oppsummering dere kan bruke i styremøtet, med priser, oppstartsplan og hvordan skiftlederne kommer i gang.\n\n' : st.length === 'Standard' ? 'Jeg tar med en kort oppsummering til styremøtet.\n\n' : '\n\n'; return base + mid + tail + 'Vennlig hilsen\nTor'; };
+    const outboxSeed = [['Tilbud — Kystlinje Transport', 'Lars Olsen', 'Scheduled · tomorrow 08:00', '', false, '#8A6A00'], ['Re: Oppstart', 'Marte Larsen', 'Failed', 'Provider: 550 mailbox unavailable (marte.l@solstrandhelse.no)', true, '#A33A16'], ['Webinar-oppfølging (group, 38)', 'Segment', 'Sending 31 / 38', 'Throttled by provider · 7 queued', false, '#8A6A00']];
+    const outbox = outboxSeed.map(([s, to, state, reason, failed, c], i) => { const r = st.retried.includes(i); return { s, to, state: r ? 'Sent after retry' : state, reason: r ? '' : reason, failed: failed && !r, c: r ? '#2F5D2A' : c, retry: () => { this.setState({ retried: [...st.retried, i] }); this.flash('Retried with corrected address'); } }; });
+    const groupSources = ['Segment «Webinar attendees»', 'Contacts timeline selection', 'Deals list — Proposal sent'].map((n) => ({ n, pick: () => this.setState({ groupSrc: n }), bg: st.groupSrc === n ? '#FBEBBE' : 'transparent', bc: st.groupSrc === n ? '#191510' : '#C4BCA8', fw: st.groupSrc === n ? 700 : 500 }));
+    const groupRecipients = P.slice(2, 14).map((p) => p.name);
+    const chats = [{ n: 'Henrik Strand', ini: 'HS', channel: 'WhatsApp', link: 'Lead L-507 · Hamnvik Fiskeri', when: '11:20', last: 'Kan vi få se skiftplanleggingen?' }, { n: 'Eva Brekke', ini: 'EB', channel: 'WhatsApp', link: 'Contact · Oddernes Bil', when: 'Fri', last: 'Takk, vi tar kontakt' }];
+    const cs = chats[st.chat];
+    const chatMsgs = (st.chat === 0 ? [{ t: 'Hei! Vi er 60 på skift om bord og på land. Kan vi få se skiftplanleggingen?', when: '11:12', me: false }, { t: 'Hei Henrik! Ja — her er et eksempel fra en annen fiskeribedrift.', when: '11:15', me: true, ticks: '✓✓' }, { t: '', img: true, when: '11:15', me: true, ticks: '✓✓' }, { t: 'Ser bra ut. Kan vi ta en demo neste uke?', when: '11:20', me: false, react: 'liked by Henrik' }] : [{ t: 'Takk, vi tar kontakt', when: 'Fri', me: false }]).concat(st.chatExtra[st.chat] || []);
+    const chat = { ...cs, msgs: chatMsgs.map((m) => ({ ...m, align: m.me ? 'flex-end' : 'flex-start', bg: m.me ? '#CFE7E4' : '#FFFDF6', ticks: m.me ? (m.ticks || '✓') : '', react: m.react ? '· ' + m.react : '', img: !!m.img })) };
+    const quickReplies = ['Book demo', 'Send pris', 'Takk!'].map((n) => ({ n, use: () => this.setState({ chatDraft: n === 'Book demo' ? 'Her kan du velge et tidspunkt: book.orgpuls.no/tor/walkthrough' : n === 'Send pris' ? 'For 60 ansatte koster Skiftly 1 560 kr i måneden.' : 'Takk!' }) }));
+    const calls = [['↗', 'Kari Nordmann', 'Lumio AS', '+47 912 34 567', 'Connected', '6 min', 'Today 09:40', 'Recording'], ['↙', 'Ole Hansen', 'Bergheim Bygg AS', '+47 934 55 120', 'Connected', '11 min', 'Yesterday', 'Recording'], ['↗', 'Silje Olsen', 'Solstrand Helse', '+47 401 22 908', 'No answer', '—', 'Yesterday', ''], ['↙', 'Unknown', '— new person proposed', '+47 47 81 30 22', 'Missed', '—', 'Fri', '']].map(([dir, who, org, num, outcome, dur, when, rec]) => ({ dir, who, org, num, outcome, dur, when, rec, dc: dir === '↙' ? '#2F5D2A' : '#5F5849', play: (e) => { e.preventDefault(); this.flash('Recording opens in the provider player'); } }));
+    const mailboxes = [['tor@orgpuls.no', 'Gmail · two-way sync · signature «Tor · Orgpuls»', 'Synced', '#2F5D2A'], ['tor@orgpuls.onmicrosoft.com', 'Microsoft 365 · two-way', 'Synced', '#2F5D2A'], ['salg@orgpuls.no', 'Team inbox · 4 users read and answer', 'Synced', '#2F5D2A'], ['meetings@orgpuls.no', 'Meeting workspace mailbox · read for briefs', 'Re-auth needed', '#A33A16']].map(([a, p, s, c]) => ({ a, p, s, c }));
+    const fk = st.folder;
+    const v = { mail: ['inbox', 'team', 'archive'].includes(fk), outbox: fk === 'outbox', group: fk === 'group', messaging: fk === 'messaging', calls: fk === 'calls', settings: fk === 'settings' };
+    return {
+      folders, v, folderName: { inbox: 'Inbox', team: 'Team inbox · salg@', archive: 'Archive' }[fk] || 'Inbox', threads, noThreads: threads.length === 0, th: selT, ai: { ...selT.ai, replies: ['Confirm Thursday 10:00', 'Suggest another day', 'Send board summary'].map((n) => ({ n, use: () => this.setState({ aiPrompt: n.toLowerCase(), body: draftFor() }) })) }, labelOpts, participants,
+      archive: () => { this.setState({ archived: [...st.archived, selT.i] }); this.flash('Archived here and in Gmail'); }, toLead: () => { this.flash('Lead created from thread · email stays linked'); go('leads'); },
+      templates, mergeFields, useTemplate: (e) => { const t = TPL[+e.target.value]; if (t) this.setState({ body: t.text }); }, insertMerge: (e) => e.target.value && this.setState({ body: st.body + e.target.value }),
+      aiPrompt: st.aiPrompt, setAiPrompt: (e) => this.setState({ aiPrompt: e.target.value }), tone: st.tone, setTone: (e) => this.setState({ tone: e.target.value }), length: st.length, setLength: (e) => this.setState({ length: e.target.value }), aiWrite: () => this.setState({ body: draftFor() }),
+      body: st.body, setBody: (e) => this.setState({ body: e.target.value }), attachWarn: /vedlagt|vedlegg|attach/i.test(st.body), toggleTrack: () => this.setState({ track: !st.track }), trackDot: st.track ? '#5C9A55' : '#C4BCA8',
+      sendAt: st.sendAt, setSendAt: (e) => this.setState({ sendAt: e.target.value }), sendLabel: st.sendAt === 'Send now' ? 'Send' : 'Schedule', send: () => { if (!st.body.trim()) return; this.setState({ body: '' }); this.flash(st.sendAt === 'Send now' ? 'Sent · linked to ' + selT.linked + (st.track ? ' · tracking on' : '') : 'Scheduled for ' + st.sendAt.toLowerCase() + ' · in the outbox'); },
+      compose: () => this.setState({ folder: 'inbox', body: '' }), outbox, groupSources, groupRecipients, groupCount: 38, groupPreview: 'Hei [Person.fornavn],\n\nTakk for at du var med på webinaret om psykososialt arbeidsmiljø. Opptaket og sjekklisten for kartleggingen ligger her: …\n\nVennlig hilsen\nTor', sendGroup: () => this.flash('38 individual emails queued · tracked per recipient'),
+      chats: chats.map((c, i) => ({ ...c, bg: st.chat === i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ chat: i }) })), chat, quickReplies, chatDraft: st.chatDraft, setChatDraft: (e) => this.setState({ chatDraft: e.target.value }),
+      sendChat: () => { if (!st.chatDraft.trim()) return; this.setState({ chatExtra: { ...st.chatExtra, [st.chat]: [...(st.chatExtra[st.chat] || []), { t: st.chatDraft, when: 'now', me: true, ticks: '✓' }] }, chatDraft: '' }); }, chatToLead: () => this.flash('Lead created from conversation · linked'),
+      calls, call: () => this.flash('Calling Kari Nordmann … logged as activity when it ends'), mailboxes, altSenders: ['tor.lambrechts@gmail.com', 'tor@lumio-partner.no'], toast: st.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>

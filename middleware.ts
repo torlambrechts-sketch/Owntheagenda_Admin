@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { supabaseEnv } from '@/lib/supabase/env'
+import { boundedFetch, supabaseEnv } from '@/lib/supabase/env'
 
 /**
  * Every page but the sign-in needs a session, and a session needs its second factor: an admin tool
@@ -28,6 +28,7 @@ export async function middleware(request: NextRequest) {
     const { createServerClient } = await import('@supabase/ssr')
     let response = NextResponse.next({ request })
     const supabase = createServerClient(env.url, env.key, {
+      global: { fetch: boundedFetch },
       cookies: {
         getAll: () => request.cookies.getAll(),
         setAll: (toSet) => {

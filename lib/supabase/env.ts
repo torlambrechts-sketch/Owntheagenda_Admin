@@ -9,3 +9,14 @@ export function supabaseEnv(): { url: string; key: string } | { problem: string 
   if (!key) return { problem: 'NEXT_PUBLIC_SUPABASE_ANON_KEY is missing' }
   return { url, key }
 }
+
+/**
+ * Supabase answers in well under a second. A call that does not (a wrong or paused project) must not hold
+ * a request until Vercel turns it into a 504: after five seconds it fails, and the caller treats that as
+ * a failed check (the middleware sends the visitor to the sign-in page).
+ */
+const TIMEOUT_MS = 5_000
+export const boundedFetch: typeof fetch = (input, init) => {
+  const limit = AbortSignal.timeout(TIMEOUT_MS)
+  return fetch(input, { ...init, signal: init?.signal ? AbortSignal.any([init.signal, limit]) : limit })
+}

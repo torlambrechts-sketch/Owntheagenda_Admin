@@ -1,13 +1,14 @@
 import 'server-only'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { supabaseEnv } from './env'
+import { boundedFetch, supabaseEnv } from './env'
 
 export async function createClient() {
   const env = supabaseEnv()
   if ('problem' in env) throw new Error(env.problem)
   const store = await cookies()
   return createServerClient(env.url, env.key, {
+    global: { fetch: boundedFetch },
     cookies: {
       getAll: () => store.getAll(),
       setAll: (toSet) => {

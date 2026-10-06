@@ -204,7 +204,7 @@ export function DealsScreen({ base, rights, nf, initialPipeline, initialShowClos
   const cards = board?.cards ?? []
   const sum = cards.reduce((a, c) => a + c.value, 0)
   const weighted = cards.reduce((a, c) => a + (c.value * c.probability) / 100, 0)
-  const capacity = board?.capacity === 'unlimited' || !board?.capacity ? t('summary.unlimited') : board.capacity
+  const capacity = board?.capacity == null ? t('summary.unlimited') : String(board.capacity)
 
   const quick: { key: string; label: string; value: string; set: (v: string) => void; opts: { v: string; n: string }[]; changed: boolean }[] = [
     { key: 'owner', label: t('quick.owner'), value: owner, set: setOwner, changed: owner !== '', opts: [{ v: '', n: t('quick.everyone') }, ...base.staff.map((s) => ({ v: s.id, n: s.name }))] },

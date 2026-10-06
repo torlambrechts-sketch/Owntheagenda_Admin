@@ -96,4 +96,8 @@ update app.account_products set created_at = now() where (product, tenant_id) in
 select app.snapshot_mrr_tenants();
 select pg_temp.check((select kind from app.mrr_movements m join t_base b using (product, tenant_id)) = 'new', 'a customer who signed up this month is new MRR');
 
+-- the board's capacity is a number (0035)
+insert into app.setting_values (key, value, value_number) values ('deal_capacity', 'number', 12) on conflict (key, scope_id) do update set value = 'number', value_number = 12;
+select pg_temp.check((public.deal_board((select id from app.pipelines where name = 'New business')) ->> 'capacity')::int = 12, 'the board reads its capacity as a number');
+
 rollback;

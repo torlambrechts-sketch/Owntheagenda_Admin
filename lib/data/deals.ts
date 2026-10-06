@@ -58,7 +58,7 @@ export type Card = z.infer<typeof Card>
 export const Board = z.object({
   stages: z.array(Stage),
   cards: z.array(Card),
-  capacity: z.string().nullable(),
+  capacity: z.number().nullable(),
 })
 export type Board = z.infer<typeof Board>
 

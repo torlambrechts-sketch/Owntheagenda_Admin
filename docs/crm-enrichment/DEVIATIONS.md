@@ -361,8 +361,7 @@ every run figure is zero and every run list shows its empty line.
 
 ## Insights (`app/(admin)/insights`, Insights.dc.html) (Phase 4 screen build)
 
-Where the Insights screen departs from `design-reference/sentral/project/Insights.dc.html`, and why. Same
-columns as `DEVIATIONS.md`; the lead folds them in. Database changes the screen would need are in
+Where the Insights screen departs from `design-reference/sentral/project/Insights.dc.html`, and why. Database changes the screen would need are in
 `docs/crm-enrichment/requests/insights.md`.
 
 | ID | Where | Design | Built | Reason |
@@ -480,8 +479,8 @@ Routes `/lead-capture` (design route `leadgen`) and `/web-visitors` (`visitors`)
 
 ## Documents (`app/(admin)/documents`, Documents.dc.html) (Phase 5 screen build)
 
-Where the Documents screen (`/documents`, `Documents.dc.html`) departs from the design, and why. Same columns as
-`DEVIATIONS.md`; the lead builder folds these in. The schema's own departures are V-P5-05..09 there.
+Where the Documents screen (`/documents`, `Documents.dc.html`) departs from the design, and why. The schema's own
+departures are V-P5-05..09 below.
 
 | ID | Where | Design | Built | Reason |
 |---|---|---|---|---|

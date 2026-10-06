@@ -1,7 +1,6 @@
 import 'server-only'
 import { z } from 'zod'
 import { rpc, rpcOrThrow } from '@/lib/rpc'
-import type { Shell } from '@/lib/shell'
 
 /**
  * Loaders for Settings (Settings.dc.html). Every value comes from a database function and is parsed; a
@@ -12,7 +11,7 @@ export const SECTIONS = ['rules', 'modules', 'fields', 'pipelines', 'acttypes', 
 export type Section = (typeof SECTIONS)[number]
 
 /** The design's groups of «Rules and limits», in its order; the register's other groups live elsewhere. */
-export const RULE_GROUPS = ['contacts_consent', 'tracking', 'approvals_audit', 'limits', 'safeguards', 'meetings', 'platform_constant'] as const
+export const RULE_GROUPS = ['contacts_consent', 'tracking', 'approvals_audit', 'limits', 'safeguards', 'meetings', 'ai', 'platform_constant'] as const
 
 /** The record types in the design's order (Deals, Leads, People, Organizations, Products, Activities), then the rest. */
 const ENTITY_ORDER = ['deal', 'lead', 'person', 'organization', 'catalog_item', 'project', 'activity', 'ticket']
@@ -20,10 +19,6 @@ export const sortEntities = (keys: string[]) =>
   [...keys].sort((a, b) => (ENTITY_ORDER.indexOf(a) + 1 || 99) - (ENTITY_ORDER.indexOf(b) + 1 || 99) || a.localeCompare(b))
 
 export { SCOPE_KEYS as SCOPES, ACTION_KEYS as ACTIONS } from './settings-matrix'
-
-/** May the staff member do this? (Mirrors app.can, including the tickets scope; the database decides.) */
-export const allowed = (shell: Shell, scope: string, action: string) =>
-  shell.me.permission_kind === 'admin' || shell.me.rights.includes(`${scope}:${action}`)
 
 const num = z.coerce.number()
 
@@ -88,14 +83,21 @@ export const Field = z.object({
 export type Field = z.infer<typeof Field>
 export const loadFields = (entity: string | null) => rpcOrThrow('fields_get', { p_entity: entity }, z.array(Field))
 
-/** The record types in the registry (app.entities), read through the sandbox counts, which list every one. */
+/** The record types in the registry (app.entities, entities_get), in the database's order. */
+export const Entity = z.object({ key: z.string(), scope: z.string(), module: z.string().nullable(), owned: z.boolean(), ord: num, module_on: z.boolean() })
+export type Entity = z.infer<typeof Entity>
+/** Record types whose fields and default visibility are set here: a mail thread's visibility is its mailbox's. */
+const NOT_CONFIGURED_HERE = ['email_thread']
+export const loadEntities = async () => (await rpcOrThrow('entities_get', {}, z.array(Entity))).filter((e) => !NOT_CONFIGURED_HERE.includes(e.key))
+
+/** The sample records per record type (sandbox_counts) and when they were last cleared. */
 export const SandboxCounts = z.record(z.string(), z.union([z.number(), z.string(), z.null()]))
 export async function loadSandboxCounts() {
   const raw = await rpcOrThrow('sandbox_counts', {}, SandboxCounts)
   const counts: Record<string, number> = {}
   for (const [k, v] of Object.entries(raw)) if (k !== 'last_cleared' && typeof v === 'number') counts[k] = v
   const last = typeof raw.last_cleared === 'string' ? raw.last_cleared : null
-  return { counts, entities: sortEntities(Object.keys(counts)), lastCleared: last }
+  return { counts, lastCleared: last }
 }
 
 // ---------------------------------------------------------------------------

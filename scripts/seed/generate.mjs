@@ -4,7 +4,8 @@
 //
 // Staff can sign in locally with the values in dev-credentials.mjs (the hosted project never runs this file).
 import { createHash } from 'node:crypto'
-import { writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
+import vm from 'node:vm'
 import { fileURLToPath } from 'node:url'
 import { designData } from './design-data.mjs'
 import { DEV_PASSWORD, DEV_TOTP } from './dev-credentials.mjs'
@@ -309,8 +310,143 @@ for (const [i, m] of D.mrrSeries.entries()) {
   }
 }
 sql(`select app.snapshot_mrr();`)
+// ---- mail (Inbox.dc.html, T and TPL): the design's threads as synced history in mailboxes that are not
+// connected — no token exists, so the mailboxes say so and nothing can be sent from them. No tracking
+// events and no AI insights are seeded: those would be engagement and model output nobody produced.
+const inboxSrc = readFileSync(fileURLToPath(new URL('../../design-reference/sentral/project/Inbox.dc.html', import.meta.url)), 'utf8')
+const literal = (name) => {
+  const a = inboxSrc.indexOf(`const ${name} = [`)
+  return vm.runInNewContext(inboxSrc.slice(a + `const ${name} = `.length, inboxSrc.indexOf('];', a) + 1), { P: D.people })
+}
+const mailboxes = [['tor@orgpuls.no', 'google', 'personal', 'tor', 'Tor · Orgpuls'], ['tor@orgpuls.onmicrosoft.com', 'microsoft', 'personal', 'tor', null],
+  ['salg@orgpuls.no', 'google', 'team', null, null]]
+for (const [addr, prov, kind, owner, sig] of mailboxes) {
+  sql(`insert into app.mailboxes (id, kind, provider, address, display_name, owner_id, status, status_detail, default_visibility, signature, sync_from, last_synced_at)
+  values (${q(uid('mailbox', addr))}, ${q(kind)}, ${q(prov)}, ${q(addr)}, ${q(kind === 'team' ? 'Salg' : 'Tor Lambrechts')}, ${owner ? q(uid('staff', owner)) : 'null'}, 'disconnected',
+  'Seeded history; no token', ${q(kind === 'team' ? 'shared' : 'private')}, ${q(sig)}, (now() - interval '90 days')::date, ${ago(1)});`)
+}
+for (const m of ['tor', 'ingrid', 'eirik']) sql(`insert into app.mailbox_members (mailbox_id, staff_id, can_reply) values (${q(uid('mailbox', 'salg@orgpuls.no'))}, ${q(uid('staff', m))}, true);`)
+// the design's «today» is 6 October 2026; its message times become offsets from the seed's now
+const DESIGN_TODAY = Date.UTC(2026, 9, 6)
+const when = (w) => {
+  const [, d, hm] = w.match(/^(?:(Today|Yesterday|\w{3} \d{1,2} \w{3})\s+)?(\d{1,2}:\d{2})$/) ? [null, ...w.match(/^(?:(Today|Yesterday|\w{3} \d{1,2} \w{3})\s+)?(\d{1,2}:\d{2})$/).slice(1)] : [null, 'Today', '09:00']
+  const days = !d || d === 'Today' ? 0 : d === 'Yesterday' ? 1 : Math.round((DESIGN_TODAY - Date.UTC(2026, ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(d.split(' ')[2]), +d.split(' ')[1])) / 86400000)
+  return `(date_trunc('day', now() at time zone 'Europe/Oslo') - interval '${days} days' + interval '${hm.split(':')[0]} hours ${hm.split(':')[1]} minutes') at time zone 'Europe/Oslo'`
+}
+const personByName = Object.fromEntries(D.people.map((p) => [p.name, p]))
+const staffByName = Object.fromEntries(D.staff.map((x) => [x.name, x]))
+// senders the design names but its data does not hold: an address at the organisation the thread is about
+const extraAddress = { 'Ole Hansen': 'ole.hansen@mjosaenergi.no', 'Marte Larsen': 'marte.larsen@solstrandhelse.no', 'Jon Pedersen': 'jon.pedersen@roroskobber.no' }
+const linkFor = { 'Lumio AS — Expansion to Skiftly': ['deal', uid('deal', 'd101')], 'Lead L-503': ['lead', uid('lead', 'L-503')],
+  'Solstrand Helse — HR suite': ['organization', uid('org', D.orgs.find((o) => o.name.startsWith('Solstrand'))?.id)], 'Røros Kobber — baseline': ['lead', uid('lead', 'L-509')] }
+const addrOf = (name, fallback) => staffByName[name]?.email ?? personByName[name]?.email ?? extraAddress[name] ?? fallback
+for (const [i, t] of literal('T').entries()) {
+  const mbox = t.mailbox.split(' · ')[0]
+  const tid = uid('thread', i)
+  const msgs = t.msgs
+  const dir = (m) => (staffByName[m.from] ? 'out' : 'in')
+  sql(`insert into app.email_threads (id, mailbox_id, provider_thread_id, subject, snippet, first_direction, last_direction, last_message_at, created_at)
+  values (${q(tid)}, ${q(uid('mailbox', mbox))}, ${q('seed-' + i)}, ${q(t.subject)}, ${q(t.snippet)}, ${q(dir(msgs[0]))}, ${q(dir(msgs[msgs.length - 1]))}, ${when(msgs[msgs.length - 1].when)}, ${when(msgs[0].when)});`)
+  for (const [j, m] of msgs.entries()) {
+    const out = dir(m) === 'out'
+    sql(`insert into app.email_messages (id, thread_id, mailbox_id, provider_message_id, direction, from_addr, from_name, to_addrs, subject, body_text, source, state, sent_at, received_at, sent_by, created_at)
+  values (${q(uid('message', `${i}-${j}`))}, ${q(tid)}, ${q(uid('mailbox', mbox))}, ${q(`seed-${i}-${j}`)}, ${q(out ? 'out' : 'in')}, ${q(addrOf(m.from, mbox))}, ${q(m.from)},
+  jsonb_build_array(jsonb_build_object('address', ${q(addrOf(m.to, mbox))}, 'name', ${q(m.to)})), ${q(j === 0 ? t.subject.replace(/^Re: /, '') : t.subject)}, ${q(m.body)}, 'sync',
+  ${q(out ? 'sent' : 'received')}, ${out ? when(m.when) : 'null'}, ${out ? 'null' : when(m.when)}, ${out ? q(uid('staff', staffByName[m.from].id)) : 'null'}, ${when(m.when)});`)
+  }
+  const counterpart = msgs.map((m) => (staffByName[m.from] ? m.to : m.from)).find((n) => !staffByName[n] && !n.includes('@')) ?? t.replyTo
+  const person = personByName[counterpart]
+  sql(`insert into app.email_thread_participants (thread_id, address, name, person_id) values (${q(tid)}, ${q(addrOf(counterpart))}, ${q(counterpart)}, ${person ? q(uid('person', person.id)) : 'null'});`)
+  if (person) sql(`insert into app.email_links (thread_id, entity, record_id, linked_by) values (${q(tid)}, 'person', ${q(uid('person', person.id))}, 'auto');`)
+  const link = linkFor[t.linked]
+  if (link && link[1]) sql(`insert into app.email_links (thread_id, entity, record_id, linked_by) values (${q(tid)}, ${q(link[0])}, ${q(link[1])}, 'auto') on conflict do nothing;`)
+  // read state: a thread the design shows as read has been opened by its mailbox's owner
+  if (!t.unread) sql(`insert into app.email_thread_reads (thread_id, staff_id, read_at) values (${q(tid)}, ${q(uid('staff', 'tor'))}, now());`)
+}
+for (const [i, t] of literal('TPL').entries()) {
+  const shared = t.scope.startsWith('Shared')
+  sql(`insert into app.email_templates (id, name, scope, is_starter, owner_id, subject, body) values (${q(uid('template', t.n))}, ${q(t.n)}, ${q(shared ? 'shared' : 'private')},
+  ${t.scope.includes('starter')}, ${q(uid('staff', 'tor'))}, ${q(t.n)}, ${q(t.text)});`)
+}
+
+// ---- automation (Automation.dc.html: W, RU, SQ): workflows, assignment rules and sequences as configuration.
+// Runs are not seeded — the engine writes them when events happen. A workflow is active only when every
+// step can run today; the others stay drafts and say why (app.wf_blockers).
+const wf = (key, kind, name, desc, owner, state, tt, tc, steps, opts = {}, scope = 'everyone', teams = [], priority = null) => {
+  const id = uid('workflow', key)
+  sql(`insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values (${q(id)}, ${q(kind)}, ${q(name)}, ${q(desc)}, ${q(uid('staff', owner))}, ${q(state)}, ${q(tt)}, ${q(JSON.stringify(tc))}::jsonb, ${q(JSON.stringify(opts))}::jsonb, ${q(scope)}, ${priority ?? 'null'}, 1,
+  ${state === 'active' ? ago(20) : 'null'}, ${q(uid('staff', owner))});
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select ${q(id)}, 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), ${q(uid('staff', owner))}
+  from (select ${q(JSON.stringify({ steps }))}::jsonb g) x;`)
+  for (const t of teams) sql(`insert into app.workflow_activation (workflow_id, team_id) values (${q(id)}, ${q(uid('team', t))});`)
+  return id
+}
+const seqTpl = (n) => { sql(`insert into app.email_templates (id, name, scope, owner_id, subject, body) values (${q(uid('template', n))}, ${q(n)}, 'shared', ${q(uid('staff', 'tor'))}, ${q(n)}, '');`); return uid('template', n) }
+const sequences = [['trial_nurture', 'Trial nurture', 'deal', [['Email · auto', 'Velkommen — slik kommer dere i gang'], ['Delay', 2], ['Email · auto', 'Last opp ansattlisten'], ['Delay', 3], ['Activity', 'Call: check first survey'], ['Email · manual', 'Personal check-in']]],
+  ['post_demo', 'Post-demo follow-up', 'deal', [['Email · auto', 'Takk for demoen'], ['Delay', 3], ['Activity', 'Call: questions?'], ['Email · manual', 'Proposal']]],
+  ['re_engage', 'Re-engage cold leads', 'lead', [['Email · auto', 'Nytt i Orgpuls'], ['Delay', 14, false], ['Email · auto', 'Webinar invitation']]]]
+for (const [key, name, entity, st] of sequences) {
+  const steps = st.map(([k, a, skip], i) => k === 'Delay' ? { key: `s${i}`, kind: 'delay', config: { amount: a, unit: 'days', skip_weekends: skip !== false } }
+    : k === 'Activity' ? { key: `s${i}`, kind: 'activity', config: { type: 'call', subject: a } }
+    : { key: `s${i}`, kind: k.includes('manual') ? 'email_manual' : 'email_auto', config: { template_id: seqTpl(a), from: '@record_owner' } })
+  // no mailbox is connected, so a sequence cannot send and stays a draft (V-25)
+  wf(key, 'sequence', name, entity === 'lead' ? 'Leads' : 'Deals and leads', 'tor', 'draft', 'enrollment', { entities: [entity] }, steps, { exit_on: ['reply', 'stage_change'] })
+}
+const ok = (n) => ({ key: n, kind: 'notify', config: { to: '@record_owner', message: n } })
+wf('won_handover', 'workflow', 'Won deal → project, invoice and Slack', 'Delivery handover', 'tor', 'draft', 'event', { entity: 'deal', event: 'won' },
+  [{ key: 'c', kind: 'condition', config: { groups: [[{ f: 'value', op: 'gt', v: 30000 }]] } }, { key: 'p', kind: 'project_action', config: { action: 'create_from_template' } },
+   { key: 'i', kind: 'accounting_invoice', config: {} }, { key: 's', kind: 'slack', config: { channel: '#sales-wins', message: 'Won {deal.title}' } },
+   { key: 'n', kind: 'add_note', config: { body: 'Handover done — project and invoice created' } }], {}, 'team', ['Sales Norway'])
+wf('trial_day7', 'lifecycle', 'Trial day 7 — no survey', 'Lifecycle nudge on product events', 'jonas', 'draft', 'product_event', { kind: 'org.created' },
+  [{ key: 'd', kind: 'delay', config: { amount: 7, unit: 'days' } }, { key: 'n', kind: 'notify', config: { to: '@record_owner', message: 'Trial day 7 for {organization.name}' } }])
+wf('rotting', 'workflow', 'Rotting deal alert', 'Notify owner and manager', 'ingrid', 'active', 'date', { entity: 'deal', date: 'rots_at', offset_days: 2, groups: [[{ f: 'status', op: 'eq', v: 'open' }]] },
+  [{ key: 'n', kind: 'notify', config: { to: '@record_owner', message: '{deal.title} has passed its stage threshold' } }], {}, 'team', ['Sales Norway'])
+wf('payment_failed', 'workflow', 'Payment failed → ticket + CSM task', 'Billing safety net', 'sara', 'active', 'product_event', { kind: 'billing.changed', data: { payment_state: 'past_due' } },
+  [{ key: 't', kind: 'create_ticket', config: { category_key: 'billing', subject: 'Payment failed: {organization.name}' } },
+   { key: 'a', kind: 'create_activity', config: { type: 'task', subject: 'Payment failed: {organization.name}', due_in_days: 0, owner: '@record_owner' } }])
+wf('chatbot_lead', 'workflow', 'Lead from chatbot → assign + sequence', 'Inbound routing', 'ingrid', 'draft', 'event', { entity: 'lead', event: 'created', groups: [[{ f: 'source', op: 'eq', v: 'Chatbot' }]] },
+  [{ key: 'e', kind: 'enroll_sequence', config: { sequence_id: uid('workflow', 're_engage') } }], {}, 'team', ['Sales Norway'])
+wf('health_drop', 'workflow', 'Health drops below 40', 'Churn prevention', 'magnus', 'active', 'event', { entity: 'organization', event: 'health_dropped' },
+  [{ key: 'a', kind: 'create_activity', config: { type: 'task', subject: 'Health dropped: {organization.name}', due_in_days: 0, owner: '@record_owner' } }], {}, 'team', ['Support'])
+wf('renewal_60', 'workflow', 'Renewal in 60 days', 'Expansion pipeline', 'tor', 'draft', 'date', { entity: 'organization', date: 'renewal_at', offset_days: -60 },
+  [{ key: 'a', kind: 'create_activity', config: { type: 'task', subject: 'Renewal in 60 days: {organization.name}', due_in_days: 0, owner: '@record_owner' } }])
+wf('campaign_click', 'workflow', 'Campaign click → lead score +10', 'Marketing to sales', 'jonas', 'draft', 'event', { entity: 'lead', event: 'campaign_clicked' },
+  [ok('Campaign link clicked')], {}, 'team', ['Growth'])
+const rr = [['municipalities', 'Inbound — municipalities', ['lead'], { org_labels_any: [uid('label-org', 'Municipality')] }, { kind: 'user', staff_id: uid('staff', 'tor') }],
+  ['large', 'Inbound — large orgs', ['lead'], { employees_min: 101 }, { kind: 'user', staff_id: uid('staff', 'ingrid') }],
+  ['existing', 'Existing organization', ['deal'], { org_exists: true }, { kind: 'org_owner' }],
+  ['chatbot_forms', 'Inbound — chatbot and forms', ['lead'], { sources: ['Chatbot', 'Web form'] }, { kind: 'team_rr', team_id: uid('team', 'Sales Norway') }],
+  ['everything_else', 'Everything else', ['lead', 'deal'], {}, { kind: 'person_owner' }]]
+for (const [i, [key, name, entities, condition, assignee]] of rr.entries()) {
+  wf(`assign_${key}`, 'assignment', name, null, 'tor', 'active', 'event', { entities }, [], { condition, assignee }, 'everyone', [], i + 1)
+}
+
+// ---- scoring models (Feed.dc.html, modelsSeed and C). «Organization health score ≥ 70» waits for health
+// scores (phase 4) and is left out (V-26).
+const decisionMaker = uid('label-person', 'Decision maker')
+const criteria = [['high', 'Proposal link opened in the last 7 days', [[{ f: 'email.opened', v: 7 }]]],
+  ['high', 'Decision maker is a participant', [[{ f: 'participant_label', v: decisionMaker }]]],
+  ['slight', 'Already uses another application', [[{ f: 'org_products', op: 'gte', v: 2 }]]],
+  ['slight', 'Source is web form or chatbot', [[{ f: 'source', op: 'in', v: ['Web form', 'Chatbot'] }]]],
+  ['slight', 'Employees between 26 and 250', [[{ rel: 'organization_id', f: 'employees', op: 'gte', v: 26 }, { rel: 'organization_id', f: 'employees', op: 'lte', v: 250 }]]],
+  ['negative', 'No reply to last email in 5 days', [[{ f: 'email.no_reply', v: 5 }]]],
+  ['negative', 'Organization payment status past due', [[{ f: 'org_payment', v: 'past_due' }]]]]
+const models = [['deal_new', 'Deal score — new business', 'deal', 'new', 'active'], ['deal_exp', 'Expansion readiness', 'deal', 'exp', 'active'], ['lead_fit', 'Lead fit', 'lead', null, 'draft']]
+for (const [key, name, entity, pl, state] of models) {
+  sql(`insert into app.score_models (id, name, entity, pipeline_id, state, created_by) values (${q(uid('model', key))}, ${q(name)}, ${q(entity)}, ${pl ? q(uid('pipeline', pl)) : 'null'}, ${q(state)}, ${q(uid('staff', 'tor'))});`)
+  for (const [j, [g, label, cond]] of criteria.entries()) {
+    if (entity === 'lead' && (label.startsWith('Decision maker') || label.startsWith('No reply'))) continue
+    sql(`insert into app.score_criteria (model_id, grp, ord, label, condition) values (${q(uid('model', key))}, ${q(g)}, ${j}, ${q(label)}, ${q(JSON.stringify(cond))}::jsonb);`)
+  }
+}
+
 // the seed is history: the event subscribers start after it
 sql(`update app.event_cursors set last_event_id = coalesce((select max(id) from app.events), 0), updated_at = now();`)
+// scores and feed cards are computed from the seeded records, as the jobs would
+sql(`select app.scores_nightly();`)
+sql(`select app.feed_checks();`)
 
 sql(`
 commit;

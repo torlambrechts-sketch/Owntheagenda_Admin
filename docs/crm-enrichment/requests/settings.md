@@ -24,12 +24,12 @@ records (as `sandbox_clear`) and re-creates the Lumio AS demo tenant as sample r
 seed generator's data, logs `sandbox.reset` with counts, and returns them. `sandbox_counts` should then also
 return `last_reset`.
 
-## R-SETTINGS-04 A read of the record-type registry
+## R-SETTINGS-04 A read of the record-type registry — done (0023, `entities_get`; the screen uses it)
 The Data fields chips and the visibility defaults read the record types from the keys of `sandbox_counts()`,
 the only function that lists every row of `app.entities`. A small `entities_get()` (key, scope, module,
 owned, ord) would make the order and the scope (for the right to configure) come from the database.
 
-## R-SETTINGS-05 Field keys of archived fields
+## R-SETTINGS-05 Field keys of archived fields — done (0023: `invalid`, detail `key`; the retry is gone, the screen names the taken key)
 `field_save` keeps an archived field's key, so adding a field with the same label again fails with a
 unique violation (23505 → `failed`). The action retries once with a short suffix. A nicer fix: map 23505 to
 `invalid` with detail `key`, or let `fields_get` return archived keys to the configuring staff member.

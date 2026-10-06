@@ -115,7 +115,8 @@
       "businessLeft": "{dur} arbeidstid igjen",
       "daysLeft": "{n, plural, one {# dag igjen} other {# dager igjen}}",
       "resolved": "Løst",
-      "saved": "Lagret"
+      "saved": "Lagret",
+      "queueForbidden": "Saken ligger i en kø du ikke jobber i, eller endringen ville flytte den dit."
     },
     "thread": {
       "customer": "Kunde · {channel}",
@@ -129,7 +130,14 @@
       "requester": "Innsender",
       "notConfigured": "Ikke sendt på e-post: e-postleverandøren er ikke koblet til ennå, så svaret er bare lagret i tråden.",
       "queued": "Står i kø for e-post",
-      "failed": "E-postlevering mislyktes"
+      "failed": "E-postlevering mislyktes",
+      "actionOk": "{action} utført av {name}. Begrunnelse: {ref}. Skrevet til revisjonsloggen for {org}.",
+      "actionFailed": "{action} forsøkt av {name} og avvist av produktet. Begrunnelse: {ref}. Skrevet til revisjonsloggen for {org}.",
+      "actionOkNoOrg": "{action} utført av {name}. Begrunnelse: {ref}. Skrevet til revisjonsloggen.",
+      "actionFailedNoOrg": "{action} forsøkt av {name} og avvist av produktet. Begrunnelse: {ref}. Skrevet til revisjonsloggen.",
+      "actions": {
+        "billing_extend_trial": "Forleng prøveperioden 14 dager"
+      }
     },
     "composer": {
       "reply": "Svar",

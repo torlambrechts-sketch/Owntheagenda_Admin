@@ -13,6 +13,9 @@ import enActivities from '@/messages/en/activities.json'
 import enTickets from '@/messages/en/tickets.json'
 import enSettings from '@/messages/en/settings.json'
 import enCoverage from '@/messages/en/coverage.json'
+import enInbox from '@/messages/en/inbox.json'
+import enFeed from '@/messages/en/feed.json'
+import enAutomation from '@/messages/en/automation.json'
 import noAuth from '@/messages/no/auth.json'
 import noShell from '@/messages/no/shell.json'
 import noCommon from '@/messages/no/common.json'
@@ -24,13 +27,16 @@ import noActivities from '@/messages/no/activities.json'
 import noTickets from '@/messages/no/tickets.json'
 import noSettings from '@/messages/no/settings.json'
 import noCoverage from '@/messages/no/coverage.json'
+import noInbox from '@/messages/no/inbox.json'
+import noFeed from '@/messages/no/feed.json'
+import noAutomation from '@/messages/no/automation.json'
 
 export const locales = ['en', 'no'] as const
 export type Locale = (typeof locales)[number]
 
 const catalogue = {
-  en: { ...enAuth, ...enShell, ...enCommon, ...enOverview, ...enCustomers, ...enContacts, ...enDeals, ...enActivities, ...enTickets, ...enSettings, ...enCoverage },
-  no: { ...noAuth, ...noShell, ...noCommon, ...noOverview, ...noCustomers, ...noContacts, ...noDeals, ...noActivities, ...noTickets, ...noSettings, ...noCoverage },
+  en: { ...enAuth, ...enShell, ...enCommon, ...enOverview, ...enCustomers, ...enContacts, ...enDeals, ...enActivities, ...enTickets, ...enSettings, ...enCoverage, ...enInbox, ...enFeed, ...enAutomation },
+  no: { ...noAuth, ...noShell, ...noCommon, ...noOverview, ...noCustomers, ...noContacts, ...noDeals, ...noActivities, ...noTickets, ...noSettings, ...noCoverage, ...noInbox, ...noFeed, ...noAutomation },
 }
 
 export const messagesFor = (locale: Locale) => catalogue[locale]

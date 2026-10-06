@@ -27,14 +27,14 @@ What the Phase 1 screen builders asked for, and what happened to each. «0023» 
 | Settings R-SETTINGS-01 | Currencies with Norges Bank rates | Open: needs an edge worker; with the worker deployment once hosted access returns (Q-01) |
 | Settings R-SETTINGS-02 | Invitation e-mail | Open: needs the transactional e-mail provider (D-07) |
 | Settings R-SETTINGS-03 | `sandbox_reset` | Open: the production sandbox loader |
-| Settings R-SETTINGS-04 | `entities_get` | Done in 0023 · screen |
-| Settings R-SETTINGS-05 | Archived field keys | Done in 0023 (refused as `invalid`, detail `key`) · screen: drop the retry |
+| Settings R-SETTINGS-04 | `entities_get` | Done in 0023; the screen uses it (Data fields chips, visibility defaults, plans, sandbox) |
+| Settings R-SETTINGS-05 | Archived field keys | Done in 0023 (refused as `invalid`, detail `key`); the screen dropped the retry and says the key belongs to an archived field |
 | Settings R-SETTINGS-06 | First day of the week | Left out (V-SETTINGS-16); Monday throughout |
-| Tickets R-1 | A thread line for an executed action | Done in 0023 (`ticket_action_note`, needs the action in the audit) · screen |
-| Tickets R-2 | Queue and edit checks on ticket writes (security) | Done in 0023 (update trigger, `ticket_link`) |
+| Tickets R-1 | A thread line for an executed action | Done in 0023 (`ticket_action_note`, needs the action in the audit); the screen writes and renders it |
+| Tickets R-2 | Queue and edit checks on ticket writes (security) | Done in 0023 (update trigger, `ticket_link`); the screen words the queue refusal (`forbidden`/`queue`) |
 | Tickets R-3 | Previous period ignored the product | Done in 0023 |
 | Tickets R-4 | Product commands, status banner | Open: Orgpuls side (D-40) |
-| Tickets R-5 | Ticket-to-article rate | Done in 0023 (`help_get.article_rate`) · screen |
+| Tickets R-5 | Ticket-to-article rate | Done in 0023 (`help_get.article_rate`); shown on the screen |
 | Tickets R-6 | CSAT counted unanswered scores | Done in 0023 |
 | Tickets R-7 | Initials, health, app version, attachments | Open: health in phase 4; attachments with storage |
 

@@ -3,7 +3,7 @@
 You build one screen area of the Sentral platform admin, in your own git worktree. Read, in this order:
 `CLAUDE.md`, `docs/crm-enrichment/BUILD-GUIDE.md`, `docs/crm-enrichment/DEVIATIONS.md`, `docs/crm-enrichment/DECISIONS.md`
 (skim), then the design file(s) for your screen in full, then the migrations your screen reads
-(`supabase/migrations/0006`, `0009`–`0014` as named in your task). Then look at how the Overview is built:
+(`supabase/migrations/0006`, `0009`–`0014`, and for phase 2 `0020`–`0023`, as named in your task). Then look at how the Overview is built:
 `app/(admin)/page.tsx`, `lib/data/overview.ts`, `components/ui/styles.ts`, `components/ui/Toast.tsx`,
 `components/ui/Switch.tsx`, `lib/format.ts`, `lib/rpc.ts`, `lib/records-href.ts`.
 
@@ -49,3 +49,17 @@ You build one screen area of the Sentral platform admin, in your own git worktre
 ## Your final answer
 A short report: what you built (tabs/states), what you left out and why (with the deviation IDs), the
 database requests you filed, gate results (exit codes), and any problem in the shared code you noticed.
+
+## Phase 2 screens (Inbox, Feed, Automation)
+- Your data spec is `docs/crm-enrichment/specs/inbox-feed-automation.md`: it names every value the design
+  invents (FAB) and the real source for it. Read it before the design file.
+- The functions are in `0020_mail.sql`, `0021_engine.sql`, `0022_feed_scoring.sql` and are proved by
+  `supabase/tests/phase2_invariants.sql` — read the test to see how each is called.
+- No provider is connected and no edge worker runs locally: the seeded mailboxes are «disconnected»
+  (history only), sending is refused with `mailbox_not_connected`, AI is not configured, Slack/Teams/
+  accounting/telephony/WhatsApp/contact data are not connected. Every such view shows its honest
+  unconnected state in the design's language (D-41), never sample output.
+- The seed holds the design's four mail threads and ten templates, the eight workflows, five assignment
+  rules and three sequences as configuration (no runs), three scoring models with scores computed, and
+  feed cards computed by `app.feed_checks()`.
+- Deviations: `docs/crm-enrichment/deviations/<screen>.md` as before; the lead folds them in.

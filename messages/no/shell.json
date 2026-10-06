@@ -58,6 +58,11 @@
         "deal_stage": { "title": "{record} flyttet til {stage}", "body": "Du følger denne avtalen · av {actor}" },
         "ticket_sla": { "title": "{record} nærmer seg fristen for første svar", "body": "{priority} · {minutes} min igjen" },
         "workflow_failed": { "title": "Arbeidsflyten «{record}» feilet {count} ganger", "body": "{reason}" },
+        "document": {
+          "opened": { "title": "Dokument {number} ble åpnet", "body": "Åpne dokumentet for å se visningen." },
+          "completed": { "title": "Dokument {number} er signert av alle", "body": "Signeringsforespørselen er fullført." },
+          "declined": { "title": "Dokument {number} ble avvist", "body": "En signatar avslo å signere." }
+        },
         "workflow": {
           "failed": { "title": "Arbeidsflyten «{workflow}» feilet", "body": "{error}" },
           "notice": { "title": "{workflow}", "body": "{message}" },

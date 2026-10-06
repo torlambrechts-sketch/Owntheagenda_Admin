@@ -442,3 +442,18 @@ columns as `DEVIATIONS.md`; the lead folds them in. Database changes the screen 
 | V-ANALYTICS-31 | No access | Not in the design | A card «Analytics needs the right to see reports of others» for staff without Global › See reports of others | D-41 |
 | V-ANALYTICS-32 | 390 px | The prototype's layout squeezed beside the shell rail | The shell's phone layout; wide tables (activation funnel, retention, campaigns, sources, attribution) scroll sideways inside their card; metric definitions stack | The design has no phone layout; built in its language (D-41) |
 | V-ANALYTICS-33 | All money | — | NOK only, formatted as kr; a line when rows in other currencies are left out | The reads do not yet report `excluded_currency` (requests R-1); today every subscription is NOK |
+
+## Phase 5 schema (0030–0032) — departures from `specs/marketing-documents.md`
+
+| ID | Where | Spec | Built | Reason |
+|---|---|---|---|---|
+| V-P5-01 | `form_submissions`, `chat_conversations` | Columns named `answers` | `field_values`, `collected` | The structure suite forbids a column named `answers` anywhere (the anonymity rule of the products); the name, not the content, is what differs |
+| V-P5-02 | `app.product_event_out` (0021, redefined in 0031) | — | Leaves out payload keys named message, subject, body, comment, text | A contact request's text was being copied into `app.events`; no free text in event payloads |
+| V-P5-03 | Live chat close | — | Closing a live chat with no bot-collected email uses the first email address the visitor typed to create the lead | The minimal rule that turns a staffed chat into a record; otherwise the conversation is lost |
+| V-P5-04 | `chat.started` event | Emitted when a chat starts | Not emitted | No lead exists at start and events about nobody are not stored; `chat.claimed` and `chat.completed` are |
+| V-P5-05 | Signature OTP lockout | — | Raised as `invalid`, detail `otp_locked` | Stays inside the error contract |
+| V-P5-06 | `document_file_url` | A signed URL | `{bucket, path, expires_in}` for an edge function to sign | SQL cannot sign a Storage URL |
+| V-P5-07 | Product-table labels in documents | Message keys | Written into the document by SQL in nb, nn, en and sv | They are document content, not UI |
+| V-P5-08 | `signature_events` | — | Adds kind `expired` and a `seq` column; `document_link_create` takes optional label, expiry and notify | Expiry is an event in the chain; `seq` keeps the chain's order under a lock |
+| V-P5-09 | Signing evidence «time and address» (SF-20) | — | The verified email address and the time; no IP, no place | D-37 and spec Q9: the built-in level is a simple electronic signature |
+| V-P5-10 | `suppressions.campaign_id` | Foreign key to campaigns | Plain uuid | Campaigns arrive in phase 6 |

@@ -58,6 +58,11 @@
         "deal_stage": { "title": "{record} moved to {stage}", "body": "You follow this deal · by {actor}" },
         "ticket_sla": { "title": "{record} is close to breaching first response", "body": "{priority} · {minutes} min left" },
         "workflow_failed": { "title": "Workflow «{record}» failed {count} times", "body": "{reason}" },
+        "document": {
+          "opened": { "title": "Document {number} was opened", "body": "Open the document to see the view." },
+          "completed": { "title": "Document {number} is signed by everyone", "body": "The signature request is complete." },
+          "declined": { "title": "Document {number} was declined", "body": "A signer declined to sign." }
+        },
         "workflow": {
           "failed": { "title": "Workflow «{workflow}» failed", "body": "{error}" },
           "notice": { "title": "{workflow}", "body": "{message}" },

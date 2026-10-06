@@ -122,6 +122,12 @@ export function ActivityModal({ ctx, data, onClose }: { ctx: Ctx; data: ModalDat
         guests: guests.map((g) => ({ email: g.email, name: g.name, person_id: g.person_id })),
         reminders: remind.map((c) => ({ channel: c, offset_min: offsetOf(c) })),
       })
+      if (!r.ok && r.part) {
+        // the activity is saved; its guests or reminders were refused (owner or deals:edit_others)
+        flash(t(`toast.partRefused.${r.part}`, { reason: tc(`errors.${r.code}`) }))
+        onClose()
+        return
+      }
       if (!r.ok) { setError(tc(`errors.${r.code}`)); return }
       flash(remind.length ? t('toast.savedReminders') : t('toast.saved'))
       onClose()

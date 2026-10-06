@@ -42,7 +42,11 @@
       "linkCreated": "Booking link created",
       "saved": "Activity saved",
       "savedReminders": "Activity saved · reminders set",
-      "nextPlanned": "Next activity planned: {what}"
+      "nextPlanned": "Next activity planned: {what}",
+      "partRefused": {
+        "guests": "Activity saved, but the guests were not changed: {reason}",
+        "reminders": "Activity saved, but the reminders were not changed: {reason}"
+      }
     },
     "todo": {
       "tabs": {
@@ -91,7 +95,6 @@
         "proposed": "Proposed times"
       },
       "anySlot": "Any open slot in the next {weeks, plural, one {week} other {# weeks}}",
-      "proposed": "Proposed times",
       "expires": "expires {date}",
       "newLink": "New booking link",
       "noLinks": "No booking links yet",
@@ -103,13 +106,20 @@
       "availNotConnected": "No calendar connected, so busy times are not read yet · slots come only from the hours marked here",
       "availConnected": "Busy times are read from the synced calendar",
       "contactSees": "What the contact sees",
-      "proposedNotStored": "The specific times of a proposed-times link are not stored yet, so none can be shown.",
       "noSlots": "No open slots — mark hours under Availability.",
       "confirm": "Confirm booking",
       "previewOnly": "Preview only · the public booking page is not published yet, so nobody can book through it",
       "previewEmpty": "Create a booking link to see what the contact sees.",
       "recent": "Recent bookings",
-      "noBookings": "No bookings yet"
+      "noBookings": "No bookings yet",
+      "specificTimes": "{count, plural, one {# specific time} other {# specific times}}",
+      "newProposedHint": "A proposed-times link offers only the times added here, up to ten. The public booking page is not published yet.",
+      "addTime": "Add time",
+      "removeTime": "Remove {time}",
+      "timesCount": "{count} of 10",
+      "proposedPast": "Choose a time in the future",
+      "proposedInvalid": "Proposed times must be in the future, at most ten",
+      "noProposed": "Every proposed time has passed."
     },
     "reminders": {
       "title": "Reminders",
@@ -147,10 +157,10 @@
         "two_way": "Two-way"
       },
       "calendar": "Calendar",
-      "noCalendar": "Not connected",
       "types": "Activity types to sync",
-      "notConnected": "Not connected · Google and Microsoft 365 sync arrives with the calendar adapters, so nothing is synced yet",
-      "connected": "Private events sync as private · last sync {when} · latest change wins"
+      "notConnected": "Not connected · your choices are saved and apply once Google or Microsoft 365 is connected; nothing is synced yet",
+      "connected": "Private events sync as private · last sync {when} · latest change wins",
+      "chooseProvider": "Choose a provider first"
     },
     "modal": {
       "edit": "Edit activity",

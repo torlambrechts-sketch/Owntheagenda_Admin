@@ -1,3 +1,350 @@
 {
-  "inbox": {}
+  "inbox": {
+    "noAccess": {
+      "title": "Innboks",
+      "body": "Du trenger rett til å se avtaler for å bruke innboksen."
+    },
+    "compose": "＋ Skriv ny",
+    "rail": {
+      "label": "Mapper i innboksen",
+      "mail": "E-post",
+      "channels": "Kanaler",
+      "labels": "Etiketter",
+      "setup": "Oppsett"
+    },
+    "folders": {
+      "inbox": "Innboks",
+      "team": "Teaminnboks · {local}@",
+      "outbox": "Planlagt og feilet",
+      "group": "Gruppe-e-post",
+      "archive": "Arkiv",
+      "messaging": "WhatsApp og LinkedIn",
+      "calls": "Samtaler",
+      "settings": "Postbokser og maler"
+    },
+    "empty": "Ingenting her.",
+    "noSender": "(ukjent avsender)",
+    "noSubject": "(uten emne)",
+    "newEmail": "Ny e-post",
+    "chips": {
+      "team": "Teaminnboks",
+      "deal": "Avtale",
+      "lead": "Lead",
+      "opened": "Åpnet {n}×"
+    },
+    "when": {
+      "today": "I dag {time}",
+      "yesterday": "I går {time}",
+      "dayMonth": "{day}. {mon}",
+      "date": "{wd} {day}. {mon} {time}"
+    },
+    "provider": {
+      "gmail": "Gmail",
+      "microsoft": "Microsoft 365"
+    },
+    "teamInbox": "teaminnboks",
+    "status": {
+      "new": "Ny",
+      "waiting_on_you": "Venter på deg",
+      "replied": "Besvart",
+      "waiting_on_contact": "Venter på kontakten"
+    },
+    "archive": "Arkiver",
+    "archiveSync": "Arkiver · synkes til {provider}",
+    "unarchive": "Flytt til innboksen",
+    "createLead": "Opprett lead",
+    "mailboxState": {
+      "connecting": "Kobler til",
+      "syncing": "Synkroniserer",
+      "synced": "Synkronisert",
+      "reauth": "Må logge inn på nytt",
+      "error": "Synkroniseringsfeil",
+      "disconnected": "Frakoblet"
+    },
+    "threadDisconnected": "{address} viser e-posten som er synkronisert så langt. Ny e-post hentes ikke, og ingenting kan sendes fra den før den kobles til igjen.",
+    "reconnectLink": "Postbokser og maler →",
+    "toast": {
+      "archived": "Arkivert her og i {provider}",
+      "archivedLocal": "Arkivert her · {provider} oppdateres ikke mens postboksen er frakoblet",
+      "unarchived": "Flyttet tilbake til innboksen",
+      "lead": "Lead opprettet fra tråden · e-posten forblir koblet",
+      "scheduled": "Planlagt til {when} · ligger i utboksen",
+      "queued": "Satt i kø for sending",
+      "queuedLinked": "Satt i kø for sending · koblet til {title}"
+    },
+    "ai": {
+      "summary": "Trådsammendrag",
+      "readiness": "Kjøpsvilje",
+      "outOf": "/ 10 · {sentiment}",
+      "sentiment": {
+        "positive": "positiv",
+        "neutral": "nøytral",
+        "negative": "negativ"
+      },
+      "actions": "Oppgaver",
+      "replies": "Foreslåtte svar",
+      "offTitle": "AI er ikke konfigurert.",
+      "offBody": "Sammendraget, kjøpsviljen og oppgavene skrives av Claude når AI-tilkoblingen er satt opp. Inntil da genereres eller gjettes ingenting."
+    },
+    "cc": "kopi",
+    "track": {
+      "opened": "Åpnet {n}×",
+      "notOpened": "Ikke åpnet ennå",
+      "clicked": "klikket «{label}»",
+      "lastOpen": "sist åpnet {when}",
+      "caveat": "åpninger kan være for høye på grunn av forhåndslasting av bilder",
+      "caveatLong": "Åpninger kan være for høye på grunn av forhåndslasting av bilder: noen e-posttjenester laster bildene før noen har lest e-posten."
+    },
+    "msgState": {
+      "scheduled": "Planlagt til {when}",
+      "queued": "I kø — ikke sendt ennå",
+      "sending": "Sendes",
+      "failed": "Feilet",
+      "canceled": "Avbrutt — ikke sendt",
+      "awaiting_review": "Venter på gjennomgang",
+      "draft": "Utkast"
+    },
+    "composer": {
+      "from": "Fra",
+      "to": "Til",
+      "suggested": "· forslag:",
+      "team": "team",
+      "noMailbox": "Ingen postboks å sende fra.",
+      "noMailboxBody": "En postboks legges til under Postbokser og maler.",
+      "toPlaceholder": "navn@firma.no",
+      "subject": "Emne",
+      "template": "Mal …",
+      "merge": "Flettefelt …",
+      "aiOff": "AI-skriveren er ikke konfigurert",
+      "tone": "Tone",
+      "tones": {
+        "professional": "Profesjonell",
+        "formal": "Formell",
+        "friendly": "Vennlig"
+      },
+      "length": "Lengde",
+      "lengths": {
+        "short": "Kort",
+        "standard": "Standard",
+        "long": "Lang"
+      },
+      "draft": "Skriv utkast",
+      "placeholder": "Skriv et svar",
+      "placeholderNew": "Skriv en e-post",
+      "attachTitle": "Mangler vedlegg?",
+      "attachBody": "Du nevner et vedlegg, men ingen er lagt til.",
+      "mergeTitle": "Flettefelt mangler verdi.",
+      "mergeMissing": "{tokens} har ingen verdi for denne mottakeren — e-posten sendes ikke før den har det.",
+      "mergeUnknown": "{tokens} er ikke et flettefelt.",
+      "notConnected": "{address} kan ikke sende før den er koblet til igjen.",
+      "attach": "▤ Legg ved",
+      "attachOff": "Vedlegg kommer med fillagring",
+      "track": "Spor åpninger og klikk",
+      "trackFixed": "Sporing er på for alle e-poster (innstilling)",
+      "signature": "Signatur: {signature}",
+      "noSignature": "Ingen signatur",
+      "sendAtLabel": "Når skal den sendes",
+      "sendOff": "Postboksen er ikke tilkoblet",
+      "send": "Send",
+      "schedule": "Planlegg"
+    },
+    "sendAt": {
+      "now": "Send nå",
+      "tomorrow": "I morgen 08:00",
+      "monday": "Mandag 09:00"
+    },
+    "errors": {
+      "mailbox_not_connected": "Postboksen er ikke tilkoblet, så ingenting kan sendes fra den. Koble den til igjen under Postbokser og maler.",
+      "merge_missing": "[{token}] har ingen verdi for denne mottakeren.",
+      "merge_unknown": "[{token}] er ikke et flettefelt.",
+      "no_recipient": "Legg til en gyldig mottakeradresse.",
+      "no_subject": "Legg til et emne.",
+      "over_limit": "Det er flere mottakere enn mottakergrensen tillater.",
+      "no_recipients": "Ingen å sende til.",
+      "no_inbound": "Kontakten har ikke skrevet i denne tråden, så det finnes ingen avsender å lage et lead av."
+    },
+    "outbox": {
+      "to": "til {to}",
+      "state": {
+        "scheduledAt": "Planlagt · {when}",
+        "queued": "I kø",
+        "sending": "Sendes",
+        "failed": "Feilet",
+        "awaiting_review": "Venter på gjennomgang",
+        "groupSending": "Sender {sent} / {total}"
+      },
+      "attempt": "Forsøk {n}",
+      "retry": "Prøv igjen",
+      "edit": "Endre",
+      "newTime": "Nytt tidspunkt",
+      "reschedule": "Flytt",
+      "sendNow": "Send nå",
+      "cancel": "Avbryt e-posten",
+      "done": {
+        "cancel": "E-posten er avbrutt",
+        "reschedule": "Flyttet",
+        "send_now": "Satt i kø for sending",
+        "retry": "Satt i kø for sending igjen"
+      },
+      "groupSubject": "{subject} (gruppe, {n})",
+      "groupTo": "til gruppens mottakere",
+      "groupFailed": "{n} feilet"
+    },
+    "group": {
+      "title": "Gruppe-e-post — sendt én og én, fra din postboks",
+      "noRight": "Gruppe-e-post krever rett til å arbeide med avtaler samlet.",
+      "from": "Mottakere fra",
+      "src": {
+        "view": "Lagret visning av personer",
+        "people": "Utvalg fra Kontakter",
+        "deals": "Avtaleliste",
+        "dealsStage": "Avtaleliste — {stage}"
+      },
+      "pickView": "Lagret visning …",
+      "noViews": "Ingen lagrede visninger av personer ennå.",
+      "selected": "{n, plural, one {# person} other {# personer}} valgt i Kontakter",
+      "noSelection": "Ingen utvalg — velg personer i Kontakter og åpne Gruppe-e-post derfra.",
+      "pickStage": "Fase …",
+      "noRecipients": "Ingen mottakere i denne kilden.",
+      "summary": {
+        "count": "{n} mottakere",
+        "template": "mal «{name}»",
+        "noTemplate": "ingen mal valgt",
+        "merge": "flettefelt per person",
+        "consent": "samtykkesjekk på salgs-e-post: {mode} (innstilling)",
+        "limit": "mottakergrense: {limit}",
+        "excluded": "{n} merket — hold over et navn for å se hvorfor"
+      },
+      "consent": {
+        "off": "av",
+        "warn": "varsle",
+        "block": "blokker"
+      },
+      "unlimited": "ubegrenset",
+      "emptyTemplate": "(malen har ingen tekst)",
+      "pickTemplate": "Velg en mal for å se e-posten.",
+      "notConnected": "Gruppe-e-post sendes fra din egen postboks, én og én, og ingen av postboksene dine er tilkoblet.",
+      "send": "Send {n} e-poster",
+      "queued": "{n} enkelt-e-poster satt i kø",
+      "excluded": {
+        "no_address": "Ingen e-postadresse · sendes ikke",
+        "unsubscribed": "Avmeldt",
+        "bounced": "Avvist",
+        "no_basis": "Ikke grunnlag for samtykke"
+      }
+    },
+    "messaging": {
+      "linkedinTitle": "LinkedIn-kobling",
+      "linkedinBody": "Vises ved siden av innboksen. Omfanget er et åpent punkt (LEA-06) — samtaler kobles til leads og kontakter på samme måte når det er avklart.",
+      "linkedinOff": "Utelatt til omfanget er avklart",
+      "connect": "Koble til",
+      "waTitle": "WhatsApp Business",
+      "waState": "Ikke tilkoblet",
+      "waOff": "Ingen WhatsApp Business-leverandør er valgt ennå",
+      "waEmptyTitle": "Ingen samtaler",
+      "waEmptyBody": "WhatsApp krever en WhatsApp Business-leverandør, og ingen er valgt ennå. Når en er tilkoblet, vises samtaler, godkjente maler og hurtigsvar her, og hver samtale kobles til et lead eller en kontakt."
+    },
+    "calls": {
+      "title": "Samtalelogg — logget som aktiviteter",
+      "dir": {
+        "outbound": "Utgående",
+        "inbound": "Innkommende"
+      },
+      "unknown": "Ukjent",
+      "outcome": {
+        "connected": "Besvart",
+        "no_answer": "Ikke svar",
+        "missed": "Tapt",
+        "busy": "Opptatt",
+        "voicemail": "Talepost"
+      },
+      "minutes": "{n} min",
+      "empty": "Ingen samtaler logget ennå.",
+      "clickToCall": "Klikk for å ringe",
+      "number": "Telefonnummer",
+      "numberPlaceholder": "+47 …",
+      "matched": "Treff:",
+      "openDeal": "åpen avtale",
+      "noMatch": "Ingen kontakt har dette nummeret.",
+      "call": "☎ Ring med standard ringeapp",
+      "noProvider": "Ingen telefonileverandør er tilkoblet · samtalen går gjennom telefonens ringeapp og logges her",
+      "logManually": "Logg en samtale",
+      "logTitle": "Hvordan gikk samtalen?",
+      "direction": "Retning",
+      "outcomeLabel": "Utfall",
+      "durationLabel": "Minutter",
+      "note": "Notat",
+      "save": "Logg samtalen",
+      "cancel": "Avbryt",
+      "logged": "Samtalen er logget som en aktivitet",
+      "willLink": "Logges på {name}.",
+      "willLinkNone": "Ikke koblet til en kontakt — ingen treff på nummeret."
+    },
+    "setup": {
+      "mailboxes": "Tilkoblede postbokser",
+      "teamSub": "Teaminnboks · {n, plural, one {# bruker leser og svarer} other {# brukere leser og svarer}}",
+      "twoWay": "toveis synkronisering",
+      "signatureSub": "signatur «{signature}»",
+      "reconnectNote": "Å koble til igjen krever {provider}-innloggingen, som ikke er konfigurert ennå. E-posten som er synkronisert så langt, blir værende hos postene sine.",
+      "reconnect": "Koble til igjen",
+      "oauthMissing": "OAuth-klienten for Gmail og Microsoft er ikke konfigurert",
+      "disconnect": "Koble fra",
+      "disconnected": "Postboksen er koblet fra · synkronisert e-post blir værende hos postene sine",
+      "edit": "Endre",
+      "saved": "Postboksen er lagret",
+      "noMailboxes": "Ingen postboks ennå.",
+      "add": "＋ Gmail · Microsoft 365 · Exchange",
+      "addTitle": "Ikke tilgjengelig ennå.",
+      "addBody": "Å koble til en postboks krever OAuth-klienten for Gmail eller Microsoft, som ikke er konfigurert. Exchange Online kobles til via Microsoft 365.",
+      "dropbox": "BCC-postkasse",
+      "domainMissing": "innkommende domene er ikke konfigurert",
+      "dropboxBody": "E-post som sendes eller videresendes hit, lagres og kobles til personen den gjelder og deres åpne avtale når det innkommende domenet er konfigurert. Hver avtale kan få sin egen adresse på samme måte.",
+      "aliases": "Alternative avsenderadresser",
+      "aliasKind": {
+        "send_as": "send som",
+        "bcc_accepted": "godtas av postkassen"
+      },
+      "unverified": "ikke bekreftet",
+      "removeAlias": "Fjern {address}",
+      "aliasRemoved": "Adressen er fjernet",
+      "noAliases": "Ingen ennå.",
+      "aliasAddress": "Adresse",
+      "aliasKindLabel": "Type",
+      "addAlias": "Legg til",
+      "aliasAdded": "Adressen er lagt til",
+      "templates": "Maler",
+      "scope": {
+        "starter": "Delt · startmal",
+        "shared": "Delt",
+        "private": "Privat"
+      },
+      "scopeLabel": "Deling",
+      "templateSaved": "Malen er lagret",
+      "templateDeleted": "Malen er slettet",
+      "newTemplate": "＋ Ny mal",
+      "templateName": "Navn",
+      "templateBody": "Tekst",
+      "addons": "Tillegg for e-postklienter",
+      "addonsBody": "Sidepanel i Gmail og nettleserutvidelse — se og legg til kontakter, avtaler, notater og aktiviteter uten å forlate postboksen.",
+      "addonsState": "Ikke laget ennå.",
+      "tracking": "Sporing av åpninger og klikk: <b>{mode}</b> (innstilling) · varsler i sanntid til avsenderen",
+      "trackingMode": {
+        "on": "på",
+        "off": "av",
+        "per_email": "velges per e-post"
+      },
+      "displayName": "Visningsnavn",
+      "signature": "Signatur",
+      "visibility": "Tråder er",
+      "vis": {
+        "private": "Private for eieren og medlemmene",
+        "shared": "Delt med ansatte som ser avtaler"
+      },
+      "members": "Medlemmer",
+      "canReply": "kan svare",
+      "save": "Lagre",
+      "cancel": "Avbryt",
+      "delete": "Slett"
+    }
+  }
 }

@@ -1,3 +1,350 @@
 {
-  "inbox": {}
+  "inbox": {
+    "noAccess": {
+      "title": "Inbox",
+      "body": "You need the right to see deals to use the inbox."
+    },
+    "compose": "＋ Compose",
+    "rail": {
+      "label": "Inbox folders",
+      "mail": "Mail",
+      "channels": "Channels",
+      "labels": "Labels",
+      "setup": "Setup"
+    },
+    "folders": {
+      "inbox": "Inbox",
+      "team": "Team inbox · {local}@",
+      "outbox": "Scheduled and failed",
+      "group": "Group email",
+      "archive": "Archive",
+      "messaging": "WhatsApp and LinkedIn",
+      "calls": "Calls",
+      "settings": "Mailboxes and templates"
+    },
+    "empty": "Nothing here.",
+    "noSender": "(unknown sender)",
+    "noSubject": "(no subject)",
+    "newEmail": "New email",
+    "chips": {
+      "team": "Team inbox",
+      "deal": "Deal",
+      "lead": "Lead",
+      "opened": "Opened {n}×"
+    },
+    "when": {
+      "today": "Today {time}",
+      "yesterday": "Yesterday {time}",
+      "dayMonth": "{day} {mon}",
+      "date": "{wd} {day} {mon} {time}"
+    },
+    "provider": {
+      "gmail": "Gmail",
+      "microsoft": "Microsoft 365"
+    },
+    "teamInbox": "team inbox",
+    "status": {
+      "new": "New",
+      "waiting_on_you": "Waiting on you",
+      "replied": "Replied",
+      "waiting_on_contact": "Waiting on contact"
+    },
+    "archive": "Archive",
+    "archiveSync": "Archive · syncs to {provider}",
+    "unarchive": "Move to inbox",
+    "createLead": "Create lead",
+    "mailboxState": {
+      "connecting": "Connecting",
+      "syncing": "Syncing",
+      "synced": "Synced",
+      "reauth": "Re-auth needed",
+      "error": "Sync error",
+      "disconnected": "Disconnected"
+    },
+    "threadDisconnected": "{address} shows the mail synced so far. New mail is not fetched and nothing can be sent from it until it is reconnected.",
+    "reconnectLink": "Mailboxes and templates →",
+    "toast": {
+      "archived": "Archived here and in {provider}",
+      "archivedLocal": "Archived here · {provider} is not updated while the mailbox is disconnected",
+      "unarchived": "Moved back to the inbox",
+      "lead": "Lead created from thread · email stays linked",
+      "scheduled": "Scheduled for {when} · in the outbox",
+      "queued": "Queued for sending",
+      "queuedLinked": "Queued for sending · linked to {title}"
+    },
+    "ai": {
+      "summary": "Thread summary",
+      "readiness": "Readiness to buy",
+      "outOf": "/ 10 · {sentiment}",
+      "sentiment": {
+        "positive": "positive",
+        "neutral": "neutral",
+        "negative": "negative"
+      },
+      "actions": "Action items",
+      "replies": "Suggested replies",
+      "offTitle": "AI not configured.",
+      "offBody": "The summary, readiness to buy and action items are written by Claude once the AI connection is set up. Nothing is generated or guessed until then."
+    },
+    "cc": "cc",
+    "track": {
+      "opened": "Opened {n}×",
+      "notOpened": "Not opened yet",
+      "clicked": "clicked «{label}»",
+      "lastOpen": "last open {when}",
+      "caveat": "opens may be inflated by image prefetch",
+      "caveatLong": "Opens may be inflated by image prefetch: some mail services load images before anyone reads the email."
+    },
+    "msgState": {
+      "scheduled": "Scheduled for {when}",
+      "queued": "Queued — not sent yet",
+      "sending": "Sending",
+      "failed": "Failed",
+      "canceled": "Cancelled — not sent",
+      "awaiting_review": "Awaiting review",
+      "draft": "Draft"
+    },
+    "composer": {
+      "from": "From",
+      "to": "To",
+      "suggested": "· suggested:",
+      "team": "team",
+      "noMailbox": "No mailbox to send from.",
+      "noMailboxBody": "A mailbox is added in Mailboxes and templates.",
+      "toPlaceholder": "name@company.no",
+      "subject": "Subject",
+      "template": "Template …",
+      "merge": "Merge field …",
+      "aiOff": "The AI writer is not configured",
+      "tone": "Tone",
+      "tones": {
+        "professional": "Professional",
+        "formal": "Formal",
+        "friendly": "Friendly"
+      },
+      "length": "Length",
+      "lengths": {
+        "short": "Short",
+        "standard": "Standard",
+        "long": "Long"
+      },
+      "draft": "Draft",
+      "placeholder": "Write a reply",
+      "placeholderNew": "Write an email",
+      "attachTitle": "Missing attachment?",
+      "attachBody": "You mention an attachment, but none is added.",
+      "mergeTitle": "Missing merge value.",
+      "mergeMissing": "{tokens} has no value for this recipient — the email is not sent until it has one.",
+      "mergeUnknown": "{tokens} is not a merge field.",
+      "notConnected": "{address} cannot send until it is reconnected.",
+      "attach": "▤ Attach",
+      "attachOff": "Attachments arrive with file storage",
+      "track": "Track opens and clicks",
+      "trackFixed": "Tracking is on for every email (setting)",
+      "signature": "Signature: {signature}",
+      "noSignature": "No signature",
+      "sendAtLabel": "When to send",
+      "sendOff": "The mailbox is not connected",
+      "send": "Send",
+      "schedule": "Schedule"
+    },
+    "sendAt": {
+      "now": "Send now",
+      "tomorrow": "Tomorrow 08:00",
+      "monday": "Monday 09:00"
+    },
+    "errors": {
+      "mailbox_not_connected": "The mailbox is not connected, so nothing can be sent from it. Reconnect it in Mailboxes and templates.",
+      "merge_missing": "[{token}] has no value for this recipient.",
+      "merge_unknown": "[{token}] is not a merge field.",
+      "no_recipient": "Add a valid recipient address.",
+      "no_subject": "Add a subject.",
+      "over_limit": "There are more recipients than the recipient limit allows.",
+      "no_recipients": "Nobody to send to.",
+      "no_inbound": "The contact has not written in this thread, so there is no sender to make a lead from."
+    },
+    "outbox": {
+      "to": "to {to}",
+      "state": {
+        "scheduledAt": "Scheduled · {when}",
+        "queued": "Queued",
+        "sending": "Sending",
+        "failed": "Failed",
+        "awaiting_review": "Awaiting review",
+        "groupSending": "Sending {sent} / {total}"
+      },
+      "attempt": "Attempt {n}",
+      "retry": "Retry",
+      "edit": "Edit",
+      "newTime": "New time",
+      "reschedule": "Reschedule",
+      "sendNow": "Send now",
+      "cancel": "Cancel email",
+      "done": {
+        "cancel": "Email cancelled",
+        "reschedule": "Rescheduled",
+        "send_now": "Queued for sending",
+        "retry": "Queued again for sending"
+      },
+      "groupSubject": "{subject} (group, {n})",
+      "groupTo": "to the group's recipients",
+      "groupFailed": "{n} failed"
+    },
+    "group": {
+      "title": "Group email — sent one by one, from your mailbox",
+      "noRight": "Group email needs the right to work on deals in bulk.",
+      "from": "Recipients from",
+      "src": {
+        "view": "Saved view of people",
+        "people": "Contacts selection",
+        "deals": "Deals list",
+        "dealsStage": "Deals list — {stage}"
+      },
+      "pickView": "Saved view …",
+      "noViews": "No saved views of people yet.",
+      "selected": "{n, plural, one {# person} other {# people}} selected in Contacts",
+      "noSelection": "No selection — select people in Contacts and open Group email from there.",
+      "pickStage": "Stage …",
+      "noRecipients": "No recipients in this source.",
+      "summary": {
+        "count": "{n} recipients",
+        "template": "template «{name}»",
+        "noTemplate": "no template chosen",
+        "merge": "merge fields per person",
+        "consent": "consent checks on sales email: {mode} (setting)",
+        "limit": "recipient limit: {limit}",
+        "excluded": "{n} flagged — hover a name for the reason"
+      },
+      "consent": {
+        "off": "off",
+        "warn": "warn",
+        "block": "block"
+      },
+      "unlimited": "unlimited",
+      "emptyTemplate": "(the template has no text)",
+      "pickTemplate": "Choose a template to see the email.",
+      "notConnected": "Group email is sent from your own mailbox, one by one, and none of your mailboxes is connected.",
+      "send": "Send {n} emails",
+      "queued": "{n} individual emails queued",
+      "excluded": {
+        "no_address": "No email address · not sent",
+        "unsubscribed": "Unsubscribed",
+        "bounced": "Bounced",
+        "no_basis": "No consent basis"
+      }
+    },
+    "messaging": {
+      "linkedinTitle": "LinkedIn connector",
+      "linkedinBody": "Listed beside the inbox. Its scope is an open point (LEA-06) — conversations will link to leads and contacts the same way once defined.",
+      "linkedinOff": "Left out until its scope is defined",
+      "connect": "Connect",
+      "waTitle": "WhatsApp Business",
+      "waState": "Not connected",
+      "waOff": "No WhatsApp Business provider is chosen yet",
+      "waEmptyTitle": "No conversations",
+      "waEmptyBody": "WhatsApp needs a WhatsApp Business provider, and none is chosen yet. Once one is connected, conversations, approved templates and quick replies appear here, and each conversation links to a lead or contact."
+    },
+    "calls": {
+      "title": "Call log — logged as activities",
+      "dir": {
+        "outbound": "Outgoing",
+        "inbound": "Incoming"
+      },
+      "unknown": "Unknown",
+      "outcome": {
+        "connected": "Connected",
+        "no_answer": "No answer",
+        "missed": "Missed",
+        "busy": "Busy",
+        "voicemail": "Voicemail"
+      },
+      "minutes": "{n} min",
+      "empty": "No calls logged yet.",
+      "clickToCall": "Click-to-call",
+      "number": "Phone number",
+      "numberPlaceholder": "+47 …",
+      "matched": "Matched:",
+      "openDeal": "open deal",
+      "noMatch": "No contact has this number.",
+      "call": "☎ Call via default calling app",
+      "noProvider": "No telephony provider is connected · the call goes through your phone's calling app and is logged here",
+      "logManually": "Log a call",
+      "logTitle": "How did the call go?",
+      "direction": "Direction",
+      "outcomeLabel": "Outcome",
+      "durationLabel": "Minutes",
+      "note": "Note",
+      "save": "Log call",
+      "cancel": "Cancel",
+      "logged": "Call logged as an activity",
+      "willLink": "Logged on {name}.",
+      "willLinkNone": "Not linked to a contact — no match for the number."
+    },
+    "setup": {
+      "mailboxes": "Connected mailboxes",
+      "teamSub": "Team inbox · {n, plural, one {# user reads and answers} other {# users read and answer}}",
+      "twoWay": "two-way sync",
+      "signatureSub": "signature «{signature}»",
+      "reconnectNote": "Reconnecting needs the {provider} sign-in, which is not configured yet. The mail synced so far stays with its records.",
+      "reconnect": "Reconnect",
+      "oauthMissing": "The Gmail and Microsoft OAuth client is not configured",
+      "disconnect": "Disconnect",
+      "disconnected": "Mailbox disconnected · synced mail stays with its records",
+      "edit": "Edit",
+      "saved": "Mailbox saved",
+      "noMailboxes": "No mailbox yet.",
+      "add": "＋ Gmail · Microsoft 365 · Exchange",
+      "addTitle": "Not available yet.",
+      "addBody": "Connecting a mailbox needs the Gmail or Microsoft OAuth client, which is not configured. Exchange Online connects through Microsoft 365.",
+      "dropbox": "BCC drop-box",
+      "domainMissing": "inbound domain not configured",
+      "dropboxBody": "Mail sent or forwarded here is stored and linked to the matching person and their open deal once the inbound domain is configured. Each deal can get its own address the same way.",
+      "aliases": "Alternative sender addresses",
+      "aliasKind": {
+        "send_as": "send as",
+        "bcc_accepted": "accepted by the drop-box"
+      },
+      "unverified": "not verified",
+      "removeAlias": "Remove {address}",
+      "aliasRemoved": "Address removed",
+      "noAliases": "None yet.",
+      "aliasAddress": "Address",
+      "aliasKindLabel": "Kind",
+      "addAlias": "Add",
+      "aliasAdded": "Address added",
+      "templates": "Templates",
+      "scope": {
+        "starter": "Shared · starter",
+        "shared": "Shared",
+        "private": "Private"
+      },
+      "scopeLabel": "Scope",
+      "templateSaved": "Template saved",
+      "templateDeleted": "Template deleted",
+      "newTemplate": "＋ New template",
+      "templateName": "Name",
+      "templateBody": "Text",
+      "addons": "Mail client add-ons",
+      "addonsBody": "Gmail side panel and browser extension — view and add contacts, deals, notes and activities without leaving the mailbox.",
+      "addonsState": "Not built yet.",
+      "tracking": "Open and click tracking: <b>{mode}</b> (setting) · real-time notifications to the sender",
+      "trackingMode": {
+        "on": "on",
+        "off": "off",
+        "per_email": "chosen per email"
+      },
+      "displayName": "Display name",
+      "signature": "Signature",
+      "visibility": "Threads are",
+      "vis": {
+        "private": "Private to the owner and members",
+        "shared": "Shared with staff who see deals"
+      },
+      "members": "Members",
+      "canReply": "can reply",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    }
+  }
 }

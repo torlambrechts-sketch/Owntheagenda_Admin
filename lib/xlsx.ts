@@ -1,7 +1,7 @@
 /**
- * Exports of the list's visible rows, built in the browser (the database records that it happened through
- * export_log). CSV cells that a spreadsheet would read as a formula are neutralized with a leading
- * apostrophe; the XLSX is a minimal workbook of inline strings and numbers in an uncompressed zip.
+ * Spreadsheet exports built in the browser (Deals › List, the Insights drill-down); the database records that
+ * an export happened (export_log, report_export). CSV cells that a spreadsheet would read as a formula are
+ * neutralized with a leading apostrophe; the XLSX is a minimal workbook of inline strings and numbers in an uncompressed zip.
  */
 export type Cell = string | number
 

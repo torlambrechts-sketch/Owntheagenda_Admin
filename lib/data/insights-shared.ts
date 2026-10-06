@@ -17,7 +17,7 @@ export const CHARTS = ['column', 'bar', 'pie', 'scorecard', 'table', 'stacked'] 
 export type Chart = (typeof CHARTS)[number]
 export const PERIODS = ['month', 'quarter', 'year', 'last_30', 'last_90', 'last_365', 'custom', 'all'] as const
 export type PeriodKind = (typeof PERIODS)[number]
-export const OPS = ['eq', 'neq', 'in', 'contains', 'gt', 'gte', 'lt', 'lte', 'empty', 'notempty'] as const
+export const OPS = ['eq', 'neq', 'in', 'contains', 'ncontains', 'gt', 'gte', 'lt', 'lte', 'empty', 'notempty'] as const
 export type Op = (typeof OPS)[number]
 
 const col = z.string().regex(/^(custom\.)?[a-z_][a-z0-9_]{0,40}$/)
@@ -150,7 +150,7 @@ export const segmentOf = (r: ResultRow) => ({ key: r.key, ...(r.segment !== unde
 // ---------------------------------------------------------------------------
 // the builder's state and the definition it describes
 type Period = 'month' | 'quarter' | 'year' | 'custom'
-type Kind = 'performance' | 'conversion' | 'duration'
+type Kind = 'performance' | 'conversion' | 'duration' | 'progress' | 'products'
 type ChartKind = 'column' | 'bar' | 'pie' | 'scorecard' | 'table'
 export type BuilderState = {
   entity: Entity; type: Kind; group: string; measure: string; period: Period; from: string; to: string
@@ -161,14 +161,26 @@ export const initialBuilder = (pipeline: string): BuilderState => ({
   entity: 'deal', type: 'performance', group: 'owner', measure: 'sum', period: 'quarter', from: '', to: '', chart: 'column', filters: [], color: DEFAULT_COLOR, pipeline,
 })
 
+/** Types that report one row per stage or catalog item rather than by a chosen dimension (0034). */
+export const FIXED_ROWS = new Set(['conversion', 'progress', 'products'])
+
 /** The definition the state describes, or null while a custom range is incomplete. */
 export function toDefinition(s: BuilderState): Definition | null {
   if (s.period === 'custom' && (!s.from || !s.to || s.from > s.to)) return null
-  const period = { kind: s.period, field: s.type === 'duration' ? 'won_at' : 'created_at', ...(s.period === 'custom' ? { from: s.from, to: s.to } : {}) }
+  // the period runs on the created date; on the won date for Duration and Products; Progress on the stage change
+  const field = s.type === 'duration' || s.type === 'products' ? 'won_at' : 'created_at'
+  const period = { kind: s.period, ...(s.type === 'progress' ? {} : { field }), ...(s.period === 'custom' ? { from: s.from, to: s.to } : {}) }
   const color = /^#[0-9A-Fa-f]{6}$/.test(s.color) && s.color.toUpperCase() !== DEFAULT_COLOR ? { color: s.color } : {}
   if (s.type === 'conversion') {
     if (!s.pipeline) return null
     return { entity: 'deal', type: 'conversion', pipeline_id: s.pipeline, period, chart: 'table', filters: s.filters, ...color }
+  }
+  if (s.type === 'progress') {
+    return { entity: 'deal', type: 'progress', measure: { fn: 'count' }, ...(s.pipeline ? { pipeline_id: s.pipeline } : {}), period, chart: s.chart, filters: s.filters, ...color }
+  }
+  if (s.type === 'products') {
+    const measure = s.measure === 'qty' ? { fn: 'sum' as const, field: 'quantity' } : s.measure === 'sum' ? { fn: 'sum' as const, field: 'value' } : { fn: 'count' as const }
+    return { entity: 'deal', type: 'products', measure, period, chart: s.chart, filters: s.filters, ...color }
   }
   const measure = s.type === 'duration' ? { fn: 'cycle_days' as const }
     : s.measure === 'count' ? { fn: 'count' as const }
@@ -177,4 +189,3 @@ export function toDefinition(s: BuilderState): Definition | null {
     : { fn: s.measure as 'sum' | 'avg', field: 'value' }
   return { entity: s.entity, type: s.type, measure, group_by: s.group, period, chart: s.chart, filters: s.filters, ...color }
 }
-

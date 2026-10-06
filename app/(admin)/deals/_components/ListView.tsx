@@ -7,7 +7,7 @@ import { money, type NumberFormat } from '@/lib/format'
 import type { Card, DealsBase, Filter, Pipeline } from '@/lib/data/deals'
 import { bulkOwner, deleteDeals, fetchList, logExport, moveDeals, saveDeal, setPref } from '../actions'
 import { canEditDeal, dateOnly, type Rights } from './shared'
-import { download, toCsv, toXlsx, type Cell } from './xlsx'
+import { download, toCsv, toXlsx, type Cell } from '@/lib/xlsx'
 import type { Status } from './DealsScreen'
 
 type Col = 'id' | 'title' | 'org' | 'value' | 'stage' | 'owner' | 'close' | 'score' | 'source' | 'labels'

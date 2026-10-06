@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import type { NumberFormat } from '@/lib/format'
 import {
-  BOOL_COLS, DIMS, FILTER_COLS, NUMERIC_COLS, segmentOf, toDefinition,
+  BOOL_COLS, DIMS, FILTER_COLS, FIXED_ROWS, NUMERIC_COLS, segmentOf, toDefinition,
   type BuilderState, type Cond, type Entity, type Fields, type Op, type ReportResult, type ResultRow,
 } from '@/lib/data/insights-shared'
 import { fieldsAction, runReportAction, saveReportAction } from '../actions'
@@ -57,12 +57,15 @@ export function Builder({ state, setState, initialFields, rights, pickers, nf, t
     ...f.custom.map((c) => c.key),
   ], [f])
   const measures = useMemo(() => {
+    // Products measures line items (0034): lines, quantity, or their value in NOK; Progress counts deals
+    if (state.type === 'products') return [{ key: 'count', label: t('measures.lines') }, { key: 'qty', label: t('measures.quantity') }, { key: 'sum', label: t('measures.lineValue') }]
+    if (state.type === 'progress') return [{ key: 'count', label: t('measures.dealsMoved') }]
     const out: { key: string; label: string }[] = [{ key: 'count', label: t('measures.count') }]
     if (f?.numeric.includes('value')) out.push({ key: 'sum', label: t('measures.sum') }, { key: 'avg', label: t('measures.avg') })
     for (const c of f?.custom ?? []) if (c.type === 'numerical') out.push({ key: `avg:${c.key}`, label: t('measures.avgCustom', { label: c.label }) })
     if (state.entity === 'deal') out.push({ key: 'weighted', label: t('measures.weighted') })
     return out
-  }, [f, state.entity, t])
+  }, [f, state.entity, state.type, t])
   const filterCols = useMemo(() => !f ? [] : [
     ...FILTER_COLS.filter((c) => f.dimensions.includes(c) || f.numeric.includes(c)),
     ...f.custom.filter((c) => ['text', 'numerical', 'single_option', 'large_text'].includes(c.type)).map((c) => c.key),
@@ -96,10 +99,15 @@ export function Builder({ state, setState, initialFields, rights, pickers, nf, t
   if (!rights.see) return <div className="rounded-20 border border-line bg-surface p-6 text-center text-13 text-muted">{t('noAccess')}</div>
 
   const set = <K extends keyof BuilderState>(k: K, v: BuilderState[K]) => setState({ ...state, [k]: v })
+  // conversion needs a pipeline; progress may run over all of them
+  const setType = (type: BuilderState['type']) => setState({ ...state, type, pipeline: type === 'conversion' && !state.pipeline ? (pickers.pipelines[0]?.id ?? '') : state.pipeline })
+  const fixed = FIXED_ROWS.has(state.type)
   const periodLabel = t(`periods.${state.period}`)
   const measureLabel = state.type === 'duration' ? t('measures.cycle') : (measures.find((m) => m.key === state.measure)?.label ?? t('measures.count'))
   const title = state.type === 'conversion'
     ? t('builder.titleConv', { period: periodLabel.toLowerCase() })
+    : state.type === 'progress' ? (state.chart === 'scorecard' ? t('builder.titleTotal', { measure: measureLabel, period: periodLabel.toLowerCase() }) : t('builder.titleProgress', { period: periodLabel.toLowerCase() }))
+    : state.type === 'products' && state.chart !== 'scorecard' ? t('builder.titleProducts', { measure: measureLabel, period: periodLabel.toLowerCase() })
     : state.chart === 'scorecard' ? t('builder.titleTotal', { measure: measureLabel, period: periodLabel.toLowerCase() })
     : t('builder.title', { measure: measureLabel, dim: dim(state.group).toLowerCase(), period: periodLabel.toLowerCase() })
 
@@ -116,7 +124,7 @@ export function Builder({ state, setState, initialFields, rights, pickers, nf, t
   }
 
   const drill = (row: ResultRow, label: string) => {
-    if (!def || state.type === 'conversion') return
+    if (!def) return
     onDrill({ def, segment: segmentOf(row), title: t('drill.title', { report: sentence(title), segment: label }) })
   }
 
@@ -126,8 +134,8 @@ export function Builder({ state, setState, initialFields, rights, pickers, nf, t
     { v: 'performance', n: t('types.performance'), off: false },
     { v: 'conversion', n: t('types.conversion'), off: state.entity !== 'deal' },
     { v: 'duration', n: t('types.duration'), off: state.entity !== 'deal' },
-    { v: 'progress', n: t('builder.notYet', { name: t('types.progress') }), off: true },
-    { v: 'products', n: t('builder.notYet', { name: t('types.products') }), off: true },
+    { v: 'progress', n: t('types.progress'), off: state.entity !== 'deal' },
+    { v: 'products', n: t('types.products'), off: state.entity !== 'deal' },
   ]
 
   return (
@@ -139,24 +147,26 @@ export function Builder({ state, setState, initialFields, rights, pickers, nf, t
           </select>
         </label>
         <label className={field}>{t('builder.type')}
-          <select value={state.type} onChange={(e) => set('type', e.target.value as BuilderState['type'])} className={select}>
+          <select value={state.type} onChange={(e) => setType(e.target.value as BuilderState['type'])} className={select}>
             {typeOpts.map((o) => <option key={o.v} value={o.v} disabled={o.off}>{o.n}</option>)}
           </select>
         </label>
-        {state.type === 'conversion' ? (
+        {state.type === 'conversion' || state.type === 'progress' ? (
           <label className={field}>{t('builder.pipeline')}
             <select value={state.pipeline} onChange={(e) => set('pipeline', e.target.value)} className={select}>
+              {state.type === 'progress' ? <option value="">{t('builder.allPipelines')}</option> : null}
               {pickers.pipelines.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
           </label>
         ) : null}
         <label className={field}>{t('builder.groupBy')}
-          <select value={state.group} disabled={state.type === 'conversion'} onChange={(e) => set('group', e.target.value)} className={select}>
+          <select value={fixed ? '' : state.group} disabled={fixed} onChange={(e) => set('group', e.target.value)} className={select}>
+            {fixed ? <option value="">{state.type === 'products' ? t('builder.byProduct') : t('builder.byStage')}</option> : null}
             {dims.map((d) => <option key={d} value={d}>{dim(d)}</option>)}
           </select>
         </label>
         <label className={field}>{t('builder.measure')}
-          <select value={state.type === 'duration' ? 'cycle' : state.measure} disabled={state.type !== 'performance'} onChange={(e) => set('measure', e.target.value)} className={select}>
+          <select value={state.type === 'duration' ? 'cycle' : state.measure} disabled={state.type !== 'performance' && state.type !== 'products'} onChange={(e) => set('measure', e.target.value)} className={select}>
             {state.type === 'duration' ? <option value="cycle">{t('measures.cycle')}</option> : null}
             {measures.map((m) => <option key={m.key} value={m.key}>{m.label}</option>)}
           </select>
@@ -201,7 +211,7 @@ export function Builder({ state, setState, initialFields, rights, pickers, nf, t
         {error ? <div className="text-12.5 text-danger">{te(error as 'failed')}</div> : null}
         {!def ? <div className="text-12.5 text-muted">{state.type === 'conversion' ? t('builder.pickPipeline') : t('builder.pickRange')}</div> : null}
         {def && !result && !error ? <div className="flex h-[220px] items-center justify-center text-12.5 text-muted">{t('loading')}</div> : null}
-        {def && result ? <ReportChart def={def} result={result} nf={nf} variant="preview" onDrill={state.type === 'conversion' ? undefined : drill} /> : null}
+        {def && result ? <ReportChart def={def} result={result} nf={nf} variant="preview" onDrill={drill} /> : null}
         {result?.excluded_currency ? <span className="text-11.5 text-muted">{t('tile.excluded', { count: result.excluded_currency })}</span> : null}
         {!rights.others ? <span className="text-11.5 text-muted">{t('builder.own')}</span> : null}
         <div className="text-11.5 text-faint">{t('builder.footnote')}</div>
@@ -218,7 +228,7 @@ function FilterAdd({ cols, label, onAdd }: { cols: string[]; label: (k: string) 
   const [val, setVal] = useState('')
   const numeric = NUMERIC_COLS.has(col)
   const bool = BOOL_COLS.has(col)
-  const ops: Op[] = bool ? ['eq'] : numeric ? ['eq', 'neq', 'gt', 'lt', 'empty', 'notempty'] : ['eq', 'neq', 'contains', 'in', 'empty', 'notempty']
+  const ops: Op[] = bool ? ['eq'] : numeric ? ['eq', 'neq', 'gt', 'lt', 'empty', 'notempty'] : ['eq', 'neq', 'contains', 'ncontains', 'in', 'empty', 'notempty']
   const needsValue = op !== 'empty' && op !== 'notempty'
   const ready = !!col && (!needsValue || (bool ? val === 'true' || val === 'false' : val.trim() !== '' && (!numeric || !Number.isNaN(Number(val)))))
   const add = () => {

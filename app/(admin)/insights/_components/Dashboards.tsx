@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import type { NumberFormat } from '@/lib/format'
 import type { Dashboard, DashboardRef, Tile } from '@/lib/data/insights'
-import { Definition, SPAN, segmentOf, type ResultRow } from '@/lib/data/insights-shared'
+import { Definition, FIXED_ROWS, SPAN, segmentOf, type ResultRow } from '@/lib/data/insights-shared'
 import { duplicateDashboardAction, saveLayoutAction } from '../actions'
 import { ReportChart } from './ReportChart'
 import { SharePopover } from './SharePopover'
@@ -96,10 +96,13 @@ export function Dashboards({ list, current, currentKey, rights, pickers, nf, onA
     router.push(`/insights?dashboard=${r.id}` as Route)
   }
 
+  // a template tile's title in the staff member's language (template_key, 0034); anyone's own report by its name
+  const titleOf = (tile: Tile) => (tile.template_key && t.has(`templateTiles.${tile.template_key}`) ? t(`templateTiles.${tile.template_key}` as 'templateTiles.won_quarter') : tile.name)
+  const drillable = (tile: Tile) => !!tile.definition.group_by || FIXED_ROWS.has(tile.definition.type ?? '')
   const drill = (tile: Tile) => (row: ResultRow, label: string) => {
     const def = Definition.safeParse(tile.definition)
-    if (!def.success || !tile.definition.group_by) return
-    onDrill({ def: def.data, segment: segmentOf(row), title: t('drill.title', { report: tile.name, segment: label }) })
+    if (!def.success || !drillable(tile)) return
+    onDrill({ def: def.data, segment: segmentOf(row), title: t('drill.title', { report: titleOf(tile), segment: label }) })
   }
 
   const ordered = layout.map((l) => ({ l, tile: tiles.find((x) => x.report_id === l.report_id) })).filter((x): x is { l: Layout[number]; tile: Tile } => !!x.tile)
@@ -137,13 +140,13 @@ export function Dashboards({ list, current, currentKey, rights, pickers, nf, onA
             <div key={tile.report_id} className={`${SPAN[l.span] ?? 'md:col-span-6'} flex min-w-0 flex-col gap-[10px] rounded-20 border bg-surface px-4 py-[14px] ${editing ? 'border-line-strong' : 'border-line'}`}>
               <div className="flex items-start justify-between gap-2">
                 <span className="flex min-w-0 flex-col">
-                  <b className="text-13.5">{tile.name}</b>
+                  <b className="text-13.5">{titleOf(tile)}</b>
                   <span className="text-11.5 text-muted">{subOf(tile.definition)}</span>
                 </span>
                 {editing ? (
                   <span className="flex flex-none gap-[3px]">
                     {([['←', () => move(i, -1), 'left', 'text-11'], ['→', () => move(i, 1), 'right', 'text-11'], ['−', () => resize(i, -1), 'narrower', 'text-12'], ['+', () => resize(i, 1), 'wider', 'text-12']] as const).map(([g, fn, k, size]) => (
-                      <button key={k} type="button" onClick={fn} aria-label={t(`dash.${k}`, { name: tile.name })} className={`h-6 w-6 cursor-pointer rounded-7 border border-line bg-transparent p-0 ${size}`}>{g}</button>
+                      <button key={k} type="button" onClick={fn} aria-label={t(`dash.${k}`, { name: titleOf(tile) })} className={`h-6 w-6 cursor-pointer rounded-7 border border-line bg-transparent p-0 ${size}`}>{g}</button>
                     ))}
                   </span>
                 ) : null}
@@ -152,7 +155,7 @@ export function Dashboards({ list, current, currentKey, rights, pickers, nf, onA
                 <div className="text-12.5 text-muted">{tile.result.error === 'forbidden' ? t('noAccess') : tile.result.error === 'module_off' ? te('module_off') : t('tile.failed')}</div>
               ) : (
                 <>
-                  <ReportChart def={tile.definition} result={tile.result} nf={nf} variant="tile" onDrill={tile.definition.group_by ? drill(tile) : undefined} />
+                  <ReportChart def={tile.definition} result={tile.result} nf={nf} variant="tile" onDrill={drillable(tile) ? drill(tile) : undefined} />
                   {tile.result.excluded_currency ? <span className="text-11.5 text-muted">{t('tile.excluded', { count: tile.result.excluded_currency })}</span> : null}
                 </>
               )}

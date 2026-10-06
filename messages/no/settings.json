@@ -1,3 +1,546 @@
 {
-  "settings": {}
+  "settings": {
+    "sections": {
+      "label": "Innstillinger",
+      "rules": "Regler og grenser",
+      "modules": "Moduler",
+      "fields": "Datafelt",
+      "pipelines": "Salgsløp og trinn",
+      "acttypes": "Aktivitetstyper",
+      "locale": "Språk og valutaer",
+      "users": "Brukere og team",
+      "perms": "Rettighetssett",
+      "groups": "Synlighetsgrupper",
+      "plans": "Planer og forbruk",
+      "sandbox": "Sandkasse"
+    },
+    "readOnly": "Du kan lese disse innstillingene. For å endre dem trenger du rettigheten «{right}».",
+    "rights": {
+      "configure": "Administrere salgsløp og felt",
+      "security": "Administrere brukere og sikkerhet"
+    },
+    "unavailable": "Denne delen krever avtalemodulen og rett til å se avtaler.",
+    "entities": {
+      "deal": "Avtaler",
+      "lead": "Leads",
+      "person": "Personer",
+      "organization": "Organisasjoner",
+      "catalog_item": "Produkter",
+      "project": "Prosjekter",
+      "activity": "Aktiviteter",
+      "ticket": "Saker",
+      "campaign": "Kampanjer",
+      "document": "Dokumenter"
+    },
+    "rules": {
+      "bannerLead": "Ingen begrensninger er bygd inn.",
+      "bannerBody": "Hver regel som kan begrense en funksjon, ligger her som en innstilling, og hver standardverdi lar funksjonen virke fullt ut. Bare anonymitetsbrannmuren er fast.",
+      "changed": "{count} endret fra standard",
+      "appliesTo": "Gjelder {what}",
+      "range": "til",
+      "default": "Standard:",
+      "stateFixed": "Fast — kan ikke slås av",
+      "stateChanged": "Endret · {value}",
+      "stateDefault": "Standard — ubegrenset",
+      "numberLabel": "Tall for «{name}»",
+      "numberSave": "Sett",
+      "toast": "Innstilling endret · logget",
+      "log": "Endringslogg",
+      "logEmpty": "Ingen innstilling er endret ennå.",
+      "logLine": "{name}: {from} → {to}",
+      "logScoped": "{name} · {scope}: {from} → {to}",
+      "logNumber": "{name}: {value} · tallet er endret",
+      "system": "System",
+      "on": "på",
+      "off": "av",
+      "groups": {
+        "contacts_consent": "Kontakter og samtykke",
+        "tracking": "Sporing",
+        "approvals_audit": "Godkjenning og revisjon",
+        "limits": "Grenser",
+        "safeguards": "Tekniske sikringer",
+        "meetings": "Møter",
+        "platform_constant": "Plattformkonstant"
+      },
+      "items": {
+        "contact_rule": {
+          "name": "Kontaktregel",
+          "options": {
+            "no_rule": "Ingen regel",
+            "source_and_basis": "Kilde og grunnlag påkrevd",
+            "opt_in_only": "Bare samtykke (opt-in)"
+          }
+        },
+        "import_consent": {
+          "name": "Samtykkekilde ved import",
+          "options": {
+            "off": "Av",
+            "required_per_row": "Påkrevd per rad"
+          }
+        },
+        "sales_consent": {
+          "name": "Samtykke- og sperrekontroll på salgs-e-post",
+          "options": {
+            "off": "Av",
+            "warn": "Varsle",
+            "block": "Stopp"
+          }
+        },
+        "tracking": {
+          "name": "Sporing av åpning og klikk i e-post",
+          "options": {
+            "on": "På",
+            "off": "Av",
+            "per_email": "Velges per e-post"
+          }
+        },
+        "form_tracking": {
+          "name": "Sporingsfelt i skjema (UTM, informasjonskapsler, henviser)",
+          "options": {
+            "on": "På",
+            "off": "Av"
+          }
+        },
+        "web_ident": {
+          "name": "Identifisering av nettbesøkende",
+          "options": {
+            "on": "På",
+            "off": "Av"
+          }
+        },
+        "widget_consent": {
+          "name": "Samtykkestyrt lasting av nettsidemoduler",
+          "options": {
+            "off": "Av",
+            "on": "På"
+          }
+        },
+        "second_admin": {
+          "name": "Godkjenning fra en annen administrator ved massesletting og sammenslåing",
+          "options": {
+            "off": "Av",
+            "on": "På"
+          }
+        },
+        "typed_reason": {
+          "name": "Skrevet begrunnelse for CRM-handlinger",
+          "everywhere": "Hver CRM-skriving og hver lesing av kundedata",
+          "options": {
+            "off": "Av",
+            "on": "På"
+          }
+        },
+        "count_limits": {
+          "name": "Antallsgrenser (arbeidsflythandlinger og forsinkelser, mottakere av gruppe-e-post, webhooks per bruker, signerere, valg per felt, scoremodeller)",
+          "options": {
+            "unlimited": "Ubegrenset",
+            "number": "Et tall"
+          }
+        },
+        "plan_gates": {
+          "name": "Planstyring og forbruksgrenser",
+          "options": {
+            "all_on": "Alt på og ubegrenset",
+            "per_plan": "Settes per plan"
+          }
+        },
+        "api_rate": {
+          "name": "Hastighetsgrenser for API",
+          "options": {
+            "off": "Av",
+            "source_values": "Kildeverdier",
+            "custom": "Egendefinert"
+          }
+        },
+        "safeguards": {
+          "name": "Tekniske sikringer: sløyfevern i arbeidsflyt, nye forsøk og utestengelse for webhooks",
+          "options": {
+            "source_values": "Kildeverdier",
+            "custom": "Egendefinert",
+            "off": "Av"
+          }
+        },
+        "rec_notice": {
+          "name": "Varsel om opptak og samtykke til deltakere",
+          "options": {
+            "on_24h": "På med 24 timers varsel",
+            "custom": "Egendefinert tid",
+            "off": "Av"
+          }
+        },
+        "firewall": {
+          "name": "Anonymitetsbrannmur",
+          "everywhere": "Alle funksjoner — en plattformkonstant",
+          "options": {
+            "fixed": "Fast"
+          }
+        },
+        "mfa": {
+          "name": "Andre faktor ved hver innlogging for ansatte",
+          "everywhere": "Hver innlogging — en plattformkonstant",
+          "options": {
+            "fixed": "Fast"
+          }
+        },
+        "session_idle": {
+          "name": "Tidsavbrudd ved inaktivitet",
+          "options": {
+            "on_30": "På, 30 minutter",
+            "off": "Av"
+          }
+        },
+        "ip_allowlist": {
+          "name": "IP-tillatelsesliste",
+          "options": {
+            "off": "Av",
+            "on": "På"
+          }
+        },
+        "login_alerts": {
+          "name": "Varsler ved innlogging",
+          "options": {
+            "off": "Av",
+            "on": "På"
+          }
+        },
+        "visibility_default": {
+          "name": "Standard synlighet",
+          "options": {
+            "owner": "Bare eieren",
+            "group": "Eierens gruppe",
+            "group_sub": "Eierens gruppe og undergrupper",
+            "all": "Alle"
+          }
+        }
+      }
+    },
+    "modules": {
+      "title": "Moduler",
+      "sub": "En modul som er slått av, forsvinner fra navigasjonen for alle brukere, og API-et svarer «modul deaktivert»",
+      "toastOff": "{name} slått av for alle brukere",
+      "toastOn": "{name} slått på",
+      "items": {
+        "deals": {
+          "name": "Avtaler og salgsløp",
+          "desc": "Salgsløp, liste, prognose, produkter"
+        },
+        "leads": {
+          "name": "Leads",
+          "desc": "Innboks for leads og konvertering"
+        },
+        "projects": {
+          "name": "Prosjekter",
+          "desc": "Tavler, tidslinje, maler"
+        },
+        "campaigns": {
+          "name": "Kampanjer",
+          "desc": "E-postmarkedsføring"
+        },
+        "documents": {
+          "name": "Dokumenter og e-signering",
+          "desc": "Maler, lenker, signaturer"
+        },
+        "meetings": {
+          "name": "Møteinnsikt",
+          "desc": "Forberedelser, notatskriver, oppsummeringer"
+        },
+        "leadgen": {
+          "name": "Leadfangst",
+          "desc": "Skjema, chatbot, live chat, prospektsøk"
+        },
+        "visitors": {
+          "name": "Nettbesøkende",
+          "desc": "Identifisering av selskaper"
+        },
+        "mobile": {
+          "name": "Mobilapp",
+          "desc": "Klienter for iOS og Android"
+        }
+      }
+    },
+    "fields": {
+      "cols": {
+        "field": "Felt",
+        "type": "Type",
+        "rule": "Kvalitetsregel",
+        "access": "Tilgang"
+      },
+      "empty": "Ingen egendefinerte felt på {entity} ennå.",
+      "add": "＋ Felt",
+      "newTitle": "Nytt felt",
+      "label": "Navn",
+      "typeCount": "Type — {count} tilgjengelige",
+      "formula": "Formel",
+      "options": "Valg",
+      "optionAdd": "Legg til",
+      "optionPlaceholder": "Nytt valg",
+      "optionRemove": "Fjern valget «{name}»",
+      "optionsEmpty": "Ingen valg ennå",
+      "quality": "Kvalitet",
+      "fromStage": "Fra trinn",
+      "pipelines": "Salgsløp",
+      "readOnlyFor": "Skrivebeskyttet for",
+      "hiddenFor": "Skjult for",
+      "description": "Beskrivelse (bak infoikonet)",
+      "note": "Vises i skjema, filtre, rapporter, import og API-et uten ny utrulling · valg per felt: ubegrenset",
+      "noteLimited": "Vises i skjema, filtre, rapporter, import og API-et uten ny utrulling · valg per felt: {count}",
+      "save": "Lagre felt",
+      "create": "Legg til felt",
+      "archive": "Arkiver",
+      "saved": "Felt lagret · {name}",
+      "created": "Felt lagt til · {name}",
+      "archived": "Felt arkivert · {name}",
+      "allPipelines": "Alle salgsløp",
+      "pipelineOnly": "Bare {name}",
+      "nobody": "Ingen",
+      "anyStage": "—",
+      "everyone": "Alle",
+      "hiddenFrom": "Skjult for {sets}",
+      "readOnlyForSets": "skrivebeskyttet for {sets}",
+      "only": "Bare {names}",
+      "qualityOptions": {
+        "optional": "Valgfritt",
+        "important": "Viktig (påminnelse)",
+        "required": "Påkrevd"
+      },
+      "rule": {
+        "optional": "Valgfritt",
+        "important": "Viktig (påminnelse)",
+        "required": "Påkrevd",
+        "requiredFrom": "Påkrevd fra {stage}",
+        "importantFrom": "Viktig fra {stage}",
+        "formula": "Formel · skrivebeskyttet"
+      },
+      "types": {
+        "text": "Tekst",
+        "large_text": "Lang tekst",
+        "single_option": "Ett valg",
+        "multiple_options": "Flere valg",
+        "autocomplete": "Autofullføring",
+        "numerical": "Tall",
+        "monetary": "Beløp",
+        "user": "Bruker",
+        "organization": "Organisasjon",
+        "person": "Person",
+        "phone": "Telefon",
+        "time": "Klokkeslett",
+        "time_range": "Tidsrom",
+        "date": "Dato",
+        "date_range": "Datoperiode",
+        "address": "Adresse",
+        "formula": "Formel"
+      }
+    },
+    "pipelines": {
+      "add": "＋ Salgsløp",
+      "addName": "Navn på salgsløpet",
+      "addSubmit": "Legg til",
+      "added": "Salgsløp lagt til · salgsløp: ubegrenset",
+      "visibleTo": "Synlig for: {who}",
+      "everyone": "Alle",
+      "empty": "Ingen salgsløp ennå.",
+      "cols": {
+        "order": "Rekkefølge",
+        "stage": "Trinn",
+        "probability": "Sannsynlighet",
+        "rotting": "Råtner etter"
+      },
+      "up": "Flytt «{name}» opp",
+      "down": "Flytt «{name}» ned",
+      "stageName": "Navn på trinnet",
+      "probability": "Sannsynlighet for «{name}»",
+      "rotting": "Råtner etter (dager) for «{name}»",
+      "days": "dager",
+      "delete": "Slett trinn",
+      "deleteTitle": "Slett «{name}» ({count, plural, one {# åpen avtale} other {# åpne avtaler}}) og flytt avtalene til",
+      "deleteConfirm": "Slett og flytt",
+      "deleteLast": "Et salgsløp beholder minst ett trinn",
+      "deleted": "{count, plural, one {# avtale} other {# avtaler}} flyttet til «{target}» · ny rekkefølge vises for alle brukere",
+      "addStage": "＋ Trinn",
+      "newStage": "Nytt trinn",
+      "saved": "Trinn lagret",
+      "reordered": "Rekkefølgen er lagret · vises for alle brukere",
+      "cancel": "Avbryt"
+    },
+    "acttypes": {
+      "title": "Aktivitetstyper",
+      "sub": "Nye typer kan velges og rapporteres på med en gang",
+      "customFields": "Egendefinerte felt: {list}",
+      "add": "＋ Aktivitetstype",
+      "glyph": "Symbol",
+      "name": "Navn",
+      "namePlaceholder": "Befaring",
+      "create": "Legg til type",
+      "created": "Aktivitetstype lagt til · {name}",
+      "switchLabel": "{name} aktiv",
+      "on": "{name} slått på",
+      "off": "{name} slått av · beholdes på tidligere aktiviteter",
+      "names": {
+        "call": "Samtale",
+        "meeting": "Møte",
+        "task": "Oppgave",
+        "deadline": "Frist",
+        "email": "E-post",
+        "lunch": "Lunsj",
+        "demo": "Produktdemo"
+      },
+      "cancel": "Avbryt"
+    },
+    "locale": {
+      "title": "Språk og lokale innstillinger — per bruker",
+      "languages": {
+        "en": "English",
+        "no": "Norsk bokmål"
+      },
+      "dateFormat": "Datoformat",
+      "numberFormat": "Tallformat",
+      "timeZone": "Tidssone",
+      "note": "Tekstene kommer fra oversettelseskatalogen · bytte av språk laster ikke data på nytt",
+      "saved": "Innstillingene dine er lagret",
+      "currencies": "Valutaer",
+      "companyDefault": "Selskapets standard NOK",
+      "nok": "Norske kroner",
+      "default": "Standard",
+      "addCurrency": "＋ Egendefinert valuta",
+      "currencyPending": "Flere valutaer kommer med lagrede valutakurser fra Norges Bank."
+    },
+    "users": {
+      "title": "Ansatte brukere",
+      "invite": "＋ Inviter",
+      "inviteTitle": "Inviter en ansatt",
+      "name": "Navn",
+      "email": "E-post",
+      "role": "Rolle",
+      "permissionSet": "Rettighetssett",
+      "group": "Synlighetsgruppe",
+      "team": "Team",
+      "noTeam": "Ikke noe team",
+      "inviteSubmit": "Inviter",
+      "invited": "{name} lagt til · personen logger inn med denne e-postadressen og setter opp autentiseringsappen sin",
+      "inviteNote": "Personen logger inn med denne e-postadressen og setter opp autentiseringsappen sin ved første innlogging.",
+      "now": "Nå",
+      "never": "—",
+      "copy": "Kopier tilgang",
+      "copyTitle": "Kopier rettighetssettet, gruppen og teamet til {name} til",
+      "copied": "Tilgang kopiert fra {name}",
+      "replace": "Erstatt",
+      "replaceTitle": "Overfør postene til {name} til personen nedenfor og deaktiver {name}",
+      "replaced": "{name} erstattet · {count, plural, one {# post} other {# poster}} overført til {next}",
+      "deactivate": "Deaktiver",
+      "reactivate": "Aktiver igjen",
+      "deactivated": "{name} deaktivert",
+      "reactivated": "{name} aktivert igjen",
+      "pick": "Velg en person",
+      "apply": "Bruk",
+      "teamManager": "Leder {name}",
+      "teamFoot": "Brukes av tildeling, rapporter og mål",
+      "teamEdit": "Rediger",
+      "teamAdd": "＋ Team",
+      "teamName": "Navn på teamet",
+      "manager": "Leder",
+      "noManager": "Ingen leder",
+      "members": "Medlemmer",
+      "teamSave": "Lagre team",
+      "teamSaved": "Team lagret · {name}",
+      "cancel": "Avbryt",
+      "self": "Du kan ikke endre din egen tilgang eller deaktivere deg selv"
+    },
+    "perms": {
+      "cols": {
+        "action": "Handling"
+      },
+      "scopes": {
+        "deals": "Avtaler",
+        "projects": "Prosjekter",
+        "campaigns": "Kampanjer",
+        "tickets": "Saker",
+        "global": "Globalt"
+      },
+      "actions": {
+        "see": "Se poster",
+        "add": "Legge til poster",
+        "edit_others": "Redigere andres poster",
+        "delete": "Slette poster",
+        "bulk": "Masseredigere og slå sammen",
+        "export": "Eksportere lister",
+        "configure": "Administrere salgsløp og felt",
+        "workflows": "Administrere arbeidsflyter",
+        "reports_others": "Se andres rapporter",
+        "ai": "Bruke KI-funksjoner",
+        "security": "Administrere brukere og sikkerhet"
+      },
+      "cell": "{action} · {scope}",
+      "locked": "Admin (full) har alle rettigheter og er låst.",
+      "members": "{count, plural, =0 {Ingen ansatte bruker dette settet} one {# ansatt bruker dette settet} other {# ansatte bruker dette settet}}",
+      "saved": "Rettighetssett lagret · {name}",
+      "add": "＋ Rettighetssett",
+      "addName": "Navn på det nye settet",
+      "addSubmit": "Legg til",
+      "created": "Rettighetssett lagt til · {name}",
+      "foot": "Ansattroller tilsvarer sett: superadministrator → Admin · støtte → Support · økonomi → Finance · analytiker → Read-only · salg → Sales · markedsføring → Marketing · prosjekt → Projects (avgjort i beslutning D-08)",
+      "cancel": "Avbryt"
+    },
+    "groups": {
+      "title": "Synlighetsgrupper",
+      "users": "{count, plural, one {# bruker} other {# brukere}}",
+      "add": "＋ Gruppe",
+      "name": "Navn på gruppen",
+      "parent": "Under",
+      "addSubmit": "Legg til",
+      "created": "Gruppe lagt til · {name}",
+      "defaults": "Standard synlighet per posttype",
+      "defaultFor": "Standard synlighet for {entity}",
+      "saved": "Standard synlighet endret · logget",
+      "foot": "Håndheves av radnivåsikkerhet ved hver lesing og skriving, ikke ved å skjule ting i grensesnittet",
+      "cancel": "Avbryt"
+    },
+    "plans": {
+      "title": "Forbruk mot hver grense",
+      "subAllOn": "Planstyring og forbruksgrenser: alt på og ubegrenset (innstilling)",
+      "subPerPlan": "Planstyring og forbruksgrenser: settes per plan (innstilling)",
+      "unlimited": "ubegrenset",
+      "perPlan": "per plan",
+      "rows": {
+        "fields": "Egendefinerte felt",
+        "formula": "Formelfelt",
+        "pipelines": "Salgsløp",
+        "staff": "Aktive ansatte brukere",
+        "teams": "Team",
+        "groups": "Synlighetsgrupper",
+        "sets": "Rettighetssett",
+        "acttypes": "Aktivitetstyper"
+      },
+      "foot": "Ved en grense stoppes nye tillegg og ingenting slettes — overskuddet går til ventelisten eller importens hoppe-over-fil",
+      "ents": "Rettigheter — funksjoner per plan og tillegg",
+      "entsNone": "Ingenting selges: alle funksjoner er på for alle, uten planer eller tillegg (beslutning D-17). Funksjoner slås av og på under",
+      "entsLink": "Moduler"
+    },
+    "sandbox": {
+      "title": "Sandkasse — demokunden Lumio AS",
+      "body": "Et eget testselskap for å prøve konfigurasjon og automatiseringer. Det inneholder konfigurasjon og demodata, aldri kundedata. Endringer her berører aldri det ekte selskapet.",
+      "sample": "Eksempel-{entity}",
+      "lastCleared": "Sist tømt",
+      "remove": "Fjern eksempelposter",
+      "removed": "Eksempelposter fjernet i ett steg · {count, plural, one {# post} other {# poster}}",
+      "reset": "Tilbakestill fra seed",
+      "resetPending": "Tilbakestilling fra demo-seeden trenger en jobb som ikke finnes ennå.",
+      "useTitle": "Bruk sandkassen",
+      "useBody": "Slå den på fra toppfeltet. Et gult bånd vises på alle skjermer mens du arbeider i den, og eksempelposter er merket «Eksempel».",
+      "switch": "Arbeid i sandkassen",
+      "switchedOn": "Sandkasse på · eksempelposter vises",
+      "switchedOff": "Sandkasse av",
+      "entities": {
+        "deal": "avtaler",
+        "lead": "leads",
+        "person": "personer",
+        "organization": "organisasjoner",
+        "catalog_item": "produkter",
+        "project": "prosjekter",
+        "activity": "aktiviteter",
+        "ticket": "saker",
+        "campaign": "kampanjer",
+        "document": "dokumenter"
+      }
+    }
+  }
 }

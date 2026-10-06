@@ -1,3 +1,231 @@
 {
-  "activities": {}
+  "activities": {
+    "noAccess": "You do not have access to activities.",
+    "newActivity": "＋ Activity",
+    "tabs": {
+      "calendar": "Calendar",
+      "todo": "To-do list",
+      "scheduler": "Meeting scheduler",
+      "reminders": "Reminders and sync"
+    },
+    "filter": {
+      "user": "User",
+      "everyone": "Everyone",
+      "type": "Type",
+      "allTypes": "All types",
+      "status": "Status",
+      "open": "Open",
+      "done": "Done",
+      "all": "All"
+    },
+    "calendar": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month",
+      "hint": "Drag to reschedule",
+      "weekTitle": "Week {week} · {range}",
+      "allDay": "All day",
+      "more": "+{count} more",
+      "emptyDay": "Nothing planned for this day",
+      "videoLink": "Video link",
+      "guests": "{count, plural, one {# guest} other {# guests}}",
+      "minutes": "{count} min",
+      "rangeSameMonth": "{from}–{to} {month}",
+      "rangeTwoMonths": "{from} {fromMonth} – {to} {toMonth}"
+    },
+    "toast": {
+      "rescheduled": "Rescheduled to {when}",
+      "bulk": "{what} · {count, plural, one {# activity} other {# activities}}",
+      "movedTomorrow": "Moved to tomorrow",
+      "prioritySet": "Priority set",
+      "markedDone": "Marked done",
+      "linkCreated": "Booking link created",
+      "saved": "Activity saved",
+      "savedReminders": "Activity saved · reminders set",
+      "nextPlanned": "Next activity planned: {what}"
+    },
+    "todo": {
+      "tabs": {
+        "all": "All",
+        "overdue": "Overdue",
+        "today": "Today",
+        "week": "This week",
+        "done": "Done"
+      },
+      "selected": "{count} selected",
+      "setPriority": "Set priority …",
+      "moveTomorrow": "Move to tomorrow",
+      "markDone": "Mark done",
+      "reopen": "Mark as not done",
+      "select": "Select {subject}",
+      "col": {
+        "done": "Done",
+        "subject": "Subject",
+        "linked": "Linked to",
+        "due": "Due ↕",
+        "dur": "Dur.",
+        "owner": "Owner",
+        "priority": "Priority ↕",
+        "guests": "Guests"
+      },
+      "today": "Today {time}",
+      "todayAllDay": "Today",
+      "overdue": "{count} d overdue",
+      "guestsDeclined": "{count} · {declined} declined",
+      "empty": {
+        "all": "No open activities",
+        "overdue": "Nothing overdue",
+        "today": "Nothing due today",
+        "week": "Nothing due this week",
+        "done": "No completed activities"
+      }
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "scheduler": {
+      "kind": {
+        "general": "General availability",
+        "proposed": "Proposed times"
+      },
+      "anySlot": "Any open slot in the next {weeks, plural, one {week} other {# weeks}}",
+      "proposed": "Proposed times",
+      "expires": "expires {date}",
+      "newLink": "New booking link",
+      "noLinks": "No booking links yet",
+      "newLinkHint": "A link offers the hours marked under Availability. The public booking page is not published yet.",
+      "titlePlaceholder": "Title, e.g. Product walkthrough — 30 min",
+      "createLink": "Create link",
+      "availability": "Availability",
+      "cell": "{day} {hour}",
+      "availNotConnected": "No calendar connected, so busy times are not read yet · slots come only from the hours marked here",
+      "availConnected": "Busy times are read from the synced calendar",
+      "contactSees": "What the contact sees",
+      "proposedNotStored": "The specific times of a proposed-times link are not stored yet, so none can be shown.",
+      "noSlots": "No open slots — mark hours under Availability.",
+      "confirm": "Confirm booking",
+      "previewOnly": "Preview only · the public booking page is not published yet, so nobody can book through it",
+      "previewEmpty": "Create a booking link to see what the contact sees.",
+      "recent": "Recent bookings",
+      "noBookings": "No bookings yet"
+    },
+    "reminders": {
+      "title": "Reminders",
+      "hint": "Each reminder fires once per chosen channel",
+      "channel": {
+        "app": "In app",
+        "email": "Email",
+        "desktop": "Desktop notification",
+        "push": "Push"
+      },
+      "sub": {
+        "app": "Bell and toast",
+        "email": "To {email} · sent once the email provider is connected",
+        "desktop": {
+          "granted": "Browser permission granted",
+          "denied": "Blocked in this browser",
+          "default": "Browser permission not asked yet",
+          "unsupported": "Not supported in this browser"
+        },
+        "push": "No device registered yet"
+      },
+      "defaultTiming": "Default timing",
+      "minutesBefore": "{count} minutes before",
+      "hoursBefore": "{count, plural, one {# hour} other {# hours}} before",
+      "daysBefore": "{count, plural, one {# day} other {# days}} before"
+    },
+    "sync": {
+      "title": "Calendar sync",
+      "provider": {
+        "google": "Google",
+        "microsoft": "Microsoft 365"
+      },
+      "mode": {
+        "one_way": "One-way",
+        "two_way": "Two-way"
+      },
+      "calendar": "Calendar",
+      "noCalendar": "Not connected",
+      "types": "Activity types to sync",
+      "notConnected": "Not connected · Google and Microsoft 365 sync arrives with the calendar adapters, so nothing is synced yet",
+      "connected": "Private events sync as private · last sync {when} · latest change wins"
+    },
+    "modal": {
+      "edit": "Edit activity",
+      "new": "New activity",
+      "subject": "Subject",
+      "date": "Date",
+      "time": "Time",
+      "duration": "Duration",
+      "priority": "Priority",
+      "deal": "Linked deal",
+      "owner": "Owner",
+      "guestsSynced": "Guests — invites go out through the synced calendar",
+      "guestsNotSynced": "Guests — no calendar is connected, so invites are not sent yet",
+      "noGuests": "No guests",
+      "rsvp": {
+        "accepted": "Accepted",
+        "tentative": "Tentative",
+        "declined": "Declined",
+        "needs_action": "No answer yet"
+      },
+      "removeGuest": "Remove {name}",
+      "addGuest": "Add a guest by email",
+      "add": "Add",
+      "guestInvalid": "Enter a valid email address",
+      "videoLink": "Video call link",
+      "video": {
+        "meet": "Google Meet",
+        "teams": "Teams",
+        "zoom": "Zoom",
+        "none": "None"
+      },
+      "videoPaste": "Paste the {provider} link · {provider} is not connected, so no link is created",
+      "remindMe": "Remind me",
+      "remind": {
+        "app": "In app",
+        "email": "Email",
+        "desktop": "Desktop",
+        "push": "Push"
+      },
+      "note": "Note",
+      "save": "Save activity",
+      "subjectRequired": "Write a subject"
+    },
+    "next": {
+      "title": "Done. What is the next step?",
+      "on": "«{subject}» on {deal}",
+      "option": {
+        "call": "Call in 2 days",
+        "email": "Email tomorrow",
+        "meeting": "Meeting next week",
+        "proposal": "Task: send proposal"
+      },
+      "subject": {
+        "call": "Follow-up call",
+        "email": "Follow-up email",
+        "meeting": "Follow-up meeting",
+        "proposal": "Send proposal"
+      },
+      "skip": "Skip — deal will show a warning icon"
+    },
+    "date": {
+      "short": "{weekday} {day} {month}",
+      "long": "{weekday} {day} {month} {year}",
+      "month": "{month} {year}",
+      "shortTime": "{date} {time}",
+      "weekdayTime": "{weekday} {time}"
+    },
+    "typeNames": {
+      "call": "Call",
+      "meeting": "Meeting",
+      "task": "Task",
+      "deadline": "Deadline",
+      "email": "Email",
+      "lunch": "Lunch",
+      "demo": "Product demo"
+    }
+  }
 }

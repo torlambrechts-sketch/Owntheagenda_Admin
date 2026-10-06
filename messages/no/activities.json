@@ -1,3 +1,231 @@
 {
-  "activities": {}
+  "activities": {
+    "noAccess": "Du har ikke tilgang til aktiviteter.",
+    "newActivity": "＋ Aktivitet",
+    "tabs": {
+      "calendar": "Kalender",
+      "todo": "Gjøremål",
+      "scheduler": "Møtebooking",
+      "reminders": "Påminnelser og synk"
+    },
+    "filter": {
+      "user": "Bruker",
+      "everyone": "Alle",
+      "type": "Type",
+      "allTypes": "Alle typer",
+      "status": "Status",
+      "open": "Åpne",
+      "done": "Fullført",
+      "all": "Alle"
+    },
+    "calendar": {
+      "day": "Dag",
+      "week": "Uke",
+      "month": "Måned",
+      "hint": "Dra for å flytte",
+      "weekTitle": "Uke {week} · {range}",
+      "allDay": "Hele dagen",
+      "more": "+{count} til",
+      "emptyDay": "Ingenting planlagt denne dagen",
+      "videoLink": "Videolenke",
+      "guests": "{count, plural, one {# gjest} other {# gjester}}",
+      "minutes": "{count} min",
+      "rangeSameMonth": "{from}.–{to}. {month}",
+      "rangeTwoMonths": "{from}. {fromMonth} – {to}. {toMonth}"
+    },
+    "toast": {
+      "rescheduled": "Flyttet til {when}",
+      "bulk": "{what} · {count, plural, one {# aktivitet} other {# aktiviteter}}",
+      "movedTomorrow": "Flyttet til i morgen",
+      "prioritySet": "Prioritet satt",
+      "markedDone": "Merket som fullført",
+      "linkCreated": "Bookinglenke opprettet",
+      "saved": "Aktivitet lagret",
+      "savedReminders": "Aktivitet lagret · påminnelser satt",
+      "nextPlanned": "Neste aktivitet planlagt: {what}"
+    },
+    "todo": {
+      "tabs": {
+        "all": "Alle",
+        "overdue": "Forsinket",
+        "today": "I dag",
+        "week": "Denne uken",
+        "done": "Fullført"
+      },
+      "selected": "{count} valgt",
+      "setPriority": "Sett prioritet …",
+      "moveTomorrow": "Flytt til i morgen",
+      "markDone": "Merk som fullført",
+      "reopen": "Merk som ikke fullført",
+      "select": "Velg {subject}",
+      "col": {
+        "done": "Gjort",
+        "subject": "Emne",
+        "linked": "Knyttet til",
+        "due": "Frist ↕",
+        "dur": "Varighet",
+        "owner": "Eier",
+        "priority": "Prioritet ↕",
+        "guests": "Gjester"
+      },
+      "today": "I dag {time}",
+      "todayAllDay": "I dag",
+      "overdue": "{count} d forsinket",
+      "guestsDeclined": "{count} · {declined} avslått",
+      "empty": {
+        "all": "Ingen åpne aktiviteter",
+        "overdue": "Ingenting forsinket",
+        "today": "Ingenting i dag",
+        "week": "Ingenting denne uken",
+        "done": "Ingen fullførte aktiviteter"
+      }
+    },
+    "priority": {
+      "high": "Høy",
+      "medium": "Middels",
+      "low": "Lav"
+    },
+    "scheduler": {
+      "kind": {
+        "general": "Generell tilgjengelighet",
+        "proposed": "Foreslåtte tider"
+      },
+      "anySlot": "Enhver ledig tid {weeks, plural, one {neste uke} other {de neste # ukene}}",
+      "proposed": "Foreslåtte tider",
+      "expires": "utløper {date}",
+      "newLink": "Ny bookinglenke",
+      "noLinks": "Ingen bookinglenker ennå",
+      "newLinkHint": "En lenke tilbyr timene som er merket under Tilgjengelighet. Den offentlige bookingsiden er ikke publisert ennå.",
+      "titlePlaceholder": "Tittel, f.eks. Produktgjennomgang — 30 min",
+      "createLink": "Opprett lenke",
+      "availability": "Tilgjengelighet",
+      "cell": "{day} {hour}",
+      "availNotConnected": "Ingen kalender er koblet til, så opptatte tider leses ikke ennå · tidene kommer bare fra timene som er merket her",
+      "availConnected": "Opptatte tider leses fra den synkroniserte kalenderen",
+      "contactSees": "Det kontakten ser",
+      "proposedNotStored": "De konkrete tidene i en lenke med foreslåtte tider lagres ikke ennå, så ingen kan vises.",
+      "noSlots": "Ingen ledige tider — merk timer under Tilgjengelighet.",
+      "confirm": "Bekreft booking",
+      "previewOnly": "Bare forhåndsvisning · den offentlige bookingsiden er ikke publisert ennå, så ingen kan booke gjennom den",
+      "previewEmpty": "Opprett en bookinglenke for å se det kontakten ser.",
+      "recent": "Nylige bookinger",
+      "noBookings": "Ingen bookinger ennå"
+    },
+    "reminders": {
+      "title": "Påminnelser",
+      "hint": "Hver påminnelse sendes én gang per valgt kanal",
+      "channel": {
+        "app": "I appen",
+        "email": "E-post",
+        "desktop": "Skrivebordsvarsel",
+        "push": "Push"
+      },
+      "sub": {
+        "app": "Bjelle og varsel",
+        "email": "Til {email} · sendes når e-postleverandøren er koblet til",
+        "desktop": {
+          "granted": "Nettleseren har gitt tillatelse",
+          "denied": "Blokkert i denne nettleseren",
+          "default": "Nettleseren har ikke spurt om tillatelse ennå",
+          "unsupported": "Støttes ikke i denne nettleseren"
+        },
+        "push": "Ingen enhet registrert ennå"
+      },
+      "defaultTiming": "Standard tidspunkt",
+      "minutesBefore": "{count} minutter før",
+      "hoursBefore": "{count, plural, one {# time} other {# timer}} før",
+      "daysBefore": "{count, plural, one {# dag} other {# dager}} før"
+    },
+    "sync": {
+      "title": "Kalendersynk",
+      "provider": {
+        "google": "Google",
+        "microsoft": "Microsoft 365"
+      },
+      "mode": {
+        "one_way": "Enveis",
+        "two_way": "Toveis"
+      },
+      "calendar": "Kalender",
+      "noCalendar": "Ikke koblet til",
+      "types": "Aktivitetstyper som synkroniseres",
+      "notConnected": "Ikke koblet til · synk med Google og Microsoft 365 kommer med kalenderadapterne, så ingenting synkroniseres ennå",
+      "connected": "Private hendelser synkroniseres som private · sist synkronisert {when} · siste endring vinner"
+    },
+    "modal": {
+      "edit": "Rediger aktivitet",
+      "new": "Ny aktivitet",
+      "subject": "Emne",
+      "date": "Dato",
+      "time": "Klokkeslett",
+      "duration": "Varighet",
+      "priority": "Prioritet",
+      "deal": "Knyttet avtale",
+      "owner": "Eier",
+      "guestsSynced": "Gjester — invitasjoner sendes gjennom den synkroniserte kalenderen",
+      "guestsNotSynced": "Gjester — ingen kalender er koblet til, så invitasjoner sendes ikke ennå",
+      "noGuests": "Ingen gjester",
+      "rsvp": {
+        "accepted": "Godtatt",
+        "tentative": "Kanskje",
+        "declined": "Avslått",
+        "needs_action": "Ikke svart ennå"
+      },
+      "removeGuest": "Fjern {name}",
+      "addGuest": "Legg til gjest med e-post",
+      "add": "Legg til",
+      "guestInvalid": "Skriv en gyldig e-postadresse",
+      "videoLink": "Videomøtelenke",
+      "video": {
+        "meet": "Google Meet",
+        "teams": "Teams",
+        "zoom": "Zoom",
+        "none": "Ingen"
+      },
+      "videoPaste": "Lim inn {provider}-lenken · {provider} er ikke koblet til, så ingen lenke opprettes",
+      "remindMe": "Påminn meg",
+      "remind": {
+        "app": "I appen",
+        "email": "E-post",
+        "desktop": "Skrivebord",
+        "push": "Push"
+      },
+      "note": "Notat",
+      "save": "Lagre aktivitet",
+      "subjectRequired": "Skriv et emne"
+    },
+    "next": {
+      "title": "Fullført. Hva er neste steg?",
+      "on": "«{subject}» på {deal}",
+      "option": {
+        "call": "Ring om 2 dager",
+        "email": "E-post i morgen",
+        "meeting": "Møte neste uke",
+        "proposal": "Oppgave: send tilbud"
+      },
+      "subject": {
+        "call": "Oppfølgingssamtale",
+        "email": "Oppfølgings-e-post",
+        "meeting": "Oppfølgingsmøte",
+        "proposal": "Send tilbud"
+      },
+      "skip": "Hopp over — avtalen får et varselikon"
+    },
+    "date": {
+      "short": "{weekday} {day}. {month}",
+      "long": "{weekday} {day}. {month} {year}",
+      "month": "{month} {year}",
+      "shortTime": "{date} {time}",
+      "weekdayTime": "{weekday} {time}"
+    },
+    "typeNames": {
+      "call": "Samtale",
+      "meeting": "Møte",
+      "task": "Oppgave",
+      "deadline": "Frist",
+      "email": "E-post",
+      "lunch": "Lunsj",
+      "demo": "Produktdemo"
+    }
+  }
 }

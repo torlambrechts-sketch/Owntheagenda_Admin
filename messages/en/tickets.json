@@ -1,3 +1,375 @@
 {
-  "tickets": {}
+  "tickets": {
+    "tabs": {
+      "inbox": "Inbox",
+      "problems": "Problems and known errors",
+      "help": "Help centre",
+      "macros": "Macros",
+      "reports": "Reports",
+      "sla": "SLA and routing"
+    },
+    "newTicket": "＋ New ticket",
+    "views": {
+      "open": "All open",
+      "mine": "My tickets",
+      "unassigned": "Unassigned",
+      "sla": "SLA at risk",
+      "closed": "Resolved and closed"
+    },
+    "queues": {
+      "support": "Support",
+      "billing": "Billing",
+      "sales": "Sales",
+      "personvern": "Personvern"
+    },
+    "categories": {
+      "survey_delivery": "Survey delivery",
+      "getting_started": "Getting started",
+      "billing": "Billing",
+      "results_anonymity": "Results and anonymity",
+      "sales": "Sales",
+      "personvern": "Personvern request",
+      "bug": "Bug",
+      "tiltak": "Tiltak",
+      "feature_request": "Feature request"
+    },
+    "types": {
+      "question": "Question",
+      "service_request": "Service request",
+      "incident": "Incident",
+      "problem": "Problem"
+    },
+    "statuses": {
+      "new": "New",
+      "open": "Open",
+      "waiting_customer": "Waiting on customer",
+      "waiting_us": "Waiting on us",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "impacts": {
+      "one_user": "One user",
+      "one_org": "One org",
+      "many_orgs": "Many orgs"
+    },
+    "urgencies": {
+      "not_blocking": "Not blocking",
+      "blocking": "Blocking"
+    },
+    "priorities": {
+      "urgent": "Urgent",
+      "high": "High",
+      "normal": "Normal",
+      "low": "Low"
+    },
+    "channels": {
+      "in_app": "In-app help",
+      "email": "Email",
+      "contact_form": "Contact form",
+      "staff": "Staff"
+    },
+    "problemStatus": {
+      "investigating": "Investigating",
+      "known_error": "Known error",
+      "resolved": "Resolved"
+    },
+    "dur": {
+      "m": "{m} min",
+      "h": "{h} h",
+      "hm": "{h} h {m} min",
+      "days": "{n, plural, one {# day} other {# days}}",
+      "bdays": "{n, plural, one {# business day} other {# business days}}"
+    },
+    "list": {
+      "filter": "Filter tickets",
+      "sortLabel": "Sort",
+      "sort": {
+        "sla": "SLA due",
+        "priority": "Priority",
+        "newest": "Newest"
+      },
+      "empty": "Ingenting venter akkurat nå — no tickets in this view.",
+      "responded": "Responded",
+      "overdue": "Overdue {dur}",
+      "left": "{dur} left",
+      "noOrg": "No organization"
+    },
+    "detail": {
+      "opened": "opened {when}",
+      "none": "No ticket to show in this view.",
+      "type": "Type",
+      "status": "Status",
+      "queue": "Queue",
+      "assignee": "Assignee",
+      "unassigned": "Unassigned",
+      "escalate": "Escalate to super-admin",
+      "escalated": "Escalated to {name} (super-admin)",
+      "noEscalation": "There is no other super-admin to escalate to",
+      "impact": "Impact",
+      "urgency": "Urgency",
+      "firstResponse": "First response · {target}",
+      "resolution": "Resolution · {target}",
+      "met": "Met · {dur}",
+      "breached": "Late · {dur}",
+      "overdueBy": "Overdue by {dur}",
+      "businessLeft": "{dur} business time left",
+      "daysLeft": "{n, plural, one {# day left} other {# days left}}",
+      "resolved": "Resolved",
+      "saved": "Saved"
+    },
+    "thread": {
+      "customer": "Customer · {channel}",
+      "reply": "Reply",
+      "note": "Internal note",
+      "system": "System",
+      "admin_action": "Admin action",
+      "justNow": "Just now",
+      "minutesAgo": "{m} min ago",
+      "hoursAgo": "{h} h ago",
+      "requester": "Requester",
+      "notConfigured": "Not e-mailed: the mail provider is not connected yet, so this reply is stored in the thread only.",
+      "queued": "Queued for e-mail",
+      "failed": "E-mail delivery failed"
+    },
+    "composer": {
+      "reply": "Reply",
+      "note": "Internal note",
+      "macro": "Insert macro …",
+      "phReply": "Write a reply to {name} — kept in the thread until e-mail is connected",
+      "phReplyNoName": "Write a reply — kept in the thread until e-mail is connected",
+      "phNote": "Internal note — visible to support and super-admin only. @mention to notify",
+      "attach": "▤ Attach",
+      "attachOff": "Attachments arrive with file storage",
+      "mention": "@ Mention",
+      "mentionPick": "Mention a colleague",
+      "never": "Never attach survey answers",
+      "after": {
+        "waiting_customer": "and set Waiting on customer",
+        "keep": "and keep status",
+        "resolved": "and set Resolved"
+      },
+      "sendReply": "Send reply",
+      "saveNote": "Save note",
+      "placeholders": "Fill in before sending: {fields}",
+      "sentReply": "Reply saved to the thread · not e-mailed, the mail provider is not connected",
+      "savedNote": "Internal note saved",
+      "savedNoteMention": "Note saved · mention notified",
+      "afterLabel": "Status after sending"
+    },
+    "side": {
+      "organization": "Organization",
+      "noOrg": "No organization linked",
+      "employees": "{n} employees",
+      "health": "Health {v}",
+      "customer": "Customer",
+      "trialLeft": "Trial · {n} d left",
+      "subStatus": {
+        "active": "Active",
+        "trial": "Trial",
+        "past_due": "Past due",
+        "suspended": "Suspended",
+        "cancelled": "Cancelled",
+        "free": "Free",
+        "expired": "Expired"
+      },
+      "captured": "Captured automatically",
+      "ctx": {
+        "role": "Role",
+        "page": "Page",
+        "browser": "Browser",
+        "appVersion": "App version",
+        "channel": "Channel"
+      },
+      "links": "Links",
+      "linkKinds": {
+        "problem": "Problem",
+        "survey": "Survey",
+        "invoice": "Invoice",
+        "deal": "Deal",
+        "lead": "Lead",
+        "article": "Article"
+      },
+      "linkProblem": "Link to problem",
+      "linkOther": "Link survey or invoice",
+      "noProblem": "No problem",
+      "linked": "Linked to problem {ref}",
+      "unlinked": "Problem link removed",
+      "linkKind": "Kind",
+      "linkRef": "Reference",
+      "linkLabel": "Label (optional)",
+      "linkAdd": "Add link",
+      "linkRemove": "Remove link {ref}",
+      "linkAdded": "Link added",
+      "linkRemoved": "Link removed",
+      "sr": {
+        "title": "Service request — run from here",
+        "extend": "Extend trial 14 days",
+        "extendSub": "Customers → audit",
+        "plan": "Change plan",
+        "planSub": "Billing",
+        "export": "Export organization data",
+        "exportSub": "Logged export",
+        "ehf": "Switch to EHF invoice",
+        "ehfSub": "Billing",
+        "notYet": "Not available from here yet (D-40)",
+        "notTrial": "Not in trial",
+        "notOrgpuls": "Only Orgpuls takes this command",
+        "footer": "Executed actions are written to the org’s audit trail with this ticket as the reason.",
+        "extended": "Extend trial 14 days · done and audited",
+        "extendFailed": "The trial was not extended ({error}) · written to the audit trail"
+      },
+      "privacyLead": "Personvern request.",
+      "privacyClock": "Mirrored to the request queue with its 30-day clock — {n, plural, one {# day} other {# days}} left.",
+      "privacyOverdue": "Mirrored to the request queue with its 30-day clock — {n, plural, one {# day} other {# days}} overdue.",
+      "privacyNoClock": "Mirrored to the request queue.",
+      "privacyVisible": "Content visible to support and super-admin only.",
+      "csat": "CSAT after resolution",
+      "csatValue": "{v} / 5"
+    },
+    "problems": {
+      "problem": "Problem",
+      "rootCause": "Root cause: {text}",
+      "resolveNotify": "Resolve and notify {n, plural, one {# ticket} other {# tickets}}",
+      "linked": "Linked incidents",
+      "noIncidents": "No linked incidents",
+      "known": "Known error and workaround",
+      "published": "Published to help centre",
+      "banner": "In-app status banner",
+      "bannerOff": "Reaches customers when Orgpuls adds a status-banner command (D-40)",
+      "resolveBody": "Message to the customers on the open linked tickets",
+      "resolveConfirm": "Resolve and notify",
+      "resolved": "Problem resolved · {n, plural, one {# linked ticket} other {# linked tickets}} notified",
+      "publishedOn": "Published to the help centre",
+      "publishedOff": "Help article unpublished",
+      "empty": "No problems recorded."
+    },
+    "help": {
+      "title": "Help centre articles",
+      "stats": "Ticket-to-article rate <b>{rate}</b> · deflected before a ticket <b>{n}</b> this month",
+      "cols": {
+        "article": "Article",
+        "category": "Category",
+        "views": "Views",
+        "deflected": "Deflected",
+        "updated": "Updated",
+        "status": "Status"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "noArticles": "No articles yet.",
+      "loopTitle": "Close the loop",
+      "loopSub": "Repeated questions without an article",
+      "gapCount": "{n, plural, one {# ticket} other {# tickets}} in 30 days",
+      "draft": "Draft article",
+      "drafted": "Draft article created from {n, plural, one {# ticket} other {# tickets}}",
+      "noGaps": "No repeated questions without an article in the last 30 days.",
+      "widget": "Help widget preview",
+      "widgetLabel": "Search the help centre",
+      "widgetSample": "invitasjoner kommer ikke frem",
+      "suggested": "Suggested before a ticket is created",
+      "noSuggest": "No article matches yet.",
+      "stillNeed": "Still need help? Send to support"
+    },
+    "macros": {
+      "used": "{cat} · used {n} times",
+      "noCategory": "No category",
+      "meta": "{locale} · version {v}",
+      "metaNew": "{locale} · no version yet",
+      "locales": {
+        "nb": "Bokmål",
+        "nn": "Nynorsk",
+        "en": "English"
+      },
+      "switchNn": "Nynorsk version",
+      "switchNb": "Bokmål version",
+      "publish": "Publish new version",
+      "published": "Version {v} published",
+      "empty": "No macros yet.",
+      "bodyLabel": "Macro text"
+    },
+    "reports": {
+      "kpi": {
+        "created": "Tickets · {days} d",
+        "frt": "Median first response",
+        "resolve": "Median time to resolve",
+        "sla": "SLA compliance",
+        "reopen": "Reopen rate",
+        "csat": "CSAT"
+      },
+      "vsPrev": "{delta} vs previous",
+      "noPrev": "No tickets in the previous period",
+      "business": "Business time",
+      "breaches": "{n, plural, one {# breach} other {# breaches}}",
+      "noneDue": "Nothing due yet",
+      "ofResolved": "of {n} resolved",
+      "response": "{pct} response",
+      "noResponse": "No surveys answered",
+      "csatValue": "{v} / 5",
+      "daysValue": "{v} days",
+      "volume": "Volume by category and lifecycle stage",
+      "trial": "Trial",
+      "customer": "Customer",
+      "noVolume": "No tickets in this period.",
+      "frtTitle": "First response vs target, by priority",
+      "frtValue": "{v} / {t}",
+      "frtNote": "Black line = target (business hours) · bars = median, last 30 days"
+    },
+    "sla": {
+      "title": "Service levels",
+      "cols": {
+        "priority": "Priority",
+        "first": "First response",
+        "resolution": "Resolution",
+        "used": "Used for"
+      },
+      "usedFor": {
+        "urgent": "Survey send failing, data concern, security",
+        "high": "Many orgs, or one org blocked",
+        "normal": "One org affected",
+        "low": "One user, not blocking"
+      },
+      "hours": "Business hours {days} {from}–{to} Europe/Oslo · overdue tickets are highlighted in every list",
+      "edit": "Edit",
+      "done": "Done",
+      "saved": "Saved",
+      "firstLabel": "First response for {p}, in business hours",
+      "resolutionLabel": "Resolution for {p}, in business hours",
+      "matrix": "Priority matrix",
+      "matrixSub": "Set from impact × urgency — never picked freely",
+      "blockingSend": "Blocking a send",
+      "routing": "Routing by category",
+      "routeLabel": "Queue for {category}",
+      "channels": "Channels in",
+      "channel": {
+        "form": "Contact form on orgpuls.com",
+        "formD": "Sales and general questions. Creates a ticket; the CRM prospect arrives with lead capture.",
+        "inapp": "In-app help button",
+        "inappD": "Captures user, org, role, current page and browser automatically; suggests help articles first.",
+        "email": "E-mail to support@ and kontakt@",
+        "emailD": "Converted to tickets; replies are threaded — once the mail provider is connected.",
+        "none": "No respondent channel",
+        "noneD": "Anonymity questions go via the employer (daglig leder, HR or verneombud), who can raise a ticket."
+      },
+      "unit": "business h"
+    },
+    "modal": {
+      "title": "New ticket",
+      "org": "Organization",
+      "orgNone": "No organization",
+      "category": "Category",
+      "person": "Contact",
+      "personNone": "No contact",
+      "subject": "Subject",
+      "subjectPh": "What is it about?",
+      "suggest": "These help articles may answer it",
+      "description": "Description",
+      "note": "Priority is set from impact × urgency after triage.",
+      "cancel": "Cancel",
+      "create": "Create ticket",
+      "created": "Ticket {ref} created · routed to {queue}",
+      "close": "Close"
+    }
+  }
 }

@@ -1,3 +1,375 @@
 {
-  "tickets": {}
+  "tickets": {
+    "tabs": {
+      "inbox": "Innboks",
+      "problems": "Problemer og kjente feil",
+      "help": "Hjelpesenter",
+      "macros": "Makroer",
+      "reports": "Rapporter",
+      "sla": "SLA og ruting"
+    },
+    "newTicket": "＋ Ny sak",
+    "views": {
+      "open": "Alle åpne",
+      "mine": "Mine saker",
+      "unassigned": "Ikke tildelt",
+      "sla": "SLA i fare",
+      "closed": "Løst og lukket"
+    },
+    "queues": {
+      "support": "Support",
+      "billing": "Fakturering",
+      "sales": "Salg",
+      "personvern": "Personvern"
+    },
+    "categories": {
+      "survey_delivery": "Utsending av undersøkelse",
+      "getting_started": "Kom i gang",
+      "billing": "Fakturering",
+      "results_anonymity": "Resultater og anonymitet",
+      "sales": "Salg",
+      "personvern": "Personvernforespørsel",
+      "bug": "Feil",
+      "tiltak": "Tiltak",
+      "feature_request": "Ønske om funksjon"
+    },
+    "types": {
+      "question": "Spørsmål",
+      "service_request": "Tjenesteforespørsel",
+      "incident": "Hendelse",
+      "problem": "Problem"
+    },
+    "statuses": {
+      "new": "Ny",
+      "open": "Åpen",
+      "waiting_customer": "Venter på kunden",
+      "waiting_us": "Venter på oss",
+      "resolved": "Løst",
+      "closed": "Lukket"
+    },
+    "impacts": {
+      "one_user": "Én bruker",
+      "one_org": "Én organisasjon",
+      "many_orgs": "Mange organisasjoner"
+    },
+    "urgencies": {
+      "not_blocking": "Ikke blokkerende",
+      "blocking": "Blokkerende"
+    },
+    "priorities": {
+      "urgent": "Kritisk",
+      "high": "Høy",
+      "normal": "Normal",
+      "low": "Lav"
+    },
+    "channels": {
+      "in_app": "Hjelp i appen",
+      "email": "E-post",
+      "contact_form": "Kontaktskjema",
+      "staff": "Ansatt"
+    },
+    "problemStatus": {
+      "investigating": "Undersøkes",
+      "known_error": "Kjent feil",
+      "resolved": "Løst"
+    },
+    "dur": {
+      "m": "{m} min",
+      "h": "{h} t",
+      "hm": "{h} t {m} min",
+      "days": "{n, plural, one {# dag} other {# dager}}",
+      "bdays": "{n, plural, one {# virkedag} other {# virkedager}}"
+    },
+    "list": {
+      "filter": "Filtrer saker",
+      "sortLabel": "Sorter",
+      "sort": {
+        "sla": "SLA-frist",
+        "priority": "Prioritet",
+        "newest": "Nyeste"
+      },
+      "empty": "Ingenting venter akkurat nå — ingen saker i denne visningen.",
+      "responded": "Besvart",
+      "overdue": "Forfalt {dur}",
+      "left": "{dur} igjen",
+      "noOrg": "Ingen organisasjon"
+    },
+    "detail": {
+      "opened": "åpnet {when}",
+      "none": "Ingen sak å vise i denne visningen.",
+      "type": "Type",
+      "status": "Status",
+      "queue": "Kø",
+      "assignee": "Ansvarlig",
+      "unassigned": "Ikke tildelt",
+      "escalate": "Eskaler til superadmin",
+      "escalated": "Eskalert til {name} (superadmin)",
+      "noEscalation": "Det finnes ingen annen superadmin å eskalere til",
+      "impact": "Omfang",
+      "urgency": "Hast",
+      "firstResponse": "Første svar · {target}",
+      "resolution": "Løsning · {target}",
+      "met": "Innfridd · {dur}",
+      "breached": "For sent · {dur}",
+      "overdueBy": "Forfalt med {dur}",
+      "businessLeft": "{dur} arbeidstid igjen",
+      "daysLeft": "{n, plural, one {# dag igjen} other {# dager igjen}}",
+      "resolved": "Løst",
+      "saved": "Lagret"
+    },
+    "thread": {
+      "customer": "Kunde · {channel}",
+      "reply": "Svar",
+      "note": "Internt notat",
+      "system": "System",
+      "admin_action": "Admin-handling",
+      "justNow": "Akkurat nå",
+      "minutesAgo": "for {m} min siden",
+      "hoursAgo": "for {h} t siden",
+      "requester": "Innsender",
+      "notConfigured": "Ikke sendt på e-post: e-postleverandøren er ikke koblet til ennå, så svaret er bare lagret i tråden.",
+      "queued": "Står i kø for e-post",
+      "failed": "E-postlevering mislyktes"
+    },
+    "composer": {
+      "reply": "Svar",
+      "note": "Internt notat",
+      "macro": "Sett inn makro …",
+      "phReply": "Skriv et svar til {name} — lagres i tråden til e-post er koblet til",
+      "phReplyNoName": "Skriv et svar — lagres i tråden til e-post er koblet til",
+      "phNote": "Internt notat — synlig bare for support og superadmin. @nevn for å varsle",
+      "attach": "▤ Legg ved",
+      "attachOff": "Vedlegg kommer med fillagring",
+      "mention": "@ Nevn",
+      "mentionPick": "Nevn en kollega",
+      "never": "Legg aldri ved svar fra undersøkelser",
+      "after": {
+        "waiting_customer": "og sett Venter på kunden",
+        "keep": "og behold status",
+        "resolved": "og sett Løst"
+      },
+      "sendReply": "Send svar",
+      "saveNote": "Lagre notat",
+      "placeholders": "Fyll inn før sending: {fields}",
+      "sentReply": "Svaret er lagret i tråden · ikke sendt på e-post, e-postleverandøren er ikke koblet til",
+      "savedNote": "Internt notat lagret",
+      "savedNoteMention": "Notat lagret · nevnt kollega varslet",
+      "afterLabel": "Status etter sending"
+    },
+    "side": {
+      "organization": "Organisasjon",
+      "noOrg": "Ingen organisasjon koblet",
+      "employees": "{n} ansatte",
+      "health": "Helse {v}",
+      "customer": "Kunde",
+      "trialLeft": "Prøve · {n} d igjen",
+      "subStatus": {
+        "active": "Aktiv",
+        "trial": "Prøve",
+        "past_due": "Forfalt",
+        "suspended": "Suspendert",
+        "cancelled": "Avsluttet",
+        "free": "Gratis",
+        "expired": "Utløpt"
+      },
+      "captured": "Fanget automatisk",
+      "ctx": {
+        "role": "Rolle",
+        "page": "Side",
+        "browser": "Nettleser",
+        "appVersion": "Appversjon",
+        "channel": "Kanal"
+      },
+      "links": "Koblinger",
+      "linkKinds": {
+        "problem": "Problem",
+        "survey": "Undersøkelse",
+        "invoice": "Faktura",
+        "deal": "Avtale",
+        "lead": "Lead",
+        "article": "Artikkel"
+      },
+      "linkProblem": "Koble til problem",
+      "linkOther": "Koble undersøkelse eller faktura",
+      "noProblem": "Ikke noe problem",
+      "linked": "Koblet til problem {ref}",
+      "unlinked": "Koblingen til problemet er fjernet",
+      "linkKind": "Type",
+      "linkRef": "Referanse",
+      "linkLabel": "Etikett (valgfritt)",
+      "linkAdd": "Legg til kobling",
+      "linkRemove": "Fjern kobling {ref}",
+      "linkAdded": "Kobling lagt til",
+      "linkRemoved": "Kobling fjernet",
+      "sr": {
+        "title": "Tjenesteforespørsel — utfør herfra",
+        "extend": "Forleng prøveperioden 14 dager",
+        "extendSub": "Kunder → revisjon",
+        "plan": "Bytt plan",
+        "planSub": "Fakturering",
+        "export": "Eksporter organisasjonens data",
+        "exportSub": "Logget eksport",
+        "ehf": "Bytt til EHF-faktura",
+        "ehfSub": "Fakturering",
+        "notYet": "Kan ikke utføres herfra ennå (D-40)",
+        "notTrial": "Ikke i prøveperiode",
+        "notOrgpuls": "Bare Orgpuls tar imot denne kommandoen",
+        "footer": "Utførte handlinger skrives til organisasjonens revisjonslogg med denne saken som begrunnelse.",
+        "extended": "Forleng prøveperioden 14 dager · utført og logget",
+        "extendFailed": "Prøveperioden ble ikke forlenget ({error}) · skrevet til revisjonsloggen"
+      },
+      "privacyLead": "Personvernforespørsel.",
+      "privacyClock": "Speilet til forespørselskøen med 30-dagersfristen — {n, plural, one {# dag} other {# dager}} igjen.",
+      "privacyOverdue": "Speilet til forespørselskøen med 30-dagersfristen — {n, plural, one {# dag} other {# dager}} over fristen.",
+      "privacyNoClock": "Speilet til forespørselskøen.",
+      "privacyVisible": "Innholdet er synlig bare for support og superadmin.",
+      "csat": "CSAT etter løsning",
+      "csatValue": "{v} / 5"
+    },
+    "problems": {
+      "problem": "Problem",
+      "rootCause": "Rotårsak: {text}",
+      "resolveNotify": "Løs og varsle {n, plural, one {# sak} other {# saker}}",
+      "linked": "Koblede hendelser",
+      "noIncidents": "Ingen koblede hendelser",
+      "known": "Kjent feil og midlertidig løsning",
+      "published": "Publisert i hjelpesenteret",
+      "banner": "Statusbanner i appen",
+      "bannerOff": "Når fram til kundene når Orgpuls legger til en kommando for statusbanner (D-40)",
+      "resolveBody": "Melding til kundene på de åpne koblede sakene",
+      "resolveConfirm": "Løs og varsle",
+      "resolved": "Problemet er løst · {n, plural, one {# koblet sak} other {# koblede saker}} varslet",
+      "publishedOn": "Publisert i hjelpesenteret",
+      "publishedOff": "Hjelpeartikkelen er avpublisert",
+      "empty": "Ingen problemer registrert."
+    },
+    "help": {
+      "title": "Artikler i hjelpesenteret",
+      "stats": "Andel saker med artikkel <b>{rate}</b> · avverget før en sak <b>{n}</b> denne måneden",
+      "cols": {
+        "article": "Artikkel",
+        "category": "Kategori",
+        "views": "Visninger",
+        "deflected": "Avverget",
+        "updated": "Oppdatert",
+        "status": "Status"
+      },
+      "status": {
+        "published": "Publisert",
+        "draft": "Utkast"
+      },
+      "noArticles": "Ingen artikler ennå.",
+      "loopTitle": "Lukk sløyfen",
+      "loopSub": "Gjentatte spørsmål uten artikkel",
+      "gapCount": "{n, plural, one {# sak} other {# saker}} på 30 dager",
+      "draft": "Lag utkast",
+      "drafted": "Artikkelutkast laget fra {n, plural, one {# sak} other {# saker}}",
+      "noGaps": "Ingen gjentatte spørsmål uten artikkel de siste 30 dagene.",
+      "widget": "Forhåndsvisning av hjelpemodulen",
+      "widgetLabel": "Søk i hjelpesenteret",
+      "widgetSample": "invitasjoner kommer ikke frem",
+      "suggested": "Foreslås før en sak opprettes",
+      "noSuggest": "Ingen artikkel passer ennå.",
+      "stillNeed": "Trenger du fortsatt hjelp? Send til support"
+    },
+    "macros": {
+      "used": "{cat} · brukt {n} ganger",
+      "noCategory": "Ingen kategori",
+      "meta": "{locale} · versjon {v}",
+      "metaNew": "{locale} · ingen versjon ennå",
+      "locales": {
+        "nb": "Bokmål",
+        "nn": "Nynorsk",
+        "en": "Engelsk"
+      },
+      "switchNn": "Nynorsk versjon",
+      "switchNb": "Bokmålsversjon",
+      "publish": "Publiser ny versjon",
+      "published": "Versjon {v} publisert",
+      "empty": "Ingen makroer ennå.",
+      "bodyLabel": "Makrotekst"
+    },
+    "reports": {
+      "kpi": {
+        "created": "Saker · {days} d",
+        "frt": "Median første svar",
+        "resolve": "Median tid til løsning",
+        "sla": "SLA-oppfyllelse",
+        "reopen": "Gjenåpningsrate",
+        "csat": "CSAT"
+      },
+      "vsPrev": "{delta} mot forrige",
+      "noPrev": "Ingen saker i forrige periode",
+      "business": "Arbeidstid",
+      "breaches": "{n, plural, one {# brudd} other {# brudd}}",
+      "noneDue": "Ingenting har forfalt ennå",
+      "ofResolved": "av {n} løste",
+      "response": "{pct} svar",
+      "noResponse": "Ingen undersøkelser besvart",
+      "csatValue": "{v} / 5",
+      "daysValue": "{v} dager",
+      "volume": "Volum etter kategori og livsløpsfase",
+      "trial": "Prøve",
+      "customer": "Kunde",
+      "noVolume": "Ingen saker i perioden.",
+      "frtTitle": "Første svar mot mål, etter prioritet",
+      "frtValue": "{v} / {t}",
+      "frtNote": "Svart strek = mål (arbeidstid) · stolper = median, siste 30 dager"
+    },
+    "sla": {
+      "title": "Servicenivåer",
+      "cols": {
+        "priority": "Prioritet",
+        "first": "Første svar",
+        "resolution": "Løsning",
+        "used": "Brukes for"
+      },
+      "usedFor": {
+        "urgent": "Utsending av undersøkelse feiler, bekymring for data, sikkerhet",
+        "high": "Mange organisasjoner, eller én organisasjon blokkert",
+        "normal": "Én organisasjon berørt",
+        "low": "Én bruker, ikke blokkerende"
+      },
+      "hours": "Arbeidstid {days} {from}–{to} Europe/Oslo · forfalte saker er uthevet i alle lister",
+      "edit": "Rediger",
+      "done": "Ferdig",
+      "saved": "Lagret",
+      "firstLabel": "Første svar for {p}, i arbeidstimer",
+      "resolutionLabel": "Løsning for {p}, i arbeidstimer",
+      "matrix": "Prioritetsmatrise",
+      "matrixSub": "Settes fra omfang × hast — velges aldri fritt",
+      "blockingSend": "Blokkerer en utsending",
+      "routing": "Ruting etter kategori",
+      "routeLabel": "Kø for {category}",
+      "channels": "Kanaler inn",
+      "channel": {
+        "form": "Kontaktskjema på orgpuls.com",
+        "formD": "Salg og generelle spørsmål. Oppretter en sak; CRM-prospektet kommer med leadfangst.",
+        "inapp": "Hjelpeknapp i appen",
+        "inappD": "Fanger bruker, organisasjon, rolle, gjeldende side og nettleser automatisk; foreslår hjelpeartikler først.",
+        "email": "E-post til support@ og kontakt@",
+        "emailD": "Gjøres om til saker; svar samles i tråder — når e-postleverandøren er koblet til.",
+        "none": "Ingen kanal for respondenter",
+        "noneD": "Spørsmål om anonymitet går via arbeidsgiveren (daglig leder, HR eller verneombud), som kan opprette en sak."
+      },
+      "unit": "arbeidstimer"
+    },
+    "modal": {
+      "title": "Ny sak",
+      "org": "Organisasjon",
+      "orgNone": "Ingen organisasjon",
+      "category": "Kategori",
+      "person": "Kontaktperson",
+      "personNone": "Ingen kontaktperson",
+      "subject": "Emne",
+      "subjectPh": "Hva gjelder det?",
+      "suggest": "Disse hjelpeartiklene kan svare på det",
+      "description": "Beskrivelse",
+      "note": "Prioriteten settes fra omfang × hast etter triage.",
+      "cancel": "Avbryt",
+      "create": "Opprett sak",
+      "created": "Sak {ref} opprettet · rutet til {queue}",
+      "close": "Lukk"
+    }
+  }
 }

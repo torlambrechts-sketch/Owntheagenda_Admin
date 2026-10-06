@@ -15,7 +15,9 @@ type Fail = { ok: false; code: RpcCode; detail?: string | null }
 type Res<T = object> = ({ ok: true } & T) | Fail
 
 const uuid = z.string().uuid()
-const filters = z.array(z.object({ f: z.string().regex(/^(custom\.)?[a-z_][a-z0-9_]{0,40}$/), op: z.enum(['eq', 'neq', 'in', 'contains', 'gt', 'gte', 'lt', 'lte', 'empty', 'notempty', 'has', 'within_days']), v: z.unknown().optional() })).max(20)
+const cond = z.object({ f: z.string().regex(/^(custom\.)?[a-z_][a-z0-9_]{0,40}$/), op: z.enum(['eq', 'neq', 'in', 'contains', 'gt', 'gte', 'lt', 'lte', 'empty', 'notempty', 'has', 'within_days']), v: z.unknown().optional() })
+// a filter is a condition or an OR of AND groups (app.filter_sql, 0023)
+const filters = z.array(z.union([cond, z.object({ or: z.array(z.array(cond).max(20)).min(1).max(10) })])).max(20)
 const bad: Fail = { ok: false, code: 'invalid' }
 const fail = (r: { code: RpcCode; detail: string | null }): Fail => ({ ok: false, code: r.code, detail: r.detail })
 const okish = z.unknown()
@@ -33,7 +35,7 @@ export async function fetchList(input: unknown): Promise<Res<{ list: List }>> {
   const p = z.object({
     status: z.enum(['open', 'won', 'lost', 'all']).optional(),
     filters,
-    sort: z.array(z.object({ f: z.enum(['seq', 'title', 'value', 'stage', 'expected_close_date', 'source']), dir: z.enum(['asc', 'desc']) })).max(6),
+    sort: z.array(z.object({ f: z.enum(['seq', 'title', 'organization', 'value', 'stage', 'owner', 'expected_close_date', 'score', 'source', 'labels']), dir: z.enum(['asc', 'desc']) })).max(10),
     archived: z.boolean().optional(),
     trash: z.boolean().optional(),
   }).safeParse(input)
@@ -227,7 +229,7 @@ export async function completeActivity(input: unknown): Promise<Res<{ prompt: bo
 }
 
 export async function saveView(input: unknown): Promise<Res<{ id: string }>> {
-  const p = z.object({ name: z.string().trim().min(1).max(80), query: z.object({ conds: z.array(z.object({ field: z.string(), op: z.string(), val: z.string() })).max(20) }) }).safeParse(input)
+  const p = z.object({ name: z.string().trim().min(1).max(80), query: z.object({ conds: z.array(z.object({ field: z.string(), op: z.string(), val: z.string(), join: z.enum(['and', 'or']).optional() })).max(20) }) }).safeParse(input)
   if (!p.success) return bad
   const r = await rpc('view_save', { p_id: null, p_screen: 'deals', p_name: p.data.name, p_query: p.data.query, p_shared: false }, z.object({ id: uuid }))
   return r.ok ? { ok: true, id: r.data.id } : fail(r)
@@ -245,6 +247,14 @@ export async function logExport(input: unknown): Promise<Res> {
   if (!p.success) return bad
   const r = await rpc('export_log', { p_entity: 'deal', p_rows: p.data.rows, p_format: p.data.format, p_scope: 'list' }, okish)
   return r.ok ? { ok: true } : fail(r)
+}
+
+/** «Convert back to lead» (deal_to_lead): a lead from the deal; its notes and activities follow, the deal is archived. */
+export async function convertToLead(input: unknown): Promise<Res<{ leadId: string }>> {
+  const p = uuid.safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('deal_to_lead', { p_id: p.data }, z.object({ lead_id: uuid }))
+  return r.ok ? { ok: true, leadId: r.data.lead_id } : fail(r)
 }
 
 /** A catalog item with its NOK price (Products › ＋ Product). */

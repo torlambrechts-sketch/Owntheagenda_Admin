@@ -27,6 +27,9 @@ export const cardTone = (c: Pick<Card, 'status' | 'rotting'>) => ({
   bc: c.rotting ? 'border-coral' : 'border-line',
 })
 
+/** The score badge's tone (the design's sbg): 70 and up good, 40 and up middling, below low. */
+export const scoreTone = (s: number) => (s >= 70 ? 'bg-ok-bg' : s >= 40 ? 'bg-highlight' : 'bg-peach')
+
 export const ACT = {
   overdue: { g: '!', c: 'text-danger' },
   none: { g: '⚠', c: 'text-warn-ink' },
@@ -34,9 +37,10 @@ export const ACT = {
 } as const
 
 /** Advanced filter conditions (the design's Where/AND rows). */
-export type CondField = 'value' | 'source' | 'label'
+export type CondField = 'value' | 'score' | 'idle' | 'source' | 'label'
 export type CondOp = 'is' | 'gt' | 'lt' | 'contains'
-export type Cond = { field: CondField; op: CondOp; val: string }
+/** join: how the row attaches to the one before it; «or» starts a new OR group. */
+export type Cond = { field: CondField; op: CondOp; val: string; join?: 'and' | 'or' }
 
 export type Modal =
   | { kind: 'new' }
@@ -45,6 +49,7 @@ export type Modal =
   | { kind: 'next'; dealId: string; subject: string }
   | { kind: 'saveFilter' }
   | { kind: 'product' }
+  | { kind: 'toLead'; id: string; title: string }
 
 /** A date-only value (YYYY-MM-DD) as a Date at noon UTC, so every time zone shows the same day. */
 export const dateOnly = (d: string) => new Date(`${d}T12:00:00Z`)

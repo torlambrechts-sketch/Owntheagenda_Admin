@@ -31,27 +31,37 @@ type Props = {
 
 export type Status = 'open' | 'won' | 'lost' | 'all'
 
-/** The advanced filter's rows as rec_list filters (app.filter_sql): rows that cannot be read yet are skipped. */
-function condFilters(conds: Cond[], labels: DealsBase['labels']): Filter[] {
-  const out: Filter[] = []
-  for (const c of conds) {
-    const val = c.val.trim()
-    if (!val) continue
-    if (c.field === 'label') {
-      const ids = labels.filter((l) => (c.op === 'is' ? l.name.toLowerCase() === val.toLowerCase() : l.name.toLowerCase().includes(val.toLowerCase()))).map((l) => l.id)
-      out.push({ f: 'labels', op: 'has', v: ids })
-      continue
-    }
-    const op = { is: 'eq', gt: 'gt', lt: 'lt', contains: 'contains' }[c.op]
-    if (c.field === 'value') {
-      const n = Number(val.replace(/\s/g, '').replace(',', '.'))
-      if (c.op !== 'contains' && !Number.isFinite(n)) continue
-      out.push({ f: 'value', op, v: c.op === 'contains' ? val : n })
-    } else {
-      out.push({ f: 'source', op, v: val })
-    }
+type Leaf = { f: string; op: string; v?: unknown }
+
+/** One advanced-filter row as a filter_sql condition; a row that cannot be read yet gives null. */
+function condFilter(c: Cond, labels: DealsBase['labels']): Leaf | null {
+  const val = c.val.trim()
+  if (!val) return null
+  if (c.field === 'label') {
+    const ids = labels.filter((l) => (c.op === 'is' ? l.name.toLowerCase() === val.toLowerCase() : l.name.toLowerCase().includes(val.toLowerCase()))).map((l) => l.id)
+    return { f: 'labels', op: 'has', v: ids }
   }
-  return out
+  const op = { is: 'eq', gt: 'gt', lt: 'lt', contains: 'contains' }[c.op]
+  if (c.field === 'value' || c.field === 'idle' || c.field === 'score') {
+    const n = Number(val.replace(/\s/g, '').replace(',', '.'))
+    if (c.field !== 'value') return c.op === 'contains' || !Number.isFinite(n) ? null : { f: c.field === 'idle' ? 'idle_days' : 'score', op, v: n }
+    if (c.op !== 'contains' && !Number.isFinite(n)) return null
+    return { f: 'value', op, v: c.op === 'contains' ? val : n }
+  }
+  return { f: 'source', op, v: val }
+}
+
+/** The advanced filter's rows as filters: AND rows, and «OR group» rows that start a new group (app.filter_sql). */
+function condFilters(conds: Cond[], labels: DealsBase['labels']): Filter[] {
+  const groups: Leaf[][] = []
+  conds.forEach((c, i) => {
+    if (i === 0 || c.join === 'or') groups.push([])
+    const f = condFilter(c, labels)
+    if (f) groups[groups.length - 1]!.push(f)
+  })
+  const filled = groups.filter((g) => g.length > 0)
+  if (filled.length === 0) return []
+  return filled.length === 1 ? filled[0]! : [{ or: filled }]
 }
 
 export function DealsScreen({ base, rights, nf, initialPipeline, initialShowClosed, initialBoard, initialDeal, initialDealId }: Props) {
@@ -328,6 +338,7 @@ export function DealsScreen({ base, rights, nf, initialPipeline, initialShowClos
           onMove={(stage) => void move(bundle.detail, stage, bundle.detail.followers.length)}
           onLost={() => setModal({ kind: 'lost', id: bundle.detail.id, version: bundle.detail.version })}
           onNextStep={(subject) => setModal({ kind: 'next', dealId: bundle.detail.id, subject })}
+          onToLead={() => setModal({ kind: 'toLead', id: bundle.detail.id, title: bundle.detail.title })}
         />
       ) : null}
 

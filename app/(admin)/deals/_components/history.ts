@@ -33,6 +33,7 @@ export function buildHistory(bundle: DealBundle, base: DealsBase, t: T, nf: Numb
         const dup = h.new && typeof h.new === 'object' && 'duplicate_of' in (h.new as object)
         return { t: dup ? t('history.duplicated') : t('history.created'), s: tail.slice(3), g: '＋' }
       }
+      case 'archived_at': return { t: h.new ? t('history.archived') : t('history.unarchived'), s: tail.slice(3), g: '▤' }
       case '*archived': return { t: h.new === true ? t('history.archived') : t('history.unarchived'), s: tail.slice(3), g: '▤' }
       case '*deleted': return { t: t('history.deleted'), s: tail.slice(3), g: '×' }
       case '*restored': return { t: t('history.restored'), s: tail.slice(3), g: '↺' }

@@ -21,9 +21,9 @@ What the Phase 1 screen builders asked for, and what happened to each. «0023» 
 | Customers R-03 | Count keys in `counts.updated` | Open: Orgpuls side (D-21) |
 | Customers R-04, R-05 | Invoice mirror, coupons | Open: with Stripe (D-22) |
 | Customers R-08 | Health score | Phase 4 (health_scores) |
-| Deals R-DEALS-01 | `deal_list` sorts by organisation, owner, labels | Done in 0023 · screen |
-| Deals R-DEALS-02 | OR groups and idle days in filters | Done in 0023 (`app.filter_sql`) · screen |
-| Deals R-DEALS-03 | `deal_to_lead` | Done in 0023 · screen |
+| Deals R-DEALS-01 | `deal_list` sorts by organisation, owner, labels | Done in 0023 · screen done |
+| Deals R-DEALS-02 | OR groups and idle days in filters | Done in 0023 (`app.filter_sql`) · screen done |
+| Deals R-DEALS-03 | `deal_to_lead` | Done in 0023 · screen done |
 | Settings R-SETTINGS-01 | Currencies with Norges Bank rates | Open: needs an edge worker; with the worker deployment once hosted access returns (Q-01) |
 | Settings R-SETTINGS-02 | Invitation e-mail | Open: needs the transactional e-mail provider (D-07) |
 | Settings R-SETTINGS-03 | `sandbox_reset` | Open: the production sandbox loader |

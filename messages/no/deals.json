@@ -50,7 +50,8 @@
       "field": {
         "organization": "Organisasjon",
         "value": "Verdi",
-        "close": "Forventet lukkedato"
+        "close": "Forventet lukkedato",
+        "score": "Avtalepoeng"
       },
       "rots": "råtner {days} d",
       "rotting": "Råtner · inaktiv {days} dager"
@@ -84,7 +85,8 @@
       "filterSaved": "Filter lagret",
       "productAdded": "Produkt lagt til i katalogen",
       "duplicated": "Duplisert med felt og produkter",
-      "lineChanged": "Produktlinjer oppdatert"
+      "lineChanged": "Produktlinjer oppdatert",
+      "toLead": "Gjort om til lead · historikken beholdt"
     },
     "filter": {
       "button": "Filter",
@@ -92,6 +94,8 @@
       "same": "Samme resultat i pipeline, liste og prognose",
       "where": "Hvor",
       "and": "Og",
+      "or": "Eller",
+      "addOr": "＋ ELLER-gruppe",
       "field": "Felt",
       "op": "Operator",
       "value": "Verdi",
@@ -102,6 +106,8 @@
       "noneSaved": "Ingen lagrede filtre ennå",
       "fields": {
         "value": "Verdi",
+        "score": "Poengsum",
+        "idle": "Inaktive dager",
         "source": "Kilde",
         "label": "Etikett"
       },
@@ -131,6 +137,7 @@
         "stage": "Trinn",
         "owner": "Eier",
         "close": "Lukking",
+        "score": "Poeng",
         "source": "Kilde",
         "labels": "Etiketter"
       }
@@ -227,6 +234,12 @@
         "cta": "Lagre filter",
         "nameRequired": "Gi filteret et navn."
       },
+      "toLead": {
+        "title": "Gjøre om til lead igjen?",
+        "text": "«{title}» blir en lead med person, organisasjon, eier og verdi. Notater og aktiviteter følger leaden, og avtalen arkiveres.",
+        "cta": "Gjør om til lead",
+        "needsContact": "Koble en person eller en organisasjon til avtalen først — en lead trenger en av dem."
+      },
       "product": {
         "title": "Nytt produkt",
         "text": "Et navn er nok; kode, enhet og fakturering settes i katalogen senere. Prisen er i NOK.",
@@ -253,6 +266,7 @@
       "more": {
         "label": "Mer …",
         "dup": "Dupliser med produkter",
+        "lead": "Gjør om til lead igjen",
         "reopen": "Gjenåpne",
         "unarchive": "Hent fra arkiv",
         "archive": "Arkiver",
@@ -273,6 +287,10 @@
         "status": "Status",
         "source": "Kilde",
         "lostReason": "Tapsårsak"
+      },
+      "score": {
+        "title": "Poengsum {score} — hvorfor",
+        "noModel": "Ingen aktiv poengmodell for denne pipelinen."
       },
       "details": {
         "title": "Detaljer · egendefinerte felt",

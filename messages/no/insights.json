@@ -44,7 +44,9 @@
       "open": "åpne nå",
       "all": "hele perioden",
       "by": "per {dim}",
-      "own": "bare dine poster"
+      "own": "bare dine poster",
+      "byStageReached": "per trinn nådd",
+      "byProduct": "per produkt"
     },
     "dims": {
       "owner": "Eier",
@@ -90,7 +92,8 @@
       "lt": "<",
       "lte": "≤",
       "empty": "er tom",
-      "notempty": "er ikke tom"
+      "notempty": "er ikke tom",
+      "ncontains": "inneholder ikke"
     },
     "filters": {
       "text": "{field} {op} {value}",
@@ -117,7 +120,11 @@
       "avg": "Gjennomsnittlig verdi",
       "avgCustom": "Gjennomsnitt av «{label}» (egendefinert)",
       "weighted": "Vektet verdi",
-      "cycle": "Gjennomsnittlige dager til vunnet"
+      "cycle": "Gjennomsnittlige dager til vunnet",
+      "lines": "Antall linjer",
+      "quantity": "Sum av antall",
+      "lineValue": "Sum av linjeverdi",
+      "dealsMoved": "Avtaler flyttet videre"
     },
     "types": {
       "performance": "Resultater",
@@ -154,7 +161,12 @@
       "footnote": "Egendefinerte felt kan brukes som dimensjoner, filtre og mål · klikk på et segment for å se og eksportere radene",
       "own": "Bare dine poster · rettighetssettet ditt gir ikke Se andres rapporter",
       "pickPipeline": "Velg en pipeline for å se trinnkonverteringen.",
-      "pickRange": "Velg første og siste dag i perioden."
+      "pickRange": "Velg første og siste dag i perioden.",
+      "titleProgress": "Avtaler flyttet videre per trinn · {period}",
+      "titleProducts": "{measure} per produkt · {period}",
+      "allPipelines": "Alle pipelines",
+      "byStage": "Trinn nådd",
+      "byProduct": "Katalogvare"
     },
     "conv": {
       "step": "{from} → {to}",
@@ -287,7 +299,9 @@
       "recurring": "Gjentakende",
       "installments": "Avdrag",
       "noProducts": "Ingen abonnementer, gjentakende produkter eller avdrag å lage prognose for ennå",
-      "prodTip": "{month} · gjentakende {rec} · avdrag {inst}"
+      "prodTip": "{month} · gjentakende {rec} · avdrag {inst}",
+      "excludedDeals": "{count, plural, one {# åpen avtale} other {# åpne avtaler}} i annen valuta er ikke talt med · bare NOK",
+      "excludedSubs": "{count, plural, one {# abonnement} other {# abonnementer}} i annen valuta er ikke talt med · bare NOK"
     },
     "ai": {
       "describe": "Beskriv rapporten",
@@ -306,6 +320,24 @@
       "nothingYet": "Ingenting generert ennå.",
       "openInBuilder": "Åpne i rapportbyggeren",
       "saveAsIs": "Lagre som den er"
+    },
+    "noItem": "Uten katalogvare",
+    "templateTiles": {
+      "won_quarter": "Vunnet verdi · dette kvartalet",
+      "open_pipeline": "Åpen pipeline",
+      "avg_sales_cycle": "Gjennomsnittlig salgssyklus",
+      "open_by_owner": "Åpen verdi per eier",
+      "deals_per_stage": "Avtaler per trinn",
+      "lost_reasons": "Tapsårsaker",
+      "deals_by_source": "Avtaler per kilde",
+      "activities_month": "Fullførte aktiviteter · måned",
+      "weighted_by_owner": "Vektet pipeline per eier",
+      "won_by_owner_quarter": "Vunnet verdi per eier · kvartal",
+      "activities_by_owner_month": "Fullførte aktiviteter per eier · måned",
+      "my_open_pipeline": "Min åpne pipeline",
+      "my_activities_month": "Mine aktiviteter denne måneden",
+      "leads_by_source_90": "Leads per kilde · 90 d",
+      "stage_conversion": "Trinnkonvertering"
     }
   }
 }

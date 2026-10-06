@@ -17,7 +17,7 @@ export function useRowLabel() {
     if (l && dim === 'owner') l = l.split(' ')[0] ?? l
     if (l && /_month$/.test(dim) && /^\d{4}-\d{2}$/.test(l)) l = format.dateTime(new Date(`${l}-15T12:00:00Z`), { month: 'short', year: 'numeric' })
     if (l && dim === 'status' && ['open', 'won', 'lost'].includes(l)) l = t(`status.${l}` as 'status.open')
-    const base = l ?? t('none')
+    const base = l ?? (def.type === 'products' && r.key === null ? t('noItem') : t('none'))
     return r.segment_label ? `${base} · ${r.segment_label}` : base
   }
 }
@@ -66,12 +66,14 @@ export function ReportChart({ def, result, nf, variant, onDrill }: {
       <div className="flex flex-col">
         {result.rows.map((r, i) => {
           const next = result.rows[i + 1]
-          return (
-            <div key={r.key ?? i} className={`flex justify-between gap-[10px] border-b border-line text-12.5 ${big ? 'py-[7px]' : 'py-[6px]'}`}>
-              <span>{t('conv.step', { from: r.label ?? t('none'), to: next ? (next.label ?? t('none')) : t('conv.won') })}</span>
-              <b title={t('conv.entered', { count: r.entered ?? 0 })}>{figure('percent', r.value, nf)}</b>
-            </div>
-          )
+          const label = t('conv.step', { from: r.label ?? t('none'), to: next ? (next.label ?? t('none')) : t('conv.won') })
+          const cls = `flex justify-between gap-[10px] border-b border-line text-12.5 ${big ? 'py-[7px]' : 'py-[6px]'}`
+          const body = <><span>{label}</span><b>{figure('percent', r.value, nf)}</b></>
+          // a row opens the deals that entered the stage in the period (0034)
+          return onDrill
+            ? <button key={r.key ?? i} type="button" onClick={() => onDrill(r, r.label ?? t('none'))} title={t('conv.entered', { count: r.entered ?? 0 })}
+                className={`${cls} cursor-pointer bg-transparent px-0 text-left`}>{body}</button>
+            : <div key={r.key ?? i} className={cls} title={t('conv.entered', { count: r.entered ?? 0 })}>{body}</div>
         })}
       </div>
     )

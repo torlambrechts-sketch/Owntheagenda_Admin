@@ -76,6 +76,7 @@ export function Forecast({ deals, products, rights, nf }: { deals: Res<DealForec
           <span className="flex items-center gap-[6px]"><span className="h-[10px] w-[10px] rounded-3 border border-dashed border-line-strong" />{t('forecast.best')}</span>
         </div>
         {deals.ok && deals.data.undated > 0 ? <div className="mt-2 text-11.5 text-muted">{t('forecast.undated', { count: deals.data.undated })}</div> : null}
+        {deals.ok && deals.data.excluded_currency ? <div className="mt-1 text-11.5 text-muted">{t('forecast.excludedDeals', { count: deals.data.excluded_currency })}</div> : null}
       </div>
       <div className="rounded-20 border border-line bg-surface px-[18px] py-4">
         <b className="text-14">{t('forecast.product')}</b>
@@ -85,6 +86,7 @@ export function Forecast({ deals, products, rights, nf }: { deals: Res<DealForec
           <span className="flex items-center gap-[6px]"><span className="h-[10px] w-[10px] rounded-3 bg-sage" />{t('forecast.recurring')}</span>
           <span className="flex items-center gap-[6px]"><span className="h-[10px] w-[10px] rounded-3 bg-lilac" />{t('forecast.installments')}</span>
         </div>
+        {products.ok && products.data.excluded_currency ? <div className="mt-2 text-11.5 text-muted">{t('forecast.excludedSubs', { count: products.data.excluded_currency })}</div> : null}
       </div>
     </div>
   )

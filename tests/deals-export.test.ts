@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { toCsv, toXlsx } from '@/app/(admin)/deals/_components/xlsx'
+import { toCsv, toXlsx } from '@/lib/xlsx'
 
 describe('deal list export', () => {
   it('neutralizes cells a spreadsheet would read as a formula and quotes separators', () => {

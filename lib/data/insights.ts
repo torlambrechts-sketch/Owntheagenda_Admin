@@ -22,6 +22,7 @@ export type DashboardRef = z.infer<typeof DashboardRef>
 export const Tile = z.object({
   report_id: id,
   name: z.string(),
+  template_key: z.string().nullable().optional(),
   definition: StoredDefinition,
   position: num,
   span: num,
@@ -63,11 +64,13 @@ export type Goal = z.infer<typeof Goal>
 export const DealForecast = z.object({
   months: z.array(z.object({ month: z.string(), best: num, weighted: num, count: num })),
   undated: num,
+  excluded_currency: num.optional(),
 })
 export type DealForecast = z.infer<typeof DealForecast>
 
 export const ProductForecast = z.object({
   months: z.array(z.object({ month: z.string(), subscriptions: num, recurring: num, installments: num })),
+  excluded_currency: num.optional(),
 })
 export type ProductForecast = z.infer<typeof ProductForecast>
 

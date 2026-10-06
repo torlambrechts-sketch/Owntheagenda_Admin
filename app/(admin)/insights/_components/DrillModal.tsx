@@ -8,7 +8,7 @@ import { useToast } from '@/components/ui/Toast'
 import { money, type NumberFormat } from '@/lib/format'
 import { recordHref } from '@/lib/records-href'
 import type { Definition, DrillRow } from '@/lib/data/insights-shared'
-import { download, toXlsx } from '../../deals/_components/xlsx'
+import { download, toXlsx } from '@/lib/xlsx'
 import { drillAction, exportAction } from '../actions'
 
 export type DrillTarget = { def: Definition; segment: { key?: string | null; segment?: string | null }; title: string }

@@ -43,14 +43,16 @@ export function useTileSub(rights: Rights, pickers: Pickers) {
   return (def: StoredDefinition) => {
     const entity = (['deal', 'activity', 'lead', 'person', 'organization'] as const).find((e) => e === def.entity)
     const parts: string[] = [entity ? t(`entities.${entity}`) : def.entity]
-    if (def.type === 'conversion') {
+    if (def.type === 'conversion' || (def.type === 'progress' && def.pipeline_id)) {
       const p = pickers.pipelines.find((x) => x.id === def.pipeline_id)
       if (p) parts.push(p.name)
     }
     const kind = def.period?.kind ?? (def.type === 'conversion' ? 'last_90' : null)
     const open = (def.filters ?? []).some((f) => typeof f === 'object' && f !== null && (f as Cond).f === 'status' && (f as Cond).op === 'eq' && (f as Cond).v === 'open')
     parts.push(kind && kind !== 'all' ? t(`sub.${kind}` as 'sub.month') : open ? t('sub.open') : t('sub.all'))
-    if (def.group_by && def.type !== 'conversion') parts.push(t('sub.by', { dim: dim(def.group_by).toLowerCase() }))
+    if (def.type === 'progress') parts.push(t('sub.byStageReached'))
+    else if (def.type === 'products') parts.push(t('sub.byProduct'))
+    else if (def.group_by && def.type !== 'conversion') parts.push(t('sub.by', { dim: dim(def.group_by).toLowerCase() }))
     if (rights.see && !rights.others) parts.push(t('sub.own'))
     return parts.join(' · ')
   }

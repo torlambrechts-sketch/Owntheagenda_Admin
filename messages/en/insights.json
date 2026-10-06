@@ -44,7 +44,9 @@
       "open": "open now",
       "all": "all time",
       "by": "by {dim}",
-      "own": "your records only"
+      "own": "your records only",
+      "byStageReached": "by stage reached",
+      "byProduct": "by product"
     },
     "dims": {
       "owner": "Owner",
@@ -90,7 +92,8 @@
       "lt": "<",
       "lte": "≤",
       "empty": "is empty",
-      "notempty": "is not empty"
+      "notempty": "is not empty",
+      "ncontains": "does not contain"
     },
     "filters": {
       "text": "{field} {op} {value}",
@@ -117,7 +120,11 @@
       "avg": "Average value",
       "avgCustom": "Average «{label}» (custom)",
       "weighted": "Weighted value",
-      "cycle": "Average days to win"
+      "cycle": "Average days to win",
+      "lines": "Count of lines",
+      "quantity": "Sum of quantity",
+      "lineValue": "Sum of line value",
+      "dealsMoved": "Deals moved forward"
     },
     "types": {
       "performance": "Performance",
@@ -154,7 +161,12 @@
       "footnote": "Custom fields are available as dimensions, filters and measures · click any segment to see and export its rows",
       "own": "Your records only · your permission set does not include See reports of others",
       "pickPipeline": "Choose a pipeline to see its stage conversion.",
-      "pickRange": "Choose the first and last day of the range."
+      "pickRange": "Choose the first and last day of the range.",
+      "titleProgress": "Deals moved forward by stage · {period}",
+      "titleProducts": "{measure} by product · {period}",
+      "allPipelines": "All pipelines",
+      "byStage": "Stage reached",
+      "byProduct": "Catalog item"
     },
     "conv": {
       "step": "{from} → {to}",
@@ -287,7 +299,9 @@
       "recurring": "Recurring",
       "installments": "Installments",
       "noProducts": "No subscriptions, recurring products or installments to forecast yet",
-      "prodTip": "{month} · recurring {rec} · installments {inst}"
+      "prodTip": "{month} · recurring {rec} · installments {inst}",
+      "excludedDeals": "{count, plural, one {# open deal} other {# open deals}} in another currency not counted · NOK only",
+      "excludedSubs": "{count, plural, one {# subscription} other {# subscriptions}} in another currency not counted · NOK only"
     },
     "ai": {
       "describe": "Describe the report",
@@ -306,6 +320,24 @@
       "nothingYet": "Nothing generated yet.",
       "openInBuilder": "Open in builder",
       "saveAsIs": "Save as is"
+    },
+    "noItem": "Without a catalog item",
+    "templateTiles": {
+      "won_quarter": "Won value · this quarter",
+      "open_pipeline": "Open pipeline",
+      "avg_sales_cycle": "Average sales cycle",
+      "open_by_owner": "Open value by owner",
+      "deals_per_stage": "Deals per stage",
+      "lost_reasons": "Lost reasons",
+      "deals_by_source": "Deals by source",
+      "activities_month": "Activities completed · month",
+      "weighted_by_owner": "Weighted pipeline by owner",
+      "won_by_owner_quarter": "Won value by owner · quarter",
+      "activities_by_owner_month": "Activities completed by owner · month",
+      "my_open_pipeline": "My open pipeline",
+      "my_activities_month": "My activities this month",
+      "leads_by_source_90": "Leads by source · 90 d",
+      "stage_conversion": "Stage conversion"
     }
   }
 }

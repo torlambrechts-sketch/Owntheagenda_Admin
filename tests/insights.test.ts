@@ -42,6 +42,16 @@ describe('the builder definition', () => {
     expect(toDefinition({ ...s, type: 'duration' })?.measure).toEqual({ fn: 'cycle_days' })
     expect(toDefinition({ ...s, type: 'duration' })?.period?.field).toBe('won_at')
   })
+  it('describes Progress and Products as deal reports with their own rows (0034)', () => {
+    const s = initialBuilder('')
+    const prog = toDefinition({ ...s, type: 'progress' })
+    expect(prog).toMatchObject({ entity: 'deal', type: 'progress', measure: { fn: 'count' }, period: { kind: 'quarter' } })
+    expect(prog?.period?.field).toBeUndefined()
+    expect(prog?.pipeline_id).toBeUndefined()
+    expect(toDefinition({ ...s, type: 'products', measure: 'qty' })).toMatchObject({ type: 'products', measure: { fn: 'sum', field: 'quantity' }, period: { field: 'won_at' } })
+    expect(toDefinition({ ...s, type: 'products', measure: 'sum' })?.measure).toEqual({ fn: 'sum', field: 'value' })
+    expect(Definition.safeParse({ entity: 'deal', filters: [{ f: 'title', op: 'ncontains', v: 'test' }] }).success).toBe(true)
+  })
   it('refuses a definition outside the shape', () => {
     expect(Definition.safeParse({ entity: 'audit' }).success).toBe(false)
     expect(Definition.safeParse({ entity: 'deal', group_by: 'x; drop table' }).success).toBe(false)

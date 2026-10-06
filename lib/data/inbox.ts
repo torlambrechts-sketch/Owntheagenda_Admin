@@ -147,7 +147,8 @@ export const Calls = z.object({
   telephony: nstr,
   calls: z.array(z.object({
     activity_id: uuid, at: str, direction: z.enum(['outbound', 'inbound']), outcome: z.enum(['connected', 'no_answer', 'missed', 'busy', 'voicemail']),
-    duration_s: num.nullable(), number: nstr, person_id: uuid.nullable(), person: nstr, deal_id: uuid.nullable(), note: nstr, source: str,
+    duration_s: num.nullable(), number: nstr, person_id: uuid.nullable(), person: nstr, organization_id: uuid.nullable(), organization: nstr,
+    deal_id: uuid.nullable(), note: nstr, source: str,
   })),
 })
 export type Calls = z.infer<typeof Calls>
@@ -198,4 +199,9 @@ export const loadGroupPreview = (source: { kind: 'people'; ids: string[] } | { k
 export const loadStaff = async () => {
   const r = await rpc('staff_list', {}, z.array(z.object({ id: uuid, name: str, active: z.boolean() })), { quiet: true })
   return r.ok ? r.data.filter((s) => s.active).map(({ id, name }) => ({ id, name })) : []
+}
+/** Whether the AI provider is connected (integrations_get, provider «ai»: not_connected until a key exists). */
+export const loadAiConnected = async () => {
+  const r = await rpc('integrations_get', {}, z.array(z.object({ provider: str, status: str })), { quiet: true })
+  return r.ok && r.data.some((x) => x.provider === 'ai' && x.status === 'connected')
 }

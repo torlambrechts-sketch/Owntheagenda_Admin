@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import { can, getShell } from '@/lib/shell'
 import {
-  loadCalls, loadDropbox, loadFolders, loadGroupPreview, loadLabels, loadMailboxes, loadMergeFields, loadOutbox, loadPeopleViews, loadPipelines,
+  loadAiConnected, loadCalls, loadDropbox, loadFolders, loadGroupPreview, loadLabels, loadMailboxes, loadMergeFields, loadOutbox, loadPeopleViews, loadPipelines,
   loadStaff, loadStageDeals, loadTemplates, loadThread, loadThreads,
 } from '@/lib/data/inbox'
 import { FOLDERS, type Folder } from '@/lib/data/inbox-shared'
@@ -68,9 +68,9 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
     const compose = p.compose === '1'
     // the prototype always selects a thread; with none in the folder nothing is selected
     const selectedId = compose ? null : p.thread ?? threads[0]?.id ?? null
-    const [thread, boxes, templates, mergeFields] = await Promise.all([
+    const [thread, boxes, templates, mergeFields, aiConnected] = await Promise.all([
       selectedId ? loadThread(selectedId) : Promise.resolve(null),
-      loadMailboxes(), loadTemplates(), loadMergeFields(),
+      loadMailboxes(), loadTemplates(), loadMergeFields(), loadAiConnected(),
     ])
     const name = folder === 'team' ? t('folders.team', { local: team!.address.split('@')[0]! }) : folder === 'label' ? label!.name : t(`folders.${folder}`)
     body = (
@@ -85,6 +85,8 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
         mergeFields={mergeFields.map((m) => m.token)}
         labels={labels}
         now={now}
+        ai={aiConnected}
+        canAi={can(shell, 'deals', 'ai')}
         canLead={can(shell, 'deals', 'add')}
         canLabel={can(shell, 'deals', 'add') || can(shell, 'deals', 'edit_others')}
       />

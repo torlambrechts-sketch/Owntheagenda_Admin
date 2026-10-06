@@ -70,7 +70,8 @@
       "lead": "Lead created from thread · email stays linked",
       "scheduled": "Scheduled for {when} · in the outbox",
       "queued": "Queued for sending",
-      "queuedLinked": "Queued for sending · linked to {title}"
+      "queuedLinked": "Queued for sending · linked to {title}",
+      "summarise": "Summary requested"
     },
     "ai": {
       "summary": "Thread summary",
@@ -84,7 +85,13 @@
       "actions": "Action items",
       "replies": "Suggested replies",
       "offTitle": "AI not configured.",
-      "offBody": "The summary, readiness to buy and action items are written by Claude once the AI connection is set up. Nothing is generated or guessed until then."
+      "offBody": "The summary, readiness to buy and action items are written by Claude once the AI connection is set up. Nothing is generated or guessed until then.",
+      "summarise": "Summarise",
+      "refresh": "Summarise again",
+      "requested": "Summary requested — it appears here once Claude has written it.",
+      "failed": "The summary could not be written. Try again.",
+      "ready": "Summarise this thread: Claude writes the summary, readiness to buy and action items on request.",
+      "noRight": "Summaries are asked for by staff with the AI right."
     },
     "cc": "cc",
     "track": {
@@ -146,7 +153,9 @@
       "sendAtLabel": "When to send",
       "sendOff": "The mailbox is not connected",
       "send": "Send",
-      "schedule": "Schedule"
+      "schedule": "Schedule",
+      "alias": "{address} (via {via})",
+      "aiNoDraft": "AI drafting is not available yet"
     },
     "sendAt": {
       "now": "Send now",
@@ -161,7 +170,8 @@
       "no_subject": "Add a subject.",
       "over_limit": "There are more recipients than the recipient limit allows.",
       "no_recipients": "Nobody to send to.",
-      "no_inbound": "The contact has not written in this thread, so there is no sender to make a lead from."
+      "no_inbound": "The contact has not written in this thread, so there is no sender to make a lead from.",
+      "alias_invalid": "That sender address is not one of your verified addresses."
     },
     "outbox": {
       "to": "to {to}",

@@ -70,7 +70,8 @@
       "lead": "Lead opprettet fra tråden · e-posten forblir koblet",
       "scheduled": "Planlagt til {when} · ligger i utboksen",
       "queued": "Satt i kø for sending",
-      "queuedLinked": "Satt i kø for sending · koblet til {title}"
+      "queuedLinked": "Satt i kø for sending · koblet til {title}",
+      "summarise": "Sammendrag bestilt"
     },
     "ai": {
       "summary": "Trådsammendrag",
@@ -84,7 +85,13 @@
       "actions": "Oppgaver",
       "replies": "Foreslåtte svar",
       "offTitle": "AI er ikke konfigurert.",
-      "offBody": "Sammendraget, kjøpsviljen og oppgavene skrives av Claude når AI-tilkoblingen er satt opp. Inntil da genereres eller gjettes ingenting."
+      "offBody": "Sammendraget, kjøpsviljen og oppgavene skrives av Claude når AI-tilkoblingen er satt opp. Inntil da genereres eller gjettes ingenting.",
+      "summarise": "Oppsummer",
+      "refresh": "Oppsummer på nytt",
+      "requested": "Sammendrag bestilt — det vises her når Claude har skrevet det.",
+      "failed": "Sammendraget kunne ikke skrives. Prøv igjen.",
+      "ready": "Oppsummer tråden: Claude skriver sammendraget, kjøpsviljen og oppgavene på forespørsel.",
+      "noRight": "Sammendrag bestilles av ansatte med AI-rett."
     },
     "cc": "kopi",
     "track": {
@@ -146,7 +153,9 @@
       "sendAtLabel": "Når skal den sendes",
       "sendOff": "Postboksen er ikke tilkoblet",
       "send": "Send",
-      "schedule": "Planlegg"
+      "schedule": "Planlegg",
+      "alias": "{address} (via {via})",
+      "aiNoDraft": "AI-utkast er ikke tilgjengelig ennå"
     },
     "sendAt": {
       "now": "Send nå",
@@ -161,7 +170,8 @@
       "no_subject": "Legg til et emne.",
       "over_limit": "Det er flere mottakere enn mottakergrensen tillater.",
       "no_recipients": "Ingen å sende til.",
-      "no_inbound": "Kontakten har ikke skrevet i denne tråden, så det finnes ingen avsender å lage et lead av."
+      "no_inbound": "Kontakten har ikke skrevet i denne tråden, så det finnes ingen avsender å lage et lead av.",
+      "alias_invalid": "Den avsenderadressen er ikke en av dine bekreftede adresser."
     },
     "outbox": {
       "to": "til {to}",

@@ -18,7 +18,7 @@ const sel = 'h-[30px] rounded-9 border border-line bg-surface text-12'
  * cannot send, so the card says so and Send waits. The AI writer needs a Claude key, which is not
  * configured: its controls are shown disabled with that reason.
  */
-export function Composer({ mode, thread, mailboxes, templates, mergeFields, body: outerBody, setBody: setOuterBody }: {
+export function Composer({ mode, thread, mailboxes, templates, mergeFields, body: outerBody, setBody: setOuterBody, ai }: {
   mode: 'reply' | 'new'
   thread: Thread | null
   mailboxes: Mailboxes
@@ -26,6 +26,7 @@ export function Composer({ mode, thread, mailboxes, templates, mergeFields, body
   mergeFields: string[]
   body?: string
   setBody?: (s: string) => void
+  ai: boolean
 }) {
   const t = useTranslations('inbox')
   const flash = useToast()
@@ -37,8 +38,11 @@ export function Composer({ mode, thread, mailboxes, templates, mergeFields, body
   const setBody = setOuterBody ?? setInnerBody
 
   const senders = mailboxes.mailboxes.filter((m) => m.can_reply)
+  // my verified send-as addresses, offered under each of my own mailboxes (email_send from_alias_id)
+  const aliases = mailboxes.aliases.filter((a) => a.kind === 'send_as' && a.verified_at)
   const [from, setFrom] = useState<string>(() => (thread?.mailbox && senders.some((m) => m.id === thread.mailbox!.id) ? thread.mailbox.id : senders[0]?.id ?? ''))
-  const box = senders.find((m) => m.id === from) ?? null
+  const [fromMailbox, fromAlias] = from.split(':') as [string, string | undefined]
+  const box = senders.find((m) => m.id === fromMailbox) ?? null
   const [toText, setToText] = useState('')
   const [subject, setSubject] = useState('')
   const [cc, setCc] = useState<string[]>([])
@@ -91,7 +95,7 @@ export function Composer({ mode, thread, mailboxes, templates, mergeFields, body
     const ccs = (thread?.suggested ?? []).filter((s) => cc.includes(s.person_id)).map((s) => ({ address: s.email, name: s.name }))
     start(async () => {
       const r = await sendEmail({
-        threadId: thread?.id ?? null, mailboxId: box.id, to, cc: ccs, subject: finalSubject, body, templateId,
+        threadId: thread?.id ?? null, mailboxId: box.id, fromAliasId: fromAlias ?? null, to, cc: ccs, subject: finalSubject, body, templateId,
         track: tracking === 'per_email' ? track : null, sendAt, entity: ctxEntity, recordId: link?.id ?? null,
       })
       if (!r.ok) return fail(r.code, r.detail)
@@ -108,9 +112,10 @@ export function Composer({ mode, thread, mailboxes, templates, mergeFields, body
         <label className="flex items-center gap-[5px] text-muted">
           {t('composer.from')}
           <select value={from} onChange={(e) => setFrom(e.target.value)} className="h-7 rounded-8 border border-line bg-surface text-12 font-semibold text-ink">
-            {senders.map((m) => (
-              <option key={m.id} value={m.id}>{m.address} ({m.kind === 'team' ? t('composer.team') : t(`provider.${providerKey(m.provider)}`)})</option>
-            ))}
+            {senders.map((m) => [
+              <option key={m.id} value={m.id}>{m.address} ({m.kind === 'team' ? t('composer.team') : t(`provider.${providerKey(m.provider)}`)})</option>,
+              ...(m.mine ? aliases.map((a) => <option key={`${m.id}:${a.id}`} value={`${m.id}:${a.id}`}>{t('composer.alias', { address: a.address, via: m.address })}</option>) : []),
+            ])}
             {senders.length === 0 ? <option value="">{t('composer.noMailbox')}</option> : null}
           </select>
         </label>
@@ -173,8 +178,8 @@ export function Composer({ mode, thread, mailboxes, templates, mergeFields, body
         <span className="flex-1" />
         <input
           disabled
-          placeholder={t('composer.aiOff')}
-          aria-label={t('composer.aiOff')}
+          placeholder={ai ? t('composer.aiNoDraft') : t('composer.aiOff')}
+          aria-label={ai ? t('composer.aiNoDraft') : t('composer.aiOff')}
           className="h-[30px] flex-[1_1_220px] rounded-9 border border-line bg-canvas px-[9px] text-12"
         />
         <select disabled aria-label={t('composer.tone')} className={sel} defaultValue="friendly">
@@ -183,7 +188,7 @@ export function Composer({ mode, thread, mailboxes, templates, mergeFields, body
         <select disabled aria-label={t('composer.length')} className={sel} defaultValue="short">
           {['short', 'standard', 'long'].map((k) => <option key={k} value={k}>{t(`composer.lengths.${k}`)}</option>)}
         </select>
-        <button type="button" disabled title={t('composer.aiOff')} className="h-[30px] cursor-default rounded-9 border border-ink bg-ink px-[11px] text-12 font-bold text-canvas opacity-50">
+        <button type="button" disabled title={ai ? t('composer.aiNoDraft') : t('composer.aiOff')} className="h-[30px] cursor-default rounded-9 border border-ink bg-ink px-[11px] text-12 font-bold text-canvas opacity-50">
           {t('composer.draft')}
         </button>
       </div>

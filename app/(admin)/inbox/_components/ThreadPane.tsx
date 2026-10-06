@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import { recordHref } from '@/lib/records-href'
 import { type Label, type Mailboxes, type Message, type Template, type Thread } from '@/lib/data/inbox'
-import { archiveThread, setThreadLabels, threadToLead } from '../actions'
+import { archiveThread, requestInsight, setThreadLabels, threadToLead } from '../actions'
 import { connected } from '@/lib/data/inbox-shared'
 import { providerKey, useFail, useGo, useWhen } from './lib'
 import { Composer } from './Composer'
@@ -17,13 +17,15 @@ const RANK: Record<string, number> = { deal: 0, lead: 1, project: 2, organizatio
 export const primaryLink = (th: Thread) => [...th.links].sort((a, b) => (RANK[a.entity] ?? 9) - (RANK[b.entity] ?? 9))[0] ?? null
 
 /** The open thread (v.mail, right column): header with link, archive, create lead and labels; the AI panel; the messages; the reply composer. */
-export function ThreadPane({ thread: th, mailboxes, templates, mergeFields, labels, now, canLead, canLabel }: {
+export function ThreadPane({ thread: th, mailboxes, templates, mergeFields, labels, now, ai, canAi, canLead, canLabel }: {
   thread: Thread
   mailboxes: Mailboxes
   templates: Template[]
   mergeFields: string[]
   labels: Label[]
   now: string
+  ai: boolean
+  canAi: boolean
   canLead: boolean
   canLabel: boolean
 }) {
@@ -56,6 +58,19 @@ export function ThreadPane({ thread: th, mailboxes, templates, mergeFields, labe
     flash(t('toast.lead'))
     router.push(recordHref('lead', r.leadId) as never)
   })
+  const summarise = () => start(async () => {
+    const r = await requestInsight({ id: th.id })
+    if (!r.ok) return fail(r.code, r.detail)
+    flash(t('toast.summarise'))
+  })
+  // «Summarise» exists only while the AI provider is connected (integrations_get, provider «ai») and the staff
+  // member has the AI right; a stale, failed or missing summary can be asked for again
+  const canSummarise = ai && canAi && th.insight?.state !== 'requested' && (!insight || th.insight?.stale)
+  const summariseBtn = canSummarise ? (
+    <button type="button" disabled={busy} onClick={summarise} className="h-[30px] cursor-pointer self-start rounded-9 border border-ink bg-primary px-[11px] text-12 font-bold text-ink disabled:cursor-default">
+      {insight ? t('ai.refresh') : t('ai.summarise')}
+    </button>
+  ) : null
   const toggleLabel = (id: string) => start(async () => {
     const next = labelIds.includes(id) ? labelIds.filter((x) => x !== id) : [...labelIds, id]
     const r = await setThreadLabels({ id: th.id, version, labels: next })
@@ -142,12 +157,20 @@ export function ThreadPane({ thread: th, mailboxes, templates, mergeFields, labe
           </div>
         </div>
       ) : (
-        // no Claude key is configured: the panel says so instead of showing a summary nobody generated
+        // the panel says what state the AI is in; it never shows a summary nobody generated
         <div className="flex flex-col gap-[6px] rounded-20 bg-ink px-5 py-4 text-canvas">
           <AiTitle text={t('ai.summary')} />
-          <span className="text-12.5 leading-[1.5] text-tile"><b className="text-canvas">{t('ai.offTitle')}</b> {t('ai.offBody')}</span>
+          {!ai ? (
+            <span className="text-12.5 leading-[1.5] text-tile"><b className="text-canvas">{t('ai.offTitle')}</b> {t('ai.offBody')}</span>
+          ) : th.insight?.state === 'requested' ? (
+            <span className="text-12.5 leading-[1.5] text-tile">{t('ai.requested')}</span>
+          ) : (
+            <span className="text-12.5 leading-[1.5] text-tile">{th.insight?.state === 'failed' ? t('ai.failed') : canAi ? t('ai.ready') : t('ai.noRight')}</span>
+          )}
+          {summariseBtn}
         </div>
       )}
+      {insight && summariseBtn ? <div className="-mt-[6px]">{summariseBtn}</div> : null}
 
       {th.messages.map((m) => <MessageCard key={m.id} m={m} when={when.long} />)}
 
@@ -160,7 +183,7 @@ export function ThreadPane({ thread: th, mailboxes, templates, mergeFields, labe
         </div>
       ) : null}
 
-      <Composer mode="reply" thread={th} mailboxes={mailboxes} templates={templates} mergeFields={mergeFields} body={body} setBody={setBody} />
+      <Composer mode="reply" thread={th} mailboxes={mailboxes} templates={templates} mergeFields={mergeFields} body={body} setBody={setBody} ai={ai} />
     </div>
   )
 }

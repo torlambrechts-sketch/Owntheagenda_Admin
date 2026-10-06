@@ -13,7 +13,7 @@ import { SEND_AT, sendAtInstant } from '@/lib/data/inbox-shared'
  * some in its own way (inbox.errors): merge fields without a value or not in the registry, a missing
  * recipient or subject, the recipient limit.
  */
-export type InboxCode = RpcCode | 'merge_missing' | 'merge_unknown' | 'no_recipient' | 'no_subject' | 'over_limit' | 'no_recipients' | 'no_inbound'
+export type InboxCode = RpcCode | 'alias_invalid' | 'merge_missing' | 'merge_unknown' | 'no_recipient' | 'no_subject' | 'over_limit' | 'no_recipients' | 'no_inbound'
 export type Result<T = object> = ({ ok: true } & T) | { ok: false; code: InboxCode; detail?: string | null }
 
 const uuid = z.string().uuid()
@@ -29,6 +29,7 @@ function refusal(r: { code: RpcCode; detail: string | null }): { ok: false; code
     if (r.detail === 'subject') return { ok: false, code: 'no_subject' }
     if (r.detail === 'limit') return { ok: false, code: 'over_limit' }
     if (r.detail === 'no_inbound') return { ok: false, code: 'no_inbound' }
+    if (r.detail === 'from_alias_id') return { ok: false, code: 'alias_invalid' }
   }
   return { ok: false, code: r.code, detail: r.detail }
 }
@@ -40,6 +41,7 @@ export async function sendEmail(input: unknown): Promise<Result<{ threadId: stri
   const p = z.object({
     threadId: uuid.nullable(),
     mailboxId: uuid,
+    fromAliasId: uuid.nullable(),
     to: z.array(Addr).max(50),
     cc: z.array(Addr).max(50),
     subject: z.string().max(500),
@@ -58,7 +60,7 @@ export async function sendEmail(input: unknown): Promise<Result<{ threadId: stri
   const at = sendAtInstant(d.sendAt, new Date(), shell.me.time_zone)
   const r = await rpc('email_send', {
     p_draft: {
-      thread_id: d.threadId, mailbox_id: d.mailboxId, to: d.to, cc: d.cc, subject: d.subject, body: d.body, template_id: d.templateId,
+      thread_id: d.threadId, mailbox_id: d.mailboxId, from_alias_id: d.fromAliasId, to: d.to, cc: d.cc, subject: d.subject, body: d.body, template_id: d.templateId,
       track: d.track, send_at: at ? at.toISOString() : null, entity: d.recordId ? d.entity : null, record_id: d.recordId,
     },
   }, z.object({ message_id: uuid, thread_id: uuid, state: z.string() }))
@@ -231,6 +233,16 @@ export async function removeAlias(input: unknown): Promise<Result> {
   const p = z.object({ id: uuid }).safeParse(input)
   if (!p.success) return bad
   const r = await rpc('sender_alias_remove', { p_id: p.data.id }, z.object({ id: uuid }))
+  if (!r.ok) return refusal(r)
+  done()
+  return { ok: true }
+}
+
+/** «Summarise» (AIA-04): asks the AI worker for the thread's insight; shown only while the AI provider is connected. */
+export async function requestInsight(input: unknown): Promise<Result> {
+  const p = z.object({ id: uuid }).safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('thread_insight_request', { p_id: p.data.id }, z.object({ id: uuid, state: z.string() }))
   if (!r.ok) return refusal(r)
   done()
   return { ok: true }

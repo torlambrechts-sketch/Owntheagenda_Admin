@@ -40,4 +40,24 @@ select public.score_model_delete((select id from t_sm));
 select pg_temp.check((select deleted_at is not null from app.score_models where id = (select id from t_sm)), 'a draft scoring model can be deleted');
 select pg_temp.expect_error(format($$select public.score_model_delete(%L)$$, (select id from app.score_models where state = 'active' and deleted_at is null limit 1)), 'invalid', 'an active model is set to draft before it is deleted');
 
+-- Health in the Phase 1 screens (0028)
+create temp table t_hs as select ap.product, ap.tenant_id, ap.account_id, (select o.id from app.organizations o where o.account_id = ap.account_id limit 1) org
+  from app.account_products ap where ap.status = 'active' and exists (select 1 from app.organizations o where o.account_id = ap.account_id) limit 1;
+insert into app.health_scores (product, tenant_id, day, score, factors, model_id)
+select product, tenant_id, current_date, 20, '[]', (select id from app.health_models where active) from t_hs
+on conflict (product, tenant_id, day) do update set score = 20;
+update app.subscriptions s set current_period_end = now() + interval '10 days' from t_hs h where s.product = h.product and s.tenant_id = h.tenant_id;
+create temp table t_tk as select id from app.tickets where queue_key = 'support' and deleted_at is null limit 1;
+update app.tickets set organization_id = (select org from t_hs) where id = (select id from t_tk);
+select pg_temp.check((public.ticket_detail((select id from t_tk)) #>> '{ticket,organization,health}')::int = app.org_health((select org from t_hs))
+                     or (public.ticket_detail((select id from t_tk)) #>> '{organization,health}')::int = app.org_health((select org from t_hs)), 'a ticket names its company''s health');
+select pg_temp.check(exists (select 1 from jsonb_array_elements(public.customers_get('{}') -> 'rows') x where (x ->> 'id')::uuid = (select org from t_hs) and x ? 'renews_at'), 'a company row names its next renewal');
+select pg_temp.check(
+  (select (x ->> 'status') = 'cancelled' or exists (select 1 from jsonb_array_elements(public.customers_get('{"view":"at_risk"}') -> 'rows') y where (y ->> 'id')::uuid = (select org from t_hs))
+   from jsonb_array_elements(public.customers_get('{}') -> 'rows') x where (x ->> 'id')::uuid = (select org from t_hs)),
+  'a low score with a renewal inside the window is at risk');
+update app.subscriptions s set current_period_end = now() + interval '200 days' from t_hs h where s.product = h.product and s.tenant_id = h.tenant_id;
+select pg_temp.check(not exists (select 1 from jsonb_array_elements(public.customers_get('{"view":"at_risk"}') -> 'rows') y
+                                 where (y ->> 'id')::uuid = (select org from t_hs) and y ->> 'status' in ('active', 'past_due')), 'a renewal far away is not at risk yet');
+
 rollback;

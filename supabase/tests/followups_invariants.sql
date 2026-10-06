@@ -83,4 +83,17 @@ insert into app.setting_values (key, value, value_number) values ('safeguards', 
 select pg_temp.check((public.workflow_monitor() ->> 'loop_protection_runs')::int = 250, 'the monitor shows the custom safeguard number');
 select pg_temp.check(exists (select 1 from jsonb_array_elements(public.entity_columns_get('deal')) c where c ->> 'col' = 'value' and c ->> 'kind' = 'numeric'), 'record columns are readable as data');
 
+-- the first MRR snapshot is a baseline (0033)
+create temp table t_base as select s.product, s.tenant_id from app.subscriptions s join app.account_products ap using (product, tenant_id)
+  where app.sub_mrr(s) > 0 limit 1;
+delete from app.mrr_tenant_daily where (product, tenant_id) in (select product, tenant_id from t_base);
+delete from app.mrr_movements where (product, tenant_id) in (select product, tenant_id from t_base);
+update app.account_products set created_at = date_trunc('month', current_date) - interval '40 days' where (product, tenant_id) in (select product, tenant_id from t_base);
+select app.snapshot_mrr_tenants();
+select pg_temp.check(not exists (select 1 from app.mrr_movements m join t_base b using (product, tenant_id)), 'a customer from before the first snapshot is a baseline, not new MRR');
+delete from app.mrr_tenant_daily where (product, tenant_id) in (select product, tenant_id from t_base);
+update app.account_products set created_at = now() where (product, tenant_id) in (select product, tenant_id from t_base);
+select app.snapshot_mrr_tenants();
+select pg_temp.check((select kind from app.mrr_movements m join t_base b using (product, tenant_id)) = 'new', 'a customer who signed up this month is new MRR');
+
 rollback;

@@ -2,18 +2,12 @@
 
 Phase A, A3.1. Written 2026-10-06 against `main` at `8c01aec`. Every fact cites the file it comes from.
 
-## The most important fact
+## Starting point
 
-The brief (`INSTRUCTIONS.md`) was written on 3 October 2026 for "the Orgpuls platform admin", which then
-lived inside the Orgpuls product. On 5 October 2026 that admin was **deleted from Orgpuls** (Orgpuls
-migration `0206_admin_leaves.sql`, decision X-105) and replaced by this separate platform: its own
-repository, its own Supabase project (`zuvqbaejoktpekfsiyyr`, eu-central-1) and its own domain
-(`www.owntheagenda.com`). The platform's first commit is `5830015` (2026-10-05).
-
-So "the admin" the brief refers to as already existing (Part B, Appendix 2) **is not this code**. What
-the brief calls the baseline — organisations, contacts, segments, campaigns, sequences, consent, tickets,
-web analytics, CMS, staff roles — was partly built in Orgpuls and then removed with its data. In this
-repository it is absent. Questions Q-01 and Q-02 in `06-QUESTIONS.md` ask how to treat that.
+The platform is a separate repository, Supabase project (`zuvqbaejoktpekfsiyyr`, eu-central-1) and domain
+(`www.owntheagenda.com`), first committed on 2026-10-05. **Decision D-01:** everything in the brief is built
+new here. Where the brief (Part B, Appendix 2, Part C) says something "already exists in the admin", it is
+read as something to build. No earlier system is used as a source or a reference.
 
 ## Package manager, scripts and versions
 
@@ -75,7 +69,7 @@ repository it is absent. Questions Q-01 and Q-02 in `06-QUESTIONS.md` ask how to
 
 ## Component library, design tokens and layout shell
 
-- No component library and no shadcn/ui; the brief's Part B "target stack" names shadcn/ui (Q-05).
+- No component library and no shadcn/ui; the brief's Part B "target stack" names shadcn/ui (Q-36).
 - No design tokens: `tailwind.config.ts` is a placeholder whose comment says the platform's design replaces it.
 - The layout is a plain shell (`app/layout.tsx:11-24`). There is no navigation, no sidebar and no themes.
 - The target design is the Claude Design handoff in `design-reference/sentral/` (21 screens). It uses its
@@ -99,12 +93,11 @@ repository it is absent. Questions Q-01 and Q-02 in `06-QUESTIONS.md` ask how to
 - Environment: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (both public), Production only.
 - Since 2026-10-06 the Supabase access tokens available in cloud sessions are refused for every project
   ("FGA Authentication Error"), probably after the projects moved organisation. The hosted catalog could
-  therefore **not** be compared with the repository (Q-03).
+  therefore **not** be compared with the repository (Q-01).
 
 ## Facts that could not be established (→ questions)
 
-- Q-01: whether the Orgpuls admin the brief describes should be treated as the baseline (it no longer exists).
-- Q-03: hosted-database drift. The hosted project could not be reached with the current tokens.
-- Q-04: the demo tenant (Lumio AS, Kari Nordmann) does not exist in the platform.
-- Q-05: component library (shadcn/ui per Part B) against the design bundle's own components.
-- Q-06: the repository cannot start a local database by its own commands. Adding `supabase/config.toml` needs approval.
+- Q-01: hosted-database drift. The hosted project could not be reached with the current tokens.
+- Q-02: the demo tenant (Lumio AS, Kari Nordmann) does not exist in the platform.
+- Q-36: component library (shadcn/ui per Part B) against the design bundle's own components.
+- Q-33: the repository cannot start a local database by its own commands. Adding `supabase/config.toml` needs approval.

@@ -3,7 +3,7 @@
 Phase A, A3.2. Source: both migrations read in full (`supabase/migrations/0001_foundation.sql`,
 `0002_product_secrets.sql`). They were also applied to an empty local Supabase database (CLI, scratch
 copy outside the repository, Postgres 17), and that database's catalog was introspected. The two agree.
-The hosted project could not be introspected with the current tokens (Q-03), so drift against
+The hosted project could not be introspected with the current tokens (Q-01), so drift against
 production is **unverified**.
 
 ## Summary
@@ -56,7 +56,7 @@ Notable gaps in the conventions A6 asks for:
 - `app.admins` keys on email with no link to `auth.users` (`0001:18`).
 - Every admin table carries a product key only where the row is product-scoped (`account_products`,
   `subscriptions`, `members`, `usage_daily`, `events_in`, `audit`). `admins` and `accounts` are cross-product
-  by design. Appendix 2 says "every admin table carries a product ID" (Q-07).
+  by design. Appendix 2 says "every admin table carries a product ID" (Q-25).
 
 ## Functions
 
@@ -89,9 +89,9 @@ Notable gaps in the conventions A6 asks for:
 ## Drift
 
 - Repository ⇄ fresh local database: none. Both migrations apply cleanly in order, and the catalog matches the files.
-- Repository ⇄ hosted project: **not checked** (Q-03). On 2026-10-05 both migrations were applied to the hosted
+- Repository ⇄ hosted project: **not checked** (Q-01). On 2026-10-05 both migrations were applied to the hosted
   project through the Supabase MCP, and the hosted security advisor reported only the expected notices:
   RLS without policy on every table, two definer functions callable by `authenticated`, and leaked-password
   protection off. Some rows on the hosted project were created outside migrations: the installation row,
   the owner row in `app.admins`, and a deactivated test user. They are not reproducible from the repository
-  (Q-04).
+  (Q-02).

@@ -1,3 +1,341 @@
 {
-  "feed": {}
+  "feed": {
+    "tabs": {
+      "feed": "Feed",
+      "scoring": "Scoringsmodeller",
+      "enrich": "Berikelse"
+    },
+    "noAccess": {
+      "title": "Feeden krever tilgang til avtaler",
+      "body": "Rettighetssettet ditt gir ikke «Se» på avtaler, så her er ingen kort, scorer eller berikelse for deg."
+    },
+    "subTabs": {
+      "follow_ups": "Oppfølginger",
+      "overlooked": "Oversette avtaler",
+      "suggestions": "Forslag"
+    },
+    "filter": {
+      "kind": "Korttype",
+      "allKinds": "Alle korttyper",
+      "stage": "Fase",
+      "allStages": "Alle faser",
+      "button": "Filtre",
+      "buttonActive": "Filtre · {n}"
+    },
+    "scope": {
+      "title": "Feedens omfang",
+      "hint": "Feeden viser kort for avtaler i disse pipelinene. Kort uten avtale vises alltid.",
+      "cancel": "Avbryt",
+      "save": "Lagre",
+      "saved": "Feedens omfang er lagret"
+    },
+    "doneToday": "✓ {n} gjort i dag",
+    "allDone": "Ingenting venter akkurat nå — du er gjennom denne fanen.",
+    "noDealTask": "Dette kortet har ingen avtale å legge en oppgave på",
+    "actions": {
+      "task": "Planlegg oppgave",
+      "email": "E-post",
+      "open": "Åpne"
+    },
+    "toast": {
+      "noMailbox": "Ingen postkasse kan sende ennå · koble til en under Innboks › Postkasser",
+      "task": "Oppgave planlagt i morgen · kortet er gjort",
+      "email": "Skrivevindu åpnet · kortet er gjort"
+    },
+    "progress": {
+      "today": "I dag",
+      "tasks": "Oppgaver",
+      "calls": "Samtaler",
+      "activities": "Aktiviteter",
+      "month": "Denne måneden",
+      "newDeals": "Nye avtaler",
+      "wonDeals": "Vunne avtaler",
+      "forecast": "Prognose (vektet)"
+    },
+    "panel": {
+      "close": "Lukk",
+      "done": "gjort",
+      "planned": "planlagt",
+      "openDeal": "Åpne avtale →",
+      "openOrganization": "Åpne organisasjon →"
+    },
+    "typeNames": {
+      "call": "samtale",
+      "meeting": "møte",
+      "task": "oppgave",
+      "deadline": "frist",
+      "email": "e-post",
+      "lunch": "lunsj",
+      "demo": "produktdemo"
+    },
+    "priority": {
+      "high": "høy prioritet",
+      "medium": "middels prioritet",
+      "low": "lav prioritet"
+    },
+    "cards": {
+      "someone": "Kontakten",
+      "dealSub": "{value} · {org} · eier {owner}",
+      "email_reply": {
+        "name": "E-postsvar",
+        "label": "E-postsvar",
+        "title": "{from} svarte på «{deal}»",
+        "sub": "«{subject}»",
+        "subReady": "«{subject}» · kjøpsvilje {r} / 10"
+      },
+      "no_reply": {
+        "name": "Ikke svar etter 5 dager",
+        "label": "Ikke svar etter 5 dager",
+        "sub": "{person} har ikke svart på e-posten din «{subject}» fra {date}"
+      },
+      "planned_today": {
+        "name": "Planlagt i dag",
+        "label": "Planlagt i dag",
+        "title": "{subject} — {org}"
+      },
+      "email_opened": {
+        "name": "E-post åpnet",
+        "label": "E-post åpnet",
+        "title": "{person} åpnet «{subject}» {count, plural, one {én gang} other {# ganger}}",
+        "sub": "Sist åpnet {ago}"
+      },
+      "link_clicked": {
+        "name": "Lenke klikket",
+        "label": "Lenke klikket",
+        "title": "{person} klikket på «{label}»",
+        "sub": "Sporet lenke i «{subject}»",
+        "subSequence": "Sporet lenke i sekvens-e-posten «{subject}»"
+      },
+      "sequence_review": {
+        "name": "Sekvens-e-post venter",
+        "label": "Sekvens-e-post venter",
+        "title": "«{subject}» venter på manuell sending",
+        "sub": "Sekvens «{sequence}» · {org}"
+      },
+      "overdue_activity": {
+        "name": "Forfalt aktivitet",
+        "label": "Forfalt aktivitet · inaktiv {days} d"
+      },
+      "no_followup": {
+        "name": "Ingen oppfølgingsaktivitet",
+        "label": "Ingen oppfølgingsaktivitet"
+      },
+      "slipping": {
+        "name": "Glipper",
+        "label": "Glipper",
+        "sub": "Lukkedato {date}, men ingen aktivitet på {days} dager · flytt datoen eller ring"
+      },
+      "stalled": {
+        "name": "Stått stille",
+        "label": "Stått stille",
+        "sub": "I {stage} i {days} dager"
+      },
+      "new_no_activity": {
+        "name": "Ny avtale uten aktivitet",
+        "label": "Ny avtale uten aktivitet",
+        "sub": "{value} · {org} · planlegg den første aktiviteten"
+      },
+      "cross_sell": {
+        "name": "Mersalgssignal",
+        "label": "Mersalgssignal",
+        "title": "{org} bruker bare {product}",
+        "sub": "{employees} ansatte · én applikasjon · opprett en utvidelsesavtale",
+        "subNoEmployees": "Én applikasjon · opprett en utvidelsesavtale"
+      },
+      "likely_to_advance": {
+        "name": "Ventes å gå videre",
+        "label": "Ventes å gå videre",
+        "labelPct": "Ventes å gå videre — {pct} %"
+      }
+    },
+    "scoring": {
+      "entity": {
+        "deal": "Avtaler",
+        "lead": "Leads"
+      },
+      "pipeline": "Pipeline {name}",
+      "allPipelines": "Alle pipelines",
+      "state": {
+        "draft": "utkast",
+        "active": "aktiv"
+      },
+      "unlabeled": "Kriterium uten navn",
+      "toast": {
+        "activated": "Modellen er aktiv · scorene er beregnet på nytt",
+        "deactivated": "Modellen er satt til utkast · scorene er beregnet på nytt",
+        "removed": "Kriteriet er fjernet"
+      },
+      "limitNone": "Scoringsmodeller: ubegrenset (innstilling)",
+      "limit": "Scoringsmodeller: {used} av {limit} (innstilling)",
+      "summary": "Grunnverdi {base} · {scored, plural, one {# post scoret} other {# poster scoret}}",
+      "activate": "Aktiver",
+      "deactivate": "Sett til utkast",
+      "groups": {
+        "high": "Svært positivt",
+        "slight": "Litt positivt",
+        "negative": "Negativt"
+      },
+      "if": "HVIS",
+      "matches": "✓ treffer",
+      "remove": "Fjern «{name}»",
+      "noRight": "Å endre scoringsmodeller krever «Konfigurere» på avtaler",
+      "addCriterion": "＋ Kriterium",
+      "noModels": "Ingen scoringsmodell ennå.",
+      "preview": "Forhåndsvisning",
+      "previewRecord": "Post å forhåndsvise",
+      "noDeals": "Ingen åpne avtaler i denne pipelinen",
+      "noLeads": "Ingen åpne leads",
+      "healthNote": "Helsescoren fra Kunder blir et kriterium når helsescorer finnes — ingen parallell score bygges.",
+      "new": {
+        "button": "＋ Modell",
+        "name": "Modellnavn",
+        "entity": "Scorer",
+        "deals": "Avtaler",
+        "leads": "Leads",
+        "pipeline": "Pipeline",
+        "allPipelines": "Alle pipelines",
+        "cancel": "Avbryt",
+        "create": "Opprett",
+        "created": "Modellen er opprettet som utkast"
+      },
+      "picker": {
+        "if": "HVIS",
+        "field": "Felt",
+        "fields": {
+          "emailOpened": "E-post åpnet",
+          "emailReplied": "Svar mottatt",
+          "emailNoReply": "Ikke svar på siste e-post",
+          "participantLabel": "Deltaker med etikett",
+          "orgProducts": "Applikasjoner i bruk",
+          "orgPayment": "Betalingsstatus",
+          "source": "Kilde",
+          "value": "Verdi",
+          "orgEmployees": "Ansatte",
+          "orgCity": "Sted",
+          "orgFylke": "Fylke",
+          "orgIndustry": "Bransje"
+        },
+        "within": "innen",
+        "days": "dager",
+        "personLabel": "Personetikett",
+        "op": "Sammenligning",
+        "ops": {
+          "gte": "minst",
+          "eq": "nøyaktig",
+          "lte": "høyst"
+        },
+        "count": "Antall",
+        "paymentState": "Betalingsstatus",
+        "payment": {
+          "past_due": "forfalt",
+          "suspended": "suspendert",
+          "ok": "betalt"
+        },
+        "values": "Kilder",
+        "valuesHint": "Web form, Chatbot",
+        "min": "Fra",
+        "max": "Til",
+        "text": "Tekst",
+        "contains": "inneholder …",
+        "incomplete": "Fyll inn verdien for å legge til kriteriet.",
+        "cancel": "Avbryt",
+        "add": "Legg til",
+        "added": "Kriteriet er lagt til · scorene er beregnet på nytt",
+        "or": " eller ",
+        "label": {
+          "emailOpened": "E-post åpnet de siste {days} dagene",
+          "emailReplied": "Svar mottatt de siste {days} dagene",
+          "emailNoReply": "Ikke svar på siste e-post på {days} dager",
+          "participantLabel": "{label} er deltaker",
+          "orgProducts": "Bruker {op, select, gte {minst} eq {nøyaktig} other {høyst}} {n, plural, one {# applikasjon} other {# applikasjoner}}",
+          "orgPayment": "Organisasjonens betalingsstatus er {state}",
+          "source": "Kilden er {list}",
+          "value": {
+            "between": "Verdi mellom {min} og {max}",
+            "atLeast": "Verdi minst {min}",
+            "atMost": "Verdi høyst {max}"
+          },
+          "orgEmployees": {
+            "between": "Mellom {min} og {max} ansatte",
+            "atLeast": "Minst {min} ansatte",
+            "atMost": "Høyst {max} ansatte"
+          },
+          "orgText": "Organisasjonens {field} inneholder «{text}»"
+        }
+      }
+    },
+    "enrich": {
+      "toast": {
+        "requested": "{n, plural, one {# organisasjon} other {# organisasjoner}} bedt om fra Brønnøysundregistrene · berikelsesjobben henter dem",
+        "nothingNew": "Alle organisasjoner med hull er allerede bedt om"
+      },
+      "credits": {
+        "title": "Kreditter denne perioden",
+        "left": "{n} igjen",
+        "used": "{n} brukt",
+        "of": "av {limit} · nullstilles {date}",
+        "unlimited": "ubegrenset (innstilling) · nullstilles {date} · teller oppslag i kontaktdata"
+      },
+      "sources": {
+        "title": "Kilder",
+        "brreg": "Brønnøysundregistrene (registersynk)",
+        "provider": "Leverandør av firma- og kontaktdata (adapter)",
+        "notConnected": "ikke tilkoblet"
+      },
+      "bulk": {
+        "title": "Masseberikelse",
+        "body": "Opptil 100 organisasjoner med org.nr. og tomme felt per forespørsel.",
+        "button": "Berik {n, plural, one {# organisasjon} other {# organisasjoner}} med hull",
+        "buttonMax": "Berik {n} av {total} organisasjoner med hull",
+        "noRight": "Å berike flere organisasjoner samtidig krever «Masseredigering» på avtaler"
+      },
+      "company": {
+        "title": "Firmaberikelse — {org}",
+        "titleNone": "Firmaberikelse",
+        "sub": "Fyller bare tomme felt",
+        "choose": "Forespørsel",
+        "state": {
+          "requested": "bedt om",
+          "ready": "klar",
+          "failed": "feilet"
+        },
+        "none": "Ingen firmaberikelse venter. Be om registerets data med «Berik» over.",
+        "requested": "Bedt om {date} · venter på Brønnøysundregistrene. Berikelsesjobben henter registerets data; før den har gjort det, foreslås ingenting.",
+        "failed": "Registeret kunne ikke leses: {error}",
+        "nothingNew": "Registeret har ingenting denne organisasjonen ikke allerede har.",
+        "fields": {
+          "address": "Adresse",
+          "postal_code": "Postnummer",
+          "city": "Sted",
+          "nace": "Næringskode",
+          "industry": "Bransje",
+          "employees": "Ansatte",
+          "website": "Nettsted"
+        },
+        "kept": "{value} (beholdt)",
+        "dismiss": "Avvis",
+        "apply": "Bruk {n, plural, one {# felt} other {# felt}}",
+        "applied": "{n, plural, one {# felt} other {# felt}} fylt ut · endringsloggkilde: berikelse",
+        "dismissed": "Avvist"
+      },
+      "person": {
+        "title": "Personberikelse",
+        "sub": "Fra navn og organisasjon",
+        "connected": "Velg «Berik» på en person for å slå opp e-post og telefon.",
+        "notConnected": "Leverandøren av firma- og kontaktdata er ikke tilkoblet. E-postadresser og telefonnumre finnes og vises når den er det."
+      },
+      "lookup": {
+        "eyebrow": "Omvendt oppslag · e-post fra en ukjent avsender",
+        "none": "Ingen e-post fra en ukjent avsender venter.",
+        "title": "{from} sendte en e-post",
+        "proposedOrg": "Forslag: personen {name} og organisasjonen {org} (finnes allerede i CRM)",
+        "proposedNoOrg": "Forslag: personen {name} · ingen organisasjon funnet for {domain}",
+        "dismiss": "Avvis",
+        "create": "Opprett koblede poster",
+        "noRight": "Å opprette poster krever «Legge til» på avtaler",
+        "created": "Personen er opprettet og koblet til e-posten",
+        "dismissed": "Avvist"
+      }
+    }
+  }
 }

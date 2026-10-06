@@ -1,3 +1,808 @@
 {
-  "automation": {}
+  "automation": {
+    "tabs": {
+      "list": "Workflows",
+      "builder": "Builder",
+      "templates": "Templates",
+      "monitor": "Monitoring",
+      "assign": "Assignment rules",
+      "sequences": "Sequences"
+    },
+    "engine": "One engine — extends lifecycle messaging · loop protection {on, select, on {on} other {off}} (safeguard)",
+    "blockers": {
+      "not_connected_slack": "Slack is not connected",
+      "not_connected_teams": "Teams is not connected",
+      "not_connected_accounting": "The accounting system is not connected",
+      "not_available_campaigns": "Campaign actions are not available yet",
+      "not_available_projects": "Project actions are not available yet",
+      "mailbox_not_connected": "No mailbox is connected to send from",
+      "sequence_inactive": "The sequence it enrolls in is a draft"
+    },
+    "errors": {
+      "not_connected_slack": "Slack is not connected.",
+      "not_connected_teams": "Teams is not connected.",
+      "not_connected_accounting": "The accounting system is not connected.",
+      "not_available_campaigns": "Campaign actions are not available yet.",
+      "not_available_projects": "Project actions are not available yet.",
+      "mailbox_not_connected": "No mailbox is connected to send from.",
+      "sequence_inactive": "The sequence it enrolls in is a draft.",
+      "limit": "The limit of active workflows set under Settings is reached.",
+      "graph": "A step is not configured yet. Check the highlighted step.",
+      "owner": "That person cannot own this workflow: they need Manage workflows.",
+      "state": "This can no longer be done in its current state.",
+      "retried": "This run has already been retried.",
+      "view": "The saved view is no longer available.",
+      "ids": "Too many records at once.",
+      "trigger_type": "Check the trigger.",
+      "trigger_config": {
+        "entity": "Choose the object the trigger watches.",
+        "kind": "Name the product event, for example billing.changed."
+      },
+      "options": {
+        "assignee": "Choose who the rule assigns to."
+      }
+    },
+    "words": {
+      "and": "AND",
+      "or": "OR",
+      "entity": {
+        "deal": "Deal",
+        "lead": "Lead",
+        "person": "Person",
+        "organization": "Organization",
+        "activity": "Activity",
+        "ticket": "Ticket"
+      },
+      "entityLower": {
+        "deal": "deal",
+        "lead": "lead",
+        "person": "person",
+        "organization": "organization",
+        "activity": "activity",
+        "ticket": "ticket"
+      },
+      "event": {
+        "created": "added",
+        "updated": "updated",
+        "deleted": "deleted",
+        "won": "won",
+        "lost": "lost",
+        "reopened": "reopened",
+        "stage_changed": "stage changed",
+        "converted": "converted",
+        "completed": "completed",
+        "replied": "replied",
+        "health_dropped": "health dropped",
+        "campaign_clicked": "campaign email clicked",
+        "no_reply": "no reply"
+      },
+      "eventTitle": {
+        "created": "Added",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "won": "Won",
+        "lost": "Lost",
+        "reopened": "Reopened",
+        "stage_changed": "Stage changed",
+        "converted": "Converted",
+        "completed": "Completed",
+        "replied": "Replied",
+        "health_dropped": "Health dropped",
+        "campaign_clicked": "Campaign email clicked",
+        "no_reply": "No reply"
+      },
+      "fields": {
+        "title": "title",
+        "value": "value",
+        "status": "status",
+        "source": "source",
+        "product": "product",
+        "currency": "currency",
+        "expected_close_date": "expected close date",
+        "score": "score",
+        "idle_days": "days without activity",
+        "labels": "label",
+        "name": "name",
+        "email": "email",
+        "contact_type": "contact type",
+        "city": "city",
+        "fylke": "county",
+        "industry": "industry",
+        "employees": "employees",
+        "org_number": "org. number",
+        "country": "country",
+        "subject": "subject",
+        "priority": "priority",
+        "done": "done",
+        "queue_key": "queue",
+        "urgency": "urgency",
+        "topic": "topic",
+        "org_products": "installed applications",
+        "org_payment": "payment state",
+        "payment_state": "payment state",
+        "organization": "organization",
+        "person": "person",
+        "owner_id": "owner",
+        "plan": "plan"
+      },
+      "dates": {
+        "rots_at": "stage threshold",
+        "renewal_at": "renewal",
+        "expected_close_date": "expected close date",
+        "won_at": "won date",
+        "lost_at": "lost date",
+        "created_at": "creation",
+        "last_touch_at": "last touch",
+        "starts_at": "start",
+        "done_at": "completion",
+        "resolution_due_at": "resolution due",
+        "resolved_at": "resolution"
+      },
+      "mailTest": {
+        "opened": "email opened in the last {days} days",
+        "replied": "email answered in the last {days} days",
+        "no_reply": "no reply for {days} days"
+      },
+      "ops": {
+        "empty": "is empty",
+        "notempty": "is not empty",
+        "contains": "contains",
+        "in": "is one of",
+        "nin": "is none of",
+        "has": "=",
+        "within_days": "within days"
+      },
+      "opNames": {
+        "eq": "=",
+        "neq": "≠",
+        "gt": ">",
+        "gte": "≥",
+        "lt": "<",
+        "lte": "≤",
+        "contains": "contains",
+        "empty": "empty",
+        "notempty": "not empty"
+      },
+      "trigger": {
+        "event": "{entity} {event}",
+        "fields": "{fields} changed",
+        "dateWhen": "{when, select, after {{n} days after {date}} before {{n} days before {date}} other {on the {date} date}}",
+        "date": "Date · {text}",
+        "product": "Product event · {kind}",
+        "enrollment": "Enrolled one by one, in bulk or by a workflow"
+      },
+      "waitEvent": {
+        "email": {
+          "replied": "email answered",
+          "opened": "email opened",
+          "clicked": "link clicked"
+        },
+        "deal": {
+          "stage_changed": "stage changed",
+          "won": "deal won",
+          "lost": "deal lost"
+        },
+        "activity": {
+          "completed": "activity completed"
+        }
+      },
+      "activity": {
+        "task": "task",
+        "call": "call",
+        "meeting": "meeting",
+        "email": "email",
+        "deadline": "deadline",
+        "lunch": "lunch"
+      }
+    },
+    "scope": {
+      "everyone": "Everyone",
+      "owner": "Owner only",
+      "nobody": "Nobody yet"
+    },
+    "list": {
+      "cols": {
+        "workflow": "Workflow",
+        "trigger": "Trigger",
+        "owner": "Owner",
+        "state": "State",
+        "runs": "Runs 7 d",
+        "failed": "Failed",
+        "activeFor": "Active for"
+      },
+      "empty": "No workflows yet. Start from a template.",
+      "active": "Active",
+      "draft": "Draft",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "transfer": "Transfer",
+      "refused": "Not activated: {reason}",
+      "activated": "«{name}» is active",
+      "deactivated": "«{name}» is a draft again"
+    },
+    "transfer": {
+      "eyebrow": "Transfer ownership",
+      "body": "Owner today: {owner}. The workflow runs with its owner’s permissions; both of you are notified and the change is logged.",
+      "to": "New owner",
+      "nobody": "Nobody else may manage workflows of this kind.",
+      "cancel": "Cancel",
+      "confirm": "Transfer",
+      "done": "Ownership transferred to {name}"
+    },
+    "templates": {
+      "groups": {
+        "follow_up": "Follow up and nurture",
+        "hygiene": "Pipeline hygiene",
+        "handover": "Handover and delivery",
+        "health": "Customer health"
+      },
+      "items": {
+        "no_reply_task": {
+          "n": "No reply in 5 days → task",
+          "d": "Creates a follow-up task for the deal owner when an email gets no answer."
+        },
+        "trial_nurture": {
+          "n": "Trial nurture",
+          "d": "Product events trigger a sequence of tips during the 30-day trial."
+        },
+        "rotting_alert": {
+          "n": "Rotting deal alert",
+          "d": "Notifies the owner when a deal passes its stage threshold."
+        },
+        "close_date_passed": {
+          "n": "Close date passed",
+          "d": "Asks the owner to move the date or close the deal."
+        },
+        "won_project": {
+          "n": "Won → project",
+          "d": "Creates a project from a template when a deal is won."
+        },
+        "won_invoice": {
+          "n": "Won → invoice",
+          "d": "Creates an invoice in the accounting system."
+        },
+        "health_drop": {
+          "n": "Health drop → CSM task",
+          "d": "Creates a task and a ticket when health falls below a threshold."
+        },
+        "payment_failed": {
+          "n": "Payment failed → ticket",
+          "d": "Opens a Billing ticket on failed payments."
+        }
+      },
+      "use": "Use template →",
+      "created": "«{name}» set up and saved as draft"
+    },
+    "monitor": {
+      "health": {
+        "today": "Runs today",
+        "d7": "Last 7 days",
+        "d14": "Last 14 days",
+        "loop": "Loop protection"
+      },
+      "succeeded": "{pct} succeeded",
+      "noRunsToday": "No runs today",
+      "failedRetried": "{failed} failed · {retried} retried",
+      "trend": {
+        "none": "No runs in 14 days",
+        "up": "health trend rising",
+        "down": "health trend falling",
+        "stable": "health trend stable"
+      },
+      "on": "On",
+      "off": "Off",
+      "loop": {
+        "source": "Source values · can be changed",
+        "custom": "Custom · {n} runs per 10 minutes · can be changed",
+        "off": "Switched off · can be changed"
+      },
+      "loopBlocked": "{n} blocked in 7 days",
+      "overview": {
+        "mostFailed": "Most failed",
+        "mostActive": "Most active",
+        "neverRun": "Never run",
+        "empty": {
+          "mostFailed": "No failed runs in 7 days.",
+          "mostActive": "No runs in 7 days.",
+          "neverRun": "Every workflow has run."
+        }
+      },
+      "state": {
+        "draft": "draft",
+        "active": "active"
+      },
+      "today": "Today {time}",
+      "yesterday": "Yesterday",
+      "history": "Run history",
+      "historyNote": "Owners are alerted on failure · runs report to the job monitor",
+      "noRuns": "No runs yet. A run appears here when an active workflow’s trigger happens.",
+      "chips": {
+        "trigger": "Trigger",
+        "condition": "Condition",
+        "if_else": "Branch",
+        "delay": "Delay",
+        "wait_for": "Wait",
+        "create_record": "Create",
+        "update_record": "Update",
+        "delete_record": "Delete",
+        "create_activity": "Activity",
+        "add_note": "Note",
+        "notify": "Notify",
+        "send_email": "Email",
+        "email_auto": "Email",
+        "email_manual": "Email",
+        "activity": "Activity",
+        "enroll_sequence": "Sequence",
+        "assign_owner": "Assign",
+        "create_ticket": "Ticket",
+        "campaign_action": "Campaign",
+        "project_action": "Project",
+        "webhook": "Webhook",
+        "slack": "Slack",
+        "teams": "Teams",
+        "accounting_invoice": "Invoice"
+      },
+      "stepState": {
+        "running": "Running",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
+        "not_met": "Condition not met",
+        "waiting": "Waiting",
+        "queued": "Queued for the worker",
+        "skipped": "Skipped"
+      },
+      "runErrors": {
+        "not_connected": "The integration is not connected",
+        "template_missing": "Template missing",
+        "mailbox_not_connected": "No connected mailbox to send from",
+        "no_recipient": "The record has no email address",
+        "consent": "No consent to email this person",
+        "blocked_address": "Address blocked (private or internal)",
+        "not_available": "This step is not available yet",
+        "unknown_step": "Unknown step",
+        "no_assignee": "No one to assign",
+        "loop_protection": "Stopped by loop protection",
+        "forbidden": "The owner may not do this",
+        "failed": "Failed"
+      },
+      "retry": "Retry",
+      "retried": "Run retried · {state}",
+      "runState": {
+        "running": "Running",
+        "waiting": "Waiting",
+        "completed": "Completed",
+        "failed": "Failed",
+        "stopped": "Stopped",
+        "loop_blocked": "Loop blocked",
+        "retried": "Retried"
+      }
+    },
+    "assign": {
+      "when": {
+        "lead": "lead added",
+        "deal": "deal added",
+        "both": "lead or deal added"
+      },
+      "or": "or",
+      "and": "and",
+      "cond": {
+        "sources": "source is {list}",
+        "min": "employees > {n}",
+        "max": "employees ≤ {n}",
+        "orgExists": "organization exists",
+        "orgNew": "organization is new",
+        "labels": "organization label = {list}",
+        "else": "no other rule matched"
+      },
+      "to": {
+        "team": "{team} · round-robin",
+        "orgOwner": "Organization’s owner",
+        "personOwner": "Person’s owner"
+      },
+      "empty": "No assignment rules yet.",
+      "draft": "Draft",
+      "line": "When {when} · if {cond}",
+      "up": "Move «{name}» up",
+      "down": "Move «{name}» down",
+      "footer": "Rules run top to bottom; the first match assigns the owner and notifies them.",
+      "add": "＋ Add a rule",
+      "test": {
+        "title": "Test a record",
+        "entity": "Record type",
+        "lead": "Lead",
+        "deal": "Deal",
+        "source": "Source",
+        "employees": "Employees",
+        "orgExists": "Organization exists",
+        "no": "No",
+        "yes": "Yes",
+        "label": "Organization label",
+        "noLabel": "None",
+        "failed": "The test could not run."
+      },
+      "result": {
+        "matches": "Matches rule «{rule}»",
+        "noRule": "No rule matches",
+        "none": "The record keeps the owner it was created with",
+        "next": "Round-robin → {name} is next · notified",
+        "noMember": "Round-robin · the team has no active member",
+        "orgOwnerNamed": "Assigned to {name} (organization’s owner) · notified",
+        "orgOwner": "Assigned to the organization’s owner · notified",
+        "personOwnerNamed": "Assigned to {name} (person’s owner) · notified",
+        "personOwner": "Assigned to the person’s owner · notified",
+        "user": "Assigned to {name} · notified",
+        "inactive": "The rule’s assignee is no longer active"
+      },
+      "history": {
+        "title": "Recent assignments",
+        "empty": "No assignments yet."
+      }
+    },
+    "sources": {
+      "Web form": "Web form",
+      "Chatbot": "Chatbot",
+      "Prospect search": "Prospect search",
+      "Import": "Import"
+    },
+    "rule": {
+      "eyebrow": "Assignment rule",
+      "new": "New rule",
+      "name": "Name",
+      "when": "When a record is added",
+      "entity": {
+        "lead": "Lead",
+        "deal": "Deal"
+      },
+      "sources": "Source is any of",
+      "min": "More employees than",
+      "max": "Employees at most",
+      "exists": "Organization exists",
+      "any": "Any",
+      "yes": "Yes",
+      "no": "No",
+      "labels": "Organization label is any of",
+      "assignee": "Assign to",
+      "kinds": {
+        "user": "A user",
+        "team_rr": "A team, round-robin",
+        "org_owner": "The organization’s owner",
+        "person_owner": "The person’s owner"
+      },
+      "user": "User",
+      "team": "Team",
+      "active": "Active",
+      "delete": "Delete rule",
+      "cancel": "Cancel",
+      "save": "Save rule",
+      "saved": "«{name}» saved",
+      "deleted": "«{name}» deleted"
+    },
+    "seq": {
+      "none": "No sequences yet.",
+      "kinds": {
+        "email_auto": "Email · auto",
+        "email_manual": "Email · manual",
+        "delay": "Delay",
+        "activity": "Activity"
+      },
+      "units": {
+        "minutes": "{n} min",
+        "hours": "{n} h",
+        "days": "{n, plural, one {# day} other {# days}}"
+      },
+      "skipsWeekends": "skips weekends",
+      "activitySub": "Owner · {type}",
+      "queued": "Queued for review",
+      "day": "Day {n}",
+      "finished": "Finished",
+      "short": {
+        "email_auto": "Email",
+        "email_manual": "Email",
+        "delay": "Delay"
+      },
+      "stepN": "Step {n} · {kind}",
+      "refused": "Not activated: {reason}",
+      "activated": "«{name}» is active",
+      "deactivated": "«{name}» is a draft again",
+      "sub": "{what} · {n} enrolled",
+      "entities": {
+        "deal": "Deals",
+        "lead": "Leads"
+      },
+      "noSteps": "This sequence has no steps.",
+      "enrolled": "Enrolled",
+      "enrollOne": {
+        "deal": "＋ Enroll a deal",
+        "lead": "＋ Enroll a lead"
+      },
+      "enrollBulk": "Enroll in bulk",
+      "draft": "Draft",
+      "draftNote": "Records can be enrolled once the sequence is active.",
+      "activate": "Activate",
+      "nobody": "No records enrolled yet.",
+      "by": "Enrolled · {via}",
+      "via": {
+        "one": "one by one",
+        "bulk": "bulk",
+        "workflow": "workflow"
+      },
+      "exit": {
+        "reply": "Exited: the contact replied",
+        "stage_change": "Exited: the stage changed",
+        "manual": "Exited by hand",
+        "record_closed": "Exited: the record was closed",
+        "record_deleted": "Exited: the record was deleted"
+      },
+      "state": {
+        "in_progress": "In progress",
+        "failed": "Failed",
+        "completed": "Completed",
+        "exited": "Exited"
+      },
+      "skip": "Skip step",
+      "exitOne": "Exit",
+      "skipped": "Step skipped",
+      "exited": "Exited the sequence"
+    },
+    "enroll": {
+      "search": {
+        "deal": "Find a deal",
+        "lead": "Find a lead"
+      },
+      "one": {
+        "deal": "Enroll a deal",
+        "lead": "Enroll a lead"
+      },
+      "bulk": {
+        "deal": "Enroll deals in bulk",
+        "lead": "Enroll leads in bulk"
+      },
+      "noMatch": "Nothing matches.",
+      "fromView": "From a saved view",
+      "fromPick": "Pick records",
+      "view": "Saved view",
+      "noViews": "No saved views for this record type.",
+      "picked": "{n} selected",
+      "cancel": "Cancel",
+      "confirm": "Enroll",
+      "done": "{n} enrolled{skipped, plural, =0 {} other { · # skipped}}"
+    },
+    "builder": {
+      "none": "No workflow yet.",
+      "toTemplates": "Start from a template →",
+      "sharedEveryone": "active for everyone",
+      "sharedOwner": "active for the owner’s records",
+      "sharedWith": "shared with {names}",
+      "sub": "Owner {owner} · runs with owner’s permissions · {shared}",
+      "added": "Step added · save to publish",
+      "saved": "Saved · version {n} published",
+      "refused": "Not activated: {reason}",
+      "activated": "Workflow activated",
+      "deactivated": "Workflow deactivated",
+      "kinds": {
+        "trigger": "Trigger",
+        "cond": "Condition",
+        "delay": "Delay",
+        "wait": "Wait for",
+        "branch": "If / else",
+        "action": "Action",
+        "hook": "Webhook"
+      },
+      "anyRecord": "Any {entity}",
+      "triggerTitle": {
+        "date": "Date on a {entity}",
+        "product_event": "Product event"
+      },
+      "noKind": "No event named yet",
+      "insertHere": "Add a step here",
+      "ifLabel": "If {cond}",
+      "ifEmpty": "If …",
+      "elseLabel": "Else",
+      "plusStep": "＋ step",
+      "active": "Active",
+      "draft": "Draft",
+      "discard": "Discard",
+      "save": "Save",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "unsaved": "Unsaved changes · Save publishes a new version",
+      "choose": "Choose …",
+      "jsonBroken": "Not valid JSON yet",
+      "group1": "Group 1",
+      "groupOr": "Group {n} (OR)",
+      "field": "Field",
+      "op": "Operator",
+      "value": "Value",
+      "days": "Days",
+      "removeFilter": "Remove filter",
+      "and": "＋ AND",
+      "orGroup": "＋ OR group",
+      "owners": {
+        "record": "The record’s owner",
+        "workflow": "The workflow’s owner"
+      },
+      "unlimited": "unlimited",
+      "notes": {
+        "limits": "Actions and delays per path: {limit} (setting).",
+        "trigger": "Also available: added, deleted, and date triggers on, before or after a date field.",
+        "condition": "Email conditions can test whether a sent email was opened or answered.",
+        "wait": "Gives up after the days set, then continues or stops.",
+        "values": "Field names as keys; @record_owner, @workflow_owner and @today+N are filled in when the step runs.",
+        "delete": "Deletes the record the workflow runs on.",
+        "merge": "Merge fields such as '{'deal.title'}' are filled in from the record.",
+        "email": "Sent from the chosen owner’s connected mailbox; the step fails while none is connected.",
+        "webhook": "Private and link-local addresses are blocked · 10 s timeout · no redirects into blocked ranges.",
+        "notConnected": "{provider} is not connected. The step cannot run, and the workflow cannot be activated, until it is.",
+        "invoice": "Person, organization and products from the deal.",
+        "campaign_action": "Campaign actions arrive with the campaigns module.",
+        "project_action": "Project actions arrive with the projects module."
+      },
+      "providers": {
+        "slack": "Slack",
+        "teams": "Teams",
+        "accounting": "The accounting system"
+      },
+      "remove": "Remove step",
+      "addStep": "Add a step",
+      "palette": {
+        "condition": "Condition",
+        "if_else": "If / else",
+        "delay": "Delay",
+        "wait_for": "Wait for",
+        "create_record": "Create record",
+        "update_record": "Update record",
+        "delete_record": "Delete record",
+        "send_email": "Send email",
+        "add_note": "Add note",
+        "campaign_action": "Campaign action",
+        "project_action": "Project action",
+        "webhook": "Webhook",
+        "slack": "Slack",
+        "teams": "Teams",
+        "create_activity": "Create activity",
+        "notify": "Notify",
+        "enroll_sequence": "Enroll in sequence",
+        "assign_owner": "Assign owner",
+        "create_ticket": "Create ticket",
+        "accounting_invoice": "Invoice in accounting"
+      },
+      "f": {
+        "triggerType": "Trigger",
+        "object": "Object",
+        "event": "Event",
+        "fieldChanged": "Field changed",
+        "date": "Date",
+        "offset": "Days after (negative: before)",
+        "productEvent": "Event",
+        "amount": "Amount",
+        "unit": "Unit",
+        "skipWeekends": "Skip weekends",
+        "waitEvent": "Wait for",
+        "timeout": "Max days",
+        "then": "Then",
+        "values": "Values (raw JSON)",
+        "activityType": "Type",
+        "subject": "Subject",
+        "dueIn": "Due in days",
+        "assignedTo": "Assigned to",
+        "body": "Body",
+        "rawBody": "Body (raw JSON)",
+        "to": "To",
+        "message": "Message",
+        "template": "Template",
+        "from": "From",
+        "sequence": "Sequence",
+        "assignee": "Assign to",
+        "user": "User",
+        "team": "Team",
+        "category": "Category",
+        "method": "Method",
+        "url": "URL",
+        "channel": "Channel"
+      },
+      "triggerTypes": {
+        "event": "Record event",
+        "date": "Date",
+        "product_event": "Product event"
+      },
+      "units": {
+        "minutes": "Minutes",
+        "hours": "Hours",
+        "days": "Days"
+      },
+      "then": {
+        "continue": "Continue",
+        "stop": "Stop"
+      },
+      "assignee": {
+        "user": "A user",
+        "team_rr": "A team, round-robin",
+        "org_owner": "The organization’s owner",
+        "person_owner": "The person’s owner"
+      },
+      "nodes": {
+        "owner": {
+          "workflow": "workflow owner",
+          "record": "{entity} owner"
+        },
+        "notChosen": "not chosen",
+        "noFields": "No fields yet",
+        "assigned": "assigned to {who}",
+        "notAvailable": "Not available yet",
+        "notConnected": "Not connected",
+        "condition": {
+          "empty": "No filter yet"
+        },
+        "if_else": {
+          "t": "If / else"
+        },
+        "delay": {
+          "business": "Wait {n} business days",
+          "days": "Wait {n, plural, one {# day} other {# days}}",
+          "hours": "Wait {n} h",
+          "minutes": "Wait {n} min",
+          "skips": "Skips weekends"
+        },
+        "wait_for": {
+          "t": "Wait for: {event}",
+          "continue": "Max {n} days, then continue",
+          "stop": "Max {n} days, then stop"
+        },
+        "create_record": {
+          "t": "Create {entity}"
+        },
+        "update_record": {
+          "t": "Update {entity}"
+        },
+        "delete_record": {
+          "t": "Delete {entity}"
+        },
+        "create_activity": {
+          "t": "Create activity"
+        },
+        "add_note": {
+          "t": "Add note to {entity}"
+        },
+        "notify": {
+          "t": "Notify {who}"
+        },
+        "send_email": {
+          "t": "Send email from template",
+          "s": "«{template}» · from {who}"
+        },
+        "enroll_sequence": {
+          "t": "Enroll in sequence"
+        },
+        "assign_owner": {
+          "t": "Assign owner",
+          "team": "{team} · round-robin",
+          "org": "organization’s owner",
+          "person": "person’s owner"
+        },
+        "create_ticket": {
+          "t": "Create ticket"
+        },
+        "webhook": {
+          "t": "Call webhook",
+          "noUrl": "No URL yet"
+        },
+        "slack": {
+          "t": "Post to Slack"
+        },
+        "teams": {
+          "t": "Post to Teams"
+        },
+        "accounting_invoice": {
+          "t": "Create invoice in the accounting system",
+          "s": "Person, organization and products from the deal"
+        },
+        "campaign_action": {
+          "t": "Campaign action"
+        },
+        "project_action": {
+          "t": "Create project from template"
+        }
+      }
+    }
+  }
 }

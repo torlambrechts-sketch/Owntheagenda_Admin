@@ -5,7 +5,9 @@
 export function supabaseEnv(): { url: string; key: string } | { problem: string } {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
-  if (!url || !/^https:\/\/[^\s/]+$/.test(url)) return { problem: 'NEXT_PUBLIC_SUPABASE_URL is missing or not an https origin' }
+  // https only; the local stack (http://127.0.0.1) is allowed outside production (D-33)
+  const local = process.env.NODE_ENV !== 'production' && /^http:\/\/(127\.0\.0\.1|localhost):\d{2,5}$/.test(url ?? '')
+  if (!url || !(local || /^https:\/\/[^\s/]+$/.test(url))) return { problem: 'NEXT_PUBLIC_SUPABASE_URL is missing or not an https origin' }
   if (!key) return { problem: 'NEXT_PUBLIC_SUPABASE_ANON_KEY is missing' }
   return { url, key }
 }

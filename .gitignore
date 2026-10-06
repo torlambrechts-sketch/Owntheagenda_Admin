@@ -7,3 +7,5 @@ out/
 next-env.d.ts
 supabase/.temp/
 .vercel
+.cache/
+screens/

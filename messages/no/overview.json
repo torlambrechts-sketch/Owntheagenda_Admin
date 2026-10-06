@@ -1,0 +1,73 @@
+{
+  "overview": {
+    "allApplications": "Alle applikasjoner",
+    "openAnalytics": "Åpne analyse →",
+    "newRecord": "＋ Ny post",
+    "headline": {
+      "conversion": "Prøveperioder konverterer med {pct} denne måneden.",
+      "trials": "{count, plural, =0 {Ingen prøveperioder pågår.} one {Én prøveperiode pågår; {ending, plural, =0 {den slutter ikke innen sju dager.} other {den slutter innen sju dager.}}} other {# prøveperioder pågår; {ending, plural, =0 {ingen slutter innen sju dager.} one {én slutter innen sju dager.} other {# slutter innen sju dager.}}}}",
+      "atRisk": "{count, plural, =0 {Ingen kunder trenger oppfølging før fornyelse.} one {Én kunde trenger oppfølging før fornyelse.} other {# kunder trenger oppfølging før fornyelse.}}",
+      "sla": "{count, plural, one {Én sak nærmer seg målet for første svar.} other {# saker nærmer seg målet for første svar.}}"
+    },
+    "kpi": {
+      "mrr": "MRR",
+      "arr": "ARR {value}",
+      "mrrUnpriced": "Vises når produktene rapporterer priser",
+      "paying": "Betalende organisasjoner",
+      "payingSub": "Felles nøkkel: org.nr. på tvers av produkter",
+      "trials": "Aktive prøveperioder",
+      "trialsEnding": "{count} slutter ≤ 7 d",
+      "trialsConversion": "Prøve → betalende {pct} denne måneden",
+      "trialsNoneEnded": "Ingen prøveperiode er avsluttet denne måneden",
+      "tickets": "Åpne saker",
+      "ticketsRisk": "{count} i SLA-fare",
+      "ticketsMedian": "Median første svar {minutes} min",
+      "ticketsNoMedian": "Ingen første svar ennå",
+      "pipeline": "Vektet pipeline",
+      "rotting": "{count} råtner",
+      "openDeals": "{count, plural, one {# åpen avtale} other {# åpne avtaler}}"
+    },
+    "apps": {
+      "title": "Applikasjoner på admin-API-et",
+      "manage": "Administrer applikasjoner →",
+      "noHost": "Ikke installert",
+      "status": { "on": "Tilkoblet", "off": "Slått av", "none": "Ikke tilkoblet" },
+      "orgs": "org.",
+      "mrr": "MRR",
+      "p95": "p95",
+      "errors": "feil",
+      "lastSync": "Siste hendelse {when}",
+      "noEvents": "Ingen hendelser mottatt ennå"
+    },
+    "todo": {
+      "title": "Trenger deg i dag",
+      "count": "{count, plural, one {# punkt} other {# punkter}}",
+      "empty": "Ingenting trenger deg i dag.",
+      "items": {
+        "ticket_urgent": { "title": "{id} · {subject}", "sub": "Haster · {org} · første svar forfaller om {minutes} min", "cta": "Åpne sak" },
+        "deals_rotting": { "title": "{count, plural, one {# avtale har ligget lenger enn terskelen for steget} other {# avtaler har ligget lenger enn terskelen for steget}}", "sub": "Eldste: {title}", "cta": "Gå gjennom" },
+        "orgs_at_risk": { "title": "{count, plural, one {# organisasjon i faresonen før fornyelse} other {# organisasjoner i faresonen før fornyelse}}", "sub": "{names}", "cta": "Se listen" },
+        "privacy_due": { "title": "Personvernforespørsel forfaller om {days} dager", "sub": "{kind} · {org} · 30-dagersfrist", "cta": "Åpne køen" },
+        "trials_no_owner": { "title": "{count, plural, one {# prøveperiode har ingen eier} other {# prøveperioder har ingen eier}}", "sub": "{names}", "cta": "Tildel" }
+      }
+    },
+    "mrrChart": {
+      "title": "Månedlig gjentakende inntekt",
+      "sub": "12 måneder · per applikasjon",
+      "empty": "Grafen fylles etter hvert som de daglige MRR-øyeblikksbildene samles."
+    },
+    "trials": {
+      "title": "Prøveperioder som utløper først",
+      "all": "Alle organisasjoner →",
+      "cols": { "org": "Organisasjon", "days": "Dager igjen", "survey": "Første måling", "source": "Kilde", "owner": "Eier" },
+      "employees": "{count} ansatte",
+      "days": "{count} d",
+      "empty": "Ingen prøveperiode pågår."
+    },
+    "pipeline": {
+      "title": "Pipeline for nysalg",
+      "open": "Åpne pipeline →",
+      "weighted": "Vektet prognose"
+    }
+  }
+}

@@ -12,7 +12,12 @@
     "test": "vitest run",
     "verify:i18n": "node scripts/verify-i18n.mjs",
     "functions:check": "node scripts/functions.mjs --check",
-    "functions:deploy": "node scripts/functions.mjs"
+    "functions:deploy": "node scripts/functions.mjs",
+    "dev:local": "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54421 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0 next dev -p 3000",
+    "db:seed": "node scripts/seed/generate.mjs",
+    "db:reset": "node scripts/seed/generate.mjs && supabase db reset",
+    "test:db": "node scripts/db/run-tests.mjs",
+    "shoot": "node scripts/visual/shoot.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.5",
@@ -25,6 +30,7 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "@types/node": "^22.9.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

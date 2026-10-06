@@ -2,28 +2,28 @@
 
 import { useActionState } from 'react'
 import { useTranslations } from 'next-intl'
+import { authAlert, authButton, authField, authLabel } from '@/components/auth/styles'
 import { signIn, type LoginState } from './actions'
 
 export function LoginForm() {
   const t = useTranslations('login')
   const [state, action, pending] = useActionState<LoginState, FormData>(signIn, { problem: null })
-  const field = 'mt-1 block w-full rounded-md border border-neutral-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900'
   return (
-    <form action={action} className="flex flex-col gap-4">
-      <label className="text-sm font-medium">
+    <form action={action} className="flex flex-col gap-[14px]">
+      <label className={authLabel}>
         {t('email')}
-        <input name="email" type="email" autoComplete="username" required className={field} />
+        <input name="email" type="email" autoComplete="username" required className={authField} />
       </label>
-      <label className="text-sm font-medium">
+      <label className={authLabel}>
         {t('password')}
-        <input name="password" type="password" autoComplete="current-password" required className={field} />
+        <input name="password" type="password" autoComplete="current-password" required className={authField} />
       </label>
       {state.problem ? (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className={authAlert}>
           {t(state.problem)}
         </p>
       ) : null}
-      <button type="submit" disabled={pending} className="rounded-md bg-neutral-900 px-4 py-2 font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-900 disabled:opacity-60">
+      <button type="submit" disabled={pending} className={authButton}>
         {t('submit')}
       </button>
     </form>

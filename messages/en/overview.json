@@ -1,0 +1,73 @@
+{
+  "overview": {
+    "allApplications": "All applications",
+    "openAnalytics": "Open analytics →",
+    "newRecord": "＋ New record",
+    "headline": {
+      "conversion": "Trials are converting at {pct} this month.",
+      "trials": "{count, plural, =0 {No trials are running.} one {One trial is running; {ending, plural, =0 {it does not end within seven days.} other {it ends within seven days.}}} other {# trials are running; {ending, plural, =0 {none ends within seven days.} one {one ends within seven days.} other {# end within seven days.}}}}",
+      "atRisk": "{count, plural, =0 {No customer needs attention before renewal.} one {One customer needs attention before renewal.} other {# customers need attention before renewal.}}",
+      "sla": "{count, plural, one {One ticket is close to its first-response target.} other {# tickets are close to their first-response target.}}"
+    },
+    "kpi": {
+      "mrr": "MRR",
+      "arr": "ARR {value}",
+      "mrrUnpriced": "Shown when the products report prices",
+      "paying": "Paying organizations",
+      "payingSub": "Shared key: org.nr across products",
+      "trials": "Active trials",
+      "trialsEnding": "{count} end ≤ 7 d",
+      "trialsConversion": "Trial → paid {pct} this month",
+      "trialsNoneEnded": "No trial has ended this month",
+      "tickets": "Open tickets",
+      "ticketsRisk": "{count} at SLA risk",
+      "ticketsMedian": "Median first response {minutes} min",
+      "ticketsNoMedian": "No first response yet",
+      "pipeline": "Weighted pipeline",
+      "rotting": "{count} rotting",
+      "openDeals": "{count, plural, one {# open deal} other {# open deals}}"
+    },
+    "apps": {
+      "title": "Applications on the admin API",
+      "manage": "Manage applications →",
+      "noHost": "Not installed",
+      "status": { "on": "Connected", "off": "Switched off", "none": "Not connected" },
+      "orgs": "orgs",
+      "mrr": "MRR",
+      "p95": "p95",
+      "errors": "errors",
+      "lastSync": "Last event {when}",
+      "noEvents": "No events received yet"
+    },
+    "todo": {
+      "title": "Needs you today",
+      "count": "{count, plural, one {# item} other {# items}}",
+      "empty": "Nothing needs you today.",
+      "items": {
+        "ticket_urgent": { "title": "{id} · {subject}", "sub": "Urgent · {org} · first response due in {minutes} min", "cta": "Open ticket" },
+        "deals_rotting": { "title": "{count, plural, one {# deal is rotting past its stage threshold} other {# deals are rotting past their stage threshold}}", "sub": "Oldest: {title}", "cta": "Review" },
+        "orgs_at_risk": { "title": "{count, plural, one {# organization at risk before renewal} other {# organizations at risk before renewal}}", "sub": "{names}", "cta": "See list" },
+        "privacy_due": { "title": "Personvern request due in {days} days", "sub": "{kind} · {org} · 30-day clock", "cta": "Open queue" },
+        "trials_no_owner": { "title": "{count, plural, one {# trial has no owner} other {# trials have no owner}}", "sub": "{names}", "cta": "Assign" }
+      }
+    },
+    "mrrChart": {
+      "title": "Monthly recurring revenue",
+      "sub": "12 months · by application",
+      "empty": "The chart fills as the daily MRR snapshots accumulate."
+    },
+    "trials": {
+      "title": "Trials expiring soonest",
+      "all": "All organizations →",
+      "cols": { "org": "Organization", "days": "Days left", "survey": "First survey", "source": "Source", "owner": "Owner" },
+      "employees": "{count} employees",
+      "days": "{count} d",
+      "empty": "No trial is running."
+    },
+    "pipeline": {
+      "title": "New business pipeline",
+      "open": "Open pipeline →",
+      "weighted": "Weighted forecast"
+    }
+  }
+}

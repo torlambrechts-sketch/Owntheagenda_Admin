@@ -89,9 +89,12 @@ for (const o of D.orgs) {
   values (${q(p)}, ${q(tenant)}, ${q(acct)}, 'active', jsonb_build_object('employees', ${o.employees}, 'band', ${q(o.band)}), jsonb_build_object('source', ${q(o.source)}), ${ago(o.signupDaysAgo)});`)
     const trial = o.status === 'Trial'
     const cancelled = o.status === 'Cancelled'
-    sql(`insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
-  values (${q(p)}, ${q(tenant)}, ${q(o.band)}, 'month', ${ago(o.signupDaysAgo)}, ${trial ? `${ago(o.signupDaysAgo)} + interval '30 days'` : `${ago(o.signupDaysAgo)} + interval '30 days'`},
-  ${trial ? 'null' : `${ago(o.signupDaysAgo)} + interval '20 days'`}, ${cancelled ? ago(10) : 'null'}, ${cancelled ? ago(1) : 'null'}, now());`)
+    // the design's prices (admin-data.js): Orgpuls the band price, Skiftly 80 %, Avvikspunkt 60 %, Kursrom 190 kr
+    const price = p === 'orgpuls' ? o.price : p === 'skiftly' ? Math.round(o.price * 0.8) : p === 'avvik' ? Math.round(o.price * 0.6) : 190
+    const pay = o.status === 'Past due' ? 'past_due' : o.status === 'Suspended' ? 'suspended' : 'ok'
+    sql(`insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
+  values (${q(p)}, ${q(tenant)}, ${q(o.band)}, 'month', ${ago(o.signupDaysAgo)}, ${ago(o.signupDaysAgo)} + interval '30 days',
+  ${trial ? 'null' : `${ago(o.signupDaysAgo)} + interval '20 days'`}, ${cancelled ? ago(10) : 'null'}, ${cancelled ? ago(1) : 'null'}, ${price}, 'NOK', ${o.employees}, ${q(pay)}, now());`)
   }
   sql(`insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values (${q(uid('org', o.id))}, ${q(o.name)}, ${q(orgnr)}, ${q(acct)}, ${q(o.city)}, ${q(o.fylke)}, ${q(o.industry)}, ${o.employees}, ${q(o.source)}, ${o.ehf},
@@ -114,6 +117,31 @@ for (const p of D.people) {
   ${q(uid('staff', p.owner))}, ${arr(p.labels.map((l) => uid('label-person', l)), 'uuid')}, ${ago(p.lastTouch)},
   ${member ? "'orgpuls'" : 'null'}, ${member ? q('orgpuls-' + o.id) : 'null'}, ${member ? q('u-' + p.id) : 'null'}, ${ago(60)}, ${ago(p.lastTouch)});`)
 }
+
+// ---- MRR history: the design's twelve months (mrrSeries), month-end snapshots before this month; today's is computed
+// the series is scaled per product so its last month meets the seeded subscriptions (the design's series and
+// its per-organization prices are drawn independently)
+const live = Object.fromEntries(D.products.map((p) => [p.id, 0]))
+const payingNow = Object.fromEntries(D.products.map((p) => [p.id, 0]))
+for (const o of D.orgs) {
+  if (o.status === 'Trial' || o.status === 'Cancelled') continue
+  for (const p of o.products) {
+    live[p] += p === 'orgpuls' ? o.price : p === 'skiftly' ? Math.round(o.price * 0.8) : p === 'avvik' ? Math.round(o.price * 0.6) : 190
+    payingNow[p] += 1
+  }
+}
+const lastM = D.mrrSeries[D.mrrSeries.length - 1]
+for (const [i, m] of D.mrrSeries.entries()) {
+  if (i === D.mrrSeries.length - 1) continue
+  const back = D.mrrSeries.length - 1 - i
+  for (const p of D.products) {
+    const k = lastM[p.id] ? live[p.id] / lastM[p.id] : 0
+    const mrr = Math.round(m[p.id] * k)
+    const paying = lastM[p.id] ? Math.round(payingNow[p.id] * (m[p.id] / lastM[p.id])) : 0
+    sql(`insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '${back - 1} months' - interval '1 day')::date, ${q(p.id)}, ${mrr}, ${paying}, 0);`)
+  }
+}
+sql(`select app.snapshot_mrr();`)
 
 sql(`
 commit;

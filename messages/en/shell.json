@@ -1,0 +1,87 @@
+{
+  "shell": {
+    "brand": "Sentral",
+    "brandSub": "Platform admin",
+    "mainMenu": "Main menu",
+    "openMenu": "Open menu",
+    "residency": "EU residency · Frankfurt",
+    "group": { "customers": "Customers", "crm": "CRM", "growth": "Growth", "platform": "Platform" },
+    "crumb": { "all": "Across all applications", "customers": "Customers", "crm": "CRM", "growth": "Growth", "platform": "Platform" },
+    "nav": {
+      "home": "Overview", "customers": "Organizations", "analytics": "Analytics", "tickets": "Tickets", "feed": "Feed", "leads": "Leads",
+      "deals": "Deals", "contacts": "Contacts", "activities": "Activities", "inbox": "Inbox", "meetings": "Meetings", "projects": "Projects",
+      "documents": "Documents", "campaigns": "Campaigns", "leadgen": "Lead capture", "visitors": "Web visitors", "automation": "Automation",
+      "insights": "Insights", "apps": "Applications", "platform": "API and integrations", "settings": "Settings", "security": "Security and privacy",
+      "mobile": "Mobile app", "coverage": "Spec coverage"
+    },
+    "title": {
+      "home": "Overview", "customers": "Organizations", "analytics": "Analytics", "tickets": "Tickets", "feed": "Feed", "leads": "Leads",
+      "deals": "Deals", "contacts": "Contacts", "activities": "Activities", "inbox": "Inbox", "meetings": "Meetings", "projects": "Projects",
+      "documents": "Documents and e-sign", "campaigns": "Campaigns", "leadgen": "Lead capture", "visitors": "Web visitors", "automation": "Automation",
+      "insights": "Insights", "apps": "Applications", "platform": "API and integrations", "settings": "Settings", "security": "Security and privacy",
+      "mobile": "Mobile app", "coverage": "Specification coverage"
+    },
+    "products": {
+      "all": "All applications",
+      "connected": "{count, plural, =0 {None connected via API} one {# connected via API} other {# connected via API}}",
+      "heading": "Applications on the API",
+      "connect": "＋ Connect an application →"
+    },
+    "search": {
+      "label": "Search",
+      "placeholder": "Search records, emails, tickets …",
+      "inputPlaceholder": "Name, email, phone, org.nr, ticket ID or any field value",
+      "none": "Nothing matches «{q}» in records you may see.",
+      "noRecent": "Records you open appear here.",
+      "failed": "The search could not be run. Try again.",
+      "footer": "Searches deals, leads, people, organizations, tickets, products and custom-field values · respects visibility groups",
+      "groups": { "recent": "Recent", "organization": "Organizations", "person": "People", "lead": "Leads", "deal": "Deals", "ticket": "Tickets", "catalog_item": "Products", "activity": "Activities", "project": "Projects", "document": "Documents", "campaign": "Campaigns" },
+      "types": { "organization": "Organization", "person": "Person", "lead": "Lead", "deal": "Deal", "ticket": "Ticket", "catalog_item": "Product", "activity": "Activity", "project": "Project", "document": "Document", "campaign": "Campaign" }
+    },
+    "sandbox": {
+      "toggle": "Sandbox",
+      "title": "Sandbox — Lumio AS demo tenant",
+      "body": "Changes here never touch the live company. Sample records carry a «Sample» label.",
+      "remove": "Remove sample records"
+    },
+    "notifications": {
+      "label": "Notifications",
+      "tabs": { "all": "All", "mention": "Mentions", "reminder": "Reminders", "security": "Security" },
+      "empty": "Nothing here yet.",
+      "failed": "Notifications could not be loaded.",
+      "channels": "In app",
+      "channelsLink": "Reminder channels →",
+      "messages": {
+        "mention": { "title": "{actor} mentioned you on {record}", "body": "«{excerpt}»" },
+        "reminder": { "title": "{subject} in {minutes} minutes", "body": "{type} · {record}" },
+        "security_new_device": { "title": "New device sign-in for {name}", "body": "{device}" },
+        "deal_stage": { "title": "{record} moved to {stage}", "body": "You follow this deal · by {actor}" },
+        "ticket_sla": { "title": "{record} is close to breaching first response", "body": "{priority} · {minutes} min left" },
+        "workflow_failed": { "title": "Workflow «{record}» failed {count} times", "body": "{reason}" }
+      }
+    },
+    "assistant": {
+      "button": "Assistant",
+      "sub": "Reads CRM data you may see · never survey answers",
+      "close": "Close",
+      "notConnected": "The assistant is not connected yet. When the Claude key is added under API and integrations, it can summarize records, answer questions about pipeline, customers and tickets, and draft notes and emails for you to approve.",
+      "connect": "Open API and integrations →",
+      "placeholder": "Ask about deals, customers, tickets …",
+      "voice": "Voice input",
+      "send": "Send",
+      "footer": "Every call goes through the AI gateway · prompts are logged · providers never train on this data",
+      "prompts": { "trials": "Which trials expire this week?", "summarize": "Summarize Lumio AS", "draft": "Draft a follow-up to Kari", "tickets": "Tickets waiting on SLA", "pipeline": "How is the pipeline?" }
+    },
+    "account": {
+      "label": "Account: {name}",
+      "summary": "{role} · MFA by app · IP allowlist {allowlist, select, on {on} other {off}}",
+      "language": "Language",
+      "languages": { "en": "English", "no": "Norsk" },
+      "timeZone": "Time zone",
+      "numberFormat": "Number format",
+      "idle": "Session ends after 30 min idle.",
+      "settings": "Settings",
+      "signOut": "Sign out"
+    }
+  }
+}

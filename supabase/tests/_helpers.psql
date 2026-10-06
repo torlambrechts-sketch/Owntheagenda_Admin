@@ -1,0 +1,36 @@
+-- _helpers.psql — shared helpers, included by each suite with \ir. Temporary functions: gone with the session.
+-- as_staff(email, aal): the JWT claims of a signed-in user with the given assurance level. The role stays the
+-- test's own: the functions under test are security definers that decide by the claims, and the suites read
+-- app tables to check effects. structure_invariants proves the client roles cannot reach app at all.
+create or replace function pg_temp.as_staff(p_email text, p_aal text default 'aal2') returns void language plpgsql as $$
+declare v uuid;
+begin
+  select id into v from auth.users where lower(email) = lower(p_email);
+  if v is null then raise exception 'test helper: no auth user %', p_email; end if;
+  perform set_config('request.jwt.claims', json_build_object('sub', v, 'role', 'authenticated', 'aal', p_aal, 'email', p_email)::text, true);
+  perform set_config('request.jwt.claim.sub', v::text, true);
+end $$;
+
+create or replace function pg_temp.as_nobody() returns void language plpgsql as $$
+begin
+  perform set_config('request.jwt.claims', '', true);
+  perform set_config('request.jwt.claim.sub', '', true);
+end $$;
+
+-- expect_error(sql, message): the statement must raise with this message
+create or replace function pg_temp.expect_error(p_sql text, p_message text, p_label text) returns void language plpgsql as $$
+begin
+  begin
+    execute p_sql;
+  exception when others then
+    if sqlerrm = p_message then raise notice 'ok %', p_label; return; end if;
+    raise exception 'FAIL %: expected «%», got «%»', p_label, p_message, sqlerrm;
+  end;
+  raise exception 'FAIL %: expected «%», but it succeeded', p_label, p_message;
+end $$;
+
+create or replace function pg_temp.check(p_ok boolean, p_label text) returns void language plpgsql as $$
+begin
+  if not coalesce(p_ok, false) then raise exception 'FAIL %', p_label; end if;
+  raise notice 'ok %', p_label;
+end $$;

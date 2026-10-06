@@ -1,5 +1,6 @@
-// Every message key in bokmål exists in English and the reverse: the UI never shows a raw key.
-import { readFileSync } from 'node:fs'
+// Every message key in English exists in bokmål and the reverse, file by file: the UI never shows a raw
+// key. Every namespace file is listed in lib/i18n/messages.ts.
+import { readFileSync, readdirSync } from 'node:fs'
 
 const flat = (o, p = '', out = new Set()) => {
   for (const [k, v] of Object.entries(o)) {
@@ -9,11 +10,27 @@ const flat = (o, p = '', out = new Set()) => {
   }
   return out
 }
-const no = flat(JSON.parse(readFileSync('messages/no.json', 'utf8')))
-const en = flat(JSON.parse(readFileSync('messages/en.json', 'utf8')))
-const missing = [...[...no].filter((k) => !en.has(k)).map((k) => `en lacks ${k}`), ...[...en].filter((k) => !no.has(k)).map((k) => `no lacks ${k}`)]
-if (missing.length) {
-  console.error(missing.join('\n'))
+const problems = []
+const files = new Set([...readdirSync('messages/en'), ...readdirSync('messages/no')].filter((f) => f.endsWith('.json')))
+const index = readFileSync('lib/i18n/messages.ts', 'utf8')
+let total = 0
+const seen = new Map()
+for (const f of files) {
+  let en, no
+  try { en = flat(JSON.parse(readFileSync(`messages/en/${f}`, 'utf8'))) } catch { problems.push(`messages/en/${f} is missing or not JSON`); continue }
+  try { no = flat(JSON.parse(readFileSync(`messages/no/${f}`, 'utf8'))) } catch { problems.push(`messages/no/${f} is missing or not JSON`); continue }
+  for (const k of en) if (!no.has(k)) problems.push(`no/${f} lacks ${k}`)
+  for (const k of no) if (!en.has(k)) problems.push(`en/${f} lacks ${k}`)
+  for (const k of en) {
+    const top = k.split('.')[0]
+    if (seen.has(top) && seen.get(top) !== f) problems.push(`namespace ${top} is in both ${seen.get(top)} and ${f}`)
+    seen.set(top, f)
+  }
+  for (const l of ['en', 'no']) if (!index.includes(`@/messages/${l}/${f}`)) problems.push(`lib/i18n/messages.ts does not load messages/${l}/${f}`)
+  total += en.size
+}
+if (problems.length) {
+  console.error(problems.join('\n'))
   process.exit(1)
 }
-console.log(`i18n: ${no.size} keys in both languages`)
+console.log(`i18n: ${total} keys in both languages across ${files.size} files`)

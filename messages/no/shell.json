@@ -1,0 +1,87 @@
+{
+  "shell": {
+    "brand": "Sentral",
+    "brandSub": "Plattformadmin",
+    "mainMenu": "Hovedmeny",
+    "openMenu": "Åpne meny",
+    "residency": "Data i EU · Frankfurt",
+    "group": { "customers": "Kunder", "crm": "CRM", "growth": "Vekst", "platform": "Plattform" },
+    "crumb": { "all": "På tvers av alle applikasjoner", "customers": "Kunder", "crm": "CRM", "growth": "Vekst", "platform": "Plattform" },
+    "nav": {
+      "home": "Oversikt", "customers": "Organisasjoner", "analytics": "Analyse", "tickets": "Saker", "feed": "Strøm", "leads": "Leads",
+      "deals": "Avtaler", "contacts": "Kontakter", "activities": "Aktiviteter", "inbox": "Innboks", "meetings": "Møter", "projects": "Prosjekter",
+      "documents": "Dokumenter", "campaigns": "Kampanjer", "leadgen": "Leadfangst", "visitors": "Nettbesøkende", "automation": "Automatisering",
+      "insights": "Innsikt", "apps": "Applikasjoner", "platform": "API og integrasjoner", "settings": "Innstillinger", "security": "Sikkerhet og personvern",
+      "mobile": "Mobilapp", "coverage": "Spesifikasjonsdekning"
+    },
+    "title": {
+      "home": "Oversikt", "customers": "Organisasjoner", "analytics": "Analyse", "tickets": "Saker", "feed": "Strøm", "leads": "Leads",
+      "deals": "Avtaler", "contacts": "Kontakter", "activities": "Aktiviteter", "inbox": "Innboks", "meetings": "Møter", "projects": "Prosjekter",
+      "documents": "Dokumenter og e-signering", "campaigns": "Kampanjer", "leadgen": "Leadfangst", "visitors": "Nettbesøkende", "automation": "Automatisering",
+      "insights": "Innsikt", "apps": "Applikasjoner", "platform": "API og integrasjoner", "settings": "Innstillinger", "security": "Sikkerhet og personvern",
+      "mobile": "Mobilapp", "coverage": "Spesifikasjonsdekning"
+    },
+    "products": {
+      "all": "Alle applikasjoner",
+      "connected": "{count, plural, =0 {Ingen koblet til via API} one {# koblet til via API} other {# koblet til via API}}",
+      "heading": "Applikasjoner på API-et",
+      "connect": "＋ Koble til en applikasjon →"
+    },
+    "search": {
+      "label": "Søk",
+      "placeholder": "Søk i poster, e-post, saker …",
+      "inputPlaceholder": "Navn, e-post, telefon, org.nr., saks-ID eller en feltverdi",
+      "none": "Ingenting samsvarer med «{q}» i poster du kan se.",
+      "noRecent": "Poster du åpner, vises her.",
+      "failed": "Søket kunne ikke kjøres. Prøv igjen.",
+      "footer": "Søker i avtaler, leads, personer, organisasjoner, saker, produkter og verdier i egne felt · følger synlighetsgruppene",
+      "groups": { "recent": "Nylig", "organization": "Organisasjoner", "person": "Personer", "lead": "Leads", "deal": "Avtaler", "ticket": "Saker", "catalog_item": "Produkter", "activity": "Aktiviteter", "project": "Prosjekter", "document": "Dokumenter", "campaign": "Kampanjer" },
+      "types": { "organization": "Organisasjon", "person": "Person", "lead": "Lead", "deal": "Avtale", "ticket": "Sak", "catalog_item": "Produkt", "activity": "Aktivitet", "project": "Prosjekt", "document": "Dokument", "campaign": "Kampanje" }
+    },
+    "sandbox": {
+      "toggle": "Sandkasse",
+      "title": "Sandkasse — demokunden Lumio AS",
+      "body": "Endringer her berører aldri det ekte selskapet. Eksempelposter er merket «Eksempel».",
+      "remove": "Fjern eksempelposter"
+    },
+    "notifications": {
+      "label": "Varsler",
+      "tabs": { "all": "Alle", "mention": "Omtaler", "reminder": "Påminnelser", "security": "Sikkerhet" },
+      "empty": "Ingenting her ennå.",
+      "failed": "Varslene kunne ikke lastes.",
+      "channels": "I appen",
+      "channelsLink": "Påminnelseskanaler →",
+      "messages": {
+        "mention": { "title": "{actor} nevnte deg på {record}", "body": "«{excerpt}»" },
+        "reminder": { "title": "{subject} om {minutes} minutter", "body": "{type} · {record}" },
+        "security_new_device": { "title": "Ny enhet logget inn for {name}", "body": "{device}" },
+        "deal_stage": { "title": "{record} flyttet til {stage}", "body": "Du følger denne avtalen · av {actor}" },
+        "ticket_sla": { "title": "{record} nærmer seg fristen for første svar", "body": "{priority} · {minutes} min igjen" },
+        "workflow_failed": { "title": "Arbeidsflyten «{record}» feilet {count} ganger", "body": "{reason}" }
+      }
+    },
+    "assistant": {
+      "button": "Assistent",
+      "sub": "Leser CRM-data du har tilgang til · aldri svar fra undersøkelser",
+      "close": "Lukk",
+      "notConnected": "Assistenten er ikke koblet til ennå. Når Claude-nøkkelen er lagt inn under API og integrasjoner, kan den oppsummere poster, svare på spørsmål om pipeline, kunder og saker, og lage utkast til notater og e-post som du godkjenner.",
+      "connect": "Åpne API og integrasjoner →",
+      "placeholder": "Spør om avtaler, kunder, saker …",
+      "voice": "Taleinndata",
+      "send": "Send",
+      "footer": "Hvert kall går gjennom AI-porten · forespørsler logges · leverandører trener aldri på disse dataene",
+      "prompts": { "trials": "Hvilke prøveperioder utløper denne uken?", "summarize": "Oppsummer Lumio AS", "draft": "Lag utkast til oppfølging til Kari", "tickets": "Saker som venter på SLA", "pipeline": "Hvordan går pipelinen?" }
+    },
+    "account": {
+      "label": "Konto: {name}",
+      "summary": "{role} · MFA med app · IP-tilgangsliste {allowlist, select, on {på} other {av}}",
+      "language": "Språk",
+      "languages": { "en": "English", "no": "Norsk" },
+      "timeZone": "Tidssone",
+      "numberFormat": "Tallformat",
+      "idle": "Økten avsluttes etter 30 minutter uten aktivitet.",
+      "settings": "Innstillinger",
+      "signOut": "Logg ut"
+    }
+  }
+}

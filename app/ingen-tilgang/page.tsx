@@ -1,17 +1,18 @@
 import { getTranslations } from 'next-intl/server'
 import { signOut } from '@/app/login/actions'
+import { AuthCard } from '@/components/auth/AuthCard'
+import { authButton } from '@/components/auth/styles'
 
 export default async function DeniedPage() {
   const t = await getTranslations()
   return (
-    <main className="mx-auto mt-24 w-full max-w-sm px-4">
-      <h1 className="mb-4 text-2xl font-semibold">{t('denied.title')}</h1>
-      <p className="mb-6 text-neutral-700">{t('denied.body')}</p>
+    <AuthCard title={t('denied.title')}>
+      <p className="m-0 text-13 leading-[1.55] text-muted">{t('denied.body')}</p>
       <form action={signOut}>
-        <button type="submit" className="underline focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900">
+        <button type="submit" className={authButton}>
           {t('app.signOut')}
         </button>
       </form>
-    </main>
+    </AuthCard>
   )
 }

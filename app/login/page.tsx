@@ -1,12 +1,14 @@
 import { getTranslations } from 'next-intl/server'
+import { AuthCard } from '@/components/auth/AuthCard'
 import { LoginForm } from './LoginForm'
 
-export default async function LoginPage() {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ idle?: string }> }) {
   const t = await getTranslations('login')
+  const { idle } = await searchParams
   return (
-    <main className="mx-auto mt-24 w-full max-w-sm px-4">
-      <h1 className="mb-6 text-2xl font-semibold">{t('title')}</h1>
+    <AuthCard title={t('title')}>
+      {idle ? <p role="status" className="m-0 text-12.5 text-muted">{t('idle')}</p> : null}
       <LoginForm />
-    </main>
+    </AuthCard>
   )
 }

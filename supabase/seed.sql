@@ -155,629 +155,629 @@ insert into app.labels (id, entity, name, bg, ink, ord) values ('e08f1d0b-4734-4
 insert into app.accounts (id, name, org_number, created_at) values ('4b24a501-5544-411f-afe2-e5ab241da3f8', 'Lumio AS', '987467565', now() - interval '78 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o1', '4b24a501-5544-411f-afe2-e5ab241da3f8', 'active', jsonb_build_object('employees', 48, 'band', '26–100'), jsonb_build_object('source', 'Partner'), now() - interval '78 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o1', '26–100', 'month', now() - interval '78 days', now() - interval '78 days' + interval '30 days',
-  now() - interval '78 days' + interval '20 days', null, null, now());
+  now() - interval '78 days' + interval '20 days', null, null, 565, 'NOK', 48, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o1', '4b24a501-5544-411f-afe2-e5ab241da3f8', 'active', jsonb_build_object('employees', 48, 'band', '26–100'), jsonb_build_object('source', 'Partner'), now() - interval '78 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o1', '26–100', 'month', now() - interval '78 days', now() - interval '78 days' + interval '30 days',
-  now() - interval '78 days' + interval '20 days', null, null, now());
+  now() - interval '78 days' + interval '20 days', null, null, 452, 'NOK', 48, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('d67d00a4-e8a8-430b-ac52-245c8a0d1fd9', 'Lumio AS', '987467565', '4b24a501-5544-411f-afe2-e5ab241da3f8', 'Oslo', 'Oslo', 'Professional services', 48, 'Partner', true,
   'e53792ad-5466-4510-a48c-6321c729dace', 'a56d1006-261a-4159-acba-5928ecb0540a', array['1dd4ee9b-2d63-4552-a185-583b009b62d2', '461229a6-2e7e-4222-a10a-8ebdfde335c4']::uuid[], now() - interval '78 days', now() - interval '5 days', now() - interval '3 days');
 insert into app.accounts (id, name, org_number, created_at) values ('cb0218f3-3990-4eea-a7b3-fa1c9170c2a6', 'Nordvik Anlegg AS', '959530311', now() - interval '18 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o2', 'cb0218f3-3990-4eea-a7b3-fa1c9170c2a6', 'active', jsonb_build_object('employees', 88, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '18 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o2', '26–100', 'month', now() - interval '18 days', now() - interval '18 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 565, 'NOK', 88, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o2', 'cb0218f3-3990-4eea-a7b3-fa1c9170c2a6', 'active', jsonb_build_object('employees', 88, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '18 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o2', '26–100', 'month', now() - interval '18 days', now() - interval '18 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 452, 'NOK', 88, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o2', 'cb0218f3-3990-4eea-a7b3-fa1c9170c2a6', 'active', jsonb_build_object('employees', 88, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '18 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o2', '26–100', 'month', now() - interval '18 days', now() - interval '18 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 339, 'NOK', 88, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('a0c6edf4-cb52-4f00-adaa-77becd8cc14a', 'Nordvik Anlegg AS', '959530311', 'cb0218f3-3990-4eea-a7b3-fa1c9170c2a6', 'Trondheim', 'Trøndelag', 'Hospitality', 88, 'Direct', false,
   'e53792ad-5466-4510-a48c-6321c729dace', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array[]::uuid[], now() - interval '18 days', now() - interval '5 days', now() - interval '4 days');
 insert into app.accounts (id, name, org_number, created_at) values ('7d81c932-0b50-435e-ae2e-2295553c1b37', 'Bergheim Bygg AS', '982954358', now() - interval '22 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o3', '7d81c932-0b50-435e-ae2e-2295553c1b37', 'active', jsonb_build_object('employees', 16, 'band', '1–25'), jsonb_build_object('source', 'Direct'), now() - interval '22 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o3', '1–25', 'month', now() - interval '22 days', now() - interval '22 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 265, 'NOK', 16, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('41ef39ab-5ed7-45cf-a2c0-2ba6d1a8b355', 'Bergheim Bygg AS', '982954358', '7d81c932-0b50-435e-ae2e-2295553c1b37', 'Kristiansand', 'Agder', 'Health and care', 16, 'Direct', true,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array['7c985b41-071f-4a29-af01-6c7a9929809a']::uuid[], now() - interval '22 days', now() - interval '5 days', now() - interval '5 days');
 insert into app.accounts (id, name, org_number, created_at) values ('45957260-0cde-43c7-a5d9-2b8b559c3a6e', 'Solstrand Helse AS', '971558867', now() - interval '17 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o4', '45957260-0cde-43c7-a5d9-2b8b559c3a6e', 'active', jsonb_build_object('employees', 153, 'band', '101–250'), jsonb_build_object('source', 'LinkedIn'), now() - interval '17 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o4', '101–250', 'month', now() - interval '17 days', now() - interval '17 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 1190, 'NOK', 153, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o4', '45957260-0cde-43c7-a5d9-2b8b559c3a6e', 'active', jsonb_build_object('employees', 153, 'band', '101–250'), jsonb_build_object('source', 'LinkedIn'), now() - interval '17 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o4', '101–250', 'month', now() - interval '17 days', now() - interval '17 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 714, 'NOK', 153, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('d8e6d1a5-820f-4952-a9dc-6c367c76c647', 'Solstrand Helse AS', '971558867', '45957260-0cde-43c7-a5d9-2b8b559c3a6e', 'Fredrikstad', 'Østfold', 'Professional services', 153, 'LinkedIn', false,
   'e53792ad-5466-4510-a48c-6321c729dace', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array['691da628-1d9d-4383-a1aa-df88817da11a']::uuid[], now() - interval '17 days', now() - interval '5 days', now() - interval '6 days');
 insert into app.accounts (id, name, org_number, created_at) values ('df205a21-46d9-494c-a51d-d2e717da2de7', 'Kvamme Regnskap AS', '959932188', now() - interval '533 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o5', 'df205a21-46d9-494c-a51d-d2e717da2de7', 'active', jsonb_build_object('employees', 54, 'band', '26–100'), jsonb_build_object('source', 'LinkedIn'), now() - interval '533 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o5', '26–100', 'month', now() - interval '533 days', now() - interval '533 days' + interval '30 days',
-  now() - interval '533 days' + interval '20 days', null, null, now());
+  now() - interval '533 days' + interval '20 days', null, null, 565, 'NOK', 54, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o5', 'df205a21-46d9-494c-a51d-d2e717da2de7', 'active', jsonb_build_object('employees', 54, 'band', '26–100'), jsonb_build_object('source', 'LinkedIn'), now() - interval '533 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o5', '26–100', 'month', now() - interval '533 days', now() - interval '533 days' + interval '30 days',
-  now() - interval '533 days' + interval '20 days', null, null, now());
+  now() - interval '533 days' + interval '20 days', null, null, 339, 'NOK', 54, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('33b11070-2b4f-4b6f-ac0d-994760006b58', 'Kvamme Regnskap AS', '959932188', 'df205a21-46d9-494c-a51d-d2e717da2de7', 'Lillestrøm', 'Akershus', 'Aquaculture', 54, 'LinkedIn', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '533 days', now() - interval '5 days', now() - interval '7 days');
 insert into app.accounts (id, name, org_number, created_at) values ('4df24ad6-044d-45c1-afab-00d571d83111', 'Tindra Barnehager AS', '972359843', now() - interval '28 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o6', '4df24ad6-044d-45c1-afab-00d571d83111', 'active', jsonb_build_object('employees', 25, 'band', '1–25'), jsonb_build_object('source', 'LinkedIn'), now() - interval '28 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o6', '1–25', 'month', now() - interval '28 days', now() - interval '28 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 265, 'NOK', 25, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('4e617412-6788-4d9f-ac8c-97a03da2914a', 'Tindra Barnehager AS', '972359843', '4df24ad6-044d-45c1-afab-00d571d83111', 'Stavanger', 'Rogaland', 'Hospitality', 25, 'LinkedIn', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '28 days', now() - interval '5 days', now() - interval '8 days');
 insert into app.accounts (id, name, org_number, created_at) values ('bcd99472-9bb2-43ee-a366-013792fe5b90', 'Havbris Sjømat AS', '936827385', now() - interval '519 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o7', 'bcd99472-9bb2-43ee-a366-013792fe5b90', 'active', jsonb_build_object('employees', 90, 'band', '26–100'), jsonb_build_object('source', 'LinkedIn'), now() - interval '519 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o7', '26–100', 'month', now() - interval '519 days', now() - interval '519 days' + interval '30 days',
-  now() - interval '519 days' + interval '20 days', null, null, now());
+  now() - interval '519 days' + interval '20 days', null, null, 565, 'NOK', 90, 'past_due', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o7', 'bcd99472-9bb2-43ee-a366-013792fe5b90', 'active', jsonb_build_object('employees', 90, 'band', '26–100'), jsonb_build_object('source', 'LinkedIn'), now() - interval '519 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o7', '26–100', 'month', now() - interval '519 days', now() - interval '519 days' + interval '30 days',
-  now() - interval '519 days' + interval '20 days', null, null, now());
+  now() - interval '519 days' + interval '20 days', null, null, 339, 'NOK', 90, 'past_due', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('kurs', 'kurs-o7', 'bcd99472-9bb2-43ee-a366-013792fe5b90', 'active', jsonb_build_object('employees', 90, 'band', '26–100'), jsonb_build_object('source', 'LinkedIn'), now() - interval '519 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('kurs', 'kurs-o7', '26–100', 'month', now() - interval '519 days', now() - interval '519 days' + interval '30 days',
-  now() - interval '519 days' + interval '20 days', null, null, now());
+  now() - interval '519 days' + interval '20 days', null, null, 190, 'NOK', 90, 'past_due', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('859e3e5a-170f-4a29-a996-65d77f5f88e3', 'Havbris Sjømat AS', '936827385', 'bcd99472-9bb2-43ee-a366-013792fe5b90', 'Stavanger', 'Rogaland', 'Transport', 90, 'LinkedIn', true,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '519 days', now() - interval '5 days', now() - interval '9 days');
 insert into app.accounts (id, name, org_number, created_at) values ('f8063d30-c4d2-4dce-a2d2-7182fd78932e', 'Elvebakken kommune', '983546604', now() - interval '582 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o8', 'f8063d30-c4d2-4dce-a2d2-7182fd78932e', 'active', jsonb_build_object('employees', 60, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '582 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o8', '26–100', 'month', now() - interval '582 days', now() - interval '582 days' + interval '30 days',
-  now() - interval '582 days' + interval '20 days', null, null, now());
+  now() - interval '582 days' + interval '20 days', null, null, 565, 'NOK', 60, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o8', 'f8063d30-c4d2-4dce-a2d2-7182fd78932e', 'active', jsonb_build_object('employees', 60, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '582 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o8', '26–100', 'month', now() - interval '582 days', now() - interval '582 days' + interval '30 days',
-  now() - interval '582 days' + interval '20 days', null, null, now());
+  now() - interval '582 days' + interval '20 days', null, null, 452, 'NOK', 60, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('4e8d8728-68d8-4be4-abf8-c65654b80ac6', 'Elvebakken kommune', '983546604', 'f8063d30-c4d2-4dce-a2d2-7182fd78932e', 'Stavanger', 'Rogaland', 'Education', 60, 'Direct', true,
   'e53792ad-5466-4510-a48c-6321c729dace', 'a56d1006-261a-4159-acba-5928ecb0540a', array['c7b9d5b1-7d69-4ed0-a250-730a05f2c493']::uuid[], now() - interval '582 days', now() - interval '5 days', now() - interval '10 days');
 insert into app.accounts (id, name, org_number, created_at) values ('a83621c0-5464-4ac4-a2ec-45c605eaf306', 'Nordlys Logistikk AS', '992722606', now() - interval '308 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o9', 'a83621c0-5464-4ac4-a2ec-45c605eaf306', 'active', jsonb_build_object('employees', 226, 'band', '101–250'), jsonb_build_object('source', 'Newsletter'), now() - interval '308 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o9', '101–250', 'month', now() - interval '308 days', now() - interval '308 days' + interval '30 days',
-  now() - interval '308 days' + interval '20 days', null, null, now());
+  now() - interval '308 days' + interval '20 days', null, null, 1190, 'NOK', 226, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o9', 'a83621c0-5464-4ac4-a2ec-45c605eaf306', 'active', jsonb_build_object('employees', 226, 'band', '101–250'), jsonb_build_object('source', 'Newsletter'), now() - interval '308 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o9', '101–250', 'month', now() - interval '308 days', now() - interval '308 days' + interval '30 days',
-  now() - interval '308 days' + interval '20 days', null, null, now());
+  now() - interval '308 days' + interval '20 days', null, null, 714, 'NOK', 226, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('31433ce8-231b-42e5-afc0-064c77bab0ef', 'Nordlys Logistikk AS', '992722606', 'a83621c0-5464-4ac4-a2ec-45c605eaf306', 'Hamar', 'Innlandet', 'Professional services', 226, 'Newsletter', true,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '308 days', now() - interval '5 days', now() - interval '2 days');
 insert into app.accounts (id, name, org_number, created_at) values ('8d372b2d-b258-4acb-a334-382c8581ab13', 'Granli Eiendom AS', '943527998', now() - interval '184 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o10', '8d372b2d-b258-4acb-a334-382c8581ab13', 'active', jsonb_build_object('employees', 26, 'band', '26–100'), jsonb_build_object('source', 'Partner'), now() - interval '184 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o10', '26–100', 'month', now() - interval '184 days', now() - interval '184 days' + interval '30 days',
-  now() - interval '184 days' + interval '20 days', null, null, now());
+  now() - interval '184 days' + interval '20 days', null, null, 565, 'NOK', 26, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('b6aa023f-6d43-4e34-ae38-90c5be501749', 'Granli Eiendom AS', '943527998', '8d372b2d-b258-4acb-a334-382c8581ab13', 'Tønsberg', 'Vestfold', 'Manufacturing', 26, 'Partner', true,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array[]::uuid[], now() - interval '184 days', now() - interval '5 days', now() - interval '3 days');
 insert into app.accounts (id, name, org_number, created_at) values ('4a5a24f7-0c51-4c45-aac1-e885b8eece23', 'Brattli Tannklinikk', '926920692', now() - interval '353 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o11', '4a5a24f7-0c51-4c45-aac1-e885b8eece23', 'active', jsonb_build_object('employees', 111, 'band', '101–250'), jsonb_build_object('source', 'Newsletter'), now() - interval '353 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o11', '101–250', 'month', now() - interval '353 days', now() - interval '353 days' + interval '30 days',
-  now() - interval '353 days' + interval '20 days', null, null, now());
+  now() - interval '353 days' + interval '20 days', null, null, 1190, 'NOK', 111, 'suspended', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('bb5bc2fb-39f9-4fc3-a983-cb1a50d8ec88', 'Brattli Tannklinikk', '926920692', '4a5a24f7-0c51-4c45-aac1-e885b8eece23', 'Kristiansand', 'Agder', 'Health and care', 111, 'Newsletter', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '353 days', now() - interval '5 days', now() - interval '4 days');
 insert into app.accounts (id, name, org_number, created_at) values ('88ee623f-3244-4e9b-a3e4-187dea5f6dd1', 'Mørkved IT AS', '944410552', now() - interval '769 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o12', '88ee623f-3244-4e9b-a3e4-187dea5f6dd1', 'active', jsonb_build_object('employees', 6, 'band', '1–25'), jsonb_build_object('source', 'Organic search'), now() - interval '769 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o12', '1–25', 'month', now() - interval '769 days', now() - interval '769 days' + interval '30 days',
-  now() - interval '769 days' + interval '20 days', null, null, now());
+  now() - interval '769 days' + interval '20 days', null, null, 265, 'NOK', 6, 'past_due', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('kurs', 'kurs-o12', '88ee623f-3244-4e9b-a3e4-187dea5f6dd1', 'active', jsonb_build_object('employees', 6, 'band', '1–25'), jsonb_build_object('source', 'Organic search'), now() - interval '769 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('kurs', 'kurs-o12', '1–25', 'month', now() - interval '769 days', now() - interval '769 days' + interval '30 days',
-  now() - interval '769 days' + interval '20 days', null, null, now());
+  now() - interval '769 days' + interval '20 days', null, null, 190, 'NOK', 6, 'past_due', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('2a8591b9-1d16-4630-ad88-4e36a1447e21', 'Mørkved IT AS', '944410552', '88ee623f-3244-4e9b-a3e4-187dea5f6dd1', 'Tønsberg', 'Vestfold', 'Education', 6, 'Organic search', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '769 days', now() - interval '5 days', now() - interval '5 days');
 insert into app.accounts (id, name, org_number, created_at) values ('312e95f3-62c8-4941-ac85-eac471161454', 'Strandby Hotell AS', '939991720', now() - interval '54 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o13', '312e95f3-62c8-4941-ac85-eac471161454', 'active', jsonb_build_object('employees', 75, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '54 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o13', '26–100', 'month', now() - interval '54 days', now() - interval '54 days' + interval '30 days',
-  now() - interval '54 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '54 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 565, 'NOK', 75, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('f2d9b825-2672-42a3-ab82-2170b4812f5a', 'Strandby Hotell AS', '939991720', '312e95f3-62c8-4941-ac85-eac471161454', 'Trondheim', 'Trøndelag', 'Aquaculture', 75, 'Direct', false,
   'e53792ad-5466-4510-a48c-6321c729dace', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array[]::uuid[], now() - interval '54 days', now() - interval '5 days', now() - interval '6 days');
 insert into app.accounts (id, name, org_number, created_at) values ('44596033-93f0-4932-a02d-60b313d3f917', 'Lyngvær Rør AS', '993417414', now() - interval '387 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o14', '44596033-93f0-4932-a02d-60b313d3f917', 'active', jsonb_build_object('employees', 6, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '387 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o14', '1–25', 'month', now() - interval '387 days', now() - interval '387 days' + interval '30 days',
-  now() - interval '387 days' + interval '20 days', null, null, now());
+  now() - interval '387 days' + interval '20 days', null, null, 265, 'NOK', 6, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o14', '44596033-93f0-4932-a02d-60b313d3f917', 'active', jsonb_build_object('employees', 6, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '387 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o14', '1–25', 'month', now() - interval '387 days', now() - interval '387 days' + interval '30 days',
-  now() - interval '387 days' + interval '20 days', null, null, now());
+  now() - interval '387 days' + interval '20 days', null, null, 159, 'NOK', 6, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('kurs', 'kurs-o14', '44596033-93f0-4932-a02d-60b313d3f917', 'active', jsonb_build_object('employees', 6, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '387 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('kurs', 'kurs-o14', '1–25', 'month', now() - interval '387 days', now() - interval '387 days' + interval '30 days',
-  now() - interval '387 days' + interval '20 days', null, null, now());
+  now() - interval '387 days' + interval '20 days', null, null, 190, 'NOK', 6, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('cefcd348-52f2-4f37-a3b3-5e42346717c2', 'Lyngvær Rør AS', '993417414', '44596033-93f0-4932-a02d-60b313d3f917', 'Kristiansand', 'Agder', 'ICT', 6, 'Referral', true,
   'e53792ad-5466-4510-a48c-6321c729dace', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '387 days', now() - interval '5 days', now() - interval '7 days');
 insert into app.accounts (id, name, org_number, created_at) values ('bffcbb45-5409-445b-ab94-3adba014c30a', 'Fjellheim skole', '911550441', now() - interval '21 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o15', 'bffcbb45-5409-445b-ab94-3adba014c30a', 'active', jsonb_build_object('employees', 33, 'band', '26–100'), jsonb_build_object('source', 'LinkedIn'), now() - interval '21 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o15', '26–100', 'month', now() - interval '21 days', now() - interval '21 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 565, 'NOK', 33, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o15', 'bffcbb45-5409-445b-ab94-3adba014c30a', 'active', jsonb_build_object('employees', 33, 'band', '26–100'), jsonb_build_object('source', 'LinkedIn'), now() - interval '21 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o15', '26–100', 'month', now() - interval '21 days', now() - interval '21 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 452, 'NOK', 33, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o15', 'bffcbb45-5409-445b-ab94-3adba014c30a', 'active', jsonb_build_object('employees', 33, 'band', '26–100'), jsonb_build_object('source', 'LinkedIn'), now() - interval '21 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o15', '26–100', 'month', now() - interval '21 days', now() - interval '21 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 339, 'NOK', 33, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('kurs', 'kurs-o15', 'bffcbb45-5409-445b-ab94-3adba014c30a', 'active', jsonb_build_object('employees', 33, 'band', '26–100'), jsonb_build_object('source', 'LinkedIn'), now() - interval '21 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('kurs', 'kurs-o15', '26–100', 'month', now() - interval '21 days', now() - interval '21 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 190, 'NOK', 33, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('c08bd479-9ca7-4884-ac80-5fc865ab689f', 'Fjellheim skole', '911550441', 'bffcbb45-5409-445b-ab94-3adba014c30a', 'Bodø', 'Nordland', 'Retail', 33, 'LinkedIn', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array['c7b9d5b1-7d69-4ed0-a250-730a05f2c493']::uuid[], now() - interval '21 days', now() - interval '5 days', now() - interval '8 days');
 insert into app.accounts (id, name, org_number, created_at) values ('9571c996-f698-4074-a2db-1e2aacd389a3', 'Askeland Advokat DA', '955728362', now() - interval '15 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o16', '9571c996-f698-4074-a2db-1e2aacd389a3', 'active', jsonb_build_object('employees', 47, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '15 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o16', '26–100', 'month', now() - interval '15 days', now() - interval '15 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 565, 'NOK', 47, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o16', '9571c996-f698-4074-a2db-1e2aacd389a3', 'active', jsonb_build_object('employees', 47, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '15 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o16', '26–100', 'month', now() - interval '15 days', now() - interval '15 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 452, 'NOK', 47, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('b73ecda4-4123-4d55-a935-7b6e4ee258b9', 'Askeland Advokat DA', '955728362', '9571c996-f698-4074-a2db-1e2aacd389a3', 'Ålesund', 'Møre og Romsdal', 'Professional services', 47, 'Direct', false,
   'e53792ad-5466-4510-a48c-6321c729dace', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array[]::uuid[], now() - interval '15 days', now() - interval '5 days', now() - interval '9 days');
 insert into app.accounts (id, name, org_number, created_at) values ('d178c619-90fe-4664-a6ae-3503e2d0b5e5', 'Kystlinje Transport AS', '972765862', now() - interval '444 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o17', 'd178c619-90fe-4664-a6ae-3503e2d0b5e5', 'active', jsonb_build_object('employees', 4, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '444 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o17', '1–25', 'month', now() - interval '444 days', now() - interval '444 days' + interval '30 days',
-  now() - interval '444 days' + interval '20 days', null, null, now());
+  now() - interval '444 days' + interval '20 days', null, null, 265, 'NOK', 4, 'suspended', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('2d7585f5-06f1-427f-a2bd-e17f761f6ac6', 'Kystlinje Transport AS', '972765862', 'd178c619-90fe-4664-a6ae-3503e2d0b5e5', 'Kristiansand', 'Agder', 'Construction', 4, 'Referral', true,
   'e53792ad-5466-4510-a48c-6321c729dace', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '444 days', now() - interval '5 days', now() - interval '10 days');
 insert into app.accounts (id, name, org_number, created_at) values ('aa81d9b7-ead6-4dac-ac19-6c7d7bf592bf', 'Rimfrost Bakeri AS', '958158719', now() - interval '334 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o18', 'aa81d9b7-ead6-4dac-ac19-6c7d7bf592bf', 'active', jsonb_build_object('employees', 74, 'band', '26–100'), jsonb_build_object('source', 'Partner'), now() - interval '334 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o18', '26–100', 'month', now() - interval '334 days', now() - interval '334 days' + interval '30 days',
-  now() - interval '334 days' + interval '20 days', null, null, now());
+  now() - interval '334 days' + interval '20 days', null, null, 565, 'NOK', 74, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o18', 'aa81d9b7-ead6-4dac-ac19-6c7d7bf592bf', 'active', jsonb_build_object('employees', 74, 'band', '26–100'), jsonb_build_object('source', 'Partner'), now() - interval '334 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o18', '26–100', 'month', now() - interval '334 days', now() - interval '334 days' + interval '30 days',
-  now() - interval '334 days' + interval '20 days', null, null, now());
+  now() - interval '334 days' + interval '20 days', null, null, 452, 'NOK', 74, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('f058e182-e3f9-4e3c-a237-aa2e67da9238', 'Rimfrost Bakeri AS', '958158719', 'aa81d9b7-ead6-4dac-ac19-6c7d7bf592bf', 'Tønsberg', 'Vestfold', 'Hospitality', 74, 'Partner', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '334 days', now() - interval '5 days', now() - interval '2 days');
 insert into app.accounts (id, name, org_number, created_at) values ('796e911b-d465-4cc7-aa1e-b934d4006cc2', 'Vardø Havn KF', '974355670', now() - interval '617 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o19', '796e911b-d465-4cc7-aa1e-b934d4006cc2', 'active', jsonb_build_object('employees', 1, 'band', '1–25'), jsonb_build_object('source', 'LinkedIn'), now() - interval '617 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o19', '1–25', 'month', now() - interval '617 days', now() - interval '617 days' + interval '30 days',
-  now() - interval '617 days' + interval '20 days', null, null, now());
+  now() - interval '617 days' + interval '20 days', null, null, 265, 'NOK', 1, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o19', '796e911b-d465-4cc7-aa1e-b934d4006cc2', 'active', jsonb_build_object('employees', 1, 'band', '1–25'), jsonb_build_object('source', 'LinkedIn'), now() - interval '617 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o19', '1–25', 'month', now() - interval '617 days', now() - interval '617 days' + interval '30 days',
-  now() - interval '617 days' + interval '20 days', null, null, now());
+  now() - interval '617 days' + interval '20 days', null, null, 212, 'NOK', 1, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o19', '796e911b-d465-4cc7-aa1e-b934d4006cc2', 'active', jsonb_build_object('employees', 1, 'band', '1–25'), jsonb_build_object('source', 'LinkedIn'), now() - interval '617 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o19', '1–25', 'month', now() - interval '617 days', now() - interval '617 days' + interval '30 days',
-  now() - interval '617 days' + interval '20 days', null, null, now());
+  now() - interval '617 days' + interval '20 days', null, null, 159, 'NOK', 1, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('kurs', 'kurs-o19', '796e911b-d465-4cc7-aa1e-b934d4006cc2', 'active', jsonb_build_object('employees', 1, 'band', '1–25'), jsonb_build_object('source', 'LinkedIn'), now() - interval '617 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('kurs', 'kurs-o19', '1–25', 'month', now() - interval '617 days', now() - interval '617 days' + interval '30 days',
-  now() - interval '617 days' + interval '20 days', null, null, now());
+  now() - interval '617 days' + interval '20 days', null, null, 190, 'NOK', 1, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('5c3fd076-21bc-41a3-a9ca-5f6a76bd936c', 'Vardø Havn KF', '974355670', '796e911b-d465-4cc7-aa1e-b934d4006cc2', 'Tromsø', 'Troms', 'Construction', 1, 'LinkedIn', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array[]::uuid[], now() - interval '617 days', now() - interval '5 days', now() - interval '3 days');
 insert into app.accounts (id, name, org_number, created_at) values ('f059160b-baef-4d96-abf8-856636b9b286', 'Østmark Maskin AS', '981942651', now() - interval '796 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o20', 'f059160b-baef-4d96-abf8-856636b9b286', 'active', jsonb_build_object('employees', 31, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '796 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o20', '26–100', 'month', now() - interval '796 days', now() - interval '796 days' + interval '30 days',
-  now() - interval '796 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '796 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 565, 'NOK', 31, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o20', 'f059160b-baef-4d96-abf8-856636b9b286', 'active', jsonb_build_object('employees', 31, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '796 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o20', '26–100', 'month', now() - interval '796 days', now() - interval '796 days' + interval '30 days',
-  now() - interval '796 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '796 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 452, 'NOK', 31, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('kurs', 'kurs-o20', 'f059160b-baef-4d96-abf8-856636b9b286', 'active', jsonb_build_object('employees', 31, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '796 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('kurs', 'kurs-o20', '26–100', 'month', now() - interval '796 days', now() - interval '796 days' + interval '30 days',
-  now() - interval '796 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '796 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 190, 'NOK', 31, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('ee512a75-7906-42c6-a7af-27bc44ef6a7a', 'Østmark Maskin AS', '981942651', 'f059160b-baef-4d96-abf8-856636b9b286', 'Stavanger', 'Rogaland', 'Education', 31, 'Direct', true,
   'e53792ad-5466-4510-a48c-6321c729dace', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array[]::uuid[], now() - interval '796 days', now() - interval '5 days', now() - interval '4 days');
 insert into app.accounts (id, name, org_number, created_at) values ('9e2f1751-bcd3-49bd-ad03-62521c9d7ba8', 'Tveit Omsorg AS', '959470192', now() - interval '118 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o21', '9e2f1751-bcd3-49bd-ad03-62521c9d7ba8', 'active', jsonb_build_object('employees', 313, 'band', '251–500'), jsonb_build_object('source', 'Event'), now() - interval '118 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o21', '251–500', 'month', now() - interval '118 days', now() - interval '118 days' + interval '30 days',
-  now() - interval '118 days' + interval '20 days', null, null, now());
+  now() - interval '118 days' + interval '20 days', null, null, 2290, 'NOK', 313, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('kurs', 'kurs-o21', '9e2f1751-bcd3-49bd-ad03-62521c9d7ba8', 'active', jsonb_build_object('employees', 313, 'band', '251–500'), jsonb_build_object('source', 'Event'), now() - interval '118 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('kurs', 'kurs-o21', '251–500', 'month', now() - interval '118 days', now() - interval '118 days' + interval '30 days',
-  now() - interval '118 days' + interval '20 days', null, null, now());
+  now() - interval '118 days' + interval '20 days', null, null, 190, 'NOK', 313, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('76ce311b-ca87-4f8b-ae29-18344febfe78', 'Tveit Omsorg AS', '959470192', '9e2f1751-bcd3-49bd-ad03-62521c9d7ba8', 'Trondheim', 'Trøndelag', 'Health and care', 313, 'Event', false,
   'e53792ad-5466-4510-a48c-6321c729dace', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '118 days', now() - interval '5 days', now() - interval '5 days');
 insert into app.accounts (id, name, org_number, created_at) values ('eb9999d5-ff96-4b07-a412-67a6e4df3f08', 'Sandvik Elektro AS', '968419543', now() - interval '6 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o22', 'eb9999d5-ff96-4b07-a412-67a6e4df3f08', 'active', jsonb_build_object('employees', 1, 'band', '1–25'), jsonb_build_object('source', 'Event'), now() - interval '6 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o22', '1–25', 'month', now() - interval '6 days', now() - interval '6 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 265, 'NOK', 1, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('f142d9eb-3e73-496d-a54a-68fb777bcf0f', 'Sandvik Elektro AS', '968419543', 'eb9999d5-ff96-4b07-a412-67a6e4df3f08', 'Stavanger', 'Rogaland', 'Transport', 1, 'Event', true,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '6 days', now() - interval '5 days', now() - interval '6 days');
 insert into app.accounts (id, name, org_number, created_at) values ('7d5e1590-97e5-41b3-a905-11367bb4c6e5', 'Lundegaard Arkitekter', '987779715', now() - interval '101 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o23', '7d5e1590-97e5-41b3-a905-11367bb4c6e5', 'active', jsonb_build_object('employees', 12, 'band', '1–25'), jsonb_build_object('source', 'Organic search'), now() - interval '101 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o23', '1–25', 'month', now() - interval '101 days', now() - interval '101 days' + interval '30 days',
-  now() - interval '101 days' + interval '20 days', null, null, now());
+  now() - interval '101 days' + interval '20 days', null, null, 265, 'NOK', 12, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('2ada062d-15f8-411d-a5c0-2258d7966e61', 'Lundegaard Arkitekter', '987779715', '7d5e1590-97e5-41b3-a905-11367bb4c6e5', 'Hamar', 'Innlandet', 'Professional services', 12, 'Organic search', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '101 days', now() - interval '5 days', now() - interval '7 days');
 insert into app.accounts (id, name, org_number, created_at) values ('ba9234b4-a55a-4a35-a2d1-4403d181f74d', 'Hovland Gartneri AS', '935374325', now() - interval '315 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o24', 'ba9234b4-a55a-4a35-a2d1-4403d181f74d', 'active', jsonb_build_object('employees', 423, 'band', '251–500'), jsonb_build_object('source', 'Organic search'), now() - interval '315 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o24', '251–500', 'month', now() - interval '315 days', now() - interval '315 days' + interval '30 days',
-  now() - interval '315 days' + interval '20 days', null, null, now());
+  now() - interval '315 days' + interval '20 days', null, null, 2290, 'NOK', 423, 'suspended', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o24', 'ba9234b4-a55a-4a35-a2d1-4403d181f74d', 'active', jsonb_build_object('employees', 423, 'band', '251–500'), jsonb_build_object('source', 'Organic search'), now() - interval '315 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o24', '251–500', 'month', now() - interval '315 days', now() - interval '315 days' + interval '30 days',
-  now() - interval '315 days' + interval '20 days', null, null, now());
+  now() - interval '315 days' + interval '20 days', null, null, 1832, 'NOK', 423, 'suspended', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('9bed6b5b-639a-45c4-aed7-749552fac442', 'Hovland Gartneri AS', '935374325', 'ba9234b4-a55a-4a35-a2d1-4403d181f74d', 'Ålesund', 'Møre og Romsdal', 'Construction', 423, 'Organic search', true,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '315 days', now() - interval '5 days', now() - interval '8 days');
 insert into app.accounts (id, name, org_number, created_at) values ('afd920cf-539c-4aab-ad6f-62c3f5751c65', 'Furuly Sykehjem', '996514549', now() - interval '687 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o25', 'afd920cf-539c-4aab-ad6f-62c3f5751c65', 'active', jsonb_build_object('employees', 50, 'band', '26–100'), jsonb_build_object('source', 'Partner'), now() - interval '687 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o25', '26–100', 'month', now() - interval '687 days', now() - interval '687 days' + interval '30 days',
-  now() - interval '687 days' + interval '20 days', null, null, now());
+  now() - interval '687 days' + interval '20 days', null, null, 565, 'NOK', 50, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('2725102e-cbf0-4a7f-afe9-e8e5c8ed5bb2', 'Furuly Sykehjem', '996514549', 'afd920cf-539c-4aab-ad6f-62c3f5751c65', 'Bergen', 'Vestland', 'Education', 50, 'Partner', true,
   'e53792ad-5466-4510-a48c-6321c729dace', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '687 days', now() - interval '5 days', now() - interval '9 days');
 insert into app.accounts (id, name, org_number, created_at) values ('b7fe9c29-6877-4756-ac5c-23fb875474c2', 'Blåfjell Reiseliv AS', '957353436', now() - interval '692 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o26', 'b7fe9c29-6877-4756-ac5c-23fb875474c2', 'active', jsonb_build_object('employees', 12, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '692 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o26', '1–25', 'month', now() - interval '692 days', now() - interval '692 days' + interval '30 days',
-  now() - interval '692 days' + interval '20 days', null, null, now());
+  now() - interval '692 days' + interval '20 days', null, null, 265, 'NOK', 12, 'past_due', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o26', 'b7fe9c29-6877-4756-ac5c-23fb875474c2', 'active', jsonb_build_object('employees', 12, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '692 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o26', '1–25', 'month', now() - interval '692 days', now() - interval '692 days' + interval '30 days',
-  now() - interval '692 days' + interval '20 days', null, null, now());
+  now() - interval '692 days' + interval '20 days', null, null, 159, 'NOK', 12, 'past_due', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('e39ce338-c769-4466-a1d7-2c4117a820ec', 'Blåfjell Reiseliv AS', '957353436', 'b7fe9c29-6877-4756-ac5c-23fb875474c2', 'Bergen', 'Vestland', 'Professional services', 12, 'Referral', false,
   'e53792ad-5466-4510-a48c-6321c729dace', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '692 days', now() - interval '5 days', now() - interval '10 days');
 insert into app.accounts (id, name, org_number, created_at) values ('eba288d9-a82e-4c60-ad8a-d2746c76e458', 'Kråkerøy Marina AS', '991258332', now() - interval '573 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o27', 'eba288d9-a82e-4c60-ad8a-d2746c76e458', 'active', jsonb_build_object('employees', 62, 'band', '26–100'), jsonb_build_object('source', 'Organic search'), now() - interval '573 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o27', '26–100', 'month', now() - interval '573 days', now() - interval '573 days' + interval '30 days',
-  now() - interval '573 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '573 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 565, 'NOK', 62, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('8b6bf1ad-a509-409c-ad76-3e55ed46a6bd', 'Kråkerøy Marina AS', '991258332', 'eba288d9-a82e-4c60-ad8a-d2746c76e458', 'Bodø', 'Nordland', 'ICT', 62, 'Organic search', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '573 days', now() - interval '5 days', now() - interval '2 days');
 insert into app.accounts (id, name, org_number, created_at) values ('6fc0e075-d23f-4df8-a303-7bb65a75c4f0', 'Nesodden Tannhelse', '963406282', now() - interval '11 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o28', '6fc0e075-d23f-4df8-a303-7bb65a75c4f0', 'active', jsonb_build_object('employees', 7, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '11 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o28', '1–25', 'month', now() - interval '11 days', now() - interval '11 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 265, 'NOK', 7, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o28', '6fc0e075-d23f-4df8-a303-7bb65a75c4f0', 'active', jsonb_build_object('employees', 7, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '11 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o28', '1–25', 'month', now() - interval '11 days', now() - interval '11 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 212, 'NOK', 7, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('011cb3ee-717c-488c-a02a-5b1c00281f19', 'Nesodden Tannhelse', '963406282', '6fc0e075-d23f-4df8-a303-7bb65a75c4f0', 'Tromsø', 'Troms', 'Transport', 7, 'Referral', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array[]::uuid[], now() - interval '11 days', now() - interval '5 days', now() - interval '3 days');
 insert into app.accounts (id, name, org_number, created_at) values ('7d15039e-a01b-4968-ad47-2acaa45caf7d', 'Skarpeid Revisjon AS', '955713844', now() - interval '11 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o29', '7d15039e-a01b-4968-ad47-2acaa45caf7d', 'active', jsonb_build_object('employees', 5, 'band', '1–25'), jsonb_build_object('source', 'Paid search'), now() - interval '11 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o29', '1–25', 'month', now() - interval '11 days', now() - interval '11 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 265, 'NOK', 5, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o29', '7d15039e-a01b-4968-ad47-2acaa45caf7d', 'active', jsonb_build_object('employees', 5, 'band', '1–25'), jsonb_build_object('source', 'Paid search'), now() - interval '11 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o29', '1–25', 'month', now() - interval '11 days', now() - interval '11 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 212, 'NOK', 5, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('d535ea56-4bb0-428b-a17e-048c1660991e', 'Skarpeid Revisjon AS', '955713844', '7d15039e-a01b-4968-ad47-2acaa45caf7d', 'Drammen', 'Buskerud', 'ICT', 5, 'Paid search', false,
   'e53792ad-5466-4510-a48c-6321c729dace', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array['09363a43-05c1-44d0-a9f0-e95b6ef61315']::uuid[], now() - interval '11 days', now() - interval '5 days', now() - interval '4 days');
 insert into app.accounts (id, name, org_number, created_at) values ('64f08d27-e6b9-431d-af92-1e229b058e73', 'Torget Apotek AS', '984295645', now() - interval '644 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o30', '64f08d27-e6b9-431d-af92-1e229b058e73', 'active', jsonb_build_object('employees', 61, 'band', '26–100'), jsonb_build_object('source', 'Paid search'), now() - interval '644 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o30', '26–100', 'month', now() - interval '644 days', now() - interval '644 days' + interval '30 days',
-  now() - interval '644 days' + interval '20 days', null, null, now());
+  now() - interval '644 days' + interval '20 days', null, null, 565, 'NOK', 61, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('8fec8260-ec68-4b20-a4cb-f2e352cc42ac', 'Torget Apotek AS', '984295645', '64f08d27-e6b9-431d-af92-1e229b058e73', 'Ålesund', 'Møre og Romsdal', 'Construction', 61, 'Paid search', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '644 days', now() - interval '5 days', now() - interval '5 days');
 insert into app.accounts (id, name, org_number, created_at) values ('21d158ce-ae88-493d-ac29-b2d64cc081e8', 'Engen Snekkeri AS', '979496891', now() - interval '639 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o31', '21d158ce-ae88-493d-ac29-b2d64cc081e8', 'active', jsonb_build_object('employees', 79, 'band', '26–100'), jsonb_build_object('source', 'Paid search'), now() - interval '639 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o31', '26–100', 'month', now() - interval '639 days', now() - interval '639 days' + interval '30 days',
-  now() - interval '639 days' + interval '20 days', null, null, now());
+  now() - interval '639 days' + interval '20 days', null, null, 565, 'NOK', 79, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o31', '21d158ce-ae88-493d-ac29-b2d64cc081e8', 'active', jsonb_build_object('employees', 79, 'band', '26–100'), jsonb_build_object('source', 'Paid search'), now() - interval '639 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o31', '26–100', 'month', now() - interval '639 days', now() - interval '639 days' + interval '30 days',
-  now() - interval '639 days' + interval '20 days', null, null, now());
+  now() - interval '639 days' + interval '20 days', null, null, 452, 'NOK', 79, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('8e3e2e86-3cbd-4ed2-a620-24b681998849', 'Engen Snekkeri AS', '979496891', '21d158ce-ae88-493d-ac29-b2d64cc081e8', 'Ålesund', 'Møre og Romsdal', 'ICT', 79, 'Paid search', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array[]::uuid[], now() - interval '639 days', now() - interval '5 days', now() - interval '6 days');
 insert into app.accounts (id, name, org_number, created_at) values ('eff0e04f-9c48-45ae-a870-33af4d71fbcf', 'Polarlys Media AS', '991763495', now() - interval '516 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o32', 'eff0e04f-9c48-45ae-a870-33af4d71fbcf', 'active', jsonb_build_object('employees', 153, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '516 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o32', '101–250', 'month', now() - interval '516 days', now() - interval '516 days' + interval '30 days',
-  now() - interval '516 days' + interval '20 days', null, null, now());
+  now() - interval '516 days' + interval '20 days', null, null, 1190, 'NOK', 153, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o32', 'eff0e04f-9c48-45ae-a870-33af4d71fbcf', 'active', jsonb_build_object('employees', 153, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '516 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o32', '101–250', 'month', now() - interval '516 days', now() - interval '516 days' + interval '30 days',
-  now() - interval '516 days' + interval '20 days', null, null, now());
+  now() - interval '516 days' + interval '20 days', null, null, 952, 'NOK', 153, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('kurs', 'kurs-o32', 'eff0e04f-9c48-45ae-a870-33af4d71fbcf', 'active', jsonb_build_object('employees', 153, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '516 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('kurs', 'kurs-o32', '101–250', 'month', now() - interval '516 days', now() - interval '516 days' + interval '30 days',
-  now() - interval '516 days' + interval '20 days', null, null, now());
+  now() - interval '516 days' + interval '20 days', null, null, 190, 'NOK', 153, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('fa517631-ecef-4c38-a016-fb63c810226c', 'Polarlys Media AS', '991763495', 'eff0e04f-9c48-45ae-a870-33af4d71fbcf', 'Drammen', 'Buskerud', 'ICT', 153, 'Event', true,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '516 days', now() - interval '5 days', now() - interval '7 days');
 insert into app.accounts (id, name, org_number, created_at) values ('dccee6e3-5044-4071-a083-5ed60f8ba850', 'Heggedal Vekst AS', '973506801', now() - interval '69 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o33', 'dccee6e3-5044-4071-a083-5ed60f8ba850', 'active', jsonb_build_object('employees', 98, 'band', '26–100'), jsonb_build_object('source', 'Organic search'), now() - interval '69 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o33', '26–100', 'month', now() - interval '69 days', now() - interval '69 days' + interval '30 days',
-  now() - interval '69 days' + interval '20 days', null, null, now());
+  now() - interval '69 days' + interval '20 days', null, null, 565, 'NOK', 98, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('362c4f6f-56ba-426f-ae0f-6d4a0867af5e', 'Heggedal Vekst AS', '973506801', 'dccee6e3-5044-4071-a083-5ed60f8ba850', 'Lillestrøm', 'Akershus', 'Education', 98, 'Organic search', false,
   'e53792ad-5466-4510-a48c-6321c729dace', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '69 days', now() - interval '5 days', now() - interval '8 days');
 insert into app.accounts (id, name, org_number, created_at) values ('77338789-c10e-44f6-abfe-2030d40cba88', 'Røros Kobber AS', '949263501', now() - interval '5 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o34', '77338789-c10e-44f6-abfe-2030d40cba88', 'active', jsonb_build_object('employees', 3, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '5 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o34', '1–25', 'month', now() - interval '5 days', now() - interval '5 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 265, 'NOK', 3, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o34', '77338789-c10e-44f6-abfe-2030d40cba88', 'active', jsonb_build_object('employees', 3, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '5 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o34', '1–25', 'month', now() - interval '5 days', now() - interval '5 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 212, 'NOK', 3, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('57f7447d-a544-4820-aeff-f4a5ce6d594f', 'Røros Kobber AS', '949263501', '77338789-c10e-44f6-abfe-2030d40cba88', 'Lillestrøm', 'Akershus', 'ICT', 3, 'Referral', false,
   'e53792ad-5466-4510-a48c-6321c729dace', 'a56d1006-261a-4159-acba-5928ecb0540a', array['a71d43d3-977a-468f-a4c3-1269c4d01825']::uuid[], now() - interval '5 days', now() - interval '5 days', now() - interval '9 days');
 insert into app.accounts (id, name, org_number, created_at) values ('922cafda-71ac-409a-a116-d5ab4607d5ca', 'Lindeberg Klinikk AS', '938105861', now() - interval '674 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o35', '922cafda-71ac-409a-a116-d5ab4607d5ca', 'active', jsonb_build_object('employees', 16, 'band', '1–25'), jsonb_build_object('source', 'Referral'), now() - interval '674 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o35', '1–25', 'month', now() - interval '674 days', now() - interval '674 days' + interval '30 days',
-  now() - interval '674 days' + interval '20 days', null, null, now());
+  now() - interval '674 days' + interval '20 days', null, null, 265, 'NOK', 16, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('5097f623-cf96-4bef-a170-678c8c0a02f7', 'Lindeberg Klinikk AS', '938105861', '922cafda-71ac-409a-a116-d5ab4607d5ca', 'Bodø', 'Nordland', 'Transport', 16, 'Referral', true,
   'e53792ad-5466-4510-a48c-6321c729dace', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array[]::uuid[], now() - interval '674 days', now() - interval '5 days', now() - interval '10 days');
 insert into app.accounts (id, name, org_number, created_at) values ('3e3acfb5-8b9e-4b40-a4c2-6f9003a1a83d', 'Mjøsa Energi AS', '944726261', now() - interval '493 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o36', '3e3acfb5-8b9e-4b40-a4c2-6f9003a1a83d', 'active', jsonb_build_object('employees', 65, 'band', '26–100'), jsonb_build_object('source', 'Organic search'), now() - interval '493 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o36', '26–100', 'month', now() - interval '493 days', now() - interval '493 days' + interval '30 days',
-  now() - interval '493 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '493 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 565, 'NOK', 65, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o36', '3e3acfb5-8b9e-4b40-a4c2-6f9003a1a83d', 'active', jsonb_build_object('employees', 65, 'band', '26–100'), jsonb_build_object('source', 'Organic search'), now() - interval '493 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o36', '26–100', 'month', now() - interval '493 days', now() - interval '493 days' + interval '30 days',
-  now() - interval '493 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '493 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 452, 'NOK', 65, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('212f9abe-09b0-4798-acea-891718be1ff1', 'Mjøsa Energi AS', '944726261', '3e3acfb5-8b9e-4b40-a4c2-6f9003a1a83d', 'Kristiansand', 'Agder', 'Education', 65, 'Organic search', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '493 days', now() - interval '5 days', now() - interval '2 days');
 insert into app.accounts (id, name, org_number, created_at) values ('db2d56e5-9518-4d12-a3fe-bb968351ae08', 'Fossheim Utleie AS', '917763851', now() - interval '20 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o37', 'db2d56e5-9518-4d12-a3fe-bb968351ae08', 'active', jsonb_build_object('employees', 52, 'band', '26–100'), jsonb_build_object('source', 'Newsletter'), now() - interval '20 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o37', '26–100', 'month', now() - interval '20 days', now() - interval '20 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 565, 'NOK', 52, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o37', 'db2d56e5-9518-4d12-a3fe-bb968351ae08', 'active', jsonb_build_object('employees', 52, 'band', '26–100'), jsonb_build_object('source', 'Newsletter'), now() - interval '20 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o37', '26–100', 'month', now() - interval '20 days', now() - interval '20 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 452, 'NOK', 52, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('b04fcefc-04d9-4382-a4f3-542db4ed20a8', 'Fossheim Utleie AS', '917763851', 'db2d56e5-9518-4d12-a3fe-bb968351ae08', 'Lillestrøm', 'Akershus', 'Hospitality', 52, 'Newsletter', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array['09363a43-05c1-44d0-a9f0-e95b6ef61315']::uuid[], now() - interval '20 days', now() - interval '5 days', now() - interval '3 days');
 insert into app.accounts (id, name, org_number, created_at) values ('518e444d-92c7-400c-ae81-eb26d9fbbfc6', 'Valdres Fjellstue AS', '952617417', now() - interval '98 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o38', '518e444d-92c7-400c-ae81-eb26d9fbbfc6', 'active', jsonb_build_object('employees', 125, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '98 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o38', '101–250', 'month', now() - interval '98 days', now() - interval '98 days' + interval '30 days',
-  now() - interval '98 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '98 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 1190, 'NOK', 125, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o38', '518e444d-92c7-400c-ae81-eb26d9fbbfc6', 'active', jsonb_build_object('employees', 125, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '98 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o38', '101–250', 'month', now() - interval '98 days', now() - interval '98 days' + interval '30 days',
-  now() - interval '98 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '98 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 952, 'NOK', 125, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o38', '518e444d-92c7-400c-ae81-eb26d9fbbfc6', 'active', jsonb_build_object('employees', 125, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '98 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o38', '101–250', 'month', now() - interval '98 days', now() - interval '98 days' + interval '30 days',
-  now() - interval '98 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '98 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 714, 'NOK', 125, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('kurs', 'kurs-o38', '518e444d-92c7-400c-ae81-eb26d9fbbfc6', 'active', jsonb_build_object('employees', 125, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '98 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('kurs', 'kurs-o38', '101–250', 'month', now() - interval '98 days', now() - interval '98 days' + interval '30 days',
-  now() - interval '98 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '98 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 190, 'NOK', 125, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('6cdd00cd-9cd1-4d81-af5e-c77d1170ef83', 'Valdres Fjellstue AS', '952617417', '518e444d-92c7-400c-ae81-eb26d9fbbfc6', 'Bodø', 'Nordland', 'Retail', 125, 'Event', false,
   'e53792ad-5466-4510-a48c-6321c729dace', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '98 days', now() - interval '5 days', now() - interval '4 days');
 insert into app.accounts (id, name, org_number, created_at) values ('4f6dccee-56f5-410d-adb2-115b3eb35f86', 'Oddernes Bil AS', '974559469', now() - interval '263 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o39', '4f6dccee-56f5-410d-adb2-115b3eb35f86', 'active', jsonb_build_object('employees', 196, 'band', '101–250'), jsonb_build_object('source', 'Direct'), now() - interval '263 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o39', '101–250', 'month', now() - interval '263 days', now() - interval '263 days' + interval '30 days',
-  now() - interval '263 days' + interval '20 days', null, null, now());
+  now() - interval '263 days' + interval '20 days', null, null, 1190, 'NOK', 196, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('95368868-20aa-4627-a36b-f1e799eba468', 'Oddernes Bil AS', '974559469', '4f6dccee-56f5-410d-adb2-115b3eb35f86', 'Stavanger', 'Rogaland', 'Construction', 196, 'Direct', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array['691da628-1d9d-4383-a1aa-df88817da11a']::uuid[], now() - interval '263 days', now() - interval '5 days', now() - interval '5 days');
 insert into app.accounts (id, name, org_number, created_at) values ('b4446714-49b2-4dfb-a0bd-185911eccd6d', 'Grønli Barnehage SA', '952890367', now() - interval '27 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o40', 'b4446714-49b2-4dfb-a0bd-185911eccd6d', 'active', jsonb_build_object('employees', 10, 'band', '1–25'), jsonb_build_object('source', 'Direct'), now() - interval '27 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o40', '1–25', 'month', now() - interval '27 days', now() - interval '27 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 265, 'NOK', 10, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('2ce3beab-ff03-4bb5-a2e8-b2af7b0a7d70', 'Grønli Barnehage SA', '952890367', 'b4446714-49b2-4dfb-a0bd-185911eccd6d', 'Ålesund', 'Møre og Romsdal', 'Hospitality', 10, 'Direct', true,
   'e53792ad-5466-4510-a48c-6321c729dace', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '27 days', now() - interval '5 days', now() - interval '6 days');
 insert into app.accounts (id, name, org_number, created_at) values ('b8340ce9-1fde-48f7-afdd-15d25e0192b2', 'Stavsjø Laks AS', '925917703', now() - interval '113 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o41', 'b8340ce9-1fde-48f7-afdd-15d25e0192b2', 'active', jsonb_build_object('employees', 72, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '113 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o41', '26–100', 'month', now() - interval '113 days', now() - interval '113 days' + interval '30 days',
-  now() - interval '113 days' + interval '20 days', null, null, now());
+  now() - interval '113 days' + interval '20 days', null, null, 565, 'NOK', 72, 'past_due', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o41', 'b8340ce9-1fde-48f7-afdd-15d25e0192b2', 'active', jsonb_build_object('employees', 72, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '113 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o41', '26–100', 'month', now() - interval '113 days', now() - interval '113 days' + interval '30 days',
-  now() - interval '113 days' + interval '20 days', null, null, now());
+  now() - interval '113 days' + interval '20 days', null, null, 452, 'NOK', 72, 'past_due', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o41', 'b8340ce9-1fde-48f7-afdd-15d25e0192b2', 'active', jsonb_build_object('employees', 72, 'band', '26–100'), jsonb_build_object('source', 'Direct'), now() - interval '113 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o41', '26–100', 'month', now() - interval '113 days', now() - interval '113 days' + interval '30 days',
-  now() - interval '113 days' + interval '20 days', null, null, now());
+  now() - interval '113 days' + interval '20 days', null, null, 339, 'NOK', 72, 'past_due', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('a5963be4-463a-44b5-a28f-ae617fe9de62', 'Stavsjø Laks AS', '925917703', 'b8340ce9-1fde-48f7-afdd-15d25e0192b2', 'Fredrikstad', 'Østfold', 'Manufacturing', 72, 'Direct', true,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '113 days', now() - interval '5 days', now() - interval '7 days');
 insert into app.accounts (id, name, org_number, created_at) values ('d793ce5b-c764-45f7-a650-87836aeb9930', 'Bjørkly Pleie AS', '931237287', now() - interval '342 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o42', 'd793ce5b-c764-45f7-a650-87836aeb9930', 'active', jsonb_build_object('employees', 416, 'band', '251–500'), jsonb_build_object('source', 'Referral'), now() - interval '342 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o42', '251–500', 'month', now() - interval '342 days', now() - interval '342 days' + interval '30 days',
-  now() - interval '342 days' + interval '20 days', null, null, now());
+  now() - interval '342 days' + interval '20 days', null, null, 2290, 'NOK', 416, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('7a8d923c-97e2-4350-a6d4-1b43d8db87b5', 'Bjørkly Pleie AS', '931237287', 'd793ce5b-c764-45f7-a650-87836aeb9930', 'Hamar', 'Innlandet', 'Retail', 416, 'Referral', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array[]::uuid[], now() - interval '342 days', now() - interval '5 days', now() - interval '8 days');
 insert into app.accounts (id, name, org_number, created_at) values ('8f1d1794-e42b-496f-a0c4-454a75a094e7', 'Kirkenes Bygg AS', '953390962', now() - interval '736 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o43', '8f1d1794-e42b-496f-a0c4-454a75a094e7', 'active', jsonb_build_object('employees', 100, 'band', '26–100'), jsonb_build_object('source', 'Paid search'), now() - interval '736 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o43', '26–100', 'month', now() - interval '736 days', now() - interval '736 days' + interval '30 days',
-  now() - interval '736 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', now());
+  now() - interval '736 days' + interval '20 days', now() - interval '10 days', now() - interval '1 days', 565, 'NOK', 100, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('45b07675-116f-44f8-a030-ed969a3b407f', 'Kirkenes Bygg AS', '953390962', '8f1d1794-e42b-496f-a0c4-454a75a094e7', 'Tromsø', 'Troms', 'Public administration', 100, 'Paid search', false,
   'e53792ad-5466-4510-a48c-6321c729dace', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array[]::uuid[], now() - interval '736 days', now() - interval '5 days', now() - interval '9 days');
 insert into app.accounts (id, name, org_number, created_at) values ('016a5c9b-e13e-4f4e-aea3-467cd90d8c84', 'Sjøgata Kafé AS', '985498785', now() - interval '11 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o44', '016a5c9b-e13e-4f4e-aea3-467cd90d8c84', 'active', jsonb_build_object('employees', 38, 'band', '26–100'), jsonb_build_object('source', 'Paid search'), now() - interval '11 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o44', '26–100', 'month', now() - interval '11 days', now() - interval '11 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 565, 'NOK', 38, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o44', '016a5c9b-e13e-4f4e-aea3-467cd90d8c84', 'active', jsonb_build_object('employees', 38, 'band', '26–100'), jsonb_build_object('source', 'Paid search'), now() - interval '11 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o44', '26–100', 'month', now() - interval '11 days', now() - interval '11 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 452, 'NOK', 38, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('6a20e6d9-2eca-46dc-ab54-9897934f4245', 'Sjøgata Kafé AS', '985498785', '016a5c9b-e13e-4f4e-aea3-467cd90d8c84', 'Kristiansand', 'Agder', 'Construction', 38, 'Paid search', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '11 days', now() - interval '5 days', now() - interval '10 days');
 insert into app.accounts (id, name, org_number, created_at) values ('4b8c3985-3251-480a-a468-174f13c7c8d2', 'Hamnvik Fiskeri AS', '981235940', now() - interval '120 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o45', '4b8c3985-3251-480a-a468-174f13c7c8d2', 'active', jsonb_build_object('employees', 118, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '120 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o45', '101–250', 'month', now() - interval '120 days', now() - interval '120 days' + interval '30 days',
-  now() - interval '120 days' + interval '20 days', null, null, now());
+  now() - interval '120 days' + interval '20 days', null, null, 1190, 'NOK', 118, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o45', '4b8c3985-3251-480a-a468-174f13c7c8d2', 'active', jsonb_build_object('employees', 118, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '120 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o45', '101–250', 'month', now() - interval '120 days', now() - interval '120 days' + interval '30 days',
-  now() - interval '120 days' + interval '20 days', null, null, now());
+  now() - interval '120 days' + interval '20 days', null, null, 952, 'NOK', 118, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('avvik', 'avvik-o45', '4b8c3985-3251-480a-a468-174f13c7c8d2', 'active', jsonb_build_object('employees', 118, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '120 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('avvik', 'avvik-o45', '101–250', 'month', now() - interval '120 days', now() - interval '120 days' + interval '30 days',
-  now() - interval '120 days' + interval '20 days', null, null, now());
+  now() - interval '120 days' + interval '20 days', null, null, 714, 'NOK', 118, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('kurs', 'kurs-o45', '4b8c3985-3251-480a-a468-174f13c7c8d2', 'active', jsonb_build_object('employees', 118, 'band', '101–250'), jsonb_build_object('source', 'Event'), now() - interval '120 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('kurs', 'kurs-o45', '101–250', 'month', now() - interval '120 days', now() - interval '120 days' + interval '30 days',
-  now() - interval '120 days' + interval '20 days', null, null, now());
+  now() - interval '120 days' + interval '20 days', null, null, 190, 'NOK', 118, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('6f52cd56-f112-4360-ab25-ee3a47ac2059', 'Hamnvik Fiskeri AS', '981235940', '4b8c3985-3251-480a-a468-174f13c7c8d2', 'Trondheim', 'Trøndelag', 'Hospitality', 118, 'Event', false,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '120 days', now() - interval '5 days', now() - interval '2 days');
 insert into app.accounts (id, name, org_number, created_at) values ('d47347e3-df39-4574-a06f-943998bda4de', 'Bergtun Data AS', '925431982', now() - interval '7 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o46', 'd47347e3-df39-4574-a06f-943998bda4de', 'active', jsonb_build_object('employees', 4, 'band', '1–25'), jsonb_build_object('source', 'Organic search'), now() - interval '7 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('orgpuls', 'orgpuls-o46', '1–25', 'month', now() - interval '7 days', now() - interval '7 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 265, 'NOK', 4, 'ok', now());
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('skiftly', 'skiftly-o46', 'd47347e3-df39-4574-a06f-943998bda4de', 'active', jsonb_build_object('employees', 4, 'band', '1–25'), jsonb_build_object('source', 'Organic search'), now() - interval '7 days');
-insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, updated_at)
+insert into app.subscriptions (product, tenant_id, plan, billing_interval, trial_started_at, trial_ends_at, confirmed_at, cancelled_at, cancel_effective_at, price, currency, seats, payment_state, updated_at)
   values ('skiftly', 'skiftly-o46', '1–25', 'month', now() - interval '7 days', now() - interval '7 days' + interval '30 days',
-  null, null, null, now());
+  null, null, null, 212, 'NOK', 4, 'ok', now());
 insert into app.organizations (id, name, org_number, account_id, city, fylke, industry, employees, source, ehf, csm_id, owner_id, labels, created_at, updated_at, brreg_synced_at)
   values ('4b8881a8-e92c-42be-a95f-7a94c8119eb0', 'Bergtun Data AS', '925431982', 'd47347e3-df39-4574-a06f-943998bda4de', 'Bodø', 'Nordland', 'Public administration', 4, 'Organic search', true,
   '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', array['7c985b41-071f-4a29-af01-6c7a9929809a']::uuid[], now() - interval '7 days', now() - interval '5 days', now() - interval '3 days');
@@ -980,6 +980,51 @@ insert into app.people (id, name, email, phone, organization_id, title, contact_
   values ('c698e247-a1b5-4991-a3d0-86edd073f22c', 'Morten Dahl', 'morten.dahl@roroskobber.no', '+47 401 91 829', '57f7447d-a544-4820-aeff-f4a5ce6d594f', 'Daglig leder', 'trial_user', 'Event', 'Lillestrøm', 'Akershus',
   'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '23 days',
   'orgpuls', 'orgpuls-o34', 'u-p32', now() - interval '60 days', now() - interval '23 days');
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '10 months' - interval '1 day')::date, 'orgpuls', 12819, 16, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '10 months' - interval '1 day')::date, 'skiftly', 2359, 3, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '10 months' - interval '1 day')::date, 'avvik', 0, 0, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '10 months' - interval '1 day')::date, 'kurs', 0, 0, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '9 months' - interval '1 day')::date, 'orgpuls', 13705, 17, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '9 months' - interval '1 day')::date, 'skiftly', 2753, 4, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '9 months' - interval '1 day')::date, 'avvik', 0, 0, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '9 months' - interval '1 day')::date, 'kurs', 0, 0, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '8 months' - interval '1 day')::date, 'orgpuls', 14314, 18, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '8 months' - interval '1 day')::date, 'skiftly', 3102, 4, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '8 months' - interval '1 day')::date, 'avvik', 606, 2, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '8 months' - interval '1 day')::date, 'kurs', 0, 0, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '7 months' - interval '1 day')::date, 'orgpuls', 14890, 19, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '7 months' - interval '1 day')::date, 'skiftly', 3512, 5, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '7 months' - interval '1 day')::date, 'avvik', 863, 2, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '7 months' - interval '1 day')::date, 'kurs', 0, 0, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '6 months' - interval '1 day')::date, 'orgpuls', 15812, 20, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '6 months' - interval '1 day')::date, 'skiftly', 3902, 6, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '6 months' - interval '1 day')::date, 'avvik', 1120, 3, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '6 months' - interval '1 day')::date, 'kurs', 0, 0, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '5 months' - interval '1 day')::date, 'orgpuls', 16235, 20, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '5 months' - interval '1 day')::date, 'skiftly', 4187, 6, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '5 months' - interval '1 day')::date, 'avvik', 1378, 4, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '5 months' - interval '1 day')::date, 'kurs', 0, 0, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '4 months' - interval '1 day')::date, 'orgpuls', 17241, 21, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '4 months' - interval '1 day')::date, 'skiftly', 4313, 6, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '4 months' - interval '1 day')::date, 'avvik', 1635, 4, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '4 months' - interval '1 day')::date, 'kurs', 0, 0, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '3 months' - interval '1 day')::date, 'orgpuls', 17919, 22, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '3 months' - interval '1 day')::date, 'skiftly', 4730, 7, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '3 months' - interval '1 day')::date, 'avvik', 1892, 5, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '3 months' - interval '1 day')::date, 'kurs', 0, 0, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '2 months' - interval '1 day')::date, 'orgpuls', 18477, 23, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '2 months' - interval '1 day')::date, 'skiftly', 5069, 7, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '2 months' - interval '1 day')::date, 'avvik', 2150, 6, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '2 months' - interval '1 day')::date, 'kurs', 333, 2, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '1 months' - interval '1 day')::date, 'orgpuls', 19393, 24, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '1 months' - interval '1 day')::date, 'skiftly', 5638, 8, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '1 months' - interval '1 day')::date, 'avvik', 2407, 7, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '1 months' - interval '1 day')::date, 'kurs', 665, 4, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '0 months' - interval '1 day')::date, 'orgpuls', 19996, 25, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '0 months' - interval '1 day')::date, 'skiftly', 5973, 9, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '0 months' - interval '1 day')::date, 'avvik', 2665, 7, 0);
+insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '0 months' - interval '1 day')::date, 'kurs', 998, 5, 0);
+select app.snapshot_mrr();
 
 commit;
 set session_replication_role = origin;

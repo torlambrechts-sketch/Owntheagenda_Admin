@@ -1,0 +1,24 @@
+{
+  "common": {
+    "dash": "—",
+    "loading": "Loading …",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "errors": {
+      "forbidden": "You do not have the right to do this.",
+      "not_found": "The record no longer exists or is not visible to you.",
+      "version_conflict": "Someone else changed this record. Reload to see their change.",
+      "invalid": "Check the highlighted field.",
+      "reason_required": "A reason is required for this action.",
+      "module_off": "This module is switched off.",
+      "not_signed_in": "Your session has ended. Sign in again.",
+      "fixed_setting": "This setting is fixed.",
+      "failed": "Something went wrong. Try again."
+    },
+    "pending": {
+      "title": "This screen is being built",
+      "body": "It arrives with phase {phase} of the implementation plan."
+    }
+  }
+}

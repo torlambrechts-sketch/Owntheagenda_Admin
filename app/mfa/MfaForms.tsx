@@ -2,35 +2,25 @@
 
 import { useActionState, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
+import { authAlert, authButton, authField, authLabel } from '@/components/auth/styles'
 import { enroll, verify, type Enrolment, type VerifyState } from './actions'
-
-const button =
-  'rounded-md bg-neutral-900 px-4 py-2 font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-900 disabled:opacity-60'
 
 function CodeForm({ factorId }: { factorId: string }) {
   const t = useTranslations('mfa')
   const [state, action, pending] = useActionState<VerifyState, FormData>(verify, { problem: null })
   return (
-    <form action={action} className="flex flex-col gap-4">
+    <form action={action} className="flex flex-col gap-[14px]">
       <input type="hidden" name="factorId" value={factorId} />
-      <label className="text-sm font-medium">
+      <label className={authLabel}>
         {t('code')}
-        <input
-          name="code"
-          inputMode="numeric"
-          autoComplete="one-time-code"
-          pattern="\d{6}"
-          maxLength={6}
-          required
-          className="mt-1 block w-full rounded-md border border-neutral-300 px-3 py-2 tracking-widest focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900"
-        />
+        <input name="code" inputMode="numeric" autoComplete="one-time-code" pattern="\d{6}" maxLength={6} required className={`${authField} tracking-[.3em]`} />
       </label>
       {state.problem ? (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className={authAlert}>
           {t('failed')}
         </p>
       ) : null}
-      <button type="submit" disabled={pending} className={button}>
+      <button type="submit" disabled={pending} className={authButton}>
         {t('submit')}
       </button>
     </form>
@@ -46,7 +36,7 @@ export function MfaForms({ factorId }: { factorId: string | null }) {
   if (factorId) {
     return (
       <>
-        <p className="mb-4 text-neutral-700">{t('verifyLead')}</p>
+        <p className="m-0 text-13 leading-[1.55] text-muted">{t('verifyLead')}</p>
         <CodeForm factorId={factorId} />
       </>
     )
@@ -54,17 +44,24 @@ export function MfaForms({ factorId }: { factorId: string | null }) {
   if (enrolment?.ok) {
     return (
       <>
-        <p className="mb-4 text-neutral-700">{t('enrollLead')}</p>
+        <p className="m-0 text-13 leading-[1.55] text-muted">{t('enrollLead')}</p>
         {/* eslint-disable-next-line @next/next/no-img-element -- an SVG data URI from Supabase Auth */}
-        <img src={enrolment.qr} alt="" width={192} height={192} className="mb-3 h-48 w-48" />
-        <p className="mb-6 break-all text-sm text-neutral-600">{t('secret', { secret: enrolment.secret })}</p>
+        <img src={enrolment.qr} alt={t('qrAlt')} width={192} height={192} className="block h-48 w-48 rounded-12 border border-line bg-surface" />
+        <p className="m-0 break-all text-12 text-muted">{t('secret', { secret: enrolment.secret })}</p>
         <CodeForm factorId={enrolment.factorId} />
       </>
     )
   }
   return (
-    <button type="button" disabled={pending} className={button} onClick={() => start(async () => setEnrolment(await enroll()))}>
-      {t('start')}
-    </button>
+    <>
+      {enrolment && !enrolment.ok ? (
+        <p role="alert" className={authAlert}>
+          {t('enrollFailed')}
+        </p>
+      ) : null}
+      <button type="button" disabled={pending} className={authButton} onClick={() => start(async () => setEnrolment(await enroll()))}>
+        {t('start')}
+      </button>
+    </>
   )
 }

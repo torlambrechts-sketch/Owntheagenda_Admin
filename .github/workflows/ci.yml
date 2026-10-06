@@ -26,3 +26,20 @@ jobs:
       - run: npm run verify:i18n
       - run: npm run functions:check
       - run: npm run build
+
+  # D-03: the database rebuilt from the migrations and the seed, then every SQL suite
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Seed is generated from the design data and committed unchanged
+        run: node scripts/seed/generate.mjs && git diff --exit-code supabase/seed.sql
+      - name: Start the local stack (migrations and seed)
+        run: supabase start -x studio,realtime,analytics,vector,imgproxy,edge-runtime,logflare,supavisor,postgres-meta,storage-api,inbucket
+      - run: node scripts/db/run-tests.mjs

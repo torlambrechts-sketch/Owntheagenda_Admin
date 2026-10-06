@@ -45,7 +45,7 @@ export const Relations = z.object({
 export type Relations = z.infer<typeof Relations>
 
 export const Lead = z.object({
-  id: str, title: str, value: num.nullable(), currency: str, source: nstr, form_data: z.unknown().nullable(), archived_at: nstr,
+  id: str, seq: num.nullable().optional(), title: str, value: num.nullable(), currency: str, source: nstr, form_data: z.unknown().nullable(), archived_at: nstr,
   converted_deal_id: nstr, labels: ids, version: num, created_at: str, owner_id: nstr, person_id: nstr, organization_id: nstr,
   person: z.object({ id: str, name: str, title: nstr, email: nstr }).nullable(),
   organization: z.object({ id: str, name: str, org_number: nstr, industry: nstr, city: nstr, employees: num.nullable() }).nullable(),

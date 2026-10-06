@@ -54,7 +54,7 @@ export function PersonDrawer({ data, rights, me, now, openForm, detail }: TabPro
     if (!body.trim()) return
     const r = await saveNote({ entity: 'person', id: p.id, body, parent })
     if (!r.ok) return flash(err(r.code))
-    flash(r.undelivered ? t('drawer.noteUndelivered') : r.mentioned ? t('drawer.noteMentioned') : t('drawer.noteSaved'))
+    flash(r.mentioned ? t('drawer.noteMentioned') : t('drawer.noteSaved'))
     if (parent) setReply(null); else setDraft('')
     refresh()
   }

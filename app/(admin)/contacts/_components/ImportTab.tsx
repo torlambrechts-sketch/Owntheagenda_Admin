@@ -203,7 +203,7 @@ export function ImportTab({ data, rights, me }: TabProps) {
               ))}
             </div>
             <div className="flex flex-wrap gap-2">
-              <button type="button" disabled={!result.skipped} onClick={skipFile} className="h-[34px] cursor-pointer rounded-10 border border-ink bg-surface px-[13px] text-12.5 font-bold disabled:cursor-default disabled:opacity-50">{t('import.skipFile', { count: result.skipped })}</button>
+              <button type="button" disabled={!result.skipped} onClick={skipFile} className="h-[34px] cursor-pointer rounded-10 border border-ink bg-surface px-[13px] text-12.5 font-bold disabled:cursor-default disabled:opacity-50">{t('import.skipFile', { count: result.skipped, n: formatNumber(result.skipped, nf) })}</button>
               {rights.del ? (
                 <button type="button" disabled={reverted} onClick={revert} className="h-[34px] cursor-pointer rounded-10 border border-coral bg-transparent px-[13px] text-12.5 font-semibold text-rust disabled:cursor-default disabled:opacity-50">{reverted ? t('import.revertedState') : t('import.revert')}</button>
               ) : null}

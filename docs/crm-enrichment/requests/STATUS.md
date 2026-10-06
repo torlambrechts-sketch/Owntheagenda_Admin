@@ -11,11 +11,11 @@ What the Phase 1 screen builders asked for, and what happened to each. «0023» 
 | Activities R-ACT-03 | Reminders need the owner or edit-others (security) | Done in 0023 |
 | Activities R-ACT-04 | Bookings name the organisation | Done in 0023 (`my_scheduling`) · screen |
 | Activities R-ACT-05 | `activities_shift` | Done in 0023 · screen |
-| Contacts R-1 | A note with an @mention was refused (bug) | Done in 0023 (route check accepts `?<entity>=<uuid>`) · screen: drop the workaround |
-| Contacts R-2 | Import body above 1 MB | Done: `serverActions.bodySizeLimit` 8 MB, the screen's limit 7.9 MB |
+| Contacts R-1 | A note with an @mention was refused (bug) | Done in 0023 (route check accepts `?<entity>=<uuid>`); the screen sends mentions again (V-CONTACTS-30 removed) |
+| Contacts R-2 | Import body above 1 MB | Done: `serverActions.bodySizeLimit` 8 MB, the screen's limit 7.9 MB; a 1.5 MB import verified |
 | Contacts R-3 | XLSX import and export | Open: needs a library decision (exceljs) |
-| Contacts R-4 | Lead numbers | Done in 0023 (`leads.seq` from 501) · screen |
-| Contacts R-5 | Person label colours in the seed | Done (seed generator, the design's colours) |
+| Contacts R-4 | Lead numbers | Done in 0023 (`leads.seq` from 501); the lead panel shows «L-<seq>» (V-CONTACTS-08 removed) |
+| Contacts R-5 | Person label colours in the seed | Done (seed generator, the design's colours); shown by the screen (V-CONTACTS-06 removed) |
 | Contacts R-6 | Revertable bulk changes | Open: needs a bulk-change log; with the audit work in phase 8 |
 | Customers R-01, R-02, R-06, R-07 | Orgpuls commands and events | Open: Orgpuls side (D-40) |
 | Customers R-03 | Count keys in `counts.updated` | Open: Orgpuls side (D-21) |

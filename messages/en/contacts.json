@@ -292,7 +292,7 @@
         "skipped": "Skipped (skip file)",
         "read": "Rows read"
       },
-      "skipFile": "Download skip file ({count, plural, one {# row} other {# rows}} with reasons)",
+      "skipFile": "Download skip file ({count, plural, one {{n} row} other {{n} rows}} with reasons)",
       "skipRow": "Row",
       "skipReason": "Reason",
       "reasons": {
@@ -387,7 +387,6 @@
       "addNote": "Add note",
       "noteSaved": "Note saved",
       "noteMentioned": "Note saved · mentioned user notified",
-      "noteUndelivered": "Note saved · the mention could not be delivered yet",
       "pinned": "Pinned",
       "pin": "Pin",
       "reply": "Reply",

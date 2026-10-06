@@ -61,7 +61,10 @@
         "safeguards": "Technical safeguards",
         "meetings": "Meetings",
         "ai": "AI",
-        "platform_constant": "Platform constant"
+        "analytics": "Analytics",
+        "documents": "Documents",
+        "platform_constant": "Platform constant",
+        "pipelines": "Pipeline rules"
       },
       "items": {
         "contact_rule": {
@@ -85,6 +88,24 @@
             "off": "Off",
             "warn": "Warn",
             "block": "Block"
+          }
+        },
+        "double_opt_in": {
+          "name": "Double opt-in for newsletter signups",
+          "stateDefault": "Default — on (consent rule)",
+          "options": {
+            "on": "On",
+            "off": "Off"
+          }
+        },
+        "list_hygiene": {
+          "name": "List hygiene: suggest archiving people with no engagement",
+          "applies": "CMP-04, CMP-08 (months without engagement; 12 by default)",
+          "unit": "{count, plural, one {{n} month} other {{n} months}}",
+          "options": {
+            "source_values": "Source value (12 months)",
+            "custom": "Custom",
+            "off": "Off"
           }
         },
         "tracking": {
@@ -176,6 +197,38 @@
             "off": "Off"
           }
         },
+        "activation_target": {
+          "name": "Activation target: time from signup to first send",
+          "applies": "Analytics › Activation (20 min to first send)",
+          "unit": "{count, plural, one {{n} minute} other {{n} minutes}}",
+          "options": {
+            "source_values": "Source value (20 minutes)",
+            "custom": "Custom"
+          }
+        },
+        "renewal_window": {
+          "name": "Renewal window for customers at risk",
+          "applies": "Analytics › Health (renewals within 60 days)",
+          "unit": "{count, plural, one {{n} day} other {{n} days}}",
+          "options": {
+            "source_values": "Source value (60 days)",
+            "custom": "Custom"
+          }
+        },
+        "doc_branding": {
+          "name": "Platform branding on documents and signing pages",
+          "options": {
+            "hidden": "Hidden",
+            "shown": "Shown"
+          }
+        },
+        "esign_service": {
+          "name": "E-signature service",
+          "options": {
+            "builtin": "Built-in e-signature",
+            "external": "External service"
+          }
+        },
         "firewall": {
           "name": "Anonymity firewall",
           "everywhere": "Every feature — a platform constant",
@@ -186,6 +239,18 @@
         "mfa": {
           "name": "Second factor for every staff sign-in",
           "everywhere": "Every sign-in — a platform constant",
+          "options": {
+            "fixed": "Fixed"
+          }
+        },
+        "campaign_rules": {
+          "name": "Campaign rules: unsubscribe link and sender identity in every campaign, never to unsubscribed people, never from an unauthenticated domain",
+          "options": {
+            "fixed": "Fixed"
+          }
+        },
+        "survey_flow_block": {
+          "name": "No tracker or site widget on a survey host",
           "options": {
             "fixed": "Fixed"
           }
@@ -206,6 +271,48 @@
         },
         "login_alerts": {
           "name": "Login alerts",
+          "options": {
+            "off": "Off",
+            "on": "On"
+          }
+        },
+        "lost_reason_required": {
+          "name": "Lost reason required when a deal is lost",
+          "options": {
+            "off": "Off",
+            "on": "On"
+          }
+        },
+        "deal_capacity": {
+          "name": "Lead and deal capacity (a waitlist when it is used up)",
+          "options": {
+            "unlimited": "Unlimited",
+            "number": "A number"
+          }
+        },
+        "dedupe_name": {
+          "name": "Duplicate rule: name similarity ≥ 90 %",
+          "options": {
+            "on": "On",
+            "off": "Off"
+          }
+        },
+        "dedupe_email": {
+          "name": "Duplicate rule: same email address",
+          "options": {
+            "on": "On",
+            "off": "Off"
+          }
+        },
+        "dedupe_orgnr": {
+          "name": "Duplicate rule: same org.nr (organizations)",
+          "options": {
+            "on": "On",
+            "off": "Off"
+          }
+        },
+        "dedupe_phone": {
+          "name": "Duplicate rule: same phone number",
           "options": {
             "off": "Off",
             "on": "On"

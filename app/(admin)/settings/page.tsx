@@ -94,8 +94,18 @@ async function SectionBody({ sec }: { sec: Section }) {
       )
     }
     case 'pipelines': {
-      const [pipelines, access] = await Promise.all([loadPipelines(), loadAccessModel()])
-      return <Pipelines pipelines={pipelines} groups={access.groups.map((g) => ({ id: g.id, name: g.name }))} canEdit={allowed('deals', 'configure')} />
+      const [pipelines, access, settings] = await Promise.all([loadPipelines(), loadAccessModel(), loadSettings()])
+      return (
+        <Pipelines
+          pipelines={pipelines}
+          groups={access.groups.map((g) => ({ id: g.id, name: g.name }))}
+          canEdit={allowed('deals', 'configure')}
+          // the register's pipeline group (lost reason, capacity): platform settings, so setting_set's right (V-SETTINGS-38)
+          rules={settings.filter((s) => s.group === 'pipelines')}
+          nf={nf}
+          canEditRules={allowed('global', 'configure')}
+        />
+      )
     }
     case 'acttypes': {
       const [types, fields] = await Promise.all([loadActivityTypes(), loadFields('activity')])

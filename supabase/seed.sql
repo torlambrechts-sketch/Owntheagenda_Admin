@@ -2459,6 +2459,82 @@ insert into app.score_criteria (model_id, grp, ord, label, condition) values ('1
 insert into app.score_criteria (model_id, grp, ord, label, condition) values ('1397005f-08b0-4879-a25d-aad8ff80ffcf', 'slight', 3, 'Source is web form or chatbot', '[[{"f":"source","op":"in","v":["Web form","Chatbot"]}]]'::jsonb);
 insert into app.score_criteria (model_id, grp, ord, label, condition) values ('1397005f-08b0-4879-a25d-aad8ff80ffcf', 'slight', 4, 'Employees between 26 and 250', '[[{"rel":"organization_id","f":"employees","op":"gte","v":26},{"rel":"organization_id","f":"employees","op":"lte","v":250}]]'::jsonb);
 insert into app.score_criteria (model_id, grp, ord, label, condition) values ('1397005f-08b0-4879-a25d-aad8ff80ffcf', 'negative', 6, 'Organization payment status past due', '[[{"f":"org_payment","v":"past_due"}]]'::jsonb);
+insert into app.document_templates (id, name, kind, category, share, team_id, language, source, body_html, product_table, validity_days, number_prefix,
+  placeholders, owner_id, created_by, updated_by, created_at, updated_at)
+  values ('927ecf01-9e0b-41b9-a2a5-35841d08b034', 'Tilbud — standard', 'document', 'quotes', 'company', null, 'nb', 'platform', '<h1>Tilbud til [organization.name]</h1><p>Til [person.name] · [organization.orgnr] · gyldig til [document.valid_until]</p><p>Gjelder: [deal.title]</p>[product.table]', '{"columns":["name","qty","price","discount","total"]}'::jsonb, 14,
+  'T-', app.doc_tokens('<h1>Tilbud til [organization.name]</h1><p>Til [person.name] · [organization.orgnr] · gyldig til [document.valid_until]</p><p>Gjelder: [deal.title]</p>[product.table]'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '40 days', now() - interval '12 days');
+insert into app.document_template_versions (template_id, version, body_html, product_table, created_by, created_at) values ('927ecf01-9e0b-41b9-a2a5-35841d08b034', 1, '<h1>Tilbud til [organization.name]</h1><p>Til [person.name] · [organization.orgnr] · gyldig til [document.valid_until]</p><p>Gjelder: [deal.title]</p>[product.table]', '{"columns":["name","qty","price","discount","total"]}'::jsonb, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '40 days');
+insert into app.document_templates (id, name, kind, category, share, team_id, language, source, body_html, product_table, validity_days, number_prefix,
+  placeholders, owner_id, created_by, updated_by, created_at, updated_at)
+  values ('00dabc63-e3fd-4c0f-a3de-f2ae9f87354a', 'Avtale — SaaS', 'document', 'contracts', 'company', null, 'nb', 'platform', '<h1>Avtale</h1><p>Mellom leverandøren og [organization.name], org.nr. [organization.orgnr].</p><p>Avtalen gjelder [deal.title], med en samlet verdi på [deal.value] eks. mva.</p><p>For kunden: [signer.1]</p>', null, null,
+  null, app.doc_tokens('<h1>Avtale</h1><p>Mellom leverandøren og [organization.name], org.nr. [organization.orgnr].</p><p>Avtalen gjelder [deal.title], med en samlet verdi på [deal.value] eks. mva.</p><p>For kunden: [signer.1]</p>'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '40 days', now() - interval '12 days');
+insert into app.document_template_versions (template_id, version, body_html, product_table, created_by, created_at) values ('00dabc63-e3fd-4c0f-a3de-f2ae9f87354a', 1, '<h1>Avtale</h1><p>Mellom leverandøren og [organization.name], org.nr. [organization.orgnr].</p><p>Avtalen gjelder [deal.title], med en samlet verdi på [deal.value] eks. mva.</p><p>For kunden: [signer.1]</p>', null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '40 days');
+insert into app.document_templates (id, name, kind, category, share, team_id, language, source, body_html, product_table, validity_days, number_prefix,
+  placeholders, owner_id, created_by, updated_by, created_at, updated_at)
+  values ('2a41a5e3-e79e-46d6-a6d5-cfdf3533edff', 'Avtale — offentlig', 'document', 'contracts', 'team', '7532b4d3-2c04-4683-a3a8-b88f43d46157', 'nb', 'platform', '<h1>Rammeavtale</h1><p>Oppdragsgiver: [organization.name]</p><p>Planlagt oppstart: [project.start]</p>', null, null,
+  null, app.doc_tokens('<h1>Rammeavtale</h1><p>Oppdragsgiver: [organization.name]</p><p>Planlagt oppstart: [project.start]</p>'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '40 days', now() - interval '12 days');
+insert into app.document_template_versions (template_id, version, body_html, product_table, created_by, created_at) values ('2a41a5e3-e79e-46d6-a6d5-cfdf3533edff', 1, '<h1>Rammeavtale</h1><p>Oppdragsgiver: [organization.name]</p><p>Planlagt oppstart: [project.start]</p>', null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '40 days');
+insert into app.document_templates (id, name, kind, category, share, language, source, placeholders, owner_id, created_by, updated_by, created_at, updated_at)
+  values ('768c2434-c33b-4cb4-aa56-8c3a0e950e12', 'Kundepresentasjon', 'presentation', 'presentations', 'company', 'nb', 'google', array['organization.name', 'organization.employees']::text[], '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '40 days', now() - interval '20 days');
+insert into app.document_templates (id, name, kind, category, share, language, source, placeholders, owner_id, created_by, updated_by, created_at, updated_at)
+  values ('4bb41350-6518-4860-a36a-b973ba295881', 'Prisberegning', 'spreadsheet', 'spreadsheets', 'private', 'nb', 'microsoft', array['product.table', 'deal.currency']::text[], '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '40 days', now() - interval '20 days');
+insert into app.documents (id, number, name, template_id, template_version, kind, source, deal_id, organization_id, person_id, product, status, valid_until,
+  storage, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  select '9fa8b64b-62bd-49bc-af0b-cafa56e2252d', 'T-1', 'Tilbud — Skiftly for lageret', t.id, 1, 'document', 'template', d.id, d.organization_id, d.person_id, d.product, 'draft',
+  case when t.validity_days is not null then ((now() - interval '6 days') at time zone 'Europe/Oslo')::date + t.validity_days end,
+  'platform', 'a56d1006-261a-4159-acba-5928ecb0540a', 'all', 'a56d1006-261a-4159-acba-5928ecb0540a', 'a56d1006-261a-4159-acba-5928ecb0540a', now() - interval '6 days', now() - interval '6 days'
+  from (select * from app.deals where id = 'e881fda1-c2f4-4d97-a646-535096f3fd6b') d, app.document_templates t where t.id = '927ecf01-9e0b-41b9-a2a5-35841d08b034';
+insert into app.documents (id, number, name, template_id, template_version, kind, source, deal_id, organization_id, person_id, product, status, valid_until,
+  storage, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  select '3e62cedb-cfb6-47e9-ab11-25fe0b5e6a74', null, 'Avtale om bruk av Skiftly', t.id, 1, 'document', 'template', d.id, d.organization_id, d.person_id, d.product, 'draft',
+  case when t.validity_days is not null then ((now() - interval '4 days') at time zone 'Europe/Oslo')::date + t.validity_days end,
+  'platform', 'a56d1006-261a-4159-acba-5928ecb0540a', 'all', 'a56d1006-261a-4159-acba-5928ecb0540a', 'a56d1006-261a-4159-acba-5928ecb0540a', now() - interval '4 days', now() - interval '4 days'
+  from (select * from app.deals where id = 'e881fda1-c2f4-4d97-a646-535096f3fd6b') d, app.document_templates t where t.id = '00dabc63-e3fd-4c0f-a3de-f2ae9f87354a';
+insert into app.documents (id, number, name, template_id, template_version, kind, source, deal_id, organization_id, person_id, product, status, valid_until,
+  storage, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  select '058d1e71-46e4-45cd-a6c7-05acf668a8dd', 'T-2', 'Tilbud — Avvikspunkt rollout', t.id, 1, 'document', 'template', d.id, d.organization_id, d.person_id, d.product, 'draft',
+  case when t.validity_days is not null then ((now() - interval '3 days') at time zone 'Europe/Oslo')::date + t.validity_days end,
+  'platform', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'all', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '3 days', now() - interval '3 days'
+  from (select * from app.deals where id = 'f20097b4-5a15-48fd-a683-e4224d69497d') d, app.document_templates t where t.id = '927ecf01-9e0b-41b9-a2a5-35841d08b034';
+insert into app.documents (id, number, name, template_id, template_version, kind, source, deal_id, organization_id, person_id, product, status, valid_until,
+  storage, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  select '8c43ad37-355e-489d-a8d1-284d603ec9b7', null, 'Rammeavtale kommune', t.id, 1, 'document', 'template', d.id, d.organization_id, d.person_id, d.product, 'draft',
+  case when t.validity_days is not null then ((now() - interval '2 days') at time zone 'Europe/Oslo')::date + t.validity_days end,
+  'platform', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'all', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '2 days', now() - interval '2 days'
+  from (select * from app.deals where id = '67c3e48c-5b68-4eb8-a984-dd51326e7a61') d, app.document_templates t where t.id = '2a41a5e3-e79e-46d6-a6d5-cfdf3533edff';
+insert into app.documents (id, number, name, template_id, template_version, kind, source, deal_id, organization_id, person_id, product, status, valid_until,
+  storage, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  select '192da78b-85cf-4e91-afe6-17a988e6bb26', null, 'Avtale — Full platform', t.id, 1, 'document', 'template', d.id, d.organization_id, d.person_id, d.product, 'draft',
+  case when t.validity_days is not null then ((now() - interval '9 days') at time zone 'Europe/Oslo')::date + t.validity_days end,
+  'platform', 'a56d1006-261a-4159-acba-5928ecb0540a', 'all', 'a56d1006-261a-4159-acba-5928ecb0540a', 'a56d1006-261a-4159-acba-5928ecb0540a', now() - interval '9 days', now() - interval '9 days'
+  from (select * from app.deals where id = '7bf729a0-1d77-4b7f-a5de-f94960a4516d') d, app.document_templates t where t.id = '00dabc63-e3fd-4c0f-a3de-f2ae9f87354a';
+insert into app.document_counters (prefix, next) values ('T-', 3);
+update app.documents x set body_html = r.j ->> 'html',
+  merge_missing = array(select jsonb_array_elements_text(r.j -> 'missing')) || array(select jsonb_array_elements_text(r.j -> 'unknown')), totals = r.tb -> 'totals'
+  from (select d.id, l.tb, app.doc_render(t.body_html, app.merge_context('deal', d.deal_id, null, d.owner_id) || jsonb_build_object('document', d.id, 'language', t.language), l.tb ->> 'html') j
+        from app.documents d join app.document_templates t on t.id = d.template_id
+        cross join lateral (select app.doc_product_table(d.deal_id, case when t.product_table is not null then array(select jsonb_array_elements_text(t.product_table -> 'columns')) end, t.language) tb) l
+        where d.id in ('9fa8b64b-62bd-49bc-af0b-cafa56e2252d', '3e62cedb-cfb6-47e9-ab11-25fe0b5e6a74', '058d1e71-46e4-45cd-a6c7-05acf668a8dd', '8c43ad37-355e-489d-a8d1-284d603ec9b7', '192da78b-85cf-4e91-afe6-17a988e6bb26')) r
+  where x.id = r.id;
+insert into app.document_links (id, document_id, token_sha256, recipient_person_id, created_by, created_at)
+  values ('2240ad71-a947-4143-ae0e-9288c8cbdb37', '9fa8b64b-62bd-49bc-af0b-cafa56e2252d', sha256(convert_to(gen_random_uuid()::text || gen_random_uuid()::text, 'UTF8')), '0b29480e-c6f6-44ca-aca1-efb63d0ffac5',
+  'a56d1006-261a-4159-acba-5928ecb0540a', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '8 hours' + interval '55 minutes') at time zone 'Europe/Oslo'));
+insert into app.document_views (link_id, document_id, started_at, duration_seconds, client_class) values
+  ('2240ad71-a947-4143-ae0e-9288c8cbdb37', '9fa8b64b-62bd-49bc-af0b-cafa56e2252d', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '9 hours' + interval '12 minutes') at time zone 'Europe/Oslo'), 75, 'human'),
+  ('2240ad71-a947-4143-ae0e-9288c8cbdb37', '9fa8b64b-62bd-49bc-af0b-cafa56e2252d', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '18 hours' + interval '31 minutes') at time zone 'Europe/Oslo'), 120, 'human'),
+  ('2240ad71-a947-4143-ae0e-9288c8cbdb37', '9fa8b64b-62bd-49bc-af0b-cafa56e2252d', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '18 hours' + interval '40 minutes') at time zone 'Europe/Oslo'), 240, 'human');
+update app.documents set status = 'opened', sent_at = ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '8 hours' + interval '55 minutes') at time zone 'Europe/Oslo'), first_opened_at = ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '9 hours' + interval '12 minutes') at time zone 'Europe/Oslo'), last_opened_at = ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '18 hours' + interval '40 minutes') at time zone 'Europe/Oslo')
+  where id = '9fa8b64b-62bd-49bc-af0b-cafa56e2252d';
+insert into app.signature_requests (id, document_id, status, service, language, otp_required, created_by, created_at, updated_at)
+  values ('3631ba53-1817-4fb8-ad94-bbe4ce2c0c55', '3e62cedb-cfb6-47e9-ab11-25fe0b5e6a74', 'draft', 'builtin', 'nb', true, 'a56d1006-261a-4159-acba-5928ecb0540a', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '10 hours' + interval '5 minutes') at time zone 'Europe/Oslo'), ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '10 hours' + interval '5 minutes') at time zone 'Europe/Oslo'));
+insert into app.signature_events (request_id, seq, kind, at, prev_hash, hash, detail)
+  values ('3631ba53-1817-4fb8-ad94-bbe4ce2c0c55', 1, 'created', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '10 hours' + interval '5 minutes') at time zone 'Europe/Oslo'), null, app.signature_event_hash(null, '3631ba53-1817-4fb8-ad94-bbe4ce2c0c55', 1, null, 'created', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '10 hours' + interval '5 minutes') at time zone 'Europe/Oslo'), null, '{}'::jsonb), '{}'::jsonb);
+insert into app.signature_signers (id, request_id, ord, person_id, name, email, color) values ('f00cc1b7-ff56-487d-a555-58e480c86f47', '3631ba53-1817-4fb8-ad94-bbe4ce2c0c55', 1, '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'Kari Nordmann', 'kari.nordmann@lumio.no', '#2F5D2A');
+insert into app.signature_fields (request_id, signer_id, kind, page, x, y, w, h) values
+  ('3631ba53-1817-4fb8-ad94-bbe4ce2c0c55', 'f00cc1b7-ff56-487d-a555-58e480c86f47', 'signature', 1, 8, 70, 40, 7.3), ('3631ba53-1817-4fb8-ad94-bbe4ce2c0c55', 'f00cc1b7-ff56-487d-a555-58e480c86f47', 'date', 1, 52, 70, 26, 7.3);
+insert into app.signature_signers (id, request_id, ord, person_id, name, email, color) values ('4dd68a76-4c30-400c-a644-e83f34f0636d', '3631ba53-1817-4fb8-ad94-bbe4ce2c0c55', 2, null, 'Tor Lambrechts', 'tor@orgpuls.no', '#6E8FB8');
+insert into app.signature_fields (request_id, signer_id, kind, page, x, y, w, h) values
+  ('3631ba53-1817-4fb8-ad94-bbe4ce2c0c55', '4dd68a76-4c30-400c-a644-e83f34f0636d', 'signature', 1, 8, 82, 40, 7.3), ('3631ba53-1817-4fb8-ad94-bbe4ce2c0c55', '4dd68a76-4c30-400c-a644-e83f34f0636d', 'date', 1, 52, 82, 26, 7.3);
 update app.event_cursors set last_event_id = coalesce((select max(id) from app.events), 0), updated_at = now();
 select app.scores_nightly();
 select app.feed_checks();

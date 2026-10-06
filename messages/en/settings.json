@@ -1,3 +1,546 @@
 {
-  "settings": {}
+  "settings": {
+    "sections": {
+      "label": "Settings sections",
+      "rules": "Rules and limits",
+      "modules": "Modules",
+      "fields": "Data fields",
+      "pipelines": "Pipelines and stages",
+      "acttypes": "Activity types",
+      "locale": "Language and currencies",
+      "users": "Users and teams",
+      "perms": "Permission sets",
+      "groups": "Visibility groups",
+      "plans": "Plans and usage",
+      "sandbox": "Sandbox"
+    },
+    "readOnly": "You can read these settings. Changing them needs the right «{right}».",
+    "rights": {
+      "configure": "Manage pipelines and fields",
+      "security": "Manage users and security"
+    },
+    "unavailable": "This section needs the deals module and the right to see deals.",
+    "entities": {
+      "deal": "Deals",
+      "lead": "Leads",
+      "person": "People",
+      "organization": "Organizations",
+      "catalog_item": "Products",
+      "project": "Projects",
+      "activity": "Activities",
+      "ticket": "Tickets",
+      "campaign": "Campaigns",
+      "document": "Documents"
+    },
+    "rules": {
+      "bannerLead": "No restrictions are built in.",
+      "bannerBody": "Every rule that can limit a feature lives here as a setting, and every default leaves the feature fully working. Only the anonymity firewall is fixed.",
+      "changed": "{count} changed from default",
+      "appliesTo": "Applies to {what}",
+      "range": "to",
+      "default": "Default:",
+      "stateFixed": "Fixed — cannot be switched off",
+      "stateChanged": "Changed · {value}",
+      "stateDefault": "Default — unrestricted",
+      "numberLabel": "Number for «{name}»",
+      "numberSave": "Set",
+      "toast": "Setting changed · logged",
+      "log": "Change log",
+      "logEmpty": "No setting has been changed yet.",
+      "logLine": "{name}: {from} → {to}",
+      "logScoped": "{name} · {scope}: {from} → {to}",
+      "logNumber": "{name}: {value} · number changed",
+      "system": "System",
+      "on": "on",
+      "off": "off",
+      "groups": {
+        "contacts_consent": "Contacts and consent",
+        "tracking": "Tracking",
+        "approvals_audit": "Approvals and audit",
+        "limits": "Limits",
+        "safeguards": "Technical safeguards",
+        "meetings": "Meetings",
+        "platform_constant": "Platform constant"
+      },
+      "items": {
+        "contact_rule": {
+          "name": "Contact rule",
+          "options": {
+            "no_rule": "No rule",
+            "source_and_basis": "Source and basis required",
+            "opt_in_only": "Opt-in only"
+          }
+        },
+        "import_consent": {
+          "name": "Consent source on import",
+          "options": {
+            "off": "Off",
+            "required_per_row": "Required per row"
+          }
+        },
+        "sales_consent": {
+          "name": "Consent and suppression checks on sales email",
+          "options": {
+            "off": "Off",
+            "warn": "Warn",
+            "block": "Block"
+          }
+        },
+        "tracking": {
+          "name": "Email open and click tracking",
+          "options": {
+            "on": "On",
+            "off": "Off",
+            "per_email": "Chosen per email"
+          }
+        },
+        "form_tracking": {
+          "name": "Form tracking fields (UTM, cookies, referrer)",
+          "options": {
+            "on": "On",
+            "off": "Off"
+          }
+        },
+        "web_ident": {
+          "name": "Web visitor identification",
+          "options": {
+            "on": "On",
+            "off": "Off"
+          }
+        },
+        "widget_consent": {
+          "name": "Consent-gated loading of site widgets",
+          "options": {
+            "off": "Off",
+            "on": "On"
+          }
+        },
+        "second_admin": {
+          "name": "Second-admin approval for bulk deletes and merges",
+          "options": {
+            "off": "Off",
+            "on": "On"
+          }
+        },
+        "typed_reason": {
+          "name": "Typed reason for CRM actions",
+          "everywhere": "Every CRM write and read of customer data",
+          "options": {
+            "off": "Off",
+            "on": "On"
+          }
+        },
+        "count_limits": {
+          "name": "Count limits (workflow actions and delays, group-email recipients, webhooks per user, signers, options per field, score models)",
+          "options": {
+            "unlimited": "Unlimited",
+            "number": "A number"
+          }
+        },
+        "plan_gates": {
+          "name": "Plan gates and usage limits",
+          "options": {
+            "all_on": "All on and unlimited",
+            "per_plan": "Set per plan"
+          }
+        },
+        "api_rate": {
+          "name": "API rate limits",
+          "options": {
+            "off": "Off",
+            "source_values": "Source values",
+            "custom": "Custom"
+          }
+        },
+        "safeguards": {
+          "name": "Technical safeguards: workflow loop protection, webhook retry and ban policy",
+          "options": {
+            "source_values": "Source values",
+            "custom": "Custom",
+            "off": "Off"
+          }
+        },
+        "rec_notice": {
+          "name": "Recording consent notices to attendees",
+          "options": {
+            "on_24h": "On with 24 hours’ notice",
+            "custom": "Custom timing",
+            "off": "Off"
+          }
+        },
+        "firewall": {
+          "name": "Anonymity firewall",
+          "everywhere": "Every feature — a platform constant",
+          "options": {
+            "fixed": "Fixed"
+          }
+        },
+        "mfa": {
+          "name": "Second factor for every staff sign-in",
+          "everywhere": "Every sign-in — a platform constant",
+          "options": {
+            "fixed": "Fixed"
+          }
+        },
+        "session_idle": {
+          "name": "Session idle timeout",
+          "options": {
+            "on_30": "On, 30 minutes",
+            "off": "Off"
+          }
+        },
+        "ip_allowlist": {
+          "name": "IP allowlist",
+          "options": {
+            "off": "Off",
+            "on": "On"
+          }
+        },
+        "login_alerts": {
+          "name": "Login alerts",
+          "options": {
+            "off": "Off",
+            "on": "On"
+          }
+        },
+        "visibility_default": {
+          "name": "Default visibility",
+          "options": {
+            "owner": "Owner only",
+            "group": "Owner’s group",
+            "group_sub": "Owner’s group and sub-groups",
+            "all": "Everyone"
+          }
+        }
+      }
+    },
+    "modules": {
+      "title": "Modules",
+      "sub": "A switched-off module leaves the navigation for every user, and its API returns «module disabled»",
+      "toastOff": "{name} switched off for every user",
+      "toastOn": "{name} switched on",
+      "items": {
+        "deals": {
+          "name": "Deals and pipelines",
+          "desc": "Pipeline, list, forecast, products"
+        },
+        "leads": {
+          "name": "Leads",
+          "desc": "Leads inbox and conversion"
+        },
+        "projects": {
+          "name": "Projects",
+          "desc": "Boards, timeline, templates"
+        },
+        "campaigns": {
+          "name": "Campaigns",
+          "desc": "Email marketing"
+        },
+        "documents": {
+          "name": "Documents and e-sign",
+          "desc": "Templates, links, signatures"
+        },
+        "meetings": {
+          "name": "Meeting intelligence",
+          "desc": "Briefs, notetaker, recaps"
+        },
+        "leadgen": {
+          "name": "Lead capture",
+          "desc": "Forms, chatbot, live chat, prospect search"
+        },
+        "visitors": {
+          "name": "Web visitors",
+          "desc": "Company identification"
+        },
+        "mobile": {
+          "name": "Mobile app",
+          "desc": "iOS and Android clients"
+        }
+      }
+    },
+    "fields": {
+      "cols": {
+        "field": "Field",
+        "type": "Type",
+        "rule": "Quality rule",
+        "access": "Access"
+      },
+      "empty": "No custom fields on {entity} yet.",
+      "add": "＋ Field",
+      "newTitle": "New field",
+      "label": "Label",
+      "typeCount": "Type — {count} available",
+      "formula": "Formula",
+      "options": "Options",
+      "optionAdd": "Add",
+      "optionPlaceholder": "New option",
+      "optionRemove": "Remove option «{name}»",
+      "optionsEmpty": "No options yet",
+      "quality": "Quality",
+      "fromStage": "From stage",
+      "pipelines": "Pipelines",
+      "readOnlyFor": "Read-only for",
+      "hiddenFor": "Hidden for",
+      "description": "Description (behind the info icon)",
+      "note": "Appears in forms, filters, reports, import and the API without a deploy · options per field: unlimited",
+      "noteLimited": "Appears in forms, filters, reports, import and the API without a deploy · options per field: {count}",
+      "save": "Save field",
+      "create": "Add field",
+      "archive": "Archive",
+      "saved": "Field saved · {name}",
+      "created": "Field added · {name}",
+      "archived": "Field archived · {name}",
+      "allPipelines": "All pipelines",
+      "pipelineOnly": "{name} only",
+      "nobody": "Nobody",
+      "anyStage": "—",
+      "everyone": "Everyone",
+      "hiddenFrom": "Hidden from {sets}",
+      "readOnlyForSets": "read-only for {sets}",
+      "only": "{names} only",
+      "qualityOptions": {
+        "optional": "Optional",
+        "important": "Important (nudge)",
+        "required": "Required"
+      },
+      "rule": {
+        "optional": "Optional",
+        "important": "Important (nudge)",
+        "required": "Required",
+        "requiredFrom": "Required from {stage}",
+        "importantFrom": "Important from {stage}",
+        "formula": "Formula · read-only"
+      },
+      "types": {
+        "text": "Text",
+        "large_text": "Large text",
+        "single_option": "Single option",
+        "multiple_options": "Multiple options",
+        "autocomplete": "Autocomplete",
+        "numerical": "Numerical",
+        "monetary": "Monetary",
+        "user": "User",
+        "organization": "Organization",
+        "person": "Person",
+        "phone": "Phone",
+        "time": "Time",
+        "time_range": "Time range",
+        "date": "Date",
+        "date_range": "Date range",
+        "address": "Address",
+        "formula": "Formula"
+      }
+    },
+    "pipelines": {
+      "add": "＋ Pipeline",
+      "addName": "Pipeline name",
+      "addSubmit": "Add",
+      "added": "Pipeline added · pipelines: unlimited",
+      "visibleTo": "Visible to: {who}",
+      "everyone": "Everyone",
+      "empty": "No pipeline yet.",
+      "cols": {
+        "order": "Order",
+        "stage": "Stage",
+        "probability": "Probability",
+        "rotting": "Rotting after"
+      },
+      "up": "Move «{name}» up",
+      "down": "Move «{name}» down",
+      "stageName": "Stage name",
+      "probability": "Probability of «{name}»",
+      "rotting": "Rotting after (days) for «{name}»",
+      "days": "days",
+      "delete": "Delete stage",
+      "deleteTitle": "Delete «{name}» ({count, plural, one {# open deal} other {# open deals}}) and move its deals to",
+      "deleteConfirm": "Delete and move",
+      "deleteLast": "A pipeline keeps at least one stage",
+      "deleted": "{count, plural, one {# deal} other {# deals}} moved to «{target}» · reorder shows for every user",
+      "addStage": "＋ Stage",
+      "newStage": "New stage",
+      "saved": "Stage saved",
+      "reordered": "Order saved · shows for every user",
+      "cancel": "Cancel"
+    },
+    "acttypes": {
+      "title": "Activity types",
+      "sub": "New types are selectable and reportable at once",
+      "customFields": "Custom fields: {list}",
+      "add": "＋ Activity type",
+      "glyph": "Glyph",
+      "name": "Name",
+      "namePlaceholder": "Site visit",
+      "create": "Add type",
+      "created": "Activity type added · {name}",
+      "switchLabel": "{name} active",
+      "on": "{name} switched on",
+      "off": "{name} switched off · kept on past activities",
+      "names": {
+        "call": "Call",
+        "meeting": "Meeting",
+        "task": "Task",
+        "deadline": "Deadline",
+        "email": "Email",
+        "lunch": "Lunch",
+        "demo": "Product demo"
+      },
+      "cancel": "Cancel"
+    },
+    "locale": {
+      "title": "Language and locale — per user",
+      "languages": {
+        "en": "English",
+        "no": "Norsk bokmål"
+      },
+      "dateFormat": "Date format",
+      "numberFormat": "Number format",
+      "timeZone": "Time zone",
+      "note": "Labels come from the translation catalog · switching language does not reload data",
+      "saved": "Your preferences are saved",
+      "currencies": "Currencies",
+      "companyDefault": "Company default NOK",
+      "nok": "Norwegian krone",
+      "default": "Default",
+      "addCurrency": "＋ Custom currency",
+      "currencyPending": "More currencies arrive with stored exchange rates from Norges Bank."
+    },
+    "users": {
+      "title": "Staff users",
+      "invite": "＋ Invite",
+      "inviteTitle": "Invite a staff member",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "permissionSet": "Permission set",
+      "group": "Visibility group",
+      "team": "Team",
+      "noTeam": "No team",
+      "inviteSubmit": "Invite",
+      "invited": "{name} added · the person signs in with this e-mail and sets up their authenticator",
+      "inviteNote": "The person signs in with this e-mail and sets up their authenticator at the first sign-in.",
+      "now": "Now",
+      "never": "—",
+      "copy": "Copy access",
+      "copyTitle": "Copy {name}’s permission set, group and team to",
+      "copied": "Access copied from {name}",
+      "replace": "Replace",
+      "replaceTitle": "Reassign {name}’s records to the person below and deactivate {name}",
+      "replaced": "{name} replaced · {count, plural, one {# record} other {# records}} reassigned to {next}",
+      "deactivate": "Deactivate",
+      "reactivate": "Reactivate",
+      "deactivated": "{name} deactivated",
+      "reactivated": "{name} reactivated",
+      "pick": "Choose a person",
+      "apply": "Apply",
+      "teamManager": "Manager {name}",
+      "teamFoot": "Used by assignment, reports and goals",
+      "teamEdit": "Edit",
+      "teamAdd": "＋ Team",
+      "teamName": "Team name",
+      "manager": "Manager",
+      "noManager": "No manager",
+      "members": "Members",
+      "teamSave": "Save team",
+      "teamSaved": "Team saved · {name}",
+      "cancel": "Cancel",
+      "self": "You cannot change your own access or deactivate yourself"
+    },
+    "perms": {
+      "cols": {
+        "action": "Action"
+      },
+      "scopes": {
+        "deals": "Deals",
+        "projects": "Projects",
+        "campaigns": "Campaigns",
+        "tickets": "Tickets",
+        "global": "Global"
+      },
+      "actions": {
+        "see": "See records",
+        "add": "Add records",
+        "edit_others": "Edit others’ records",
+        "delete": "Delete records",
+        "bulk": "Bulk edit and merge",
+        "export": "Export lists",
+        "configure": "Manage pipelines and fields",
+        "workflows": "Manage workflows",
+        "reports_others": "See reports of others",
+        "ai": "Use AI features",
+        "security": "Manage users and security"
+      },
+      "cell": "{action} · {scope}",
+      "locked": "Admin (full) has every right and is locked.",
+      "members": "{count, plural, =0 {No staff member uses this set} one {# staff member uses this set} other {# staff members use this set}}",
+      "saved": "Permission set saved · {name}",
+      "add": "＋ Permission set",
+      "addName": "Name of the new set",
+      "addSubmit": "Add",
+      "created": "Permission set added · {name}",
+      "foot": "Staff roles map to sets: super-admin → Admin · support → Support · finance → Finance · analyst → Read-only · sales → Sales · marketing → Marketing · project → Projects (settled by decision D-08)",
+      "cancel": "Cancel"
+    },
+    "groups": {
+      "title": "Visibility groups",
+      "users": "{count, plural, one {# user} other {# users}}",
+      "add": "＋ Group",
+      "name": "Group name",
+      "parent": "Under",
+      "addSubmit": "Add",
+      "created": "Group added · {name}",
+      "defaults": "Default visibility per record type",
+      "defaultFor": "Default visibility for {entity}",
+      "saved": "Default visibility changed · logged",
+      "foot": "Enforced by row-level security on every read and write, not by hiding things in the interface",
+      "cancel": "Cancel"
+    },
+    "plans": {
+      "title": "Usage against every limit",
+      "subAllOn": "Plan gates and usage limits: all on and unlimited (setting)",
+      "subPerPlan": "Plan gates and usage limits: set per plan (setting)",
+      "unlimited": "unlimited",
+      "perPlan": "per plan",
+      "rows": {
+        "fields": "Custom fields",
+        "formula": "Formula fields",
+        "pipelines": "Pipelines",
+        "staff": "Active staff users",
+        "teams": "Teams",
+        "groups": "Visibility groups",
+        "sets": "Permission sets",
+        "acttypes": "Activity types"
+      },
+      "foot": "At a limit, new additions are blocked and nothing is deleted — overflow goes to the waitlist or the import skip file",
+      "ents": "Entitlements — features per plan and add-on",
+      "entsNone": "Nothing is sold: every feature is on for everyone, with no plans or add-ons (decision D-17). Features are switched on and off under",
+      "entsLink": "Modules"
+    },
+    "sandbox": {
+      "title": "Sandbox — Lumio AS demo tenant",
+      "body": "A separate test company for trying configuration and automations. It holds configuration and demo data, never customer data. Changes here never touch the live company.",
+      "sample": "Sample {entity}",
+      "lastCleared": "Last cleared",
+      "remove": "Remove sample records",
+      "removed": "Sample records removed in one step · {count, plural, one {# record} other {# records}}",
+      "reset": "Reset from seed",
+      "resetPending": "Resetting from the demo seed needs a job that does not exist yet.",
+      "useTitle": "Use the sandbox",
+      "useBody": "Switch it on from the header. A yellow band shows on every screen while you work in it, and sample records carry a «Sample» label.",
+      "switch": "Work in the sandbox",
+      "switchedOn": "Sandbox on · sample records show",
+      "switchedOff": "Sandbox off",
+      "entities": {
+        "deal": "deals",
+        "lead": "leads",
+        "person": "people",
+        "organization": "organizations",
+        "catalog_item": "products",
+        "project": "projects",
+        "activity": "activities",
+        "ticket": "tickets",
+        "campaign": "campaigns",
+        "document": "documents"
+      }
+    }
+  }
 }

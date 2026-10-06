@@ -1,3 +1,128 @@
 {
-  "coverage": {}
+  "coverage": {
+    "eyebrow": "CRM enrichment brief · 3 October 2026",
+    "title": "Every feature and flow in the brief has a home in this prototype. Click one to open where it lives.",
+    "statusNote": "The status beside each feature is the gap analysis of 6 October 2026 (05-GAP-FEATURES), taken before phase B started building.",
+    "stats": {
+      "features": "Features",
+      "featuresSub": "all mapped to a screen",
+      "modules": "Modules",
+      "modulesSub": "from the inventory",
+      "userFlows": "User flows",
+      "systemFlows": "System flows",
+      "range": "{prefix}-01 to {prefix}-{last}",
+      "settings": "Settings",
+      "settingsSub": "every default unrestricted"
+    },
+    "tabs": {
+      "label": "Coverage views",
+      "features": "Features",
+      "flows": "User and system flows",
+      "baseline": "Admin baseline, extended"
+    },
+    "search": "Search ID, name or text",
+    "allModules": "All modules",
+    "rules": "Rules and edge cases",
+    "acceptance": "Acceptance",
+    "open": "{where} →",
+    "expand": "Show rules and acceptance for {id}",
+    "empty": "Nothing matches «{q}».",
+    "status": {
+      "implemented": "Implemented",
+      "partial": "Partial",
+      "missing": "Missing",
+      "conflict": "Conflict",
+      "unknown": "Unknown"
+    },
+    "where": {
+      "deals": "Deals",
+      "activities": "Activities",
+      "contacts": "Contacts",
+      "leads": "Leads",
+      "settings": "Settings",
+      "inbox": "Inbox",
+      "automation": "Automation",
+      "insights": "Insights",
+      "feed": "Feed",
+      "home": "Header · Assistant",
+      "meetings": "Meetings",
+      "platform": "API and integrations",
+      "campaigns": "Campaigns",
+      "leadgen": "Lead capture",
+      "visitors": "Web visitors",
+      "projects": "Projects",
+      "documents": "Documents",
+      "security": "Security",
+      "mobile": "Mobile app",
+      "customers": "Organizations",
+      "analytics": "Analytics",
+      "tickets": "Tickets",
+      "apps": "Applications"
+    },
+    "baseline": {
+      "orgs": {
+        "n": "Organizations",
+        "items": [
+          "List with search, status, tier, band, industry, fylke, source, trial days and health filters",
+          "Saved views, bulk tag, owner and broadcast",
+          "Detail: Brreg header, cross-product view, health breakdown, activation, structure, surveys metadata, billing, timeline, notes, tickets, audit",
+          "Actions with reason: trial, plan, discount, complimentary, suspend, re-sync, transfer, merge, export, delete by typing org.nr"
+        ]
+      },
+      "users": {
+        "n": "Users, support access and personvern",
+        "items": [
+          "Cross-org user search with memberships, MFA and auth method",
+          "Support access requested by admin, approved by customer, time-boxed and logged",
+          "Personvern queue with 30-day clock, deletion queue, DPA tracking"
+        ]
+      },
+      "billing": {
+        "n": "Billing",
+        "items": [
+          "Subscription lifecycle, failed payments and dunning with retry",
+          "Band reconciliation with customer confirmation",
+          "Plan catalogue with price versions, coupons, credits, complimentary accounts, accounting export"
+        ]
+      },
+      "analytics": {
+        "n": "Analytics",
+        "items": [
+          "Business KPIs, net new MRR, ARPA and tiers",
+          "Activation funnel per cohort with median time per step and the 20-minute promise",
+          "Cohort retention, churn and reasons",
+          "Product usage across applications",
+          "Health score distribution and at-risk list",
+          "Metric definitions as versioned SQL views"
+        ]
+      },
+      "web": {
+        "n": "Web analytics and attribution",
+        "items": [
+          "Cookieless traffic, sources, landing pages, Search Console",
+          "Website funnel incl. failed Brønnøysund lookups",
+          "Campaign spend to cost per paid customer",
+          "First- and last-touch attribution"
+        ]
+      },
+      "tickets": {
+        "n": "Ticketing (ITSM)",
+        "items": [
+          "Question, service request, incident, problem",
+          "Priority from impact × urgency",
+          "Queues, routing, escalation, SLA timers",
+          "Service requests executed from the ticket",
+          "Problems, known errors, status banner, help centre, macros, CSAT, reporting"
+        ]
+      },
+      "platform": {
+        "n": "Multi-application platform",
+        "items": [
+          "Application registry with health, sync, events and remote actions",
+          "One admin API, tokens, OAuth apps, webhooks",
+          "Job monitor, feature flags, maintenance mode, content versioning"
+        ]
+      }
+    }
+  }
 }

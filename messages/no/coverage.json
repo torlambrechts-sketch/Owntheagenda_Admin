@@ -1,3 +1,128 @@
 {
-  "coverage": {}
+  "coverage": {
+    "eyebrow": "Brief for CRM-utvidelsen · 3. oktober 2026",
+    "title": "Alle funksjoner og flyter i briefen har en plass i denne prototypen. Klikk på en for å åpne der den hører hjemme.",
+    "statusNote": "Statusen ved hver funksjon er gapanalysen fra 6. oktober 2026 (05-GAP-FEATURES), tatt før byggingen i fase B begynte. Funksjonsteksten er spesifikasjonens egen, på engelsk.",
+    "stats": {
+      "features": "Funksjoner",
+      "featuresSub": "alle knyttet til en skjerm",
+      "modules": "Moduler",
+      "modulesSub": "fra inventaret",
+      "userFlows": "Brukerflyter",
+      "systemFlows": "Systemflyter",
+      "range": "{prefix}-01 til {prefix}-{last}",
+      "settings": "Innstillinger",
+      "settingsSub": "alle standardverdier ubegrenset"
+    },
+    "tabs": {
+      "label": "Visninger av dekningen",
+      "features": "Funksjoner",
+      "flows": "Bruker- og systemflyter",
+      "baseline": "Admin-grunnlaget, utvidet"
+    },
+    "search": "Søk etter ID, navn eller tekst",
+    "allModules": "Alle moduler",
+    "rules": "Regler og kanttilfeller",
+    "acceptance": "Akseptanse",
+    "open": "{where} →",
+    "expand": "Vis regler og akseptanse for {id}",
+    "empty": "Ingenting samsvarer med «{q}».",
+    "status": {
+      "implemented": "Implementert",
+      "partial": "Delvis",
+      "missing": "Mangler",
+      "conflict": "Konflikt",
+      "unknown": "Ukjent"
+    },
+    "where": {
+      "deals": "Avtaler",
+      "activities": "Aktiviteter",
+      "contacts": "Kontakter",
+      "leads": "Leads",
+      "settings": "Innstillinger",
+      "inbox": "Innboks",
+      "automation": "Automatisering",
+      "insights": "Innsikt",
+      "feed": "Strøm",
+      "home": "Toppfelt · Assistent",
+      "meetings": "Møter",
+      "platform": "API og integrasjoner",
+      "campaigns": "Kampanjer",
+      "leadgen": "Leadfangst",
+      "visitors": "Nettbesøkende",
+      "projects": "Prosjekter",
+      "documents": "Dokumenter",
+      "security": "Sikkerhet",
+      "mobile": "Mobilapp",
+      "customers": "Organisasjoner",
+      "analytics": "Analyse",
+      "tickets": "Saker",
+      "apps": "Applikasjoner"
+    },
+    "baseline": {
+      "orgs": {
+        "n": "Organisasjoner",
+        "items": [
+          "Liste med søk og filtre for status, nivå, størrelsesbånd, bransje, fylke, kilde, prøvedager og helse",
+          "Lagrede visninger, massemerking, eier og kringkasting",
+          "Detalj: Brreg-hode, visning på tvers av produkter, helse i detalj, aktivering, struktur, metadata om målinger, fakturering, tidslinje, notater, saker, revisjon",
+          "Handlinger med begrunnelse: prøveperiode, plan, rabatt, gratis tilgang, suspendering, ny synkronisering, overføring, sammenslåing, eksport, sletting ved å skrive org.nr"
+        ]
+      },
+      "users": {
+        "n": "Brukere, støttetilgang og personvern",
+        "items": [
+          "Brukersøk på tvers av organisasjoner med medlemskap, MFA og innloggingsmetode",
+          "Støttetilgang som administrator ber om, kunden godkjenner, tidsbegrenset og logget",
+          "Personvernkø med 30-dagersfrist, slettekø og oppfølging av databehandleravtaler"
+        ]
+      },
+      "billing": {
+        "n": "Fakturering",
+        "items": [
+          "Abonnementets livsløp, mislykkede betalinger og purring med nye forsøk",
+          "Avstemming av størrelsesbånd med bekreftelse fra kunden",
+          "Plankatalog med prisversjoner, kuponger, kreditt, gratis kontoer og regnskapseksport"
+        ]
+      },
+      "analytics": {
+        "n": "Analyse",
+        "items": [
+          "Forretningsnøkkeltall, netto ny MRR, ARPA og nivåer",
+          "Aktiveringstrakt per kohort med mediantid per steg og 20-minuttersløftet",
+          "Kohortlojalitet, frafall og årsaker",
+          "Produktbruk på tvers av applikasjoner",
+          "Fordeling av helsescore og liste over kunder i faresonen",
+          "Definisjoner av måltall som versjonerte SQL-visninger"
+        ]
+      },
+      "web": {
+        "n": "Nettanalyse og attribusjon",
+        "items": [
+          "Trafikk uten informasjonskapsler, kilder, landingssider, Search Console",
+          "Trakt på nettstedet, med mislykkede oppslag i Brønnøysund",
+          "Kampanjekostnad til kostnad per betalende kunde",
+          "Første- og siste-berøring-attribusjon"
+        ]
+      },
+      "tickets": {
+        "n": "Saksbehandling (ITSM)",
+        "items": [
+          "Spørsmål, tjenesteforespørsel, hendelse, problem",
+          "Prioritet ut fra påvirkning × hast",
+          "Køer, ruting, eskalering, SLA-tidtakere",
+          "Tjenesteforespørsler utført fra saken",
+          "Problemer, kjente feil, statusbanner, hjelpesenter, makroer, CSAT, rapportering"
+        ]
+      },
+      "platform": {
+        "n": "Plattform for flere applikasjoner",
+        "items": [
+          "Applikasjonsregister med helse, synkronisering, hendelser og fjernhandlinger",
+          "Ett admin-API, tokener, OAuth-apper, webhooks",
+          "Jobbmonitor, funksjonsflagg, vedlikeholdsmodus, versjonering av innhold"
+        ]
+      }
+    }
+  }
 }

@@ -34,7 +34,7 @@
     },
     "rules": {
       "bannerLead": "No restrictions are built in.",
-      "bannerBody": "Every rule that can limit a feature lives here as a setting, and every default leaves the feature fully working. Only the anonymity firewall is fixed.",
+      "bannerBody": "Every rule that can limit a feature lives here as a setting, and every default leaves the feature fully working, except double opt-in, which is on to meet the consent rules. Fixed: the anonymity firewall, MFA, the marketing rules and the survey-host block.",
       "changed": "{count} changed from default",
       "appliesTo": "Applies to {what}",
       "range": "to",

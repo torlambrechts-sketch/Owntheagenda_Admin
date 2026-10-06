@@ -34,7 +34,7 @@
     },
     "rules": {
       "bannerLead": "Ingen begrensninger er bygd inn.",
-      "bannerBody": "Hver regel som kan begrense en funksjon, ligger her som en innstilling, og hver standardverdi lar funksjonen virke fullt ut. Bare anonymitetsbrannmuren er fast.",
+      "bannerBody": "Hver regel som kan begrense en funksjon, ligger her som en innstilling, og hver standardverdi lar funksjonen virke fullt ut, unntatt dobbel bekreftelse, som er på for å oppfylle samtykkereglene. Faste: anonymitetsbrannmuren, MFA, markedsføringsreglene og blokkeringen av undersøkelsesdomener.",
       "changed": "{count} endret fra standard",
       "appliesTo": "Gjelder {what}",
       "range": "til",

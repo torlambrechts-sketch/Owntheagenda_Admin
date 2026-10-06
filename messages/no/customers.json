@@ -1,3 +1,583 @@
 {
-  "customers": {}
+  "customers": {
+    "notYet": "Produktet tilbyr ikke dette ennå.",
+    "tabs": {
+      "label": "Kunder",
+      "orgs": "Organisasjoner",
+      "users": "Brukere",
+      "billing": "Abonnementer og fakturering",
+      "access": "Supporttilgang",
+      "privacy": "Personvernforespørsler"
+    },
+    "status": {
+      "trial": "Prøveperiode",
+      "active": "Aktiv",
+      "past_due": "Forfalt",
+      "suspended": "Suspendert",
+      "cancelled": "Avsluttet",
+      "expired": "Utløpt",
+      "free": "Gratis"
+    },
+    "fmt": {
+      "daysAgo": "for {n} d siden",
+      "monthsAgo": "for {n} mnd siden",
+      "today": "I dag {time}",
+      "todayPlain": "I dag",
+      "yesterday": "I går",
+      "yesterdayAt": "I går {time}"
+    },
+    "list": {
+      "search": "Søk på navn, org.nr eller admin-e-post",
+      "export": "Eksporter CSV",
+      "saveView": "Lagre visning",
+      "savedViews": "Lagrede visninger",
+      "clear": "Nullstill filtre",
+      "summary": "{n, plural, one {<b>#</b> organisasjon} other {<b>#</b> organisasjoner}} · MRR <b>{mrr}</b>",
+      "selected": "{n} valgt",
+      "addTag": "Legg til etikett",
+      "assignOwner": "Tildel eier",
+      "broadcast": "Send kunngjøring",
+      "noTags": "Det finnes ingen etiketter ennå.",
+      "select": "Velg {name}",
+      "never": "Aldri",
+      "empty": "Ingen organisasjoner passer til denne visningen."
+    },
+    "views": {
+      "all": "Alle",
+      "trials_week_no_survey": "Prøveperioder som utløper denne uken uten sendt undersøkelse",
+      "past_due": "Forfalt",
+      "multi_product": "Flere produkter",
+      "ehf": "Fakturakunder (EHF)",
+      "modalEyebrow": "Organisasjoner",
+      "modalPreview": "Visningen tar vare på gjeldende søk, lagret visning og filtre. Bare du ser den.",
+      "name": "Navn",
+      "namePlaceholder": "f.eks. Prøveperioder i Vestland",
+      "save": "Lagre"
+    },
+    "filters": {
+      "status": "Status",
+      "plan": "Prisnivå",
+      "industry": "Bransje",
+      "fylke": "Fylke",
+      "source": "Registreringskilde",
+      "uses": "Bruker",
+      "any": "Alle"
+    },
+    "cols": {
+      "name": "Navn",
+      "orgnr": "Org.nr",
+      "status": "Status",
+      "plan": "Plan",
+      "staff": "Ansatte",
+      "lastSurvey": "Siste undersøkelse",
+      "response": "Svar",
+      "health": "Helse",
+      "mrr": "MRR",
+      "signup": "Registrert"
+    },
+    "csv": {
+      "name": "Navn",
+      "orgnr": "Org.nr",
+      "status": "Status",
+      "plan": "Plan",
+      "staff": "Ansatte",
+      "lastSurvey": "Siste undersøkelse",
+      "response": "Svar (%)",
+      "mrr": "MRR (NOK)",
+      "signup": "Registrert",
+      "applications": "Applikasjoner",
+      "tags": "Etiketter"
+    },
+    "rights": {
+      "export": "Tilgangssettet ditt omfatter ikke eksport.",
+      "bulk": "Tilgangssettet ditt omfatter ikke masseredigering."
+    },
+    "toast": {
+      "exported": "Eksporterte {n} rader · formler nøytralisert · logget",
+      "tagAdded": "Etikett lagt til på {n} organisasjoner",
+      "ownerAssigned": "Eier tildelt {n} organisasjoner",
+      "viewSaved": "Visningen er lagret med gjeldende filtre"
+    },
+    "modal": {
+      "cancel": "Avbryt",
+      "confirm": "Bekreft",
+      "reason": "Begrunnelse (påkrevd, skrives til revisjonsloggen)",
+      "reasonPlaceholder": "f.eks. Sak T-2312 — styremøtet er flyttet"
+    },
+    "errors": {
+      "no_orgpuls": "Denne organisasjonen har ingen Orgpuls-konto.",
+      "not_in_trial": "Ifølge Orgpuls er denne organisasjonen ikke i prøveperiode.",
+      "invalid_days": "Legg til mellom 1 og 60 dager.",
+      "not_cancelled": "Orgpuls sletter en organisasjon først når abonnementet er avsluttet.",
+      "confirm_mismatch": "Org.nr du skrev, stemmer ikke.",
+      "not_allowed": "Orgpuls avviste: kontoen din har ikke lov til dette.",
+      "reason_required": "Skriv en begrunnelse på minst fem tegn.",
+      "not_installed": "Orgpuls er ikke koblet til plattformen.",
+      "not_configured": "Orgpuls er ikke koblet til plattformen.",
+      "unreachable": "Fikk ikke kontakt med Orgpuls. Prøv igjen.",
+      "timeout": "Orgpuls svarte ikke i tide. Prøv igjen."
+    },
+    "detail": {
+      "back": "← Organisasjoner",
+      "unavailable": {
+        "forbidden": "Du har ikke rett til å se denne organisasjonen.",
+        "not_found": "Organisasjonen finnes ikke lenger eller er ikke synlig for deg."
+      },
+      "nace": "NACE {nace}",
+      "employeesRegistered": "{n} ansatte registrert",
+      "brreg": "Fra Brønnøysundregistrene · synkronisert {when}",
+      "owner": "eier {name}",
+      "csm": "CSM {name}",
+      "health": "Helse",
+      "mrr": "MRR",
+      "band": "{plan}-nivå",
+      "tabsLabel": "Organisasjon",
+      "tabs": {
+        "overview": "Oversikt",
+        "users": "Brukere og roller",
+        "surveys": "Undersøkelser",
+        "billing": "Fakturering",
+        "timeline": "Tidslinje",
+        "tickets": "Saker",
+        "notes": "Notater og etiketter",
+        "audit": "Revisjonslogg"
+      },
+      "tabForbidden": "Tilgangssettet ditt omfatter ikke dette.",
+      "tabFailed": "Dette kunne ikke lastes. Prøv igjen."
+    },
+    "actions": {
+      "button": "Handlinger ▾",
+      "notYet": "Produktet tilbyr ikke dette ennå",
+      "noOrgpuls": "Ingen Orgpuls-konto for denne organisasjonen",
+      "noRight": "Tilgangssettet ditt omfatter ikke dette",
+      "superAdminOnly": "Kun superadmin",
+      "done": "{action} · skrevet til revisjonsloggen",
+      "deleteCta": "Slett organisasjonen",
+      "dangerNote": "Kun superadmin · Orgpuls sletter med en gang, uten utsettelse, og bare når abonnementet er avsluttet. Godkjenning fra en annen admin er av (innstilling).",
+      "dangerNoteApproval": "Kun superadmin · Godkjenning fra en annen admin er på (innstilling): slettingen avvises til godkjenningskøen finnes.",
+      "items": {
+        "trial": {
+          "n": "Forleng eller nullstill prøveperioden",
+          "s": "Legger dager til den 30 dager lange prøveperioden",
+          "field": "Dager å legge til"
+        },
+        "plan": {
+          "n": "Endre plan",
+          "s": "Nivå og prisversjon"
+        },
+        "discount": {
+          "n": "Gi rabatt",
+          "s": "Engangs eller løpende"
+        },
+        "comp": {
+          "n": "Merk som gratiskunde",
+          "s": "Piloter og partnere"
+        },
+        "suspend": {
+          "n": "Suspender",
+          "s": "Lesetilgang til resultater"
+        },
+        "reactivate": {
+          "n": "Gjenaktiver"
+        },
+        "resync": {
+          "n": "Synkroniser på nytt fra Orgpuls",
+          "s": "Navn, fakturering, brukere og tall"
+        },
+        "owner": {
+          "n": "Overfør eierskap",
+          "s": "Til en annen bruker i organisasjonen"
+        },
+        "merge": {
+          "n": "Slå sammen duplikat",
+          "s": "Samme org.nr — forhåndsvis først"
+        },
+        "export": {
+          "n": "Eksporter organisasjonsdata",
+          "s": "Aggregater, tiltak, kommentarer uten identitet"
+        },
+        "delete": {
+          "n": "Slett organisasjonen",
+          "s": "Superadmin · bekreft ved å skrive org.nr",
+          "field": "Skriv org.nr for å bekrefte"
+        }
+      },
+      "preview": {
+        "trial": "Prøveperioden slutter {left}. Orgpuls legger dagene til prøveperioden og melder den nye sluttdatoen.",
+        "trialLeft": "om {n, plural, one {# dag} other {# dager}}",
+        "resync": "Orgpuls sender på nytt det plattformen skal vite om denne organisasjonen: navn, fakturering, aktive brukere og dagens tall. Ingenting som allerede er riktig, endres.",
+        "delete": "Orgpuls sletter organisasjonen og alle dataene nå: {users, plural, one {# bruker} other {# brukere}} og {rounds, plural, one {# undersøkelsesrunde} other {# undersøkelsesrunder}} slik de er meldt hit. {cancelled, select, yes {Abonnementet er avsluttet.} other {Abonnementet er ikke avsluttet, så Orgpuls vil avvise.}} Dette kan ikke angres."
+      }
+    },
+    "milestones": {
+      "account_created": "Konto opprettet — oppslag i Brønnøysund ok",
+      "employees_uploaded": "Ansattliste lastet opp",
+      "survey_scheduled": "Første undersøkelse planlagt",
+      "survey_sent": "Første undersøkelse sendt",
+      "result_unlocked": "Resultat låst opp (anonymitetsterskel nådd)",
+      "results_viewed": "Resultater sett av daglig leder / HR",
+      "first_tiltak": "Første tiltak opprettet",
+      "converted": "Gått over til betalt"
+    },
+    "overview": {
+      "activation": "Aktivering",
+      "noMilestones": "Orgpuls har ikke meldt aktiveringsmilepæler for denne organisasjonen ennå.",
+      "day": "dag {n}",
+      "structure": "Struktur",
+      "departments": "Avdelinger",
+      "teams": "Team",
+      "onList": "På ansattlisten",
+      "belowThreshold": "Grupper under terskelen",
+      "anonymity": "Anonymiteten gjelder også for ansatte her: grupper under organisasjonens anonymitetsterskel (3–10 svar, 5 som standard) vises som «—» her og i alle eksporter og supportøkter.",
+      "crossProduct": "På tvers av produkter",
+      "seats": "{n} plasser",
+      "notUsed": "Ikke i bruk — mersalgssegment",
+      "joined": "Koblet på org.nr — den felles kundenøkkelen på tvers av applikasjoner",
+      "tiltak": "Tiltak og tilbakemeldinger",
+      "tiltakOpen": "Åpne",
+      "tiltakClosed": "Lukket",
+      "tiltakOverdue": "Forsinket",
+      "titlesOnly": "Titler bare med en aktiv supporttilgang",
+      "nps": "NPS (siste 90 dager)",
+      "feedback": "Tilbakemeldinger i appen",
+      "crm": "CRM",
+      "openDeals": "Åpne i Avtaler →",
+      "noCrm": "Ingen avtaler eller kontakter ennå."
+    },
+    "dealStatus": {
+      "open": "Åpen",
+      "won": "Vunnet",
+      "lost": "Tapt"
+    },
+    "consent": {
+      "subscribed": "Påmeldt",
+      "no_consent": "Ikke samtykke",
+      "pending": "Venter",
+      "unsubscribed": "Avmeldt",
+      "bounced": "Avvist"
+    },
+    "users": {
+      "user": "Bruker",
+      "role": "Rolle",
+      "lastLogin": "Siste innlogging",
+      "mfa": "MFA",
+      "auth": "Innlogging",
+      "invitedBy": "Invitert av",
+      "billingContact": "Fakturakontakt",
+      "deactivated": "Deaktivert",
+      "invitePending": "Invitasjon venter",
+      "on": "På",
+      "off": "Av",
+      "resendInvite": "Send invitasjon på nytt",
+      "magicLink": "Magisk lenke",
+      "resetMfa": "Nullstill MFA",
+      "deactivate": "Deaktiver",
+      "empty": "Orgpuls har ikke meldt noen brukere for denne organisasjonen.",
+      "footer": "Respondenter vises aldri — bare tall og leveringsstatus per undersøkelse.",
+      "actionsNotYet": "Brukerhandlingene venter på at Orgpuls tilbyr dem."
+    },
+    "roles": {
+      "daglig_leder": "Daglig leder",
+      "avdelingsleder": "Avdelingsleder",
+      "verneombud": "Verneombud"
+    },
+    "auth": {
+      "password": "Passord",
+      "magic_link": "Magisk lenke",
+      "google": "Google",
+      "microsoft": "Microsoft",
+      "sso": "SSO"
+    },
+    "surveys": {
+      "banner": "<b>Bare metadata.</b> Svar og respondentenes identitet kan ikke nås fra admin. Avviste adresser rettes av kunden, ikke her.",
+      "survey": "Undersøkelse",
+      "type": "Type",
+      "dates": "Datoer",
+      "invited": "Invitert",
+      "delivered": "Levert",
+      "bounced": "Avvist",
+      "answered": "Svart",
+      "rate": "Andel",
+      "reminders": "Påminnelser",
+      "remindersGained": "{n} · +{gained} svar",
+      "kind": {
+        "main": "Hoved",
+        "pulse": "Puls"
+      },
+      "empty": "Orgpuls har ikke meldt noen undersøkelsesrunder for denne organisasjonen."
+    },
+    "billing": {
+      "subscription": "Abonnement",
+      "plan": "Plan",
+      "planBand": "{plan} ansatte",
+      "perMonth": "/måned",
+      "perYear": "/år",
+      "applications": "Applikasjoner",
+      "nextInvoice": "Neste faktura",
+      "afterTrial": "Etter prøveperioden · {n, plural, one {# dag} other {# dager}}",
+      "payment": "Betalingsstatus",
+      "paymentState": {
+        "ok": "Betalt i tide",
+        "past_due": "Betaling feilet — forfalt",
+        "suspended": "Suspendert for manglende betaling"
+      },
+      "none": "Ingen abonnement.",
+      "invoices": "Fakturaer",
+      "noInvoices": "Fakturaer vises her når fakturaspeilet er koblet til."
+    },
+    "timeline": {
+      "filters": {
+        "all": "Alle",
+        "activation": "Aktivering",
+        "billing": "Fakturering",
+        "support": "Support",
+        "logins": "Innlogginger",
+        "crm": "CRM"
+      },
+      "empty": "Ingenting i denne delen av tidslinjen ennå.",
+      "adminAction": "Adminhandling",
+      "ticket": "Sak {ref} opprettet",
+      "support": "Support",
+      "product": "Produkt"
+    },
+    "events": {
+      "org": {
+        "created": "Registrert",
+        "deleted": "Organisasjonen slettet i produktet",
+        "attribution": "Registreringskilde lagret"
+      },
+      "billing": {
+        "changed": "Abonnementet endret"
+      },
+      "member": {
+        "joined": "Bruker lagt til",
+        "left": "Bruker fjernet",
+        "state": "Brukerstatus oppdatert"
+      },
+      "usage": {
+        "daily": "Daglige tall mottatt"
+      },
+      "survey": {
+        "round": "Undersøkelsesrunde oppdatert"
+      },
+      "counts": {
+        "updated": "Tall oppdatert"
+      },
+      "milestone": {
+        "reached": "Aktiveringsmilepæl nådd"
+      }
+    },
+    "auditActions": {
+      "record": {
+        "read": "Så organisasjonen",
+        "listed": "Listet organisasjoner",
+        "created": "Opprettet",
+        "updated": "Endret felt",
+        "deleted": "Slettet",
+        "restored": "Gjenopprettet",
+        "exported": "Eksportert",
+        "merged": "Slo sammen et duplikat",
+        "followed": "Fulgte"
+      },
+      "note": {
+        "saved": "Notat lagret",
+        "deleted": "Notat slettet"
+      },
+      "support_access": {
+        "requested": "Supporttilgang forespurt"
+      },
+      "customer": {
+        "extend_trial": "Forleng eller nullstill prøveperioden",
+        "resync": "Synkroniser på nytt fra Orgpuls",
+        "delete": "Slett organisasjonen"
+      },
+      "organization": {
+        "related": "Relatert organisasjon koblet"
+      },
+      "consent": {
+        "changed": "Samtykke endret"
+      }
+    },
+    "ticketStatus": {
+      "new": "Ny",
+      "open": "Åpen",
+      "waiting_customer": "Venter på kunden",
+      "waiting_us": "Venter på oss",
+      "resolved": "Løst",
+      "closed": "Lukket"
+    },
+    "ticketType": {
+      "question": "Spørsmål",
+      "service_request": "Tjenesteforespørsel",
+      "incident": "Hendelse",
+      "problem": "Problem"
+    },
+    "ticketCategory": {
+      "survey_delivery": "Levering av undersøkelser",
+      "getting_started": "Kom i gang",
+      "billing": "Fakturering",
+      "results_anonymity": "Resultater og anonymitet",
+      "sales": "Salg",
+      "personvern": "Personvernforespørsel",
+      "bug": "Feil",
+      "tiltak": "Tiltak",
+      "feature_request": "Ønske om funksjon"
+    },
+    "ticketChannel": {
+      "in_app": "I appen",
+      "email": "E-post",
+      "contact_form": "Kontaktskjema",
+      "staff": "Ansatt"
+    },
+    "ticketQueue": {
+      "support": "Support",
+      "billing": "Fakturering",
+      "sales": "Salg",
+      "personvern": "Personvern"
+    },
+    "ticketPriority": {
+      "urgent": "Haster",
+      "high": "Høy",
+      "normal": "Normal",
+      "low": "Lav"
+    },
+    "tickets": {
+      "empty": "Ingen saker fra denne organisasjonen.",
+      "new": "＋ Ny sak for {name}"
+    },
+    "notes": {
+      "title": "Interne notater",
+      "placeholder": "Skriv et notat — @nevn en kollega for å varsle dem",
+      "add": "Legg til notat",
+      "saved": "Notat lagret",
+      "savedMention": "Notat lagret · den nevnte er varslet",
+      "deleted": "Notat slettet",
+      "pinned": "Festet",
+      "delete": "Slett",
+      "tags": "Etiketter",
+      "tagsHint": "Etiketter fungerer som segmentfiltre i Kampanjer og lagrede visninger."
+    },
+    "audit": {
+      "when": "Når",
+      "who": "Hvem",
+      "action": "Handling",
+      "reason": "Begrunnelse",
+      "failed": "feilet",
+      "empty": "Ingenting er registrert for denne organisasjonen ennå.",
+      "footer": "Kan bare legges til · også lesing av kundedata logges · oppbevares lenger enn produktdata"
+    },
+    "usersTab": {
+      "search": "Søk etter brukere på e-post eller navn i alle organisasjoner",
+      "empty": "Ingen brukere passer.",
+      "none": "Velg en bruker for å se medlemskapene.",
+      "memberships": "Medlemskap",
+      "invitedBy": "invitert av {name}",
+      "lastLogin": "Siste innlogging",
+      "mfa": "MFA",
+      "auth": "Innloggingsmetode",
+      "pending": "Ventende invitasjoner",
+      "mfaOn": "På",
+      "pendingYes": "Invitasjon venter",
+      "pendingNone": "Ingen",
+      "actions": {
+        "magicLink": "Send magisk lenke på nytt",
+        "resetMfa": "Nullstill MFA",
+        "changeEmail": "Endre e-post",
+        "billingContact": "Merk som fakturakontakt",
+        "remove": "Fjern fra organisasjonen",
+        "deactivate": "Deaktiver"
+      }
+    },
+    "bill": {
+      "kpi": {
+        "mrr": "MRR",
+        "mrrSub": "Slik Orgpuls melder hvert abonnement",
+        "pastDue": "Forfalt",
+        "pastDueSub": "{n, plural, one {# organisasjon} other {# organisasjoner}} med forfalt betaling",
+        "ehf": "Faktura (EHF)",
+        "ehfSub": "organisasjoner via PEPPOL"
+      },
+      "lifecycle": "Abonnementenes livsløp",
+      "lifecycleNote": "Telt per abonnement: et selskap med to applikasjoner telles to ganger.",
+      "noSubscriptions": "Ingen abonnementer ennå.",
+      "failed": "Feilede betalinger og purring",
+      "retry": "Prøv igjen",
+      "noFailed": "Ingen feilede betalinger.",
+      "bands": "Avstemming av nivå",
+      "bandsSub": "Ansattlisten avgjør nivået",
+      "noBands": "Nivåsjekken starter når Orgpuls melder ansattlisten per organisasjon.",
+      "plans": "Plankatalog",
+      "plansSub": "MVA 25 % · prisendringer gir en ny versjon",
+      "cols": {
+        "band": "Nivå",
+        "monthly": "Månedlig",
+        "annual": "Årlig",
+        "product": "Applikasjon",
+        "version": "Versjon"
+      },
+      "version": "v{v} · aktiv",
+      "noPlans": "Ingen planer i katalogen.",
+      "terms": "Ingen binding · verneombud og tillitsvalgte gratis · 30 dagers prøveperiode uten kort",
+      "coupons": "Kuponger, kreditter og gratiskontoer",
+      "noCoupons": "Ingen aktive kuponger.",
+      "exportAccounting": "Eksporter til regnskap",
+      "newCoupon": "＋ Ny kupong"
+    },
+    "access": {
+      "title": "Supporttilgang — i stedet for å logge inn som kunden",
+      "sub": "Kunden godkjenner · tidsbegrenset · lesetilgang som standard · hver sidevisning logges",
+      "approvedBy": "Godkjent av {name}",
+      "granted": "Gitt av kunden",
+      "requested": "Forespurt {when}",
+      "left": "{n} t igjen",
+      "whenApproved": "{n} t når godkjent",
+      "ended": "Avsluttet {when}",
+      "views": "{n, plural, one {# sidevisning} other {# sidevisninger}}",
+      "state": {
+        "pending": "Venter",
+        "active": "Aktiv",
+        "expired": "Utløpt",
+        "revoked": "Trukket tilbake",
+        "denied": "Avslått"
+      },
+      "empty": "Ingen supporttilgang er forespurt.",
+      "request": "Be om tilgang",
+      "organization": "Organisasjon",
+      "application": "Applikasjon",
+      "duration": "Varighet",
+      "hours": "{n} t",
+      "reason": "Begrunnelse (vises for kunden)",
+      "reasonPlaceholder": "f.eks. T-2310 — kontroller invitasjonsinnstillingene",
+      "send": "Send forespørsel til kunden",
+      "noRight": "Tilgangssettet ditt omfatter ikke dette.",
+      "note": "Økten arver rolletilgangen til brukeren som vises, og organisasjonens anonymitetsterskel. Et banner vises i kundens app mens den er aktiv.",
+      "sent": "Forespørselen er registrert · den når kunden når Orgpuls tilbyr supporttilgang"
+    },
+    "privacy": {
+      "title": "Personvernforespørsler",
+      "sub": "30-dagersfrist · personvernsaker havner her",
+      "kind": {
+        "access": "Innsyn",
+        "correction": "Retting",
+        "deletion": "Sletting"
+      },
+      "unknownRequester": "Forespørrer ikke kategorisert",
+      "received": "Mottatt {when}",
+      "left": "{n} d igjen",
+      "overdue": "{n} d over fristen",
+      "status": {
+        "received": "Ny",
+        "in_progress": "Under arbeid",
+        "done": "Ferdig",
+        "rejected": "Avvist"
+      },
+      "unassigned": "Ikke tildelt",
+      "empty": "Ingen åpne personvernforespørsler.",
+      "forbidden": "Bare ansatte som jobber i personvernkøen, ser disse forespørslene.",
+      "deletions": "Slettekø",
+      "noDeletions": "Orgpuls melder ikke slettekøen sin til plattformen ennå.",
+      "dpas": "Databehandleravtaler",
+      "noDpas": "Orgpuls melder ikke databehandleravtaler til plattformen ennå."
+    }
+  }
 }

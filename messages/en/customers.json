@@ -1,3 +1,583 @@
 {
-  "customers": {}
+  "customers": {
+    "notYet": "The product does not offer this yet.",
+    "tabs": {
+      "label": "Customers",
+      "orgs": "Organizations",
+      "users": "Users",
+      "billing": "Subscriptions and billing",
+      "access": "Support access",
+      "privacy": "Personvern requests"
+    },
+    "status": {
+      "trial": "Trial",
+      "active": "Active",
+      "past_due": "Past due",
+      "suspended": "Suspended",
+      "cancelled": "Cancelled",
+      "expired": "Expired",
+      "free": "Free"
+    },
+    "fmt": {
+      "daysAgo": "{n} d ago",
+      "monthsAgo": "{n} mo ago",
+      "today": "Today {time}",
+      "todayPlain": "Today",
+      "yesterday": "Yesterday",
+      "yesterdayAt": "Yesterday {time}"
+    },
+    "list": {
+      "search": "Search by name, org.nr or admin e-mail",
+      "export": "Export CSV",
+      "saveView": "Save view",
+      "savedViews": "Saved views",
+      "clear": "Clear filters",
+      "summary": "{n, plural, one {<b>#</b> organization} other {<b>#</b> organizations}} · MRR <b>{mrr}</b>",
+      "selected": "{n} selected",
+      "addTag": "Add tag",
+      "assignOwner": "Assign owner",
+      "broadcast": "Send broadcast",
+      "noTags": "No tags exist yet.",
+      "select": "Select {name}",
+      "never": "Never",
+      "empty": "No organizations match this view."
+    },
+    "views": {
+      "all": "All",
+      "trials_week_no_survey": "Trials expiring this week without a survey sent",
+      "past_due": "Past due",
+      "multi_product": "Multi-product",
+      "ehf": "Invoice (EHF) customers",
+      "modalEyebrow": "Organizations",
+      "modalPreview": "The view keeps the current search, saved view and filters. Only you see it.",
+      "name": "Name",
+      "namePlaceholder": "e.g. Trials in Vestland",
+      "save": "Save"
+    },
+    "filters": {
+      "status": "Status",
+      "plan": "Price tier",
+      "industry": "Industry",
+      "fylke": "Fylke",
+      "source": "Signup source",
+      "uses": "Uses",
+      "any": "Any"
+    },
+    "cols": {
+      "name": "Name",
+      "orgnr": "Org.nr",
+      "status": "Status",
+      "plan": "Plan",
+      "staff": "Staff",
+      "lastSurvey": "Last survey",
+      "response": "Response",
+      "health": "Health",
+      "mrr": "MRR",
+      "signup": "Signup"
+    },
+    "csv": {
+      "name": "Name",
+      "orgnr": "Org.nr",
+      "status": "Status",
+      "plan": "Plan",
+      "staff": "Staff",
+      "lastSurvey": "Last survey",
+      "response": "Response (%)",
+      "mrr": "MRR (NOK)",
+      "signup": "Signup",
+      "applications": "Applications",
+      "tags": "Tags"
+    },
+    "rights": {
+      "export": "Your permission set does not include export.",
+      "bulk": "Your permission set does not include bulk edit."
+    },
+    "toast": {
+      "exported": "Exported {n} rows · formulas neutralized · logged",
+      "tagAdded": "Tag added to {n} organizations",
+      "ownerAssigned": "Owner assigned to {n} organizations",
+      "viewSaved": "View saved with current filters"
+    },
+    "modal": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "reason": "Reason (required, written to the audit log)",
+      "reasonPlaceholder": "e.g. Ticket T-2312 — board meeting moved"
+    },
+    "errors": {
+      "no_orgpuls": "This organization has no Orgpuls account.",
+      "not_in_trial": "Orgpuls says this organization is not in a trial.",
+      "invalid_days": "Add between 1 and 60 days.",
+      "not_cancelled": "Orgpuls deletes an organization only after its subscription is cancelled.",
+      "confirm_mismatch": "The org.nr you typed does not match.",
+      "not_allowed": "Orgpuls refused: your account may not do this.",
+      "reason_required": "Write a reason of at least five characters.",
+      "not_installed": "Orgpuls is not connected to the platform.",
+      "not_configured": "Orgpuls is not connected to the platform.",
+      "unreachable": "Orgpuls could not be reached. Try again.",
+      "timeout": "Orgpuls did not answer in time. Try again."
+    },
+    "detail": {
+      "back": "← Organizations",
+      "unavailable": {
+        "forbidden": "You do not have the right to see this organization.",
+        "not_found": "The organization no longer exists or is not visible to you."
+      },
+      "nace": "NACE {nace}",
+      "employeesRegistered": "{n} employees registered",
+      "brreg": "From Brønnøysundregistrene · synced {when}",
+      "owner": "owner {name}",
+      "csm": "CSM {name}",
+      "health": "Health",
+      "mrr": "MRR",
+      "band": "{plan} band",
+      "tabsLabel": "Organization",
+      "tabs": {
+        "overview": "Overview",
+        "users": "Users and roles",
+        "surveys": "Surveys",
+        "billing": "Billing",
+        "timeline": "Timeline",
+        "tickets": "Tickets",
+        "notes": "Notes and tags",
+        "audit": "Audit trail"
+      },
+      "tabForbidden": "Your permission set does not include this.",
+      "tabFailed": "This could not be loaded. Try again."
+    },
+    "actions": {
+      "button": "Actions ▾",
+      "notYet": "The product does not offer this yet",
+      "noOrgpuls": "No Orgpuls account for this organization",
+      "noRight": "Your permission set does not include this",
+      "superAdminOnly": "Super-admin only",
+      "done": "{action} · written to the audit log",
+      "deleteCta": "Delete organization",
+      "dangerNote": "Super-admin only · Orgpuls deletes at once, with no grace period, and only after the subscription is cancelled. Second-admin approval is off (setting).",
+      "dangerNoteApproval": "Super-admin only · Second-admin approval is on (setting): the deletion is refused until the approvals queue exists.",
+      "items": {
+        "trial": {
+          "n": "Extend or reset trial",
+          "s": "Adds days to the 30-day trial",
+          "field": "Days to add"
+        },
+        "plan": {
+          "n": "Change plan",
+          "s": "Band and price version"
+        },
+        "discount": {
+          "n": "Apply discount",
+          "s": "One-off or recurring"
+        },
+        "comp": {
+          "n": "Mark as complimentary",
+          "s": "Pilots and partners"
+        },
+        "suspend": {
+          "n": "Suspend",
+          "s": "Read-only access to results"
+        },
+        "reactivate": {
+          "n": "Reactivate"
+        },
+        "resync": {
+          "n": "Re-sync from Orgpuls",
+          "s": "Name, billing, users and counts"
+        },
+        "owner": {
+          "n": "Transfer ownership",
+          "s": "To another user in the org"
+        },
+        "merge": {
+          "n": "Merge duplicate",
+          "s": "Same org.nr — preview first"
+        },
+        "export": {
+          "n": "Export organization data",
+          "s": "Aggregates, tiltak, comments without identity"
+        },
+        "delete": {
+          "n": "Delete organization",
+          "s": "Super-admin · confirm by typing org.nr",
+          "field": "Type the org.nr to confirm"
+        }
+      },
+      "preview": {
+        "trial": "Trial ends {left}. Orgpuls adds the days to the trial and reports the new end date.",
+        "trialLeft": "in {n, plural, one {# day} other {# days}}",
+        "resync": "Orgpuls sends again what the platform should know about this organization: name, billing, active users and today's counts. Nothing that is already right changes.",
+        "delete": "Orgpuls deletes the organization and all its data now: {users, plural, one {# user} other {# users}} and {rounds, plural, one {# survey round} other {# survey rounds}} as reported here. {cancelled, select, yes {The subscription is cancelled.} other {The subscription is not cancelled, so Orgpuls will refuse.}} This cannot be undone."
+      }
+    },
+    "milestones": {
+      "account_created": "Account created — Brønnøysund lookup ok",
+      "employees_uploaded": "Employee list uploaded",
+      "survey_scheduled": "First survey scheduled",
+      "survey_sent": "First survey sent",
+      "result_unlocked": "Result unlocked (anonymity threshold met)",
+      "results_viewed": "Results viewed by daglig leder / HR",
+      "first_tiltak": "First tiltak created",
+      "converted": "Converted to paid"
+    },
+    "overview": {
+      "activation": "Activation",
+      "noMilestones": "Orgpuls has not reported activation milestones for this organization yet.",
+      "day": "day {n}",
+      "structure": "Structure",
+      "departments": "Departments",
+      "teams": "Teams",
+      "onList": "On employee list",
+      "belowThreshold": "Groups below threshold",
+      "anonymity": "Anonymity holds for staff too: groups under the organization's anonymity threshold (3–10 answers, 5 by default) show as «—» here and in every export and support session.",
+      "crossProduct": "Cross-product view",
+      "seats": "{n} seats",
+      "notUsed": "Not used — cross-sell segment",
+      "joined": "Joined on org.nr — the shared customer key across applications",
+      "tiltak": "Tiltak and feedback",
+      "tiltakOpen": "Open",
+      "tiltakClosed": "Closed",
+      "tiltakOverdue": "Overdue",
+      "titlesOnly": "Titles only with an active support-access grant",
+      "nps": "NPS (last 90 days)",
+      "feedback": "In-app feedback",
+      "crm": "CRM",
+      "openDeals": "Open in Deals →",
+      "noCrm": "No deals or contacts yet."
+    },
+    "dealStatus": {
+      "open": "Open",
+      "won": "Won",
+      "lost": "Lost"
+    },
+    "consent": {
+      "subscribed": "Subscribed",
+      "no_consent": "No consent",
+      "pending": "Pending",
+      "unsubscribed": "Unsubscribed",
+      "bounced": "Bounced"
+    },
+    "users": {
+      "user": "User",
+      "role": "Role",
+      "lastLogin": "Last login",
+      "mfa": "MFA",
+      "auth": "Auth",
+      "invitedBy": "Invited by",
+      "billingContact": "Billing contact",
+      "deactivated": "Deactivated",
+      "invitePending": "Invite pending",
+      "on": "On",
+      "off": "Off",
+      "resendInvite": "Resend invite",
+      "magicLink": "Magic link",
+      "resetMfa": "Reset MFA",
+      "deactivate": "Deactivate",
+      "empty": "Orgpuls has not reported any users for this organization.",
+      "footer": "Respondents are never listed — only counts and delivery status per survey.",
+      "actionsNotYet": "User actions wait for Orgpuls to offer them."
+    },
+    "roles": {
+      "daglig_leder": "Daglig leder",
+      "avdelingsleder": "Avdelingsleder",
+      "verneombud": "Verneombud"
+    },
+    "auth": {
+      "password": "Password",
+      "magic_link": "Magic link",
+      "google": "Google",
+      "microsoft": "Microsoft",
+      "sso": "SSO"
+    },
+    "surveys": {
+      "banner": "<b>Metadata only.</b> Answers and respondent identities are unreachable from the admin. Bounced addresses are fixed by the customer, not here.",
+      "survey": "Survey",
+      "type": "Type",
+      "dates": "Dates",
+      "invited": "Invited",
+      "delivered": "Deliv.",
+      "bounced": "Bounced",
+      "answered": "Answered",
+      "rate": "Rate",
+      "reminders": "Reminders",
+      "remindersGained": "{n} · +{gained} answers",
+      "kind": {
+        "main": "Main",
+        "pulse": "Pulse"
+      },
+      "empty": "Orgpuls has not reported any survey rounds for this organization."
+    },
+    "billing": {
+      "subscription": "Subscription",
+      "plan": "Plan",
+      "planBand": "{plan} employees",
+      "perMonth": "/month",
+      "perYear": "/year",
+      "applications": "Applications",
+      "nextInvoice": "Next invoice",
+      "afterTrial": "After trial · {n, plural, one {# day} other {# days}}",
+      "payment": "Payment status",
+      "paymentState": {
+        "ok": "Paid on time",
+        "past_due": "Payment failed — past due",
+        "suspended": "Suspended for non-payment"
+      },
+      "none": "No subscription.",
+      "invoices": "Invoices",
+      "noInvoices": "Invoices appear here when the invoice mirror is connected."
+    },
+    "timeline": {
+      "filters": {
+        "all": "All",
+        "activation": "Activation",
+        "billing": "Billing",
+        "support": "Support",
+        "logins": "Logins",
+        "crm": "CRM"
+      },
+      "empty": "Nothing in this part of the timeline yet.",
+      "adminAction": "Admin action",
+      "ticket": "Ticket {ref} opened",
+      "support": "Support",
+      "product": "Product"
+    },
+    "events": {
+      "org": {
+        "created": "Signed up",
+        "deleted": "Organization deleted in the product",
+        "attribution": "Signup source recorded"
+      },
+      "billing": {
+        "changed": "Subscription changed"
+      },
+      "member": {
+        "joined": "User joined",
+        "left": "User left",
+        "state": "User state updated"
+      },
+      "usage": {
+        "daily": "Daily counts received"
+      },
+      "survey": {
+        "round": "Survey round updated"
+      },
+      "counts": {
+        "updated": "Counts updated"
+      },
+      "milestone": {
+        "reached": "Activation milestone reached"
+      }
+    },
+    "auditActions": {
+      "record": {
+        "read": "Viewed the organization",
+        "listed": "Listed organizations",
+        "created": "Created",
+        "updated": "Changed fields",
+        "deleted": "Deleted",
+        "restored": "Restored",
+        "exported": "Exported",
+        "merged": "Merged a duplicate",
+        "followed": "Followed"
+      },
+      "note": {
+        "saved": "Note saved",
+        "deleted": "Note deleted"
+      },
+      "support_access": {
+        "requested": "Support access requested"
+      },
+      "customer": {
+        "extend_trial": "Extend or reset trial",
+        "resync": "Re-sync from Orgpuls",
+        "delete": "Delete organization"
+      },
+      "organization": {
+        "related": "Related organization linked"
+      },
+      "consent": {
+        "changed": "Consent changed"
+      }
+    },
+    "ticketStatus": {
+      "new": "New",
+      "open": "Open",
+      "waiting_customer": "Waiting on customer",
+      "waiting_us": "Waiting on us",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "ticketType": {
+      "question": "Question",
+      "service_request": "Service request",
+      "incident": "Incident",
+      "problem": "Problem"
+    },
+    "ticketCategory": {
+      "survey_delivery": "Survey delivery",
+      "getting_started": "Getting started",
+      "billing": "Billing",
+      "results_anonymity": "Results and anonymity",
+      "sales": "Sales",
+      "personvern": "Personvern request",
+      "bug": "Bug",
+      "tiltak": "Tiltak",
+      "feature_request": "Feature request"
+    },
+    "ticketChannel": {
+      "in_app": "In-app",
+      "email": "E-mail",
+      "contact_form": "Contact form",
+      "staff": "Staff"
+    },
+    "ticketQueue": {
+      "support": "Support",
+      "billing": "Billing",
+      "sales": "Sales",
+      "personvern": "Personvern"
+    },
+    "ticketPriority": {
+      "urgent": "Urgent",
+      "high": "High",
+      "normal": "Normal",
+      "low": "Low"
+    },
+    "tickets": {
+      "empty": "No tickets from this organization.",
+      "new": "＋ New ticket for {name}"
+    },
+    "notes": {
+      "title": "Internal notes",
+      "placeholder": "Write a note — @mention a colleague to notify them",
+      "add": "Add note",
+      "saved": "Note saved",
+      "savedMention": "Note saved · mention notified",
+      "deleted": "Note deleted",
+      "pinned": "Pinned",
+      "delete": "Delete",
+      "tags": "Tags",
+      "tagsHint": "Tags work as segment filters in Campaigns and saved views."
+    },
+    "audit": {
+      "when": "When",
+      "who": "Who",
+      "action": "Action",
+      "reason": "Reason",
+      "failed": "failed",
+      "empty": "Nothing has been recorded for this organization yet.",
+      "footer": "Append-only · reads of customer-scoped data are logged too · retained longer than product data"
+    },
+    "usersTab": {
+      "search": "Search users by e-mail or name across all organizations",
+      "empty": "No users match.",
+      "none": "Pick a user to see their memberships.",
+      "memberships": "Memberships",
+      "invitedBy": "invited by {name}",
+      "lastLogin": "Last login",
+      "mfa": "MFA",
+      "auth": "Auth method",
+      "pending": "Pending invites",
+      "mfaOn": "On",
+      "pendingYes": "Invite pending",
+      "pendingNone": "None",
+      "actions": {
+        "magicLink": "Resend magic link",
+        "resetMfa": "Reset MFA",
+        "changeEmail": "Change e-mail",
+        "billingContact": "Mark as billing contact",
+        "remove": "Remove from org",
+        "deactivate": "Deactivate"
+      }
+    },
+    "bill": {
+      "kpi": {
+        "mrr": "MRR",
+        "mrrSub": "As Orgpuls reports each subscription",
+        "pastDue": "Past due",
+        "pastDueSub": "{n, plural, one {# organization} other {# organizations}} past due",
+        "ehf": "Invoice (EHF)",
+        "ehfSub": "organizations via PEPPOL"
+      },
+      "lifecycle": "Subscription lifecycle",
+      "lifecycleNote": "Counted per subscription: a company with two applications counts twice.",
+      "noSubscriptions": "No subscriptions yet.",
+      "failed": "Failed payments and dunning",
+      "retry": "Retry",
+      "noFailed": "No failed payments.",
+      "bands": "Band reconciliation",
+      "bandsSub": "Employee list decides the band",
+      "noBands": "Band checks start when Orgpuls reports the employee list per organization.",
+      "plans": "Plan catalogue",
+      "plansSub": "MVA 25 % · price changes create a new version",
+      "cols": {
+        "band": "Band",
+        "monthly": "Monthly",
+        "annual": "Annual",
+        "product": "Application",
+        "version": "Version"
+      },
+      "version": "v{v} · active",
+      "noPlans": "No plans in the catalogue.",
+      "terms": "No binding · verneombud and tillitsvalgte free · 30-day trial without card",
+      "coupons": "Coupons, credits and complimentary accounts",
+      "noCoupons": "No active coupons.",
+      "exportAccounting": "Export to accounting",
+      "newCoupon": "＋ New coupon"
+    },
+    "access": {
+      "title": "Support access — instead of impersonation",
+      "sub": "Customer approves · time-boxed · read-only by default · every page view logged",
+      "approvedBy": "Approved by {name}",
+      "granted": "Granted by customer",
+      "requested": "Requested {when}",
+      "left": "{n} h left",
+      "whenApproved": "{n} h when approved",
+      "ended": "Ended {when}",
+      "views": "{n, plural, one {# page view} other {# page views}}",
+      "state": {
+        "pending": "Pending",
+        "active": "Active",
+        "expired": "Expired",
+        "revoked": "Revoked",
+        "denied": "Denied"
+      },
+      "empty": "No support access has been requested.",
+      "request": "Request access",
+      "organization": "Organization",
+      "application": "Application",
+      "duration": "Duration",
+      "hours": "{n} h",
+      "reason": "Reason (shown to the customer)",
+      "reasonPlaceholder": "e.g. T-2310 — verify invitation settings",
+      "send": "Send request to customer",
+      "noRight": "Your permission set does not include this.",
+      "note": "The session inherits the role scope of the user being viewed and the organization's anonymity threshold. A banner shows in the customer’s app while it is active.",
+      "sent": "Request recorded · it reaches the customer when Orgpuls offers support access"
+    },
+    "privacy": {
+      "title": "Personvern requests",
+      "sub": "30-day clock · personvern tickets flow in here",
+      "kind": {
+        "access": "Access",
+        "correction": "Correction",
+        "deletion": "Deletion"
+      },
+      "unknownRequester": "Requester not categorised",
+      "received": "Received {when}",
+      "left": "{n} d left",
+      "overdue": "{n} d overdue",
+      "status": {
+        "received": "New",
+        "in_progress": "In progress",
+        "done": "Done",
+        "rejected": "Rejected"
+      },
+      "unassigned": "Unassigned",
+      "empty": "No open personvern requests.",
+      "forbidden": "Only staff who work the personvern queue see these requests.",
+      "deletions": "Deletion queue",
+      "noDeletions": "Orgpuls does not report its deletion queue to the platform yet.",
+      "dpas": "Data processing agreements",
+      "noDpas": "Orgpuls does not report data processing agreements to the platform yet."
+    }
+  }
 }

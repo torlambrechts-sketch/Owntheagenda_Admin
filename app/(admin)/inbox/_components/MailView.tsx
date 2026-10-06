@@ -21,7 +21,7 @@ export function useChips(labels: Label[]) {
 }
 
 /** Inbox, team inbox, archive and a label (v.mail): the thread list and the open thread, or the new-email composer. */
-export function MailView({ folderName, threads, thread, compose, mailboxes, templates, mergeFields, labels, now, canLead, canLabel }: {
+export function MailView({ folderName, threads, thread, compose, mailboxes, templates, mergeFields, labels, now, ai, canAi, canLead, canLabel }: {
   folderName: string
   threads: ThreadRow[]
   thread: Thread | null
@@ -31,6 +31,8 @@ export function MailView({ folderName, threads, thread, compose, mailboxes, temp
   mergeFields: string[]
   labels: Label[]
   now: string
+  ai: boolean
+  canAi: boolean
   canLead: boolean
   canLabel: boolean
 }) {
@@ -78,7 +80,7 @@ export function MailView({ folderName, threads, thread, compose, mailboxes, temp
           <div className="rounded-20 border border-line bg-surface px-5 py-4">
             <h2 className="m-0 font-serif text-20 font-semibold leading-[1.2]">{t('newEmail')}</h2>
           </div>
-          <Composer mode="new" thread={null} mailboxes={mailboxes} templates={templates} mergeFields={mergeFields} />
+          <Composer mode="new" thread={null} mailboxes={mailboxes} templates={templates} mergeFields={mergeFields} ai={ai} />
         </div>
       ) : thread ? (
         <ThreadPane
@@ -88,6 +90,8 @@ export function MailView({ folderName, threads, thread, compose, mailboxes, temp
           mergeFields={mergeFields}
           labels={labels}
           now={now}
+          ai={ai}
+          canAi={canAi}
           canLead={canLead}
           canLabel={canLabel}
         />

@@ -328,9 +328,22 @@ for (const [addr, prov, kind, owner, sig] of mailboxes) {
 for (const m of ['tor', 'ingrid', 'eirik']) sql(`insert into app.mailbox_members (mailbox_id, staff_id, can_reply) values (${q(uid('mailbox', 'salg@orgpuls.no'))}, ${q(uid('staff', m))}, true);`)
 // the design's «today» is 6 October 2026; its message times become offsets from the seed's now
 const DESIGN_TODAY = Date.UTC(2026, 9, 6)
+// the formats the design writes: «Today 14:05», «Yesterday 18:42», «Fri 2 Oct 10:14», «Mon 09:30» (the latest such
+// weekday before today) and «28 Sep» (no time: noon)
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const when = (w) => {
-  const [, d, hm] = w.match(/^(?:(Today|Yesterday|\w{3} \d{1,2} \w{3})\s+)?(\d{1,2}:\d{2})$/) ? [null, ...w.match(/^(?:(Today|Yesterday|\w{3} \d{1,2} \w{3})\s+)?(\d{1,2}:\d{2})$/).slice(1)] : [null, 'Today', '09:00']
-  const days = !d || d === 'Today' ? 0 : d === 'Yesterday' ? 1 : Math.round((DESIGN_TODAY - Date.UTC(2026, ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(d.split(' ')[2]), +d.split(' ')[1])) / 86400000)
+  let days = 0
+  let hm = '09:00'
+  let m
+  const dayOf = (d, mon) => Math.round((DESIGN_TODAY - Date.UTC(2026, MONTHS.indexOf(mon), +d)) / 86400000)
+  if ((m = w.match(/^(Today|Yesterday)\s+(\d{1,2}:\d{2})$/))) { days = m[1] === 'Yesterday' ? 1 : 0; hm = m[2] }
+  else if ((m = w.match(/^\w{3} (\d{1,2}) (\w{3})\s+(\d{1,2}:\d{2})$/))) { days = dayOf(m[1], m[2]); hm = m[3] }
+  else if ((m = w.match(/^(\w{3})\s+(\d{1,2}:\d{2})$/)) && WEEKDAYS.includes(m[1])) {
+    days = ((new Date(DESIGN_TODAY).getUTCDay() - WEEKDAYS.indexOf(m[1]) + 7) % 7) || 7
+    hm = m[2]
+  } else if ((m = w.match(/^(\d{1,2}) (\w{3})$/))) { days = dayOf(m[1], m[2]); hm = '12:00' }
+  else if ((m = w.match(/^(\d{1,2}:\d{2})$/))) hm = m[1]
   return `(date_trunc('day', now() at time zone 'Europe/Oslo') - interval '${days} days' + interval '${hm.split(':')[0]} hours ${hm.split(':')[1]} minutes') at time zone 'Europe/Oslo'`
 }
 const personByName = Object.fromEntries(D.people.map((p) => [p.name, p]))

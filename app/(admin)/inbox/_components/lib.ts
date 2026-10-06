@@ -23,7 +23,7 @@ export function useGo() {
   return { go, pending }
 }
 
-const INBOX_CODES = new Set(['mailbox_not_connected', 'merge_missing', 'merge_unknown', 'no_recipient', 'no_subject', 'over_limit', 'no_recipients', 'no_inbound'])
+const INBOX_CODES = new Set(['mailbox_not_connected', 'alias_invalid', 'merge_missing', 'merge_unknown', 'no_recipient', 'no_subject', 'over_limit', 'no_recipients', 'no_inbound'])
 
 /** A refusal as words: the mail-specific codes have their own messages, the rest are the shared ones. */
 export function useFail() {

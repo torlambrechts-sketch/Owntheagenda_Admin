@@ -61,7 +61,7 @@ export function CallsView({ calls, now }: { calls: Calls; now: string }) {
           {calls.calls.map((c) => (
             <div key={c.activity_id} className={ROW}>
               <span className={`font-bold ${c.direction === 'inbound' ? 'text-link' : 'text-muted'}`} aria-label={t(`dir.${c.direction}`)}>{c.direction === 'inbound' ? '↙' : '↗'}</span>
-              <span className="flex min-w-0 flex-col"><b>{c.person ?? t('unknown')}</b><span className="text-11.5 text-muted">{c.number ?? '—'}</span></span>
+              <span className="flex min-w-0 flex-col"><b>{c.person ?? t('unknown')}</b><span className="text-11.5 text-muted">{[c.organization, c.number ?? '—'].filter(Boolean).join(' · ')}</span></span>
               <span>{t(`outcome.${c.outcome}`)}</span>
               <span>{dur(c.duration_s)}</span>
               <span className="text-muted">{when.long(c.at)}</span>

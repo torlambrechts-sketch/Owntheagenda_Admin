@@ -20,16 +20,17 @@ type Panel =
   | { kind: 'org'; id: string; name: string; city: string | null; acts: PanelData['acts'] }
 
 /** Feed › Feed (Feed.dc.html, v.feed): the cards of a sub-tab, the progress panel and the side panel. */
-export function FeedView({ ft, kind, stage, feed, progress, pipelines, canSend, nf, owner, products }: {
+export function FeedView({ ft, kind, stage, smin, smax, feed, progress, pipelines, canSend, nf, products }: {
   ft: FeedTab
   kind: string | null
   stage: string | null
+  smin: number | null
+  smax: number | null
   feed: FeedData
   progress: Progress
   pipelines: PipelineLite[]
   canSend: boolean
   nf: NumberFormat
-  owner: string
   products: Record<string, string>
 }) {
   const t = useTranslations('feed')
@@ -37,7 +38,7 @@ export function FeedView({ ft, kind, stage, feed, progress, pipelines, canSend, 
   const err = useErr()
   const router = useRouter()
   const { go } = useGo()
-  const text = useCardText(nf, owner, products)
+  const text = useCardText(nf, products)
   const [panel, setPanel] = useState<Panel | null>(null)
   const [busy, start] = useTransition()
   const sideRef = useRef<HTMLDivElement>(null)
@@ -95,7 +96,7 @@ export function FeedView({ ft, kind, stage, feed, progress, pipelines, canSend, 
               </button>
             ))}
           </div>
-          <FilterButton kinds={kinds} kind={kind} stage={stage} scoped={scoped} pipelines={pipelines} chosen={feed.scope.pipeline_ids} />
+          <FilterButton kinds={kinds} kind={kind} stage={stage} smin={feed.ai_scoring ? smin : null} smax={feed.ai_scoring ? smax : null} scores={feed.ai_scoring} scoped={scoped} pipelines={pipelines} chosen={feed.scope.pipeline_ids} />
           <span className="flex-1" />
           <span className="rounded-999 bg-ok-bg px-3 py-[6px] text-12.5 font-bold text-ok-ink">{t('doneToday', { n: progress.done_today })}</span>
         </div>
@@ -192,8 +193,8 @@ function SidePanel({ panel, nf, onClose }: { panel: Panel; nf: NumberFormat; onC
  * Card filters by type and stage, and the feed's one-time scope (PRO-01/02). Not in the design; built in its
  * language (D-41) behind one button so the design's tab row keeps its shape.
  */
-function FilterButton({ kinds, kind, stage, scoped, pipelines, chosen }: {
-  kinds: string[]; kind: string | null; stage: string | null; scoped: PipelineLite[]; pipelines: PipelineLite[]; chosen: string[]
+function FilterButton({ kinds, kind, stage, smin, smax, scores, scoped, pipelines, chosen }: {
+  kinds: string[]; kind: string | null; stage: string | null; smin: number | null; smax: number | null; scores: boolean; scoped: PipelineLite[]; pipelines: PipelineLite[]; chosen: string[]
 }) {
   const t = useTranslations('feed')
   const flash = useToast()
@@ -203,7 +204,7 @@ function FilterButton({ kinds, kind, stage, scoped, pipelines, chosen }: {
   const all = pipelines.map((x) => x.id)
   const [sel, setSel] = useState<string[]>(chosen.length ? chosen : all)
   const [busy, start] = useTransition()
-  const active = (kind ? 1 : 0) + (stage ? 1 : 0) + (chosen.length ? 1 : 0)
+  const active = (kind ? 1 : 0) + (stage ? 1 : 0) + (smin !== null || smax !== null ? 1 : 0) + (chosen.length ? 1 : 0)
   const save = () => start(async () => {
     const r = await setScope({ pipelineIds: sel.length === pipelines.length ? [] : sel })
     if (!r.ok) { flash(err(r.code)); return }
@@ -236,6 +237,16 @@ function FilterButton({ kinds, kind, stage, scoped, pipelines, chosen }: {
               ))}
             </select>
           </label>
+          {scores ? (
+            <div className="flex flex-col gap-1 text-12">
+              <span className={ui.eyebrow}>{t('filter.score')}</span>
+              <span className="flex items-center gap-2">
+                <ScoreInput label={t('filter.scoreMin')} value={smin} onSet={(v) => go({ smin: v })} />
+                <span>–</span>
+                <ScoreInput label={t('filter.scoreMax')} value={smax} onSet={(v) => go({ smax: v })} />
+              </span>
+            </div>
+          ) : null}
           <span className={`${ui.eyebrow} mt-1`}>{t('scope.title')}</span>
           <span className="text-12 text-muted">{t('scope.hint')}</span>
           {pipelines.map((p) => (
@@ -259,12 +270,36 @@ function FilterButton({ kinds, kind, stage, scoped, pipelines, chosen }: {
   )
 }
 
+/** One end of the score range (0–100): applied on Enter or when the field is left. */
+function ScoreInput({ label, value, onSet }: { label: string; value: number | null; onSet: (v: string | null) => void }) {
+  const [v, setV] = useState(value === null ? '' : String(value))
+  const commit = () => {
+    const n = v.trim() === '' ? null : Math.round(Number(v))
+    if (n !== null && (Number.isNaN(n) || n < 0 || n > 100)) { setV(value === null ? '' : String(value)); return }
+    if (n !== value) onSet(n === null ? null : String(n))
+  }
+  return (
+    <input
+      type="number"
+      min={0}
+      max={100}
+      aria-label={label}
+      placeholder={label}
+      value={v}
+      onChange={(e) => setV(e.target.value)}
+      onBlur={commit}
+      onKeyDown={(e) => { if (e.key === 'Enter') commit() }}
+      className={`${ui.select} w-[90px] px-2`}
+    />
+  )
+}
+
 // ---------------------------------------------------------------------------
 const str = (v: unknown) => (typeof v === 'string' ? v : null)
 const int = (v: unknown) => (typeof v === 'number' ? v : typeof v === 'string' && v !== '' && !Number.isNaN(Number(v)) ? Number(v) : null)
 
 /** A card worded from its kind and parameters (0022 feed_get: never prose). */
-function useCardText(nf: NumberFormat, owner: string, products: Record<string, string>) {
+function useCardText(nf: NumberFormat, products: Record<string, string>) {
   const t = useTranslations('feed.cards')
   const format = useFormatter()
   const now = useNow()
@@ -276,7 +311,10 @@ function useCardText(nf: NumberFormat, owner: string, products: Record<string, s
     const org = c.organization?.name ?? '—'
     const person = c.deal?.person ?? t('someone')
     const day = (iso: string | null) => (iso ? format.dateTime(new Date(iso), { day: 'numeric', month: 'short' }) : '—')
-    const dealSub = c.deal ? t('dealSub', { value: money(c.deal.value ?? 0, nf, c.deal.currency ?? 'NOK'), org, owner }) : org
+    // the deal's owner as feed_get names it (0027), by first name as the design writes it
+    const owner = c.deal?.owner ? c.deal.owner.split(' ')[0] : null
+    const value = c.deal ? money(c.deal.value ?? 0, nf, c.deal.currency ?? 'NOK') : ''
+    const dealSub = c.deal ? (owner ? t('dealSub', { value, org, owner }) : t('dealSubNoOwner', { value, org })) : org
     const subject = str(p.subject) ?? '—'
     switch (c.kind) {
       case 'email_reply': {
@@ -301,7 +339,12 @@ function useCardText(nf: NumberFormat, owner: string, products: Record<string, s
         return { kind: t('email_opened.label'), title: t('email_opened.title', { person, subject, count: int(p.count) ?? 1 }), sub: last ? t('email_opened.sub', { ago: format.relativeTime(new Date(last), now) }) : '' }
       }
       case 'link_clicked':
-        return { kind: t('link_clicked.label'), title: t('link_clicked.title', { person, label: str(p.label) ?? '—' }), sub: t(p.enrollment ? 'link_clicked.subSequence' : 'link_clicked.sub', { subject }) }
+      {
+        const seq = str(p.sequence)
+        const step = int(p.step)
+        const sub = seq ? (step !== null ? t('link_clicked.subStep', { sequence: seq, step }) : t('link_clicked.subSequence', { sequence: seq })) : t('link_clicked.sub', { subject })
+        return { kind: t('link_clicked.label'), title: t('link_clicked.title', { person, label: str(p.label) ?? '—' }), sub }
+      }
       case 'sequence_review':
         return { kind: t('sequence_review.label'), title: t('sequence_review.title', { subject }), sub: t('sequence_review.sub', { sequence: str(p.sequence) ?? '—', org }) }
       case 'overdue_activity':

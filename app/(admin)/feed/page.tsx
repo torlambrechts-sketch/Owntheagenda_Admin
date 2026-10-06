@@ -15,6 +15,8 @@ const Params = z.object({
   stage: z.string().uuid().nullable().catch(null),
   model: z.string().uuid().nullable().catch(null),
   record: z.string().uuid().nullable().catch(null),
+  smin: z.coerce.number().int().min(0).max(100).nullable().catch(null),
+  smax: z.coerce.number().int().min(0).max(100).nullable().catch(null),
 })
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v)
 
@@ -26,7 +28,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
   const sp = await searchParams
   const p = Params.parse({
     tab: one(sp.tab) ?? 'feed', ft: one(sp.ft) ?? 'follow_ups', kind: one(sp.kind) ?? null, stage: one(sp.stage) ?? null,
-    model: one(sp.model) ?? null, record: one(sp.record) ?? null,
+    model: one(sp.model) ?? null, record: one(sp.record) ?? null, smin: one(sp.smin) ?? null, smax: one(sp.smax) ?? null,
   })
   const shell = await getShell()
   const t = await getTranslations('feed')
@@ -47,18 +49,23 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
   let body: React.ReactNode
   if (p.tab === 'feed') {
     const kind = p.kind && KINDS[p.ft].includes(p.kind) ? p.kind : null
-    const b = await loadFeed(p.ft, { ...(kind ? { kinds: [kind] } : {}), ...(p.stage ? { stage_ids: [p.stage] } : {}) })
+    // the score range applies only while AI scoring is on (feed_get ignores it otherwise)
+    const b = await loadFeed(p.ft, {
+      ...(kind ? { kinds: [kind] } : {}), ...(p.stage ? { stage_ids: [p.stage] } : {}),
+      ...(p.smin !== null ? { score_min: p.smin } : {}), ...(p.smax !== null ? { score_max: p.smax } : {}),
+    })
     body = (
       <FeedView
         ft={p.ft}
         kind={kind}
         stage={p.stage}
+        smin={p.smin}
+        smax={p.smax}
         feed={b.feed}
         progress={b.progress}
         pipelines={b.pipelines.map((x) => ({ id: x.id, name: x.name, stages: x.stages.map((s) => ({ id: s.id, name: s.name })) }))}
         canSend={b.canSend}
         nf={nf}
-        owner={shell.me.name.split(' ')[0] ?? shell.me.name}
         products={Object.fromEntries(shell.products.map((x) => [x.key, x.name]))}
       />
     )

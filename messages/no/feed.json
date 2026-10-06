@@ -20,7 +20,10 @@
       "stage": "Fase",
       "allStages": "Alle faser",
       "button": "Filtre",
-      "buttonActive": "Filtre · {n}"
+      "buttonActive": "Filtre · {n}",
+      "score": "Avtalescore",
+      "scoreMin": "Fra",
+      "scoreMax": "Til"
     },
     "scope": {
       "title": "Feedens omfang",
@@ -104,7 +107,8 @@
         "label": "Lenke klikket",
         "title": "{person} klikket på «{label}»",
         "sub": "Sporet lenke i «{subject}»",
-        "subSequence": "Sporet lenke i sekvens-e-posten «{subject}»"
+        "subSequence": "Sporet lenke i sekvensen «{sequence}»",
+        "subStep": "Sporet lenke i sekvensen «{sequence}» steg {step}"
       },
       "sequence_review": {
         "name": "Sekvens-e-post venter",
@@ -146,7 +150,8 @@
         "name": "Ventes å gå videre",
         "label": "Ventes å gå videre",
         "labelPct": "Ventes å gå videre — {pct} %"
-      }
+      },
+      "dealSubNoOwner": "{value} · {org}"
     },
     "scoring": {
       "entity": {
@@ -163,7 +168,8 @@
       "toast": {
         "activated": "Modellen er aktiv · scorene er beregnet på nytt",
         "deactivated": "Modellen er satt til utkast · scorene er beregnet på nytt",
-        "removed": "Kriteriet er fjernet"
+        "removed": "Kriteriet er fjernet",
+        "deleted": "Modellen er slettet"
       },
       "limitNone": "Scoringsmodeller: ubegrenset (innstilling)",
       "limit": "Scoringsmodeller: {used} av {limit} (innstilling)",
@@ -262,7 +268,10 @@
           },
           "orgText": "Organisasjonens {field} inneholder «{text}»"
         }
-      }
+      },
+      "delete": "Slett",
+      "cancel": "Avbryt",
+      "confirmDelete": "Slette «{name}»?"
     },
     "enrich": {
       "toast": {
@@ -334,7 +343,8 @@
         "create": "Opprett koblede poster",
         "noRight": "Å opprette poster krever «Legge til» på avtaler",
         "created": "Personen er opprettet og koblet til e-posten",
-        "dismissed": "Avvist"
+        "dismissed": "Avvist",
+        "titleSubject": "{from} skrev «{subject}»"
       }
     }
   }

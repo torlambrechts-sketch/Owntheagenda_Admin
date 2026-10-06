@@ -7,14 +7,17 @@ import { createClient } from '@/lib/supabase/server'
 export type Enrolment = { ok: true; factorId: string; qr: string; secret: string } | { ok: false }
 export type VerifyState = { problem: 'failed' | null }
 
-/** A new authenticator; a half-made one from an earlier try is removed first. */
+/**
+ * A new authenticator; a half-made one from an earlier try is removed first. The issuer is the name the
+ * authenticator app shows; without it Supabase uses the Site URL's host.
+ */
 export async function enroll(): Promise<Enrolment> {
   const supabase = await createClient()
   const { data: list } = await supabase.auth.mfa.listFactors()
   for (const f of list?.all ?? []) {
     if (f.factor_type === 'totp' && f.status !== 'verified') await supabase.auth.mfa.unenroll({ factorId: f.id })
   }
-  const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Autentiseringsapp' })
+  const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Autentiseringsapp', issuer: 'OwnTheAgenda Admin' })
   if (error || !data) return { ok: false }
   return { ok: true, factorId: data.id, qr: data.totp.qr_code, secret: data.totp.secret }
 }

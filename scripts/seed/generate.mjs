@@ -237,6 +237,8 @@ insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created
   }
   if (t.cat === 'Personvern request') sql(`insert into app.privacy_requests (ticket_id, organization_id, kind, received_at, due_at, owner_id) values (${q(uid('ticket', t.id))}, ${q(uid('org', t.org))}, ${q(t.subject.startsWith('Deletion') ? 'deletion' : 'access')}, ${created}, ${created} + interval '30 days', ${t.assignee ? q(uid('staff', t.assignee)) : 'null'});`)
 }
+// the seed writes the design's T-numbers itself; new tickets continue after them
+sql(`select setval(pg_get_serial_sequence('app.tickets', 'number'), (select max(number) from app.tickets));`)
 for (const t of D.tickets.filter((x) => x.problem)) sql(`update app.tickets set problem_id = ${q(uid('ticket', t.problem))} where id = ${q(uid('ticket', t.id))};`)
 sql(`update app.tickets set root_cause = 'The mail provider greylists first-time senders on several @kommune.no domains (451).', workaround = 'Ask IT to allow varsler@orgpuls.no as a sender; resend from Oppsett → Invitasjoner.' where number = 2316;`)
 
@@ -302,6 +304,8 @@ for (const [i, m] of D.mrrSeries.entries()) {
   }
 }
 sql(`select app.snapshot_mrr();`)
+// the seed is history: the event subscribers start after it
+sql(`update app.event_cursors set last_event_id = coalesce((select max(id) from app.events), 0), updated_at = now();`)
 
 sql(`
 commit;

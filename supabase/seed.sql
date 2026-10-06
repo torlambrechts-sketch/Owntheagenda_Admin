@@ -1753,6 +1753,7 @@ insert into app.tickets (id, number, type, category_key, queue_key, status, impa
   'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '7 hours', now() - interval '7 hours');
 insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('5b7423b3-943d-40ac-ab4f-bd11f5206d25', 'customer', 'acbc5eab-093f-4e63-a283-04ab297d5e22', 'Hei, transfer ownership to new daglig leder. Kan dere hjelpe oss med dette? Vi er 12 ansatte i Blåfjell Reiseliv AS.', now() - interval '7 hours');
 insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('5b7423b3-943d-40ac-ab4f-bd11f5206d25', 'reply', 'e53792ad-5466-4510-a48c-6321c729dace', 'Hei Trond, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '7 hours' + interval '100 minutes', 'sent');
+select setval(pg_get_serial_sequence('app.tickets', 'number'), (select max(number) from app.tickets));
 update app.tickets set problem_id = 'bc9345fe-eeb7-4358-ac24-4f4094f41dbf' where id = '09e3c9fb-b7e7-41ae-adbb-fc09bfd89f9a';
 update app.tickets set problem_id = 'bc9345fe-eeb7-4358-ac24-4f4094f41dbf' where id = '24b1ccfb-fb92-4324-ab6b-12ea3393c910';
 update app.tickets set problem_id = 'bc9345fe-eeb7-4358-ac24-4f4094f41dbf' where id = '1752041c-b629-46cb-aac7-79e0bf2f6e0f';
@@ -2253,6 +2254,7 @@ insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trun
 insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '0 months' - interval '1 day')::date, 'avvik', 2665, 7, 0);
 insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '0 months' - interval '1 day')::date, 'kurs', 998, 5, 0);
 select app.snapshot_mrr();
+update app.event_cursors set last_event_id = coalesce((select max(id) from app.events), 0), updated_at = now();
 
 commit;
 set session_replication_role = origin;

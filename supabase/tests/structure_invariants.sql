@@ -48,8 +48,10 @@ select pg_temp.expect_error($$truncate app.audit$$, 'the audit is append-only', 
 insert into app.changelog (entity, record_id, field) values ('organization', gen_random_uuid(), 'name');
 select pg_temp.expect_error($$delete from app.changelog$$, 'the record history is append-only', 'a history row cannot be deleted outside a purge');
 
--- the register: every setting defaults to an allowed value; the fixed ones are the firewall and MFA
-select pg_temp.check((select array_agg(key order by key) from app.settings_registry where fixed) = array['firewall', 'mfa'], 'the fixed settings are the firewall and MFA');
+-- the register: every setting defaults to an allowed value; the fixed ones are the firewall, MFA, the marketing rules
+-- of D-27 and the survey-host block (0030)
+select pg_temp.check((select array_agg(key order by key) from app.settings_registry where fixed) = array['campaign_rules', 'firewall', 'mfa', 'survey_flow_block'],
+                     'the fixed settings are the firewall, MFA, the campaign rules and the survey-host block');
 select pg_temp.check(not exists (select 1 from app.settings_registry where key in ('contact_rule', 'import_consent', 'sales_consent', 'second_admin', 'typed_reason', 'count_limits', 'plan_gates', 'api_rate')
   and default_value not in ('no_rule', 'off', 'unlimited', 'all_on')), 'the feature rules default to unrestricted (D-16)');
 

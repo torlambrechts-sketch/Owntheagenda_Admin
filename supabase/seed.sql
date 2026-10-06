@@ -2254,7 +2254,214 @@ insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trun
 insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '0 months' - interval '1 day')::date, 'avvik', 2665, 7, 0);
 insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '0 months' - interval '1 day')::date, 'kurs', 998, 5, 0);
 select app.snapshot_mrr();
+insert into app.mailboxes (id, kind, provider, address, display_name, owner_id, status, status_detail, default_visibility, signature, sync_from, last_synced_at)
+  values ('57292e2f-54c3-48da-a98d-d16b65397bad', 'personal', 'google', 'tor@orgpuls.no', 'Tor Lambrechts', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'disconnected',
+  'Seeded history; no token', 'private', 'Tor · Orgpuls', (now() - interval '90 days')::date, now() - interval '1 days');
+insert into app.mailboxes (id, kind, provider, address, display_name, owner_id, status, status_detail, default_visibility, signature, sync_from, last_synced_at)
+  values ('703809d3-28f6-41a6-a971-14012790daba', 'personal', 'microsoft', 'tor@orgpuls.onmicrosoft.com', 'Tor Lambrechts', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'disconnected',
+  'Seeded history; no token', 'private', null, (now() - interval '90 days')::date, now() - interval '1 days');
+insert into app.mailboxes (id, kind, provider, address, display_name, owner_id, status, status_detail, default_visibility, signature, sync_from, last_synced_at)
+  values ('249058ad-4378-401a-a581-819d2e41cb80', 'team', 'google', 'salg@orgpuls.no', 'Salg', null, 'disconnected',
+  'Seeded history; no token', 'shared', null, (now() - interval '90 days')::date, now() - interval '1 days');
+insert into app.mailbox_members (mailbox_id, staff_id, can_reply) values ('249058ad-4378-401a-a581-819d2e41cb80', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', true);
+insert into app.mailbox_members (mailbox_id, staff_id, can_reply) values ('249058ad-4378-401a-a581-819d2e41cb80', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', true);
+insert into app.mailbox_members (mailbox_id, staff_id, can_reply) values ('249058ad-4378-401a-a581-819d2e41cb80', 'a56d1006-261a-4159-acba-5928ecb0540a', true);
+insert into app.email_threads (id, mailbox_id, provider_thread_id, subject, snippet, first_direction, last_direction, last_message_at, created_at)
+  values ('3adc3572-ae12-42cf-a3da-b182ab33b406', '57292e2f-54c3-48da-a98d-d16b65397bad', 'seed-0', 'Re: Forslag — Skiftly for lageret', 'Takk! Vi ser på dette i styremøtet 14. oktober. Kan dere …', 'out', 'in', (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '1 days' + interval '18 hours 42 minutes') at time zone 'Europe/Oslo', (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '4 days' + interval '10 hours 14 minutes') at time zone 'Europe/Oslo');
+insert into app.email_messages (id, thread_id, mailbox_id, provider_message_id, direction, from_addr, from_name, to_addrs, subject, body_text, source, state, sent_at, received_at, sent_by, created_at)
+  values ('79aa9554-2603-4d65-adf1-2cfdc439fdee', '3adc3572-ae12-42cf-a3da-b182ab33b406', '57292e2f-54c3-48da-a98d-d16b65397bad', 'seed-0-0', 'out', 'tor@orgpuls.no', 'Tor Lambrechts',
+  jsonb_build_array(jsonb_build_object('address', 'kari.nordmann@lumio.no', 'name', 'Kari Nordmann')), 'Forslag — Skiftly for lageret', 'Hei Kari,
+
+Vedlagt er forslaget for Skiftly for de to lagerteamene, med partnerpris de første seks månedene. Si gjerne fra hvis vi skal gå gjennom det med skiftlederne.
+
+Vennlig hilsen
+Tor', 'sync',
+  'sent', (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '4 days' + interval '10 hours 14 minutes') at time zone 'Europe/Oslo', null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '4 days' + interval '10 hours 14 minutes') at time zone 'Europe/Oslo');
+insert into app.email_messages (id, thread_id, mailbox_id, provider_message_id, direction, from_addr, from_name, to_addrs, subject, body_text, source, state, sent_at, received_at, sent_by, created_at)
+  values ('ff19e8f3-aea7-43ea-a5b6-9230b22b6977', '3adc3572-ae12-42cf-a3da-b182ab33b406', '57292e2f-54c3-48da-a98d-d16b65397bad', 'seed-0-1', 'in', 'kari.nordmann@lumio.no', 'Kari Nordmann',
+  jsonb_build_array(jsonb_build_object('address', 'tor@orgpuls.no', 'name', 'Tor Lambrechts')), 'Re: Forslag — Skiftly for lageret', 'Takk! Vi ser på dette i styremøtet 14. oktober. Kan dere bli med på en kort gjennomgang med skiftlederne torsdag? Mona og Petter fra HR og lager blir med.
+
+Kari', 'sync',
+  'received', null, (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '1 days' + interval '18 hours 42 minutes') at time zone 'Europe/Oslo', null, (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '1 days' + interval '18 hours 42 minutes') at time zone 'Europe/Oslo');
+insert into app.email_thread_participants (thread_id, address, name, person_id) values ('3adc3572-ae12-42cf-a3da-b182ab33b406', 'kari.nordmann@lumio.no', 'Kari Nordmann', '0b29480e-c6f6-44ca-aca1-efb63d0ffac5');
+insert into app.email_links (thread_id, entity, record_id, linked_by) values ('3adc3572-ae12-42cf-a3da-b182ab33b406', 'person', '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'auto');
+insert into app.email_links (thread_id, entity, record_id, linked_by) values ('3adc3572-ae12-42cf-a3da-b182ab33b406', 'deal', 'e881fda1-c2f4-4d97-a646-535096f3fd6b', 'auto') on conflict do nothing;
+insert into app.email_threads (id, mailbox_id, provider_thread_id, subject, snippet, first_direction, last_direction, last_message_at, created_at)
+  values ('8c767c94-8bd4-45f2-a140-6cc7d4639f2a', '249058ad-4378-401a-a581-819d2e41cb80', 'seed-1', 'Pris for tre lokasjoner?', 'Hei, vi er 140 ansatte fordelt på tre bygg. Hva blir prisen …', 'in', 'in', (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '14 hours 05 minutes') at time zone 'Europe/Oslo', (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '14 hours 05 minutes') at time zone 'Europe/Oslo');
+insert into app.email_messages (id, thread_id, mailbox_id, provider_message_id, direction, from_addr, from_name, to_addrs, subject, body_text, source, state, sent_at, received_at, sent_by, created_at)
+  values ('ecc63b4e-343f-4e46-a84d-02408a7396d7', '8c767c94-8bd4-45f2-a140-6cc7d4639f2a', '249058ad-4378-401a-a581-819d2e41cb80', 'seed-1-0', 'in', 'ole.hansen@mjosaenergi.no', 'Ole Hansen',
+  jsonb_build_array(jsonb_build_object('address', 'salg@orgpuls.no', 'name', 'salg@orgpuls.no')), 'Pris for tre lokasjoner?', 'Hei, vi er 140 ansatte fordelt på tre bygg. Hva blir prisen, og kan hvert bygg få egne resultater?
+
+Ole', 'sync',
+  'received', null, (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '14 hours 05 minutes') at time zone 'Europe/Oslo', null, (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '14 hours 05 minutes') at time zone 'Europe/Oslo');
+insert into app.email_thread_participants (thread_id, address, name, person_id) values ('8c767c94-8bd4-45f2-a140-6cc7d4639f2a', 'ole.hansen@mjosaenergi.no', 'Ole Hansen', null);
+insert into app.email_links (thread_id, entity, record_id, linked_by) values ('8c767c94-8bd4-45f2-a140-6cc7d4639f2a', 'lead', 'f5adfbd3-21af-4661-a89f-ec2afa39af5a', 'auto') on conflict do nothing;
+insert into app.email_threads (id, mailbox_id, provider_thread_id, subject, snippet, first_direction, last_direction, last_message_at, created_at)
+  values ('f2a33362-872e-4cb3-a96f-eaa54ee2cc8f', '57292e2f-54c3-48da-a98d-d16b65397bad', 'seed-2', 'Kontrakt — signert', 'Hei, kontrakten er signert. Når kan vi starte?', 'in', 'in', (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '09 hours 00 minutes') at time zone 'Europe/Oslo', (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '09 hours 00 minutes') at time zone 'Europe/Oslo');
+insert into app.email_messages (id, thread_id, mailbox_id, provider_message_id, direction, from_addr, from_name, to_addrs, subject, body_text, source, state, sent_at, received_at, sent_by, created_at)
+  values ('0b965c75-7e93-402a-afd4-e8c4d889e16e', 'f2a33362-872e-4cb3-a96f-eaa54ee2cc8f', '57292e2f-54c3-48da-a98d-d16b65397bad', 'seed-2-0', 'in', 'marte.larsen@solstrandhelse.no', 'Marte Larsen',
+  jsonb_build_array(jsonb_build_object('address', 'tor@orgpuls.no', 'name', 'Tor Lambrechts')), 'Kontrakt — signert', 'Hei, kontrakten er signert. Når kan vi starte?', 'sync',
+  'received', null, (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '09 hours 00 minutes') at time zone 'Europe/Oslo', null, (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '09 hours 00 minutes') at time zone 'Europe/Oslo');
+insert into app.email_thread_participants (thread_id, address, name, person_id) values ('f2a33362-872e-4cb3-a96f-eaa54ee2cc8f', 'marte.larsen@solstrandhelse.no', 'Marte Larsen', null);
+insert into app.email_links (thread_id, entity, record_id, linked_by) values ('f2a33362-872e-4cb3-a96f-eaa54ee2cc8f', 'organization', 'd8e6d1a5-820f-4952-a9dc-6c367c76c647', 'auto') on conflict do nothing;
+insert into app.email_thread_reads (thread_id, staff_id, read_at) values ('f2a33362-872e-4cb3-a96f-eaa54ee2cc8f', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now());
+insert into app.email_threads (id, mailbox_id, provider_thread_id, subject, snippet, first_direction, last_direction, last_message_at, created_at)
+  values ('1d360dd0-1a5b-4ca6-a73e-7802328476b5', '703809d3-28f6-41a6-a971-14012790daba', 'seed-3', 'Vi venter litt', 'Vi har dessverre ikke budsjett før neste år …', 'in', 'in', (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '09 hours 00 minutes') at time zone 'Europe/Oslo', (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '09 hours 00 minutes') at time zone 'Europe/Oslo');
+insert into app.email_messages (id, thread_id, mailbox_id, provider_message_id, direction, from_addr, from_name, to_addrs, subject, body_text, source, state, sent_at, received_at, sent_by, created_at)
+  values ('88b69797-9c6c-4980-a8cc-ab12f74f8a1d', '1d360dd0-1a5b-4ca6-a73e-7802328476b5', '703809d3-28f6-41a6-a971-14012790daba', 'seed-3-0', 'in', 'jon.pedersen@roroskobber.no', 'Jon Pedersen',
+  jsonb_build_array(jsonb_build_object('address', 'tor@orgpuls.no', 'name', 'Tor Lambrechts')), 'Vi venter litt', 'Vi har dessverre ikke budsjett før neste år. Ta gjerne kontakt i januar.', 'sync',
+  'received', null, (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '09 hours 00 minutes') at time zone 'Europe/Oslo', null, (date_trunc('day', now() at time zone 'Europe/Oslo') - interval '0 days' + interval '09 hours 00 minutes') at time zone 'Europe/Oslo');
+insert into app.email_thread_participants (thread_id, address, name, person_id) values ('1d360dd0-1a5b-4ca6-a73e-7802328476b5', 'jon.pedersen@roroskobber.no', 'Jon Pedersen', null);
+insert into app.email_links (thread_id, entity, record_id, linked_by) values ('1d360dd0-1a5b-4ca6-a73e-7802328476b5', 'lead', '1f50893a-bf08-493d-ab3b-b954f2b401c9', 'auto') on conflict do nothing;
+insert into app.email_thread_reads (thread_id, staff_id, read_at) values ('1d360dd0-1a5b-4ca6-a73e-7802328476b5', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now());
+insert into app.email_templates (id, name, scope, is_starter, owner_id, subject, body) values ('500de4db-6564-4049-a057-6e03260d0101', 'Oppfølging etter demo', 'shared',
+  true, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Oppfølging etter demo', 'Hei [Person.fornavn],
+
+Takk for en god demo i dag. Her er en kort oppsummering av det vi så på for [Organisasjon.navn] …
+
+Vennlig hilsen
+[Bruker.navn]');
+insert into app.email_templates (id, name, scope, is_starter, owner_id, subject, body) values ('3539d0f2-30b9-4ba7-a3ed-904fb61833ea', 'Pris for båndet', 'shared',
+  false, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Pris for båndet', 'Hei [Person.fornavn],
+
+For [Organisasjon.ansatte] ansatte er prisen [Avtale.verdi] i måneden. Alt er inkludert, og det er ingen binding.
+
+[Bruker.signatur]');
+insert into app.email_templates (id, name, scope, is_starter, owner_id, subject, body) values ('a369cd94-613f-40a6-affc-ff7f3c77d237', 'Booking-lenke', 'private',
+  false, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Booking-lenke', 'Hei [Person.fornavn], finn et tidspunkt som passer her: [Bruker.bookinglenke]');
+insert into app.email_templates (id, name, scope, owner_id, subject, body) values ('00259f08-2f86-44c4-a13d-8ee6b65058c4', 'Velkommen — slik kommer dere i gang', 'shared', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Velkommen — slik kommer dere i gang', '');
+insert into app.email_templates (id, name, scope, owner_id, subject, body) values ('4810cb07-7501-4b53-afce-826c5776f753', 'Last opp ansattlisten', 'shared', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Last opp ansattlisten', '');
+insert into app.email_templates (id, name, scope, owner_id, subject, body) values ('85d5a58c-b759-43fc-a5b6-f8c1953ecac3', 'Personal check-in', 'shared', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Personal check-in', '');
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('1772982d-224c-45e1-a70e-721ec7724cdc', 'sequence', 'Trial nurture', 'Deals and leads', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'draft', 'enrollment', '{"entities":["deal"]}'::jsonb, '{"exit_on":["reply","stage_change"]}'::jsonb, 'everyone', null, 1,
+  null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '1772982d-224c-45e1-a70e-721ec7724cdc', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb'
+  from (select '{"steps":[{"key":"s0","kind":"email_auto","config":{"template_id":"00259f08-2f86-44c4-a13d-8ee6b65058c4","from":"@record_owner"}},{"key":"s1","kind":"delay","config":{"amount":2,"unit":"days","skip_weekends":true}},{"key":"s2","kind":"email_auto","config":{"template_id":"4810cb07-7501-4b53-afce-826c5776f753","from":"@record_owner"}},{"key":"s3","kind":"delay","config":{"amount":3,"unit":"days","skip_weekends":true}},{"key":"s4","kind":"activity","config":{"type":"call","subject":"Call: check first survey"}},{"key":"s5","kind":"email_manual","config":{"template_id":"85d5a58c-b759-43fc-a5b6-f8c1953ecac3","from":"@record_owner"}}]}'::jsonb g) x;
+insert into app.email_templates (id, name, scope, owner_id, subject, body) values ('7ec294be-bb80-4b95-a089-174f7f515a84', 'Takk for demoen', 'shared', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Takk for demoen', '');
+insert into app.email_templates (id, name, scope, owner_id, subject, body) values ('f29a82ca-0ad3-41e8-a8be-d351e81ac34b', 'Proposal', 'shared', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Proposal', '');
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('783a7af0-7302-4292-a21d-b994e708125e', 'sequence', 'Post-demo follow-up', 'Deals and leads', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'draft', 'enrollment', '{"entities":["deal"]}'::jsonb, '{"exit_on":["reply","stage_change"]}'::jsonb, 'everyone', null, 1,
+  null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '783a7af0-7302-4292-a21d-b994e708125e', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb'
+  from (select '{"steps":[{"key":"s0","kind":"email_auto","config":{"template_id":"7ec294be-bb80-4b95-a089-174f7f515a84","from":"@record_owner"}},{"key":"s1","kind":"delay","config":{"amount":3,"unit":"days","skip_weekends":true}},{"key":"s2","kind":"activity","config":{"type":"call","subject":"Call: questions?"}},{"key":"s3","kind":"email_manual","config":{"template_id":"f29a82ca-0ad3-41e8-a8be-d351e81ac34b","from":"@record_owner"}}]}'::jsonb g) x;
+insert into app.email_templates (id, name, scope, owner_id, subject, body) values ('b491d1ff-1512-455c-abeb-d2a4a988d4ba', 'Nytt i Orgpuls', 'shared', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Nytt i Orgpuls', '');
+insert into app.email_templates (id, name, scope, owner_id, subject, body) values ('a421bd72-e37b-43c6-ac48-1cb3731021d8', 'Webinar invitation', 'shared', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Webinar invitation', '');
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('b721d0a5-a424-4ec5-aa1f-aaefb64f00b4', 'sequence', 'Re-engage cold leads', 'Leads', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'draft', 'enrollment', '{"entities":["lead"]}'::jsonb, '{"exit_on":["reply","stage_change"]}'::jsonb, 'everyone', null, 1,
+  null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select 'b721d0a5-a424-4ec5-aa1f-aaefb64f00b4', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb'
+  from (select '{"steps":[{"key":"s0","kind":"email_auto","config":{"template_id":"b491d1ff-1512-455c-abeb-d2a4a988d4ba","from":"@record_owner"}},{"key":"s1","kind":"delay","config":{"amount":14,"unit":"days","skip_weekends":false}},{"key":"s2","kind":"email_auto","config":{"template_id":"a421bd72-e37b-43c6-ac48-1cb3731021d8","from":"@record_owner"}}]}'::jsonb g) x;
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('10ffbe52-0bd0-483f-a2fe-aa6ecd908cb0', 'workflow', 'Won deal → project, invoice and Slack', 'Delivery handover', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'draft', 'event', '{"entity":"deal","event":"won"}'::jsonb, '{}'::jsonb, 'team', null, 1,
+  null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '10ffbe52-0bd0-483f-a2fe-aa6ecd908cb0', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb'
+  from (select '{"steps":[{"key":"c","kind":"condition","config":{"groups":[[{"f":"value","op":"gt","v":30000}]]}},{"key":"p","kind":"project_action","config":{"action":"create_from_template"}},{"key":"i","kind":"accounting_invoice","config":{}},{"key":"s","kind":"slack","config":{"channel":"#sales-wins","message":"Won {deal.title}"}},{"key":"n","kind":"add_note","config":{"body":"Handover done — project and invoice created"}}]}'::jsonb g) x;
+insert into app.workflow_activation (workflow_id, team_id) values ('10ffbe52-0bd0-483f-a2fe-aa6ecd908cb0', '7532b4d3-2c04-4683-a3a8-b88f43d46157');
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('462abeb1-13ae-4bec-a147-fcfa6688d616', 'lifecycle', 'Trial day 7 — no survey', 'Lifecycle nudge on product events', 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea', 'draft', 'product_event', '{"kind":"org.created"}'::jsonb, '{}'::jsonb, 'everyone', null, 1,
+  null, 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '462abeb1-13ae-4bec-a147-fcfa6688d616', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea'
+  from (select '{"steps":[{"key":"d","kind":"delay","config":{"amount":7,"unit":"days"}},{"key":"n","kind":"notify","config":{"to":"@record_owner","message":"Trial day 7 for {organization.name}"}}]}'::jsonb g) x;
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('0571b256-4db1-48f2-af48-d3dea5603161', 'workflow', 'Rotting deal alert', 'Notify owner and manager', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'active', 'date', '{"entity":"deal","date":"rots_at","offset_days":2,"groups":[[{"f":"status","op":"eq","v":"open"}]]}'::jsonb, '{}'::jsonb, 'team', null, 1,
+  now() - interval '20 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '0571b256-4db1-48f2-af48-d3dea5603161', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), 'e1d74515-623a-48b1-a3ae-2b9cb638a560'
+  from (select '{"steps":[{"key":"n","kind":"notify","config":{"to":"@record_owner","message":"{deal.title} has passed its stage threshold"}}]}'::jsonb g) x;
+insert into app.workflow_activation (workflow_id, team_id) values ('0571b256-4db1-48f2-af48-d3dea5603161', '7532b4d3-2c04-4683-a3a8-b88f43d46157');
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('f911f604-eee6-4a58-a765-896591f0d594', 'workflow', 'Payment failed → ticket + CSM task', 'Billing safety net', 'f91ec3fc-2bb3-4015-ad40-8933763d7be0', 'active', 'product_event', '{"kind":"billing.changed","data":{"payment_state":"past_due"}}'::jsonb, '{}'::jsonb, 'everyone', null, 1,
+  now() - interval '20 days', 'f91ec3fc-2bb3-4015-ad40-8933763d7be0');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select 'f911f604-eee6-4a58-a765-896591f0d594', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), 'f91ec3fc-2bb3-4015-ad40-8933763d7be0'
+  from (select '{"steps":[{"key":"t","kind":"create_ticket","config":{"category_key":"billing","subject":"Payment failed: {organization.name}"}},{"key":"a","kind":"create_activity","config":{"type":"task","subject":"Payment failed: {organization.name}","due_in_days":0,"owner":"@record_owner"}}]}'::jsonb g) x;
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('bd71e637-682d-4db4-a71c-0a5e58f0c1d5', 'workflow', 'Lead from chatbot → assign + sequence', 'Inbound routing', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'draft', 'event', '{"entity":"lead","event":"created","groups":[[{"f":"source","op":"eq","v":"Chatbot"}]]}'::jsonb, '{}'::jsonb, 'team', null, 1,
+  null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select 'bd71e637-682d-4db4-a71c-0a5e58f0c1d5', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), 'e1d74515-623a-48b1-a3ae-2b9cb638a560'
+  from (select '{"steps":[{"key":"e","kind":"enroll_sequence","config":{"sequence_id":"b721d0a5-a424-4ec5-aa1f-aaefb64f00b4"}}]}'::jsonb g) x;
+insert into app.workflow_activation (workflow_id, team_id) values ('bd71e637-682d-4db4-a71c-0a5e58f0c1d5', '7532b4d3-2c04-4683-a3a8-b88f43d46157');
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('d922d93c-6890-4186-a0d2-74e363143c20', 'workflow', 'Health drops below 40', 'Churn prevention', 'e53792ad-5466-4510-a48c-6321c729dace', 'active', 'event', '{"entity":"organization","event":"health_dropped"}'::jsonb, '{}'::jsonb, 'team', null, 1,
+  now() - interval '20 days', 'e53792ad-5466-4510-a48c-6321c729dace');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select 'd922d93c-6890-4186-a0d2-74e363143c20', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), 'e53792ad-5466-4510-a48c-6321c729dace'
+  from (select '{"steps":[{"key":"a","kind":"create_activity","config":{"type":"task","subject":"Health dropped: {organization.name}","due_in_days":0,"owner":"@record_owner"}}]}'::jsonb g) x;
+insert into app.workflow_activation (workflow_id, team_id) values ('d922d93c-6890-4186-a0d2-74e363143c20', 'cdd721af-8d95-458b-ab23-46821741b794');
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('5f54dd62-3e2c-414d-a55f-157adec7c7a8', 'workflow', 'Renewal in 60 days', 'Expansion pipeline', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'draft', 'date', '{"entity":"organization","date":"renewal_at","offset_days":-60}'::jsonb, '{}'::jsonb, 'everyone', null, 1,
+  null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '5f54dd62-3e2c-414d-a55f-157adec7c7a8', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb'
+  from (select '{"steps":[{"key":"a","kind":"create_activity","config":{"type":"task","subject":"Renewal in 60 days: {organization.name}","due_in_days":0,"owner":"@record_owner"}}]}'::jsonb g) x;
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('195f84b6-2c9b-48b5-a682-0e431ff405ce', 'workflow', 'Campaign click → lead score +10', 'Marketing to sales', 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea', 'draft', 'event', '{"entity":"lead","event":"campaign_clicked"}'::jsonb, '{}'::jsonb, 'team', null, 1,
+  null, 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '195f84b6-2c9b-48b5-a682-0e431ff405ce', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea'
+  from (select '{"steps":[{"key":"Campaign link clicked","kind":"notify","config":{"to":"@record_owner","message":"Campaign link clicked"}}]}'::jsonb g) x;
+insert into app.workflow_activation (workflow_id, team_id) values ('195f84b6-2c9b-48b5-a682-0e431ff405ce', 'cb8c0e77-a103-4ee3-a502-d6a44058f09c');
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('861a244d-bcfe-43cb-aa9f-028d6e48c50d', 'assignment', 'Inbound — municipalities', null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'active', 'event', '{"entities":["lead"]}'::jsonb, '{"condition":{"org_labels_any":["c7b9d5b1-7d69-4ed0-a250-730a05f2c493"]},"assignee":{"kind":"user","staff_id":"5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb"}}'::jsonb, 'everyone', 1, 1,
+  now() - interval '20 days', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '861a244d-bcfe-43cb-aa9f-028d6e48c50d', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb'
+  from (select '{"steps":[]}'::jsonb g) x;
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('32311ba6-b745-4f9b-aad7-f657190e4a71', 'assignment', 'Inbound — large orgs', null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'active', 'event', '{"entities":["lead"]}'::jsonb, '{"condition":{"employees_min":101},"assignee":{"kind":"user","staff_id":"e1d74515-623a-48b1-a3ae-2b9cb638a560"}}'::jsonb, 'everyone', 2, 1,
+  now() - interval '20 days', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '32311ba6-b745-4f9b-aad7-f657190e4a71', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb'
+  from (select '{"steps":[]}'::jsonb g) x;
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('35249cbd-19c0-4781-a920-f85166350bf0', 'assignment', 'Existing organization', null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'active', 'event', '{"entities":["deal"]}'::jsonb, '{"condition":{"org_exists":true},"assignee":{"kind":"org_owner"}}'::jsonb, 'everyone', 3, 1,
+  now() - interval '20 days', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '35249cbd-19c0-4781-a920-f85166350bf0', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb'
+  from (select '{"steps":[]}'::jsonb g) x;
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('7f9f342e-d430-4e05-a544-90dda5c8a606', 'assignment', 'Inbound — chatbot and forms', null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'active', 'event', '{"entities":["lead"]}'::jsonb, '{"condition":{"sources":["Chatbot","Web form"]},"assignee":{"kind":"team_rr","team_id":"7532b4d3-2c04-4683-a3a8-b88f43d46157"}}'::jsonb, 'everyone', 4, 1,
+  now() - interval '20 days', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '7f9f342e-d430-4e05-a544-90dda5c8a606', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb'
+  from (select '{"steps":[]}'::jsonb g) x;
+insert into app.workflows (id, kind, name, description, owner_id, state, trigger_type, trigger_config, options, activation_scope, priority, current_version, activated_at, created_by)
+  values ('83eb74c7-6b22-486c-a8c8-d4e9baecab24', 'assignment', 'Everything else', null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'active', 'event', '{"entities":["lead","deal"]}'::jsonb, '{"condition":{},"assignee":{"kind":"person_owner"}}'::jsonb, 'everyone', 5, 1,
+  now() - interval '20 days', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.workflow_versions (workflow_id, version, graph, flat, published_by)
+  select '83eb74c7-6b22-486c-a8c8-d4e9baecab24', 1, g, app.wf_flatten(g -> 'steps', null) || jsonb_build_object('_start', g -> 'steps' -> 0 ->> 'key'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb'
+  from (select '{"steps":[]}'::jsonb g) x;
+insert into app.score_models (id, name, entity, pipeline_id, state, created_by) values ('bc80c378-34e4-4fa1-a411-457021fde632', 'Deal score — new business', 'deal', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'active', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('bc80c378-34e4-4fa1-a411-457021fde632', 'high', 0, 'Proposal link opened in the last 7 days', '[[{"f":"email.opened","v":7}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('bc80c378-34e4-4fa1-a411-457021fde632', 'high', 1, 'Decision maker is a participant', '[[{"f":"participant_label","v":"e08f1d0b-4734-49c7-a48c-9e403a62be26"}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('bc80c378-34e4-4fa1-a411-457021fde632', 'slight', 2, 'Already uses another application', '[[{"f":"org_products","op":"gte","v":2}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('bc80c378-34e4-4fa1-a411-457021fde632', 'slight', 3, 'Source is web form or chatbot', '[[{"f":"source","op":"in","v":["Web form","Chatbot"]}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('bc80c378-34e4-4fa1-a411-457021fde632', 'slight', 4, 'Employees between 26 and 250', '[[{"rel":"organization_id","f":"employees","op":"gte","v":26},{"rel":"organization_id","f":"employees","op":"lte","v":250}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('bc80c378-34e4-4fa1-a411-457021fde632', 'negative', 5, 'No reply to last email in 5 days', '[[{"f":"email.no_reply","v":5}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('bc80c378-34e4-4fa1-a411-457021fde632', 'negative', 6, 'Organization payment status past due', '[[{"f":"org_payment","v":"past_due"}]]'::jsonb);
+insert into app.score_models (id, name, entity, pipeline_id, state, created_by) values ('08af2499-a158-430b-a03d-8a0d25129d47', 'Expansion readiness', 'deal', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', 'active', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('08af2499-a158-430b-a03d-8a0d25129d47', 'high', 0, 'Proposal link opened in the last 7 days', '[[{"f":"email.opened","v":7}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('08af2499-a158-430b-a03d-8a0d25129d47', 'high', 1, 'Decision maker is a participant', '[[{"f":"participant_label","v":"e08f1d0b-4734-49c7-a48c-9e403a62be26"}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('08af2499-a158-430b-a03d-8a0d25129d47', 'slight', 2, 'Already uses another application', '[[{"f":"org_products","op":"gte","v":2}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('08af2499-a158-430b-a03d-8a0d25129d47', 'slight', 3, 'Source is web form or chatbot', '[[{"f":"source","op":"in","v":["Web form","Chatbot"]}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('08af2499-a158-430b-a03d-8a0d25129d47', 'slight', 4, 'Employees between 26 and 250', '[[{"rel":"organization_id","f":"employees","op":"gte","v":26},{"rel":"organization_id","f":"employees","op":"lte","v":250}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('08af2499-a158-430b-a03d-8a0d25129d47', 'negative', 5, 'No reply to last email in 5 days', '[[{"f":"email.no_reply","v":5}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('08af2499-a158-430b-a03d-8a0d25129d47', 'negative', 6, 'Organization payment status past due', '[[{"f":"org_payment","v":"past_due"}]]'::jsonb);
+insert into app.score_models (id, name, entity, pipeline_id, state, created_by) values ('1397005f-08b0-4879-a25d-aad8ff80ffcf', 'Lead fit', 'lead', null, 'draft', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('1397005f-08b0-4879-a25d-aad8ff80ffcf', 'high', 0, 'Proposal link opened in the last 7 days', '[[{"f":"email.opened","v":7}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('1397005f-08b0-4879-a25d-aad8ff80ffcf', 'slight', 2, 'Already uses another application', '[[{"f":"org_products","op":"gte","v":2}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('1397005f-08b0-4879-a25d-aad8ff80ffcf', 'slight', 3, 'Source is web form or chatbot', '[[{"f":"source","op":"in","v":["Web form","Chatbot"]}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('1397005f-08b0-4879-a25d-aad8ff80ffcf', 'slight', 4, 'Employees between 26 and 250', '[[{"rel":"organization_id","f":"employees","op":"gte","v":26},{"rel":"organization_id","f":"employees","op":"lte","v":250}]]'::jsonb);
+insert into app.score_criteria (model_id, grp, ord, label, condition) values ('1397005f-08b0-4879-a25d-aad8ff80ffcf', 'negative', 6, 'Organization payment status past due', '[[{"f":"org_payment","v":"past_due"}]]'::jsonb);
 update app.event_cursors set last_event_id = coalesce((select max(id) from app.events), 0), updated_at = now();
+select app.scores_nightly();
+select app.feed_checks();
 
 commit;
 set session_replication_role = origin;

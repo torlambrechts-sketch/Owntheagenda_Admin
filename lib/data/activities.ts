@@ -89,6 +89,7 @@ const BookingLink = z.object({
   horizon_days: num,
   video_provider: z.enum(['meet', 'teams', 'zoom']).nullable(),
   expires_at: z.string().nullable(),
+  proposed_times: z.array(z.string()).default([]),
 })
 export type BookingLink = z.infer<typeof BookingLink>
 export const Scheduling = z.object({
@@ -107,7 +108,7 @@ export const Scheduling = z.object({
     .nullable(),
   links: z.array(BookingLink),
   availability: z.array(z.object({ weekday: num, hour: num })),
-  bookings: z.array(z.object({ name: z.string().nullable(), starts_at: z.string(), link: z.string(), created_at: z.string() })),
+  bookings: z.array(z.object({ name: z.string().nullable(), organization: z.string().nullable().default(null), starts_at: z.string(), link: z.string(), created_at: z.string() })),
 })
 export type Scheduling = z.infer<typeof Scheduling>
 export const loadScheduling = () => rpcOrThrow('my_scheduling', {}, Scheduling)

@@ -6,11 +6,11 @@ What the Phase 1 screen builders asked for, and what happened to each. «0023» 
 
 | Request | What | Status |
 |---|---|---|
-| Activities R-ACT-01 | `calendar_connection_save` | Done in 0023 · screen |
-| Activities R-ACT-02 | Proposed times on booking links | Done in 0023 (`proposed_times`, `booking_link_save`) · screen |
-| Activities R-ACT-03 | Reminders need the owner or edit-others (security) | Done in 0023 |
-| Activities R-ACT-04 | Bookings name the organisation | Done in 0023 (`my_scheduling`) · screen |
-| Activities R-ACT-05 | `activities_shift` | Done in 0023 · screen |
+| Activities R-ACT-01 | `calendar_connection_save` | Done in 0023 · screen done |
+| Activities R-ACT-02 | Proposed times on booking links | Done in 0023 (`proposed_times`, `booking_link_save`) · screen done |
+| Activities R-ACT-03 | Reminders need the owner or edit-others (security) | Done in 0023 · screen done (a refusal after the save is reported) |
+| Activities R-ACT-04 | Bookings name the organisation | Done in 0023 (`my_scheduling`) · screen done |
+| Activities R-ACT-05 | `activities_shift` | Done in 0023 · screen done |
 | Contacts R-1 | A note with an @mention was refused (bug) | Done in 0023 (route check accepts `?<entity>=<uuid>`) · screen: drop the workaround |
 | Contacts R-2 | Import body above 1 MB | Done: `serverActions.bodySizeLimit` 8 MB, the screen's limit 7.9 MB |
 | Contacts R-3 | XLSX import and export | Open: needs a library decision (exceljs) |

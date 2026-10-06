@@ -45,7 +45,8 @@ const SaveInput = z.object({
 export type SaveInput = z.infer<typeof SaveInput>
 
 /** Create or edit one activity, then replace its guests and reminders as sets. */
-export async function saveActivity(input: SaveInput): Promise<Result<{ id: string }>> {
+export type SaveResult = { ok: true; id: string } | { ok: false; code: RpcCode | 'invalid'; detail?: string | null; part?: 'guests' | 'reminders'; id?: string }
+export async function saveActivity(input: SaveInput): Promise<SaveResult> {
   const p = SaveInput.safeParse(input)
   if (!p.success) return bad(String(p.error.issues[0]?.path.join('.') ?? ''))
   const { id, version, values, guests, reminders } = p.data
@@ -55,11 +56,12 @@ export async function saveActivity(input: SaveInput): Promise<Result<{ id: strin
   if (id === null && v.owner_id === null) delete v.owner_id
   const r = await rpc('rec_save', { p_entity: 'activity', p_id: id, p_values: v, p_version: version }, Saved)
   if (!r.ok) return r
+  // the activity is saved; a refusal of its guests or reminders (owner or deals:edit_others, R-ACT-03) is reported as such
   const g = await rpc('activity_guests_set', { p_id: r.data.id, p_guests: guests }, z.array(z.unknown()))
-  if (!g.ok) { done(); return g }
+  if (!g.ok) { done(); return { ok: false, code: g.code, detail: g.detail, part: 'guests', id: r.data.id } }
   const m = await rpc('activity_reminders_set', { p_id: r.data.id, p_reminders: reminders }, z.array(z.unknown()))
   done()
-  if (!m.ok) return m
+  if (!m.ok) return { ok: false, code: m.code, detail: m.detail, part: 'reminders', id: r.data.id }
   return { ok: true, id: r.data.id }
 }
 
@@ -107,13 +109,25 @@ export async function bulkPriority(ids: string[], priority: string): Promise<Res
   return r.ok ? { ok: true, n: r.data.updated } : r
 }
 
-/** «Move to tomorrow»: each activity keeps its time of day, so activities sharing a time move together. */
-export async function bulkMove(groups: { ids: string[]; starts_at: string; all_day: boolean }[]): Promise<Result<{ n: number }>> {
-  const p = z.array(z.object({ ids: Ids, starts_at: iso, all_day: z.boolean() })).min(1).max(100).safeParse(groups)
+/**
+ * «Move to tomorrow»: activities_shift moves by whole days and keeps each one's time of day in one transaction
+ * (R-ACT-05). The selection is grouped by how many days each activity is from tomorrow (usually one group);
+ * activities without a time become all-day items tomorrow.
+ */
+export async function bulkMove(input: { shifts: { ids: string[]; days: number }[]; undated: { ids: string[]; starts_at: string } | null }): Promise<Result<{ n: number }>> {
+  const p = z.object({
+    shifts: z.array(z.object({ ids: Ids, days: z.number().int().min(-365).max(365) })).max(50),
+    undated: z.object({ ids: Ids, starts_at: iso }).nullable(),
+  }).safeParse(input)
   if (!p.success) return bad()
   let n = 0
-  for (const g of p.data) {
-    const r = await rpc('rec_bulk', { p_entity: 'activity', p_ids: g.ids, p_values: { starts_at: g.starts_at, all_day: g.all_day } }, z.object({ updated: z.coerce.number() }))
+  for (const g of p.data.shifts) {
+    const r = await rpc('activities_shift', { p_ids: g.ids, p_days: g.days }, z.object({ moved: z.coerce.number() }))
+    if (!r.ok) { done(); return r }
+    n += r.data.moved
+  }
+  if (p.data.undated) {
+    const r = await rpc('rec_bulk', { p_entity: 'activity', p_ids: p.data.undated.ids, p_values: { starts_at: p.data.undated.starts_at, all_day: true } }, z.object({ updated: z.coerce.number() }))
     if (!r.ok) { done(); return r }
     n += r.data.updated
   }
@@ -146,10 +160,30 @@ export async function setAvailability(cells: { weekday: number; hour: number }[]
   return r.ok ? { ok: true } : r
 }
 
-export async function createBookingLink(input: { title: string; duration_min: number }): Promise<Result> {
-  const p = z.object({ title: z.string().trim().min(1).max(120), duration_min: z.number().int().min(5).max(480) }).safeParse(input)
-  if (!p.success) return bad('title')
-  const r = await rpc('booking_link_save', { p_id: null, p_values: { title: p.data.title, duration_min: p.data.duration_min, kind: 'general' } }, z.object({ id: uuid }))
+export async function createBookingLink(input: { title: string; duration_min: number; kind: 'general' | 'proposed'; proposed_times: string[] }): Promise<Result> {
+  const p = z.object({
+    title: z.string().trim().min(1).max(120),
+    duration_min: z.number().int().min(5).max(480),
+    kind: z.enum(['general', 'proposed']),
+    proposed_times: z.array(iso).max(10),
+  }).refine((v) => v.kind === 'general' || v.proposed_times.length > 0, { path: ['proposed_times'] }).safeParse(input)
+  if (!p.success) return bad(String(p.error.issues[0]?.path[0] ?? 'title'))
+  const values = { title: p.data.title, duration_min: p.data.duration_min, kind: p.data.kind, ...(p.data.kind === 'proposed' ? { proposed_times: p.data.proposed_times } : {}) }
+  const r = await rpc('booking_link_save', { p_id: null, p_values: values }, z.object({ id: uuid }))
+  done()
+  return r.ok ? { ok: true } : r
+}
+
+/** The calendar choice, stored while no provider is connected (R-ACT-01); the status stays not connected. */
+export async function saveCalendar(input: { provider?: string; mode?: string; calendar_id?: string | null; sync_type_ids?: string[] }): Promise<Result> {
+  const p = z.object({
+    provider: z.enum(['google', 'microsoft']).optional(),
+    mode: z.enum(['one_way', 'two_way']).optional(),
+    calendar_id: z.string().max(200).nullable().optional(),
+    sync_type_ids: z.array(uuid).max(50).optional(),
+  }).safeParse(input)
+  if (!p.success) return bad()
+  const r = await rpc('calendar_connection_save', { p_values: p.data }, z.object({ provider: z.string() }).passthrough())
   done()
   return r.ok ? { ok: true } : r
 }

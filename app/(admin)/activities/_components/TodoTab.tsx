@@ -73,18 +73,21 @@ export function TodoTab({ ctx, state, rows, counts, go, open, onDone }: {
     })
   }
   const moveTomorrow = () => {
-    // each activity keeps its time of day; one without a time becomes an all-day item tomorrow
+    // whole days to tomorrow per activity, each keeping its time of day (activities_shift); one without a
+    // time becomes an all-day item tomorrow
     const tomorrow = addDays(today, 1)
-    const groups = new Map<string, { ids: string[]; starts_at: string; all_day: boolean }>()
+    const shifts = new Map<number, string[]>()
+    const undated: string[] = []
     for (const a of list.filter((x) => sel[x.id])) {
-      const z = a.starts_at && !a.all_day ? zoned(new Date(a.starts_at), ctx.tz) : null
-      const at = fromZoned(tomorrow, z?.h ?? 0, z?.min ?? 0, ctx.tz).toISOString()
-      const key = `${at}|${!z}`
-      const g = groups.get(key) ?? { ids: [], starts_at: at, all_day: !z }
-      g.ids.push(a.id)
-      groups.set(key, g)
+      if (!a.starts_at) { undated.push(a.id); continue }
+      const z = zoned(new Date(a.starts_at), ctx.tz)
+      const days = dayDiff(tomorrow, { y: z.y, m: z.m, d: z.d })
+      if (days !== 0) shifts.set(days, [...(shifts.get(days) ?? []), a.id])
     }
-    bulk(() => bulkMove([...groups.values()]), t('toast.movedTomorrow'))
+    bulk(() => bulkMove({
+      shifts: [...shifts].map(([days, ids]) => ({ days, ids })),
+      undated: undated.length ? { ids: undated, starts_at: fromZoned(tomorrow, 0, 0, ctx.tz).toISOString() } : null,
+    }), t('toast.movedTomorrow'))
   }
 
   return (

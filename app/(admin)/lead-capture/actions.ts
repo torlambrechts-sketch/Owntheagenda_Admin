@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { rpc, type RpcCode } from '@/lib/rpc'
-import { ChatDetail, ChatQueue, Draft, FORM_KINDS, FORM_LANGS, PALETTES, BUTTONS, Step, TEMPLATES } from '@/lib/data/capture-shared'
+import { ChatDetail, ChatQueue, DAYS, Draft, FORM_KINDS, FORM_LANGS, PALETTES, BUTTONS, Step, TEMPLATES } from '@/lib/data/capture-shared'
 
 /** Server actions of Lead capture: each parses its input and answers `{ ok } | { ok: false, code, detail }`. */
 export type Result<T = object> = ({ ok: true } & T) | { ok: false; code: RpcCode; detail?: string | null }
@@ -98,6 +98,20 @@ export async function savePlaybook(input: { id: string | null; values: z.input<t
   if (!r.ok) return fail(r)
   done()
   return { ok: true, id: r.data.id }
+}
+
+const Time = z.string().regex(/^(([01][0-9]|2[0-3]):[0-5][0-9]|24:00)$/)
+export async function setPlaybookHours(input: { id: string; hours: Partial<Record<(typeof DAYS)[number], [string, string]>> | null; version: number }): Promise<Result> {
+  const p = z.object({
+    id: uuid,
+    hours: z.partialRecord(z.enum(DAYS), z.tuple([Time, Time]).refine(([a, b]) => a < b)).nullable(),
+    version: z.number().int(),
+  }).safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('playbook_hours_set', { p_id: p.data.id, p_hours: p.data.hours, p_version: p.data.version }, z.object({ id: z.string() }))
+  if (!r.ok) return fail(r)
+  done()
+  return { ok: true }
 }
 
 export async function publishPlaybook(input: { id: string }): Promise<Result> {

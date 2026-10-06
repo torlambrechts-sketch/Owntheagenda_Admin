@@ -109,6 +109,11 @@ export const BUTTONS = ['saffron', 'ink'] as const
 export const Step = z.object({ key: z.string(), kind: z.enum(STEP_KINDS), text: z.string(), map: z.enum(STEP_MAPS).optional() })
 export type Step = z.infer<typeof Step>
 
+/** Opening hours of a live chat (0036, R-CAPTURE-03): ISO weekdays, Europe/Oslo. */
+export const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const
+export type Day = (typeof DAYS)[number]
+export type Hours = Partial<Record<Day, [string, string]>>
+
 export const Playbook = z.object({
   id: z.string().uuid(),
   name: z.string(),
@@ -124,6 +129,7 @@ export const Playbook = z.object({
   stage_id: z.string().uuid().nullable(),
   queue_wait_seconds: num,
   offline_message: z.string().nullable(),
+  hours: z.partialRecord(z.enum(DAYS), z.tuple([z.string(), z.string()])).nullable().optional().transform((v) => v ?? null),
   current_version: num,
   version: num,
   owner: z.object({ id: z.string().uuid(), name: z.string() }).nullable(),

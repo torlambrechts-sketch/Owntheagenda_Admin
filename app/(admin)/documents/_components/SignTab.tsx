@@ -52,7 +52,7 @@ export function SignTab(p: {
   const [language, setLanguage] = useState<(typeof INVITE_LANGUAGES)[number]>('nb')
   const [otp, setOtp] = useState(true)
   const [sel, setSel] = useState<string | null>(null)
-  const [adding, setAdding] = useState<{ name: string; email: string } | null>(null)
+  const [adding, setAdding] = useState<{ name: string; email: string; person_id: string | null } | null>(null)
   const [newKind, setNewKind] = useState<FieldKind>('signature')
   const [newFor, setNewFor] = useState<string>('')
   const [busy, setBusy] = useState(false)
@@ -130,10 +130,18 @@ export function SignTab(p: {
     const i = signers.length
     const k = key()
     const y = round(Math.min(70 + 12 * i, 100 - FIELD_H))
-    setSigners((ss) => [...ss, { key: k, id: null, name, email, color: SIGNER_COLORS[i % SIGNER_COLORS.length]!, person_id: null, status: 'waiting' }])
+    // the document's own person keeps the link only while the address is still theirs
+    const person_id = adding.person_id && doc?.person?.email?.toLowerCase() === email.toLowerCase() ? adding.person_id : null
+    setSigners((ss) => [...ss, { key: k, id: null, name, email, color: SIGNER_COLORS[i % SIGNER_COLORS.length]!, person_id, status: 'waiting' }])
     setFields((fs) => [...fs, { key: key(), signer: k, kind: 'signature', page: 1, x: 8, y, w: 40, h: FIELD_H }, { key: key(), signer: k, kind: 'date', page: 1, x: 52, y, w: 26, h: FIELD_H }])
     setNewFor((v) => v || k)
     setAdding(null)
+  }
+  /** The first signer proposed is the person the document is addressed to (R-DOCUMENTS-01), until they are on the list. */
+  function proposal(): { name: string; email: string; person_id: string | null } {
+    const pr = doc?.person
+    if (pr?.email && !signers.some((s) => s.person_id === pr.id || s.email.toLowerCase() === pr.email!.toLowerCase())) return { name: pr.name, email: pr.email, person_id: pr.id }
+    return { name: '', email: '', person_id: null }
   }
   function removeSigner(k: string) {
     setSigners((ss) => ss.filter((s) => s.key !== k))
@@ -276,7 +284,7 @@ export function SignTab(p: {
                 </div>
               </div>
             ) : (
-              <button type="button" onClick={() => setAdding({ name: '', email: '' })} disabled={limit !== null && signers.length >= limit}
+              <button type="button" onClick={() => setAdding(proposal())} disabled={limit !== null && signers.length >= limit}
                 className="h-7 cursor-pointer self-start rounded-9 border border-dashed border-line-strong bg-transparent px-[10px] text-12 font-semibold disabled:cursor-default disabled:opacity-60">{t('signer.add')}</button>
             )
           ) : null}

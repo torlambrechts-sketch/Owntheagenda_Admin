@@ -171,7 +171,9 @@
         "noSequence": "Ingen sekvens",
         "thanksLabel": "Takkemelding",
         "redirectLabel": "Eller videresend til",
-        "assetMissing": "Filen som skal lastes ned, lastes opp når fillagring for skjemaer er klar; til da kan skjemaet ikke publiseres."
+        "assetMissing": "Filen som skal lastes ned, lastes opp når fillagring for skjemaer er klar; til da kan skjemaet ikke publiseres.",
+        "ownerRule": "eier etter tildelingsregelen «{name}»",
+        "ownerNone": "ingen eier: ingen tildelingsregel passer et nettskjema"
       },
       "stats": "Innsendinger denne måneden <b>{n}</b> · konvertering {conv}",
       "publishing": "Publisering",
@@ -289,7 +291,27 @@
       "toDraft": "Tilbake til utkast",
       "liveToast": "Playbook aktiv",
       "toDraftToast": "Playbook tilbake til utkast",
-      "publishRight": "Publisering og aktivering krever «Konfigurer» på Kampanjer."
+      "publishRight": "Publisering og aktivering krever «Konfigurer» på Kampanjer.",
+      "businessHours": "åpningstid",
+      "hoursLabel": "Åpningstid (Europe/Oslo)",
+      "hoursOn": "Bare i åpningstiden",
+      "closed": "stengt",
+      "hoursFrom": "{day} fra",
+      "hoursTo": "{day} til",
+      "hoursNote": "Utenfor åpningstiden vises chatten som frakoblet, og en besøkende som ber om en person får frakoblet-meldingen med en gang.",
+      "hoursOffNote": "Uten åpningstid er chatten åpen når noen i teamet er pålogget.",
+      "saveHours": "Lagre åpningstid",
+      "hoursSaved": "Åpningstid lagret",
+      "hoursInvalid": "Hver dag må åpne før den stenger.",
+      "days": {
+        "mon": "Mandag",
+        "tue": "Tirsdag",
+        "wed": "Onsdag",
+        "thu": "Torsdag",
+        "fri": "Fredag",
+        "sat": "Lørdag",
+        "sun": "Søndag"
+      }
     },
     "live": {
       "title": "Livechat · besøkende på {page}",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addField, blockAllowed, doubleOptIn, lastVisit, moveField, onPage, patchField, removeField, settingValue, type Draft } from '@/lib/data/capture-shared'
+import { Playbook, addField, blockAllowed, doubleOptIn, lastVisit, moveField, onPage, patchField, removeField, settingValue, type Draft } from '@/lib/data/capture-shared'
 
 const draft: Draft = {
   intro: { title: 'Kontakt oss', body: '' },
@@ -57,5 +57,23 @@ describe('times and settings', () => {
     expect(settingValue(rows, 'web_ident')).toBe('off')
     expect(settingValue(rows, 'widget_consent')).toBe('off')
     expect(settingValue(rows, 'missing')).toBeNull()
+  })
+})
+
+describe('playbook opening hours (0036)', () => {
+  const row = {
+    id: '00000000-0000-4000-8000-000000000001', name: 'Snakk med oss', template: 'live_chat', state: 'live', pages: [], site_ids: [],
+    theme: {}, profile: {}, steps: [], creates: 'lead', pipeline_id: null, stage_id: null, queue_wait_seconds: 60, offline_message: null,
+    current_version: 1, version: 1, owner: null, conversations_30d: 0, completed_30d: 0,
+  }
+  it('reads weekdays only, as a partial week', () => {
+    expect(Playbook.parse({ ...row, hours: { mon: ['08:00', '16:00'], fri: ['08:00', '16:00'] } }).hours).toEqual({ mon: ['08:00', '16:00'], fri: ['08:00', '16:00'] })
+  })
+  it('reads no hours as null, from a missing or null column', () => {
+    expect(Playbook.parse(row).hours).toBeNull()
+    expect(Playbook.parse({ ...row, hours: null }).hours).toBeNull()
+  })
+  it('refuses a key that is not a weekday', () => {
+    expect(Playbook.safeParse({ ...row, hours: { holiday: ['08:00', '16:00'] } }).success).toBe(false)
   })
 })

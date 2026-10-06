@@ -100,4 +100,59 @@ select pg_temp.check((select kind from app.mrr_movements m join t_base b using (
 insert into app.setting_values (key, value, value_number) values ('deal_capacity', 'number', 12) on conflict (key, scope_id) do update set value = 'number', value_number = 12;
 select pg_temp.check((public.deal_board((select id from app.pipelines where name = 'New business')) ->> 'capacity')::int = 12, 'the board reads its capacity as a number');
 
+-- Phase 5 screen requests (0036)
+-- the most specific page wins: /pris goes to the price-page playbook, not to the every-page live chat
+select pg_temp.as_nobody();
+create temp table t_ch as select public.worker_chat_start('orgpuls-com', '/pris', null, 'nb') r;
+select pg_temp.check((select pb.name from app.chat_conversations c join app.chat_playbooks pb on pb.id = c.playbook_id
+                      where c.visitor_token_sha256 = app.token_hash((select r ->> 'token' from t_ch))) = 'Pris-siden: kvalifiser og rut',
+                     'an exact page beats a playbook for every page');
+create temp table t_ch2 as select public.worker_chat_start('orgpuls-com', '/om-oss', null, 'nb') r;
+select pg_temp.check((select pb.name from app.chat_conversations c join app.chat_playbooks pb on pb.id = c.playbook_id
+                      where c.visitor_token_sha256 = app.token_hash((select r ->> 'token' from t_ch2))) = 'Snakk med oss',
+                     'a page no playbook names gets the every-page playbook');
+-- opening hours
+select pg_temp.check(app.chat_in_hours(null), 'no hours is always open');
+select pg_temp.check(app.chat_in_hours(jsonb_build_object((array['mon','tue','wed','thu','fri','sat','sun'])[extract(isodow from now() at time zone 'Europe/Oslo')::int], '["00:00","24:00"]'::jsonb)),
+                     'today all day is open');
+select pg_temp.check(not app.chat_in_hours(jsonb_build_object((array['mon','tue','wed','thu','fri','sat','sun'])[extract(isodow from (now() at time zone 'Europe/Oslo') + interval '1 day')::int], '["00:00","24:00"]'::jsonb)),
+                     'a day that is not today is closed today');
+create temp table t_live as select id, version from app.chat_playbooks where name = 'Snakk med oss';
+select pg_temp.as_staff('ingrid@orgpuls.no');
+select pg_temp.expect_error(format($$select public.playbook_hours_set(%L, '{"mon":["08:00","16:00"]}')$$, (select id from t_live)), 'forbidden', 'Sales cannot set opening hours');
+select pg_temp.as_staff('tor@orgpuls.no');
+select pg_temp.expect_error(format($$select public.playbook_hours_set(%L, '{"mon":["16:00","08:00"]}')$$, (select id from t_live)), 'invalid', 'hours must open before they close');
+select pg_temp.expect_error(format($$select public.playbook_hours_set(%L, '{"holiday":["08:00","16:00"]}')$$, (select id from t_live)), 'invalid', 'hours are keyed by weekday');
+select public.playbook_hours_set((select id from t_live),
+  jsonb_build_object((array['mon','tue','wed','thu','fri','sat','sun'])[extract(isodow from (now() at time zone 'Europe/Oslo') + interval '1 day')::int], '["08:00","16:00"]'::jsonb));
+select pg_temp.check((select x ->> 'id' from jsonb_array_elements(public.playbooks_get()) x where x ? 'hours' and x -> 'hours' <> 'null'::jsonb limit 1) = (select id::text from t_live),
+                     'the playbook list returns the hours');
+select public.chat_presence_set(true);
+select pg_temp.as_nobody();
+create temp table t_ch3 as select public.worker_chat_start('orgpuls-com', '/om-oss', null, 'nb') r;
+select pg_temp.check(not ((select r from t_ch3) ->> 'online')::boolean
+                     and (select state from app.chat_conversations where visitor_token_sha256 = app.token_hash((select r ->> 'token' from t_ch3))) = 'bot',
+                     'outside the hours a live-chat visitor is not queued and the widget is offline');
+update app.chat_conversations set state = 'queued', queued_at = now() where visitor_token_sha256 = app.token_hash((select r ->> 'token' from t_ch2));
+select app.chat_fallback();
+select pg_temp.check((select state from app.chat_conversations where visitor_token_sha256 = app.token_hash((select r ->> 'token' from t_ch2))) = 'bot',
+                     'a queued chat outside the hours returns to the bot at once');
+-- the host a form is embedded on: kept only for a tracked site
+insert into app.setting_values (key, value) values ('form_tracking', 'on') on conflict (key, scope_id) do update set value = 'on';
+select public.worker_form_submit((select public_id from app.forms where name = 'Kontakt oss'),
+  '{"name":"Vert Testesen","email":"vert.p5@example.no","org_number":"923609016"}',
+  '{"fill_ms":9000,"tracking":{"landing_host":"www.orgpuls.com","landing_path":"/kontakt"}}');
+select public.worker_form_submit((select public_id from app.forms where name = 'Kontakt oss'),
+  '{"name":"Fremmed Testesen","email":"fremmed.p5@example.no","org_number":"923609016"}',
+  '{"fill_ms":9000,"tracking":{"landing_host":"evil.example","landing_path":"/kontakt"}}');
+select pg_temp.check((select count(*) filter (where tracking ? 'landing_host') = 1 and bool_and(coalesce(tracking ->> 'landing_host', 'orgpuls.com') <> 'evil.example')
+                      from app.form_submissions where field_values ->> 'email' in ('vert.p5@example.no', 'fremmed.p5@example.no')),
+                     'a landing host is kept only when it is a tracked site');
+select pg_temp.as_staff('tor@orgpuls.no');
+select pg_temp.check(exists (select 1 from jsonb_array_elements(public.forms_get()) x where x ->> 'landing' = 'orgpuls.com/kontakt'), 'the form list names the host and path');
+-- the document names its person's email
+create temp table t_doc as select id, person_id from app.documents where person_id is not null and deleted_at is null limit 1;
+select pg_temp.check((public.document_get((select id from t_doc)) #>> '{person,email}') is not distinct from (select email from app.people where id = (select person_id from t_doc)),
+                     'document_get names the person''s email');
+
 rollback;

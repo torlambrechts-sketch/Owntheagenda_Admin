@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import { rpc } from '@/lib/rpc'
+import { AssignTest } from '@/lib/data/automation'
 import { getTranslations } from 'next-intl/server'
 import { can, getShell } from '@/lib/shell'
 import {
@@ -51,12 +53,17 @@ export default async function LeadCapturePage({ searchParams }: { searchParams: 
   if (tab === 'forms') {
     const forms = await loadForms()
     const id = forms.find((f) => f.id === p.form)?.id ?? forms[0]?.id ?? null
-    const [detail, subs, sequences, pipelines, customFields] = await Promise.all([
+    // the first active assignment rule a web-form lead or deal meets (R-CAPTURE-05): a read-only evaluation
+    const rule = (entity: 'lead' | 'deal') => rpc('assignment_test', { p_input: { entity, source: 'Web form' } }, AssignTest)
+      .then((r) => (r.ok ? (r.data.rule_id ? r.data.rule ?? null : '') : null))
+    const [detail, subs, sequences, pipelines, customFields, ruleLead, ruleDeal] = await Promise.all([
       id ? loadForm(id) : null,
       id && rights.deals ? loadSubmissions(id) : null,
       loadSequences(),
       loadPipelines(),
       loadCustomFields(),
+      rule('lead'),
+      rule('deal'),
     ])
     body = (
       <FormsView
@@ -66,6 +73,7 @@ export default async function LeadCapturePage({ searchParams }: { searchParams: 
         sequences={sequences}
         pipelines={pipelines}
         customFields={customFields}
+        rules={{ lead: ruleLead, deal: ruleDeal }}
         can={{
           add: can(shell, 'campaigns', 'add'), configure: can(shell, 'campaigns', 'configure'), del: can(shell, 'campaigns', 'delete'),
           editOthers: can(shell, 'campaigns', 'edit_others'), me: shell.me.id,

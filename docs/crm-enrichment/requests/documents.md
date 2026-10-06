@@ -1,5 +1,15 @@
 # Requests: Documents (Phase 5 screen build)
 
+## Status
+
+| Request | Status |
+|---|---|
+| R-DOCUMENTS-01 | Done in 0036 (`document_get.person.email`) · screen proposes the first signer |
+| R-DOCUMENTS-02 | Open: needs a brand asset per product (storage) |
+| R-DOCUMENTS-03 | Open: needs the edge functions (signed URL, upload) — with R-CAPTURE-01 |
+| R-DOCUMENTS-04 | Open: needs a drive OAuth client and adapter |
+| R-DOCUMENTS-05 | Open: only meaningful once a drive OAuth client exists; today «cannot be connected yet» is the true answer |
+
 What the Documents screen needs beyond `0032_documents.sql`. None of it blocks the screen: each item is left out
 or shown in its honest state until the change exists.
 

@@ -7,10 +7,10 @@ import { useToast } from '@/components/ui/Toast'
 import { Switch } from '@/components/ui/Switch'
 import { formatNumber, type NumberFormat } from '@/lib/format'
 import {
-  BUTTONS, FORM_LANGS, PALETTES, STEP_KINDS, STEP_MAPS, TEMPLATES,
-  type ChatDetail, type ChatQueue, type Playbook, type PlaybookStats, type Site, type Step, type Template,
+  BUTTONS, DAYS, FORM_LANGS, PALETTES, STEP_KINDS, STEP_MAPS, TEMPLATES,
+  type ChatDetail, type ChatQueue, type Day, type Hours, type Playbook, type PlaybookStats, type Site, type Step, type Template,
 } from '@/lib/data/capture-shared'
-import { claimChat, closeChat, pollChats, publishPlaybook, savePlaybook, saveSite, sendChat, setPlaybookState, setPresence, type Result } from '../actions'
+import { claimChat, closeChat, pollChats, publishPlaybook, savePlaybook, saveSite, sendChat, setPlaybookHours, setPlaybookState, setPresence, type Result } from '../actions'
 import { useErr, useGo } from './hooks'
 
 export type ChatProps = {
@@ -57,7 +57,9 @@ function Playbooks(p: ChatProps & { playbooks: Playbook[] }) {
   const [newTpl, setNewTpl] = useState<Template>('leads')
   const [busy, start] = useTransition()
   const pb = p.playbook
-  const sub = (x: Playbook) => [tt(x.template), x.pages.length ? x.pages.join(', ') : t('allPages')].join(' · ')
+  // «Chat live · business hours» (Marketing.dc.html): a playbook with opening hours names them in place of «all pages»
+  const sub = (x: Playbook) => [tt(x.template), x.pages.length ? x.pages.join(', ') : x.hours ? null : t('allPages'), x.hours ? t('businessHours') : null]
+    .filter(Boolean).join(' · ')
 
   const create = () => start(async () => {
     const r = await savePlaybook({ id: null, values: { name: newName.trim(), template: newTpl }, version: null })
@@ -246,6 +248,9 @@ function PlaybookEditor({ pb, tab, stats, can, nf }: { pb: Playbook; tab: StepTa
           {dirty ? <span className="text-11.5 font-semibold text-warn-ink">{t('unsaved')}</span> : null}
         </>
       ) : null}
+      {tab === 'template' && (pb.template === 'live_chat' || pb.steps.some((s) => s.kind === 'handoff')) ? (
+        <OpeningHours pb={pb} canConfigure={can.configure} />
+      ) : null}
       <span className="text-11.5 text-muted">
         {pb.current_version > 0 ? t('publishedV', { v: pb.current_version }) : t('neverPublished')}
         {stats ? ` · ${t('stats', { n: formatNumber(stats.conversations, nf), done: formatNumber(stats.completed, nf), live: formatNumber(stats.live, nf) })}` : ''}
@@ -272,6 +277,64 @@ function PlaybookEditor({ pb, tab, stats, can, nf }: { pb: Playbook; tab: StepTa
         ) : null}
       </div>
       {!can.configure ? <span className="text-11 text-faint">{t('publishRight')}</span> : null}
+    </div>
+  )
+}
+
+/** Opening hours (0036): outside them the widget is offline and a live chat gets the offline message at once. */
+function OpeningHours({ pb, canConfigure }: { pb: Playbook; canConfigure: boolean }) {
+  const t = useTranslations('capture.chat')
+  const err = useErr()
+  const flash = useToast()
+  const router = useRouter()
+  const [busy, start] = useTransition()
+  const [on, setOn] = useState(pb.hours != null)
+  const [hours, setHours] = useState<Hours>(pb.hours ?? { mon: ['08:00', '16:00'], tue: ['08:00', '16:00'], wed: ['08:00', '16:00'], thu: ['08:00', '16:00'], fri: ['08:00', '16:00'] })
+  const [dirty, setDirty] = useState(false)
+  const put = (day: Day, v: [string, string] | null) => {
+    const n = { ...hours }
+    if (v) n[day] = v
+    else delete n[day]
+    setHours(n)
+    setDirty(true)
+  }
+  const valid = !on || DAYS.every((d) => !hours[d] || hours[d][0] < hours[d][1])
+  const save = () => start(async () => {
+    const r = await setPlaybookHours({ id: pb.id, hours: on ? hours : null, version: pb.version })
+    if (!r.ok) { flash(err(r.code, r.detail)); return }
+    flash(t('hoursSaved'))
+    setDirty(false)
+    router.refresh()
+  })
+  return (
+    <div className="flex flex-col gap-[6px] border-0 border-t border-line pt-[10px]">
+      <span className="text-11.5 font-semibold text-muted">{t('hoursLabel')}</span>
+      <label className="flex items-center gap-2 text-12">
+        <input type="checkbox" checked={on} disabled={!canConfigure} onChange={(e) => { setOn(e.target.checked); setDirty(true) }} className="accent-ink" />
+        {t('hoursOn')}
+      </label>
+      {on ? DAYS.map((d) => (
+        <div key={d} className="flex flex-wrap items-center gap-[6px] text-12">
+          <label className="flex w-[110px] items-center gap-2">
+            <input type="checkbox" checked={!!hours[d]} disabled={!canConfigure} onChange={(e) => put(d, e.target.checked ? ['08:00', '16:00'] : null)} className="accent-ink" />
+            {t(`days.${d}`)}
+          </label>
+          {hours[d] ? (
+            <>
+              <input type="time" aria-label={t('hoursFrom', { day: t(`days.${d}`) })} value={hours[d][0]} disabled={!canConfigure} onChange={(e) => put(d, [e.target.value, hours[d]![1]])} className={small} />
+              <span className="text-muted">–</span>
+              <input type="time" aria-label={t('hoursTo', { day: t(`days.${d}`) })} value={hours[d][1] === '24:00' ? '23:59' : hours[d][1]} disabled={!canConfigure} onChange={(e) => put(d, [hours[d]![0], e.target.value])} className={small} />
+            </>
+          ) : <span className="text-11.5 text-muted">{t('closed')}</span>}
+        </div>
+      )) : null}
+      <span className="text-11 text-faint">{t(on ? 'hoursNote' : 'hoursOffNote')}</span>
+      {canConfigure ? (
+        <div>
+          <button type="button" disabled={busy || !dirty || !valid} onClick={save} className={`${btn} border-ink bg-surface`}>{t('saveHours')}</button>
+          {!valid ? <span className="ml-2 text-11.5 font-semibold text-warn-ink">{t('hoursInvalid')}</span> : null}
+        </div>
+      ) : null}
     </div>
   )
 }

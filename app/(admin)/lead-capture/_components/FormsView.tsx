@@ -23,6 +23,8 @@ export type FormsProps = {
   sequences: { id: string; name: string; state: string }[]
   pipelines: { id: string; name: string; stages: { id: string; name: string }[] }[]
   customFields: { map: string; label: string }[]
+  /** the assignment rule a web-form record meets: its name, '' when none matches, null when unknown */
+  rules: { lead: string | null; deal: string | null }
   can: { add: boolean; configure: boolean; del: boolean; editOthers: boolean; me: string }
   nf: NumberFormat
 }
@@ -314,7 +316,7 @@ function Editor(p: FormsProps & { form: FormDetail }) {
           <span className="text-12 leading-[1.5] text-ink-2">
             {[
               t(a.creates === 'deal' ? 'after.deal' : 'after.lead', { pipeline: pipeline?.name ?? '' }),
-              t('after.owner'),
+              ((r) => (r == null ? t('after.owner') : r === '' ? t('after.ownerNone') : t('after.ownerRule', { name: r })))(p.rules[a.creates === 'deal' ? 'deal' : 'lead']),
               ...(a.ticket ?? form.kind === 'contact' ? [t('after.ticket')] : []),
               ...(sequence ? [t('after.sequence', { name: sequence.name })] : []),
               a.redirect_url ? t('after.redirect') : t('after.thanks'),

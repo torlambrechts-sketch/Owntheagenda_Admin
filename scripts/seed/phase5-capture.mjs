@@ -73,12 +73,14 @@ export function seedCapture({ sql, q, uid }) {
       steps: [askName, askEmail, { key: 'thanks', kind: 'message', text: 'Takk! Vi tar kontakt for å finne et tidspunkt.' }] },
     { key: 'artikler', name: 'Flere leads fra artikler', template: 'leads', pages: ['/artikler/*'], live: false,
       steps: [askName, askEmail, { key: 'thanks', kind: 'message', text: 'Takk! Vi tar kontakt.' }] },
-    { key: 'snakk', name: 'Snakk med oss', template: 'live_chat', pages: [], live: true, steps: [] },
+    // «Chat live · business hours»: weekdays 08–16 (0036)
+    { key: 'snakk', name: 'Snakk med oss', template: 'live_chat', pages: [], live: true, steps: [],
+      hours: Object.fromEntries(['mon', 'tue', 'wed', 'thu', 'fri'].map((d) => [d, ['08:00', '16:00']])) },
   ]
   for (const [i, p] of playbooks.entries()) {
     const id = uid('playbook', p.key)
-    sql(`insert into app.chat_playbooks (id, name, template, state, pages, theme, profile, steps, creates, current_version, owner_id, visibility, created_by, updated_by, created_at, updated_at)
-  values (${q(id)}, ${q(p.name)}, ${q(p.template)}, ${q(p.live ? 'live' : 'draft')}, array[${p.pages.map(q).join(', ')}]::text[], ${json(theme)}, ${json(profile)}, ${json(p.steps)}, 'lead',
+    sql(`insert into app.chat_playbooks (id, name, template, state, pages, theme, profile, steps, hours, creates, current_version, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  values (${q(id)}, ${q(p.name)}, ${q(p.template)}, ${q(p.live ? 'live' : 'draft')}, array[${p.pages.map(q).join(', ')}]::text[], ${json(theme)}, ${json(profile)}, ${json(p.steps)}, ${p.hours ? json(p.hours) : 'null'}, 'lead',
   ${p.live ? 1 : 0}, ${q(owner)}, 'all', ${q(owner)}, ${q(owner)}, now() - interval '${30 - i} days', now() - interval '${8 + i} days');`)
     if (p.live) {
       const def = { template: p.template, steps: p.steps, creates: 'lead', pipeline_id: null, stage_id: null, booking_link_id: null, queue_wait_seconds: 60,

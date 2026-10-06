@@ -1,5 +1,15 @@
 # Database requests — Lead capture and Web visitors
 
+## Status
+
+| Request | Status |
+|---|---|
+| R-CAPTURE-01 | Open: needs storage buckets and the upload edge function (with R-DOCUMENTS-03) |
+| R-CAPTURE-02 | Open: same storage work as R-CAPTURE-01 |
+| R-CAPTURE-03 | Done in 0036 (`chat_playbooks.hours`, `playbook_hours_set`, `app.chat_in_hours` in start, poll and fallback) · screen done |
+| R-CAPTURE-04 | Done in 0036 (`tracking.landing_host`, tracked sites only; `form_row.landing` = host + path) · screen shows it |
+| R-CAPTURE-05 | Done without a migration: `assignment_test({entity, source: 'Web form'})` · screen names the rule |
+
 Changes the screens need and leave out until they exist. Each names the function and the behaviour.
 
 ## R-CAPTURE-01 — upload a gated download's file

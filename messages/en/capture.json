@@ -171,7 +171,9 @@
         "noSequence": "No sequence",
         "thanksLabel": "Thank-you message",
         "redirectLabel": "Or redirect to",
-        "assetMissing": "The file to download is uploaded once file storage for forms is ready; until then this form cannot be published."
+        "assetMissing": "The file to download is uploaded once file storage for forms is ready; until then this form cannot be published.",
+        "ownerRule": "owner by assignment rule «{name}»",
+        "ownerNone": "no owner: no assignment rule matches a web form"
       },
       "stats": "Submissions this month <b>{n}</b> · conversion {conv}",
       "publishing": "Publishing",
@@ -289,7 +291,27 @@
       "toDraft": "Back to draft",
       "liveToast": "Playbook live",
       "toDraftToast": "Playbook back to draft",
-      "publishRight": "Publishing and going live need «Configure» on Campaigns."
+      "publishRight": "Publishing and going live need «Configure» on Campaigns.",
+      "businessHours": "business hours",
+      "hoursLabel": "Opening hours (Europe/Oslo)",
+      "hoursOn": "Only during opening hours",
+      "closed": "closed",
+      "hoursFrom": "{day} from",
+      "hoursTo": "{day} to",
+      "hoursNote": "Outside these hours the widget shows as offline, and a visitor asking for a person gets the offline message straight away.",
+      "hoursOffNote": "Without opening hours the chat is open whenever someone on the team is online.",
+      "saveHours": "Save opening hours",
+      "hoursSaved": "Opening hours saved",
+      "hoursInvalid": "Each day must open before it closes.",
+      "days": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      }
     },
     "live": {
       "title": "Live chat · visitor on {page}",

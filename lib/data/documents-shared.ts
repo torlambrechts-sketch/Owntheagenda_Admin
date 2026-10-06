@@ -120,7 +120,7 @@ export const DocDetail = z.object({
   template: z.object({ id, name: str, category: z.enum(CATEGORIES), language: z.enum(TEMPLATE_LANGUAGES) }).nullable(),
   deal: z.object({ id, title: str, value: num.nullable(), currency: str }).nullable(),
   organization: z.object({ id, name: str, org_number: str.nullable() }).nullable(),
-  person: z.object({ id, name: str }).nullable(),
+  person: z.object({ id, name: str, email: str.nullable().optional().transform((v) => v ?? null) }).nullable(),
   links: z.array(DocLink),
   opens: num,
   signature_requests: z.array(z.object({ id, status: z.enum(REQUEST_STATUSES), service: z.enum(['builtin', 'external']), created_at: ts, sent_at: ts.nullable(), completed_at: ts.nullable(), sealed: z.boolean() })),

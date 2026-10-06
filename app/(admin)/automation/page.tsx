@@ -54,11 +54,10 @@ export default async function AutomationPage({ searchParams }: { searchParams: P
     body = <TemplatesTab templates={await loadTemplates()} canCreate={rights.deals || rights.tickets} />
   } else if (p.tab === 'monitor') {
     const [monitor, runs] = await Promise.all([loadMonitor(), loadRuns()])
-    body = <MonitorTab monitor={monitor} runs={runs} safeguards={base.safeguards} canRetry={rights.deals || rights.tickets} nf={shell.me.number_format} />
+    body = <MonitorTab monitor={monitor} runs={runs} canRetry={rights.deals || rights.tickets} nf={shell.me.number_format} />
   } else if (p.tab === 'assign') {
-    const [rows, labels, history] = await Promise.all([loadWorkflows('assignment'), loadOrgLabels(), loadHistory()])
-    // the list row carries no options; each rule's condition and assignee come with workflow_get
-    const rules = (await Promise.all(rows.map((r) => loadWorkflow(r.id)))).flatMap((r) => (r.ok ? [r.data] : []))
+    // each rule's condition, assignee and priority come with the list (0029)
+    const [rules, labels, history] = await Promise.all([loadWorkflows('assignment'), loadOrgLabels(), loadHistory()])
     body = <AssignTab rules={rules} labels={labels} history={history.ok ? history.data : []} people={base.people} teams={base.teams} canEdit={rights.deals} />
   } else {
     const seqs = await loadWorkflows('sequence')

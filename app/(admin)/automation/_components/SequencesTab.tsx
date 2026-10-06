@@ -57,8 +57,10 @@ export function SequencesTab({ list, selected, entity, templates, views, me, rig
   }
   const active = selected.state === 'active'
   const mayChange = canChange(selected, me, rights)
-  const anyLive = selected.enrolled.some((e) => e.state === 'in_progress')
-  const grid = anyLive && rights.seeDeals
+  // skipping and exiting are for the person who enrolled the record, or someone who may edit others' deals (0021)
+  const mayAct = (e: SequenceDetail['enrolled'][number]) => e.state === 'in_progress' && rights.seeDeals && (!!e.mine || rights.editOthers)
+  const anyLive = selected.enrolled.some(mayAct)
+  const grid = anyLive
     ? '[grid-template-columns:minmax(0,1.5fr)_minmax(0,1fr)_120px_110px_150px]'
     : '[grid-template-columns:minmax(0,1.5fr)_minmax(0,1fr)_120px_110px]'
 
@@ -138,9 +140,9 @@ export function SequencesTab({ list, selected, entity, templates, views, me, rig
                 <span>
                   <span title={e.error ?? (e.exit_reason ? t(`exit.${e.exit_reason}`) : undefined)} className={`rounded-999 px-[9px] py-[2px] text-11 font-bold ${STATE_TONE[e.state]}`}>{t(`state.${e.state}`)}</span>
                 </span>
-                {anyLive && rights.seeDeals ? (
+                {anyLive ? (
                   <span className="flex justify-end gap-1">
-                    {e.state === 'in_progress' ? (
+                    {mayAct(e) ? (
                       <>
                         <button type="button" disabled={busy} onClick={() => act(() => skipStep({ id: e.id }), t('skipped'))} className={small}>{t('skip')}</button>
                         <button type="button" disabled={busy} onClick={() => act(() => exitEnrollments({ ids: [e.id] }), t('exited'))} className={small}>{t('exitOne')}</button>

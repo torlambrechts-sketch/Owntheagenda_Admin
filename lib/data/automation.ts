@@ -41,6 +41,9 @@ export const WorkflowRow = z.object({
   version: num,
   updated_at: z.string(),
   mine: z.boolean().nullable(),
+  // an assignment rule carries its options (condition, assignee) and priority (0029); other kinds null
+  options: obj.nullish(),
+  priority: num.nullish(),
 })
 export type WorkflowRow = z.infer<typeof WorkflowRow>
 
@@ -62,6 +65,7 @@ export const Monitor = z.object({
   d7: z.object({ runs: num, failed: num, retried: num }),
   d14: z.object({ runs: num, prev7: num, last7: num }),
   loop_protection: z.string().nullable(),
+  loop_protection_runs: num.nullable(),
   loop_blocked_7d: num,
   most_failed: z.array(Named),
   most_active: z.array(Named),
@@ -80,11 +84,11 @@ export const Run = z.object({
   retry_of: id.nullable(),
   subject_type: z.string().nullable(),
   subject_id: id.nullable(),
+  subject_title: z.string().nullable(),
   retried: z.boolean(),
   steps: z.array(z.object({ key: z.string(), kind: z.string(), state: z.string(), error: z.string().nullable(), status: num.nullable() })),
 })
-export type Run = Run_ & { record: string | null }
-type Run_ = z.infer<typeof Run>
+export type Run = z.infer<typeof Run>
 
 export const AssignTest = z.object({
   rule_id: id.nullable(),
@@ -110,6 +114,8 @@ export const Enrollment = z.object({
   exit_reason: z.string().nullable(),
   error: z.string().nullable(),
   created_at: z.string(),
+  enrolled_by: id.nullable(),
+  mine: z.boolean().nullable(),
 })
 export type Enrollment = z.infer<typeof Enrollment>
 
@@ -177,29 +183,24 @@ export const loadMonitor = () => rpcOrThrow('workflow_monitor', {}, Monitor)
 export const loadHistory = () => rpc('assignment_history', { p_limit: 10 }, History)
 export const loadSequence = (seq: string) => rpc('sequence_get', { p_id: seq }, SequenceDetail)
 
-/** Run history with each run's record named (one rec_list per record type, only the ids on the page). */
-export async function loadRuns(): Promise<Run[]> {
-  const runs = await rpcOrThrow('workflow_runs_get', { p_filter: { limit: 50 } }, z.array(Run))
-  const byType = new Map<string, string[]>()
-  for (const r of runs) if (r.subject_type && r.subject_id) byType.set(r.subject_type, [...(byType.get(r.subject_type) ?? []), r.subject_id])
-  const titles = new Map<string, string>()
-  await Promise.all([...byType].map(async ([entity, ids]) => {
-    const res = await rpc('rec_list', { p_entity: entity, p_query: { ids: [...new Set(ids)], limit: 200 } },
-      z.object({ rows: z.array(z.object({ id, title: z.string().nullish(), name: z.string().nullish(), subject: z.string().nullish() }).passthrough()) }), { quiet: true })
-    if (res.ok) for (const row of res.data.rows) titles.set(row.id, row.title ?? row.name ?? row.subject ?? '')
-  }))
-  return runs.map((r) => ({ ...r, record: r.subject_id ? titles.get(r.subject_id) ?? null : null }))
-}
+/** Run history, newest first; each run names its record (subject_title, null when it is not visible). */
+export const loadRuns = () => rpcOrThrow('workflow_runs_get', { p_filter: { limit: 50 } }, z.array(Run))
+
+const Columns = z.array(z.object({ col: z.string(), kind: z.string(), writable: z.boolean(), required: z.boolean(), ref: z.string().nullable() }))
+export type Column = z.infer<typeof Columns>[number]
+export const RECORD_TYPES = ['deal', 'lead', 'person', 'organization', 'activity', 'ticket'] as const
 
 /** The pickers the builder's configuration panel offers. Each is read as the staff member, so a list they
  *  may not see comes back empty rather than failing the page. */
 export async function loadPickers() {
-  const [labels, templates, cats, types, sequences] = await Promise.all([
+  const [labels, templates, cats, types, sequences, ...cols] = await Promise.all([
     rpc('labels_get', { p_entity: 'organization' }, Labels, { quiet: true }),
     rpc('templates_get', {}, EmailTemplates, { quiet: true }),
     rpc('ticket_config', {}, TicketCats, { quiet: true }),
     rpc('activity_types_get', {}, ActivityTypes, { quiet: true }),
     rpc('workflows_get', { p_filter: { kind: 'sequence' } }, z.array(WorkflowRow), { quiet: true }),
+    // the columns a condition, a date trigger or an update step may use, per record type (entity_columns_get)
+    ...RECORD_TYPES.map((e) => rpc('entity_columns_get', { p_entity: e }, Columns, { quiet: true })),
   ])
   return {
     orgLabels: labels.ok ? labels.data : [],
@@ -207,6 +208,7 @@ export async function loadPickers() {
     ticketCategories: cats.ok ? cats.data.categories.map((c) => ({ id: c.key, name: c.name })) : [],
     activityTypes: types.ok ? types.data.filter((x) => x.active).map((x) => ({ id: x.key, name: x.name })) : [],
     sequences: sequences.ok ? sequences.data.map((s) => ({ id: s.id, name: s.name })) : [],
+    columns: Object.fromEntries(RECORD_TYPES.map((e, i) => { const r = cols[i]!; return [e, r.ok ? r.data : []] })) as Record<string, Column[]>,
   }
 }
 export type Pickers = Awaited<ReturnType<typeof loadPickers>>

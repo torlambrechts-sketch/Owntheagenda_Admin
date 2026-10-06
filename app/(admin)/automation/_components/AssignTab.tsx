@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
-import type { AssignHistory, AssignTest, Option, Person, Team, WorkflowDetail } from '@/lib/data/automation'
+import type { AssignHistory, AssignTest, Option, Person, Team, WorkflowRow } from '@/lib/data/automation'
 import { reorderRules, testAssignment } from '../actions'
 import { TONE, useDebounced, useErrorText } from './shared'
 import { RuleModal, SOURCES } from './RuleModal'
@@ -18,7 +18,7 @@ export function useRuleText(people: Person[], teams: Team[], labels: Option[]) {
   const t = useTranslations('automation.assign')
   const src = useTranslations('automation.sources')
   return useMemo(() => {
-    const when = (r: WorkflowDetail) => {
+    const when = (r: WorkflowRow) => {
       const e = (Array.isArray(r.trigger_config.entities) ? r.trigger_config.entities : ['lead', 'deal']) as string[]
       return t(`when.${e.includes('lead') && e.includes('deal') ? 'both' : e.includes('deal') ? 'deal' : 'lead'}`)
     }
@@ -42,7 +42,7 @@ export function useRuleText(people: Person[], teams: Team[], labels: Option[]) {
 /** Assignment rules (Automation.dc.html, v.assign): the rules in priority order with ▲▼, and «Test a record»,
  *  a read-only evaluation (assignment_test) whose form can reach every rule, the label rule included. */
 export function AssignTab({ rules, labels, history, people, teams, canEdit }: {
-  rules: WorkflowDetail[]
+  rules: WorkflowRow[]
   labels: Option[]
   history: AssignHistory
   people: Person[]
@@ -56,7 +56,7 @@ export function AssignTab({ rules, labels, history, people, teams, canEdit }: {
   const format = useFormatter()
   const words = useRuleText(people, teams, labels)
   const [order, setOrder] = useState(rules.map((r) => r.id))
-  const [edit, setEdit] = useState<WorkflowDetail | 'new' | null>(null)
+  const [edit, setEdit] = useState<WorkflowRow | 'new' | null>(null)
   const byId = new Map(rules.map((r) => [r.id, r]))
   const list = [...order.filter((id) => byId.has(id)), ...rules.filter((r) => !order.includes(r.id)).map((r) => r.id)].map((id) => byId.get(id)!)
 
@@ -93,7 +93,7 @@ export function AssignTab({ rules, labels, history, people, teams, canEdit }: {
       <div className="flex flex-col gap-[10px]">
         {list.length === 0 ? <div className="text-12.5 text-muted">{t('empty')}</div> : null}
         {list.map((r, pos) => {
-          const c = (r.options.condition ?? {}) as Cond
+          const c = (r.options?.condition ?? {}) as Cond
           return (
             <div key={r.id} className="flex items-center gap-3 rounded-18 border border-line bg-surface px-4 py-[13px]">
               <span className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-999 bg-ink text-11.5 font-bold text-highlight">{pos + 1}</span>
@@ -106,7 +106,7 @@ export function AssignTab({ rules, labels, history, people, teams, canEdit }: {
                 </span>
                 <span className="text-12 text-muted">{t('line', { when: words.when(r), cond: words.cond(c) })}</span>
               </span>
-              <span className="rounded-999 bg-highlight px-[11px] py-[5px] text-12 font-bold">→ {words.to((r.options.assignee ?? {}) as Assignee)}</span>
+              <span className="rounded-999 bg-highlight px-[11px] py-[5px] text-12 font-bold">→ {words.to((r.options?.assignee ?? {}) as Assignee)}</span>
               {canEdit ? (
                 <span className="flex flex-col gap-[2px]">
                   <button type="button" aria-label={t('up', { name: r.name })} disabled={pos === 0} onClick={() => move(pos, -1)} className="h-5 w-6 cursor-pointer rounded-6 border border-line bg-transparent p-0 text-10">▲</button>

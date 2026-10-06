@@ -60,9 +60,9 @@
         "conversionNone": "no trial cohort has finished",
         "logoChurn": "Logo churn",
         "logoChurnSub": {
-          "30d": "lost in 30 days",
-          "90d": "lost in 90 days",
-          "12m": "lost in 12 months"
+          "30d": "{count} lost · 30 days",
+          "90d": "{count} lost · 90 days",
+          "12m": "{count} lost · 12 months"
         },
         "revenueChurn": "Revenue churn",
         "revenueChurnSub": "net of expansion: {net}",
@@ -70,7 +70,8 @@
         "arpa": "ARPA",
         "arpaSub": "per paying org",
         "customers": "Customers",
-        "customersSub": "incl. trials and cancelled"
+        "customersSub": "incl. trials and cancelled",
+        "logoChurnNoBase": "no snapshot at the start"
       },
       "nn": {
         "title": "Net new MRR",
@@ -83,8 +84,8 @@
         },
         "tip": "{month} · new {new} · expansion {expansion} · contraction {contraction} · churn {churn}",
         "noData": "{month} · no snapshot",
-        "empty": "No MRR movements yet — they are measured from the nightly snapshot of each subscription.",
-        "baseline": "Movements start with the first snapshot in {month}, which counts every paying subscription as new."
+        "empty": "No snapshot yet — MRR movements are measured from the nightly snapshot of each subscription.",
+        "baseline": "Movements are measured from the first snapshot on {date}."
       },
       "byApp": {
         "title": "MRR by application",
@@ -107,10 +108,10 @@
         "fylke": "Fylke",
         "size": "Size",
         "note": "Industry from NACE in Brønnøysund · size from the employee list",
-        "noteSize": "Size counts paying organizations by employee-count band",
         "unknown": "Not set",
         "employees": "{band} employees",
-        "empty": "No customers yet."
+        "empty": "No customers yet.",
+        "noBand": "Employees unknown"
       }
     },
     "activation": {
@@ -173,10 +174,9 @@
         "title": "Logo churn and revenue churn per month",
         "logo": "Logo churn",
         "revenue": "Revenue churn",
-        "tipLogo": "{month} · logo churn: {count, plural, one {# subscription} other {# subscriptions}}",
+        "tipLogo": "{month} · logo churn: {pct} ({count, plural, one {# subscription} other {# subscriptions}})",
         "tipRevenue": "{month} · revenue churn: {pct}",
-        "tipNone": "{month} · no MRR on record the month before",
-        "scale": "Each series is drawn to its own scale; hover a bar for its figure.",
+        "tipNone": "{month} · no snapshot to measure from",
         "empty": "No churn recorded in the last 12 months."
       },
       "reasons": {
@@ -192,6 +192,20 @@
           "other": "Other",
           "unknown": "No reason recorded"
         }
+      },
+      "list": {
+        "title": "Churned subscriptions",
+        "sub": "Last 12 months · the reason feeds «Churn reasons»",
+        "cols": {
+          "org": "Organization",
+          "date": "Churned",
+          "lost": "MRR lost",
+          "reason": "Reason"
+        },
+        "paymentFailure": "payment failure",
+        "reasonFor": "Churn reason for {org}",
+        "saved": "Churn reason saved",
+        "empty": "No subscription churned in the last 12 months."
       }
     },
     "usage": {
@@ -211,7 +225,8 @@
         "tiltakSub": "{pct} with owner and deadline",
         "tiltakSubNone": "as reported by the applications",
         "closed": "Tiltak closed on time",
-        "closedSub": "of {count} closed"
+        "closedSub": "of {count} closed",
+        "tiltakRange": "Tiltak created · {range}"
       },
       "surveys": {
         "title": "Surveys sent per month",
@@ -262,7 +277,9 @@
       },
       "chart": {
         "title": "Visitors · {sites}",
-        "visitors": "Visitors"
+        "visitors": "Visitors",
+        "titleSignups": "Visitors and signups · {sites}",
+        "signups": "Signups (× 20)"
       },
       "funnel": {
         "title": "Website funnel",
@@ -398,12 +415,12 @@
       "tip": "{view} ({version}): {text}",
       "empty": "No metric definitions found.",
       "rows": {
-        "mrr": "Sum of active subscriptions per month from the billing mirror (billing.changed), excluding complimentary and trial. Annual plans divided by 12.",
-        "net_new_mrr": "New and reactivated + expansion − contraction − churn, by comparing each subscription’s MRR with its last snapshot before the month.",
+        "mrr": "Sum of active NOK subscriptions per month from the billing mirror (billing.changed), excluding complimentary and trial. Annual plans divided by 12.",
+        "net_new_mrr": "New and reactivated + expansion − contraction − churn, by comparing each NOK subscription’s MRR with its last snapshot before the month; the first snapshot is the baseline.",
         "trial_conversion": "Share of a trial cohort confirmed as paying within 45 days of the trial’s start.",
         "activated": "Organizations with at least one group reaching the organization’s own answer threshold (result unlocked).",
         "logo_churn": "Paying subscriptions that drop to no MRR, counted in the month it happens.",
-        "revenue_churn": "MRR lost to churn and contraction per month.",
+        "revenue_churn": "MRR lost to churn and contraction per month, NOK subscriptions only.",
         "health": "Weighted score 0–100 from five signals; the latest score per application, recomputed nightly and when the model changes."
       }
     }

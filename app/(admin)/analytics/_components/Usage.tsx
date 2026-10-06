@@ -31,7 +31,10 @@ export async function Usage({ d, range, products, single, nf, now }: {
     { label: t('kpi.reminder'), value: d.reminder_gain !== null ? signedPct(d.reminder_gain, nf) : '—', subText: t('kpi.reminderSub') },
     ...('tiltak_created' in c
       ? [{
-          label: t('kpi.tiltak'), value: formatNumber(c.tiltak_created!, nf),
+          // the change over the range when every tenant has a count from its start, else the reported total
+          ...(typeof d.counts_delta?.tiltak_created === 'number'
+            ? { label: t('kpi.tiltakRange', { range: tr(range) }), value: formatNumber(d.counts_delta.tiltak_created, nf) }
+            : { label: t('kpi.tiltak'), value: formatNumber(c.tiltak_created!, nf) }),
           subText: 'tiltak_with_owner_deadline' in c ? t('kpi.tiltakSub', { pct: pct(share(c.tiltak_with_owner_deadline, c.tiltak_created)) }) : t('kpi.tiltakSubNone'),
         }]
       : []),

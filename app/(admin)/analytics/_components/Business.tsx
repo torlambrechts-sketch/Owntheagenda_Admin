@@ -1,7 +1,7 @@
 import { getFormatter, getTranslations } from 'next-intl/server'
 import type { Business as BusinessData, MetricDef } from '@/lib/data/analytics'
 import {
-  RANGE_DAYS, firstSnapshotMonth, monthsEnding, movementsInRange, pctChange, share, trialCohortSpan, verdict, type RangeKey,
+  RANGE_DAYS, monthsEnding, snapshotMonth, movementsInRange, pctChange, share, trialCohortSpan, verdict, type RangeKey,
 } from '@/lib/data/analytics-calc'
 import { formatNumber, money, percent, thousands, type NumberFormat } from '@/lib/format'
 import { CustomersBy } from './CustomersBy'
@@ -37,7 +37,9 @@ export async function Business({ d, defs, range, products, scope, nf, now }: {
 
   // KPIs
   const mrrDelta = pctChange(d.mrr, d.mrr_prev)
-  const mv = movementsInRange(d.movements, now, range)
+  const first = snapshotMonth(d.first_snapshot)
+  const mv = movementsInRange(d.movements, now, range, first)
+  const logoRate = d.churn ? share(d.churn.logos, d.churn.paying_start) : null
   const lost = -(mv.churn + mv.contraction)
   const revChurn = mv.months ? share(lost, d.mrr_prev) : null
   const netChurn = mv.months ? share(lost - mv.expansion, d.mrr_prev) : null
@@ -53,7 +55,10 @@ export async function Business({ d, defs, range, products, scope, nf, now }: {
       label: t('business.kpi.conversion'), value: pct(conv), tip: def('trial_conversion'),
       subText: conv === null ? t('business.kpi.conversionNone') : from === to ? t('business.kpi.conversionSub', { from: monYear(from) }) : t('business.kpi.conversionSpan', from.slice(0, 4) === to.slice(0, 4) ? { from: mon(from), to: mon(to) } : { from: monYy(from), to: monYy(to) }),
     },
-    { label: t('business.kpi.logoChurn'), value: d.churn ? formatNumber(d.churn.logos, nf) : '—', subText: t(`business.kpi.logoChurnSub.${range}`), tip: def('logo_churn') },
+    {
+      label: t('business.kpi.logoChurn'), value: pct(logoRate), tip: def('logo_churn'),
+      subText: logoRate !== null && d.churn ? t(`business.kpi.logoChurnSub.${range}`, { count: d.churn.logos }) : t('business.kpi.logoChurnNoBase'),
+    },
     {
       label: t('business.kpi.revenueChurn'), value: pct(revChurn), tip: def('revenue_churn'),
       subText: netChurn !== null ? t('business.kpi.revenueChurnSub', { net: signedPct(netChurn, nf) }) : t('business.kpi.revenueChurnNoBase'),
@@ -69,7 +74,6 @@ export async function Business({ d, defs, range, products, scope, nf, now }: {
   const down = Math.max(0, ...d.movements.map((m) => -(m.contraction + m.churn)))
   const k = Math.min(up ? 120 / up : Infinity, down ? 60 / down : Infinity)
   const px = (x: number) => (Number.isFinite(k) ? Math.round(Math.abs(x) * k) : 0)
-  const first = firstSnapshotMonth(d.movements)
 
   // MRR by application, twelve months
   const lines = products.map((p) => {
@@ -107,7 +111,7 @@ export async function Business({ d, defs, range, products, scope, nf, now }: {
               <span key={key} className="flex items-center gap-[6px] text-11.5 text-muted"><Swatch color={NN[key]} />{t(`business.nn.legend.${key}`)}</span>
             ))}
           </div>
-          {d.movements.length ? (
+          {first !== null ? (
             <>
               <div className="flex h-[200px] gap-2">
                 {months.map((m) => {
@@ -116,9 +120,9 @@ export async function Business({ d, defs, range, products, scope, nf, now }: {
                     <div
                       key={m}
                       className="flex flex-1 flex-col"
-                      title={x ? t('business.nn.tip', {
-                        month: mon(m), new: formatNumber(x.new, nf), expansion: formatNumber(x.expansion, nf),
-                        contraction: formatNumber(x.contraction, nf), churn: formatNumber(x.churn, nf),
+                      title={m >= first ? t('business.nn.tip', {
+                        month: mon(m), new: formatNumber(x?.new ?? 0, nf), expansion: formatNumber(x?.expansion ?? 0, nf),
+                        contraction: formatNumber(x?.contraction ?? 0, nf), churn: formatNumber(x?.churn ?? 0, nf),
                       }) : t('business.nn.noData', { month: mon(m) })}
                     >
                       <div className="flex h-[120px] flex-col justify-end">
@@ -135,7 +139,7 @@ export async function Business({ d, defs, range, products, scope, nf, now }: {
                   )
                 })}
               </div>
-              {first && months.includes(first) ? <div className="mt-2 text-11 text-faint">{t('business.nn.baseline', { month: monYear(first) })}</div> : null}
+              {months.includes(first) && d.first_snapshot ? <div className="mt-2 text-11 text-faint">{t('business.nn.baseline', { date: format.dateTime(new Date(`${d.first_snapshot.slice(0, 10)}T12:00:00Z`), { day: 'numeric', month: 'long', year: 'numeric' }) })}</div> : null}
             </>
           ) : <Empty className="flex h-[200px] items-center justify-center">{t('business.nn.empty')}</Empty>}
         </div>
@@ -203,7 +207,9 @@ export async function Business({ d, defs, range, products, scope, nf, now }: {
           rows={{
             industry: d.by_industry.map(dimRow),
             fylke: d.by_fylke.map(dimRow),
-            size: d.bands.map((b) => ({ n: t('business.dims.employees', { band: b.band }), v: b.accounts })),
+            size: d.by_size
+              ? d.by_size.map((b) => ({ n: b.key ? t('business.dims.employees', { band: b.key }) : t('business.dims.noBand'), v: b.count }))
+              : d.bands.map((b) => ({ n: t('business.dims.employees', { band: b.band }), v: b.accounts })),
           }}
         />
       </div>

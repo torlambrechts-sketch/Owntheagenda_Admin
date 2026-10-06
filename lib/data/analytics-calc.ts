@@ -43,21 +43,24 @@ export function trialCohortSpan(now: Date, days: number): [string, string] {
 
 export type Movement = { month: string; new: number; expansion: number; contraction: number; churn: number; net: number }
 
-/** The movements of the calendar months the range covers, summed (contraction and churn are negative). */
-export function movementsInRange(movements: Movement[], now: Date, range: RangeKey) {
-  const months = new Set(monthsEnding(now, RANGE_MONTHS[range]))
-  const sum = { new: 0, expansion: 0, contraction: 0, churn: 0, net: 0, months: 0 }
+/**
+ * The movements of the calendar months the range covers, summed (contraction and churn are negative).
+ * `months` counts the range's months the snapshot reaches (from the first snapshot's month on): a month
+ * after it without a movement moved nothing; with `months` 0 nothing is known.
+ */
+export function movementsInRange(movements: Movement[], now: Date, range: RangeKey, firstMonth: string | null) {
+  const months = monthsEnding(now, RANGE_MONTHS[range])
+  const known = new Set(firstMonth === null ? [] : months.filter((m) => m >= firstMonth))
+  const sum = { new: 0, expansion: 0, contraction: 0, churn: 0, net: 0, months: known.size }
   for (const m of movements) {
-    if (!months.has(m.month)) continue
+    if (!known.has(m.month)) continue
     sum.new += m.new; sum.expansion += m.expansion; sum.contraction += m.contraction; sum.churn += m.churn; sum.net += m.net
-    sum.months += 1
   }
   return sum
 }
 
-/** The first month the nightly tenant snapshot holds: movements start there (the first snapshot is the baseline). */
-export const firstSnapshotMonth = (movements: Movement[]): string | null =>
-  movements.reduce<string | null>((a, m) => (a === null || m.month < a ? m.month : a), null)
+/** The month of the first nightly tenant snapshot («2026-10-06» → «2026-10»), or null before it has run. */
+export const snapshotMonth = (firstSnapshot: string | null | undefined): string | null => (firstSnapshot ? firstSnapshot.slice(0, 7) : null)
 
 /** Percent change, or null without a base. */
 export const pctChange = (now: number | null, prev: number | null): number | null =>
@@ -111,9 +114,8 @@ export function weightShares(weights: Record<string, number>, order: readonly st
  * Revenue churn per month: MRR lost to churn and contraction ÷ the MRR at the end of the month before
  * (v_revenue_churn over v_mrr_monthly). Null when the month before has no MRR on record.
  */
-export function revenueChurnByMonth(movements: Movement[], mrrByMonth: Map<string, number>, months: string[]): Map<string, number | null> {
+export function revenueChurnByMonth(movements: Movement[], mrrByMonth: Map<string, number>, months: string[], from: string | null): Map<string, number | null> {
   const lost = new Map(movements.map((m) => [m.month, -(m.churn + m.contraction)]))
-  const from = firstSnapshotMonth(movements)
   return new Map(months.map((m) => {
     const base = mrrByMonth.get(addMonths(m, -1))
     // a month after the first snapshot without a movement lost nothing; before it, nothing is known

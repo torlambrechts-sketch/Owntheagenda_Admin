@@ -60,9 +60,9 @@
         "conversionNone": "ingen prøvekohort er avsluttet",
         "logoChurn": "Kundefrafall",
         "logoChurnSub": {
-          "30d": "tapt på 30 dager",
-          "90d": "tapt på 90 dager",
-          "12m": "tapt på 12 måneder"
+          "30d": "{count} tapt · 30 dager",
+          "90d": "{count} tapt · 90 dager",
+          "12m": "{count} tapt · 12 måneder"
         },
         "revenueChurn": "Inntektsfrafall",
         "revenueChurnSub": "netto etter utvidelse: {net}",
@@ -70,7 +70,8 @@
         "arpa": "ARPA",
         "arpaSub": "per betalende org.",
         "customers": "Kunder",
-        "customersSub": "inkl. prøveperioder og avsluttede"
+        "customersSub": "inkl. prøveperioder og avsluttede",
+        "logoChurnNoBase": "ingen øyeblikksbilde ved starten"
       },
       "nn": {
         "title": "Netto ny MRR",
@@ -83,8 +84,8 @@
         },
         "tip": "{month} · ny {new} · utvidelse {expansion} · reduksjon {contraction} · frafall {churn}",
         "noData": "{month} · ingen øyeblikksbilde",
-        "empty": "Ingen MRR-bevegelser ennå — de måles fra det nattlige øyeblikksbildet av hvert abonnement.",
-        "baseline": "Bevegelsene starter med det første øyeblikksbildet i {month}, som teller hvert betalende abonnement som nytt."
+        "empty": "Ingen øyeblikksbilde ennå — MRR-bevegelser måles fra det nattlige øyeblikksbildet av hvert abonnement.",
+        "baseline": "Bevegelsene måles fra det første øyeblikksbildet {date}."
       },
       "byApp": {
         "title": "MRR per applikasjon",
@@ -107,10 +108,10 @@
         "fylke": "Fylke",
         "size": "Størrelse",
         "note": "Bransje fra NACE i Brønnøysund · størrelse fra ansattlisten",
-        "noteSize": "Størrelse teller betalende organisasjoner per intervall for antall ansatte",
         "unknown": "Ikke satt",
         "employees": "{band} ansatte",
-        "empty": "Ingen kunder ennå."
+        "empty": "Ingen kunder ennå.",
+        "noBand": "Antall ansatte ukjent"
       }
     },
     "activation": {
@@ -173,10 +174,9 @@
         "title": "Kundefrafall og inntektsfrafall per måned",
         "logo": "Kundefrafall",
         "revenue": "Inntektsfrafall",
-        "tipLogo": "{month} · kundefrafall: {count, plural, one {# abonnement} other {# abonnementer}}",
+        "tipLogo": "{month} · kundefrafall: {pct} ({count, plural, one {# abonnement} other {# abonnementer}})",
         "tipRevenue": "{month} · inntektsfrafall: {pct}",
-        "tipNone": "{month} · ingen MRR registrert måneden før",
-        "scale": "Hver serie tegnes i sin egen skala; hold over en søyle for tallet.",
+        "tipNone": "{month} · ikke noe øyeblikksbilde å måle fra",
         "empty": "Ingen frafall registrert de siste 12 månedene."
       },
       "reasons": {
@@ -192,6 +192,20 @@
           "other": "Annet",
           "unknown": "Ingen årsak registrert"
         }
+      },
+      "list": {
+        "title": "Avsluttede abonnementer",
+        "sub": "Siste 12 måneder · årsaken teller i «Årsaker til frafall»",
+        "cols": {
+          "org": "Organisasjon",
+          "date": "Avsluttet",
+          "lost": "MRR tapt",
+          "reason": "Årsak"
+        },
+        "paymentFailure": "betalingsfeil",
+        "reasonFor": "Årsak til frafall for {org}",
+        "saved": "Årsak lagret",
+        "empty": "Ingen abonnementer avsluttet de siste 12 månedene."
       }
     },
     "usage": {
@@ -211,7 +225,8 @@
         "tiltakSub": "{pct} med ansvarlig og frist",
         "tiltakSubNone": "slik applikasjonene rapporterer det",
         "closed": "Tiltak lukket i tide",
-        "closedSub": "av {count} lukket"
+        "closedSub": "av {count} lukket",
+        "tiltakRange": "Tiltak opprettet · {range}"
       },
       "surveys": {
         "title": "Undersøkelser sendt per måned",
@@ -262,7 +277,9 @@
       },
       "chart": {
         "title": "Besøkende · {sites}",
-        "visitors": "Besøkende"
+        "visitors": "Besøkende",
+        "titleSignups": "Besøkende og registreringer · {sites}",
+        "signups": "Registreringer (× 20)"
       },
       "funnel": {
         "title": "Trakt på nettsiden",
@@ -398,12 +415,12 @@
       "tip": "{view} ({version}): {text}",
       "empty": "Ingen definisjoner funnet.",
       "rows": {
-        "mrr": "Sum av aktive abonnementer per måned fra faktureringsspeilet (billing.changed), uten gratis- og prøveabonnementer. Årsplaner delt på 12.",
-        "net_new_mrr": "Nye og gjenopptatte + utvidelse − reduksjon − frafall, ved å sammenligne hvert abonnements MRR med siste øyeblikksbilde før måneden.",
+        "mrr": "Sum av aktive NOK-abonnementer per måned fra faktureringsspeilet (billing.changed), uten gratis- og prøveabonnementer. Årsplaner delt på 12.",
+        "net_new_mrr": "Nye og gjenopptatte + utvidelse − reduksjon − frafall, ved å sammenligne hvert NOK-abonnements MRR med siste øyeblikksbilde før måneden; det første øyeblikksbildet er utgangspunktet.",
         "trial_conversion": "Andelen av en prøvekohort som er bekreftet som betalende innen 45 dager etter at prøveperioden startet.",
         "activated": "Organisasjoner der minst én gruppe når organisasjonens egen svargrense (resultat låst opp).",
         "logo_churn": "Betalende abonnementer som faller til null MRR, telt i måneden det skjer.",
-        "revenue_churn": "MRR tapt til frafall og reduksjon per måned.",
+        "revenue_churn": "MRR tapt til frafall og reduksjon per måned, bare NOK-abonnementer.",
         "health": "Vektet score 0–100 fra fem signaler; siste score per applikasjon, beregnet hver natt og når modellen endres."
       }
     }

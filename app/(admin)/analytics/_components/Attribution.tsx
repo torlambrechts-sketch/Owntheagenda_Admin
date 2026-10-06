@@ -69,6 +69,7 @@ export async function Attribution({ d, canSpend, nf, webHref }: { d: Attribution
           ) : null}
         </div>
       )}
+      {d.excluded_currency ? <div className="-mt-2 text-12 text-muted">{t('excludedCurrency', { count: d.excluded_currency })}</div> : null}
     </div>
   )
 }

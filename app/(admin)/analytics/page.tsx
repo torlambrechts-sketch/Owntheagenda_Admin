@@ -4,9 +4,9 @@ import { z } from 'zod'
 import { can, getShell } from '@/lib/shell'
 import { RpcError, type RpcResult } from '@/lib/rpc'
 import {
-  loadActivation, loadAttribution, loadBusiness, loadHealth, loadMetricDefs, loadRetention, loadUsage, loadWeb,
+  loadActivation, loadAttribution, loadBusiness, loadChurns, loadHealth, loadMetricDefs, loadRetention, loadUsage, loadWeb,
 } from '@/lib/data/analytics'
-import { RANGED_TABS, RANGES, TABS, addMonths } from '@/lib/data/analytics-calc'
+import { RANGED_TABS, RANGES, TABS, addMonths, type Tab } from '@/lib/data/analytics-calc'
 import { Frame } from './_components/Frame'
 import { Business } from './_components/Business'
 import { Activation } from './_components/Activation'
@@ -52,8 +52,11 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
       </div>
     </div>
   )
-  // the analytics reads need Global › See reports of others; the database refuses anyway
-  if (!can(shell, 'global', 'reports_others')) return noAccess
+  // the analytics reads need Global › See reports of others; web analytics and attribution also accept
+  // Campaigns › See reports of others (0034). The database refuses anyway.
+  const allowed: readonly Tab[] = can(shell, 'global', 'reports_others') ? TABS
+    : can(shell, 'campaigns', 'reports_others') ? ['web', 'attribution'] : []
+  if (allowed.length === 0) return noAccess
 
   const product = (await cookies()).get('product')?.value ?? 'all'
   const now = await getNow()
@@ -61,7 +64,8 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   const cur = product === 'all' ? null : shell.products.find((x) => x.key === product)
   const scope = cur?.name ?? t('allApplications')
   const inScope = shell.products.filter((x) => x.installed && (product === 'all' || x.key === product))
-  const { tab, range } = p
+  const { range } = p
+  const tab: Tab = allowed.includes(p.tab) ? p.tab : allowed[0]!
 
   let body: React.ReactNode
   try {
@@ -75,8 +79,14 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
       const earlier = need(await loadActivation(product, addMonths(d.cohort, -3)))
       body = <Activation d={d} earlier={earlier.cohort === addMonths(d.cohort, -3) ? earlier : null} nf={nf} />
     } else if (tab === 'retention') {
-      const [ret, biz] = await Promise.all([loadRetention(product, p.ret), loadBusiness(product, '12m')])
-      body = <Retention d={need(ret)} biz={biz.ok ? biz.data : null} nf={nf} now={now} />
+      const [ret, biz, churns] = await Promise.all([loadRetention(product, p.ret), loadBusiness(product, '12m'), loadChurns(product, '12m')])
+      const products = Object.fromEntries(shell.products.map((x) => [x.key, x.name]))
+      body = (
+        <Retention
+          d={need(ret)} biz={biz.ok ? biz.data : null} churns={churns.ok ? churns.data : null}
+          canEdit={can(shell, 'global', 'edit_others')} products={products} nf={nf} now={now}
+        />
+      )
     } else if (tab === 'usage') {
       body = <Usage d={need(await loadUsage(product, range))} range={range} products={inScope} single={product !== 'all'} nf={nf} now={now} />
     } else if (tab === 'web') {
@@ -97,7 +107,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   }
 
   return (
-    <Frame tab={tab} tabs={TABS} range={range} scope={scope} ranged={RANGED_TABS.includes(tab)}>
+    <Frame tab={tab} tabs={allowed} range={range} scope={scope} ranged={RANGED_TABS.includes(tab)}>
       {body}
     </Frame>
   )

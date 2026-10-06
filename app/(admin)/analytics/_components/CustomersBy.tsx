@@ -30,7 +30,7 @@ export function CustomersBy({ rows }: { rows: Record<(typeof DIMS)[number], Row[
           <b className="text-right">{r.v}</b>
         </div>
       )) : <Empty>{t('empty')}</Empty>}
-      <div className="mt-2 text-11 text-faint">{dim === 'size' ? t('noteSize') : t('note')}</div>
+      <div className="mt-2 text-11 text-faint">{t('note')}</div>
     </div>
   )
 }

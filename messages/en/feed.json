@@ -1,3 +1,341 @@
 {
-  "feed": {}
+  "feed": {
+    "tabs": {
+      "feed": "Feed",
+      "scoring": "Scoring models",
+      "enrich": "Enrichment"
+    },
+    "noAccess": {
+      "title": "The feed needs access to deals",
+      "body": "Your permission set does not include «See» on deals, so there are no cards, scores or enrichment for you here."
+    },
+    "subTabs": {
+      "follow_ups": "Follow-ups",
+      "overlooked": "Overlooked deals",
+      "suggestions": "Suggestions"
+    },
+    "filter": {
+      "kind": "Card type",
+      "allKinds": "All card types",
+      "stage": "Stage",
+      "allStages": "All stages",
+      "button": "Filters",
+      "buttonActive": "Filters · {n}"
+    },
+    "scope": {
+      "title": "Feed scope",
+      "hint": "The feed shows cards for deals in these pipelines. Cards without a deal always show.",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saved": "Feed scope saved"
+    },
+    "doneToday": "✓ {n} done today",
+    "allDone": "Ingenting venter akkurat nå — you are through this tab.",
+    "noDealTask": "This card has no deal to put a task on",
+    "actions": {
+      "task": "Schedule task",
+      "email": "Email",
+      "open": "Open"
+    },
+    "toast": {
+      "noMailbox": "No mailbox can send yet · connect one under Inbox › Mailboxes",
+      "task": "Task scheduled for tomorrow · card done",
+      "email": "Composer opened · card done"
+    },
+    "progress": {
+      "today": "Today",
+      "tasks": "Tasks",
+      "calls": "Calls",
+      "activities": "Activities",
+      "month": "This month",
+      "newDeals": "New deals",
+      "wonDeals": "Won deals",
+      "forecast": "Forecast (weighted)"
+    },
+    "panel": {
+      "close": "Close",
+      "done": "done",
+      "planned": "planned",
+      "openDeal": "Open deal →",
+      "openOrganization": "Open organization →"
+    },
+    "typeNames": {
+      "call": "call",
+      "meeting": "meeting",
+      "task": "task",
+      "deadline": "deadline",
+      "email": "email",
+      "lunch": "lunch",
+      "demo": "product demo"
+    },
+    "priority": {
+      "high": "high priority",
+      "medium": "medium priority",
+      "low": "low priority"
+    },
+    "cards": {
+      "someone": "The contact",
+      "dealSub": "{value} · {org} · owner {owner}",
+      "email_reply": {
+        "name": "Email reply",
+        "label": "Email reply",
+        "title": "{from} replied on «{deal}»",
+        "sub": "«{subject}»",
+        "subReady": "«{subject}» · readiness {r} / 10"
+      },
+      "no_reply": {
+        "name": "No reply after 5 days",
+        "label": "No reply after 5 days",
+        "sub": "{person} has not answered your email «{subject}» from {date}"
+      },
+      "planned_today": {
+        "name": "Planned today",
+        "label": "Planned today",
+        "title": "{subject} — {org}"
+      },
+      "email_opened": {
+        "name": "Email opened",
+        "label": "Email opened",
+        "title": "{person} opened «{subject}» {count, plural, one {once} other {# times}}",
+        "sub": "Last open {ago}"
+      },
+      "link_clicked": {
+        "name": "Link clicked",
+        "label": "Link clicked",
+        "title": "{person} clicked «{label}»",
+        "sub": "Tracked link in «{subject}»",
+        "subSequence": "Tracked link in the sequence email «{subject}»"
+      },
+      "sequence_review": {
+        "name": "Sequence email waiting",
+        "label": "Sequence email waiting",
+        "title": "«{subject}» is waiting for manual send",
+        "sub": "Sequence «{sequence}» · {org}"
+      },
+      "overdue_activity": {
+        "name": "Overdue activity",
+        "label": "Overdue activity · idle {days} d"
+      },
+      "no_followup": {
+        "name": "No follow-up activity",
+        "label": "No follow-up activity"
+      },
+      "slipping": {
+        "name": "Slipping",
+        "label": "Slipping",
+        "sub": "Close date {date} but no activity in {days} days · move the date or call"
+      },
+      "stalled": {
+        "name": "Stalled",
+        "label": "Stalled",
+        "sub": "In {stage} for {days} days"
+      },
+      "new_no_activity": {
+        "name": "New deal without activity",
+        "label": "New deal without activity",
+        "sub": "{value} · {org} · plan the first activity"
+      },
+      "cross_sell": {
+        "name": "Cross-sell signal",
+        "label": "Cross-sell signal",
+        "title": "{org} uses {product} only",
+        "sub": "{employees} employees · one application · create an expansion deal",
+        "subNoEmployees": "One application · create an expansion deal"
+      },
+      "likely_to_advance": {
+        "name": "Likely to advance",
+        "label": "Likely to advance",
+        "labelPct": "Likely to advance — {pct} %"
+      }
+    },
+    "scoring": {
+      "entity": {
+        "deal": "Deals",
+        "lead": "Leads"
+      },
+      "pipeline": "{name} pipeline",
+      "allPipelines": "All pipelines",
+      "state": {
+        "draft": "draft",
+        "active": "active"
+      },
+      "unlabeled": "Criterion without a name",
+      "toast": {
+        "activated": "Model active · scores recomputed",
+        "deactivated": "Model set to draft · scores recomputed",
+        "removed": "Criterion removed"
+      },
+      "limitNone": "Score models: unlimited (setting)",
+      "limit": "Score models: {used} of {limit} (setting)",
+      "summary": "Base {base} · {scored, plural, one {# record scored} other {# records scored}}",
+      "activate": "Activate",
+      "deactivate": "Set to draft",
+      "groups": {
+        "high": "Highly positive",
+        "slight": "Slightly positive",
+        "negative": "Negative"
+      },
+      "if": "IF",
+      "matches": "✓ matches",
+      "remove": "Remove «{name}»",
+      "noRight": "Changing scoring models needs «Configure» on deals",
+      "addCriterion": "＋ Criterion",
+      "noModels": "No scoring model yet.",
+      "preview": "Preview",
+      "previewRecord": "Record to preview",
+      "noDeals": "No open deals in this pipeline",
+      "noLeads": "No open leads",
+      "healthNote": "Health score from Customers becomes a criterion when health scores exist — no parallel score is built.",
+      "new": {
+        "button": "＋ Model",
+        "name": "Model name",
+        "entity": "Scores",
+        "deals": "Deals",
+        "leads": "Leads",
+        "pipeline": "Pipeline",
+        "allPipelines": "All pipelines",
+        "cancel": "Cancel",
+        "create": "Create",
+        "created": "Model created as draft"
+      },
+      "picker": {
+        "if": "IF",
+        "field": "Field",
+        "fields": {
+          "emailOpened": "Email opened",
+          "emailReplied": "Reply received",
+          "emailNoReply": "No reply to last email",
+          "participantLabel": "Participant with label",
+          "orgProducts": "Applications in use",
+          "orgPayment": "Payment status",
+          "source": "Source",
+          "value": "Value",
+          "orgEmployees": "Employees",
+          "orgCity": "City",
+          "orgFylke": "County",
+          "orgIndustry": "Industry"
+        },
+        "within": "within",
+        "days": "days",
+        "personLabel": "Person label",
+        "op": "Comparison",
+        "ops": {
+          "gte": "at least",
+          "eq": "exactly",
+          "lte": "at most"
+        },
+        "count": "Number",
+        "paymentState": "Payment status",
+        "payment": {
+          "past_due": "past due",
+          "suspended": "suspended",
+          "ok": "paid"
+        },
+        "values": "Sources",
+        "valuesHint": "Web form, Chatbot",
+        "min": "From",
+        "max": "To",
+        "text": "Text",
+        "contains": "contains …",
+        "incomplete": "Fill in the value to add the criterion.",
+        "cancel": "Cancel",
+        "add": "Add",
+        "added": "Criterion added · scores recomputed",
+        "or": " or ",
+        "label": {
+          "emailOpened": "Email opened in the last {days} days",
+          "emailReplied": "Reply received in the last {days} days",
+          "emailNoReply": "No reply to last email in {days} days",
+          "participantLabel": "{label} is a participant",
+          "orgProducts": "Uses {op, select, gte {at least} eq {exactly} other {at most}} {n, plural, one {# application} other {# applications}}",
+          "orgPayment": "Organization payment status {state}",
+          "source": "Source is {list}",
+          "value": {
+            "between": "Value between {min} and {max}",
+            "atLeast": "Value at least {min}",
+            "atMost": "Value at most {max}"
+          },
+          "orgEmployees": {
+            "between": "Employees between {min} and {max}",
+            "atLeast": "At least {min} employees",
+            "atMost": "At most {max} employees"
+          },
+          "orgText": "Organization {field} contains «{text}»"
+        }
+      }
+    },
+    "enrich": {
+      "toast": {
+        "requested": "{n, plural, one {# organization} other {# organizations}} requested from Brønnøysundregistrene · the enrichment worker fetches them",
+        "nothingNew": "Every organization with gaps is already requested"
+      },
+      "credits": {
+        "title": "Credits this cycle",
+        "left": "{n} left",
+        "used": "{n} used",
+        "of": "of {limit} · resets {date}",
+        "unlimited": "unlimited (setting) · resets {date} · counts contact-data lookups"
+      },
+      "sources": {
+        "title": "Sources",
+        "brreg": "Brønnøysundregistrene (register sync)",
+        "provider": "Company and contact data provider (adapter)",
+        "notConnected": "not connected"
+      },
+      "bulk": {
+        "title": "Bulk enrichment",
+        "body": "Up to 100 organizations with an org.nr and empty fields per request.",
+        "button": "Enrich {n, plural, one {# organization} other {# organizations}} with gaps",
+        "buttonMax": "Enrich {n} of {total} organizations with gaps",
+        "noRight": "Enriching several organizations at once needs «Bulk edit» on deals"
+      },
+      "company": {
+        "title": "Company enrichment — {org}",
+        "titleNone": "Company enrichment",
+        "sub": "Fills empty fields only",
+        "choose": "Request",
+        "state": {
+          "requested": "requested",
+          "ready": "ready",
+          "failed": "failed"
+        },
+        "none": "No company enrichment is waiting. Ask for the register's data with «Enrich» above.",
+        "requested": "Requested {date} · waiting for Brønnøysundregistrene. The enrichment worker fetches the register's data; until it has, nothing is proposed.",
+        "failed": "The register could not be read: {error}",
+        "nothingNew": "The register has nothing this organization does not already have.",
+        "fields": {
+          "address": "Address",
+          "postal_code": "Postcode",
+          "city": "City",
+          "nace": "Industry code",
+          "industry": "Industry",
+          "employees": "Employees",
+          "website": "Website"
+        },
+        "kept": "{value} (kept)",
+        "dismiss": "Dismiss",
+        "apply": "Apply {n, plural, one {# field} other {# fields}}",
+        "applied": "{n, plural, one {# field} other {# fields}} filled · changelog source: enrichment",
+        "dismissed": "Dismissed"
+      },
+      "person": {
+        "title": "Person enrichment",
+        "sub": "From name and organization",
+        "connected": "Choose «Enrich» on a person to look up their email and phone.",
+        "notConnected": "The company and contact data provider is not connected. Emails and phone numbers are found and revealed once it is."
+      },
+      "lookup": {
+        "eyebrow": "Reverse lookup · email from an unknown sender",
+        "none": "No email from an unknown sender is waiting.",
+        "title": "{from} sent an email",
+        "proposedOrg": "Proposed: person {name} and organization {org} (already in the CRM)",
+        "proposedNoOrg": "Proposed: person {name} · no organization found for {domain}",
+        "dismiss": "Dismiss",
+        "create": "Create linked records",
+        "noRight": "Creating records needs «Add» on deals",
+        "created": "Person created and linked to the email",
+        "dismissed": "Dismissed"
+      }
+    }
+  }
 }

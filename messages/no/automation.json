@@ -1,3 +1,808 @@
 {
-  "automation": {}
+  "automation": {
+    "tabs": {
+      "list": "Arbeidsflyter",
+      "builder": "Bygger",
+      "templates": "Maler",
+      "monitor": "Overvåking",
+      "assign": "Tildelingsregler",
+      "sequences": "Sekvenser"
+    },
+    "engine": "Én motor — utvider livssyklusmeldinger · sløyfevern {on, select, on {på} other {av}} (sikkerhetsmekanisme)",
+    "blockers": {
+      "not_connected_slack": "Slack er ikke koblet til",
+      "not_connected_teams": "Teams er ikke koblet til",
+      "not_connected_accounting": "Regnskapssystemet er ikke koblet til",
+      "not_available_campaigns": "Kampanjehandlinger er ikke tilgjengelige ennå",
+      "not_available_projects": "Prosjekthandlinger er ikke tilgjengelige ennå",
+      "mailbox_not_connected": "Ingen innboks er koblet til for utsending",
+      "sequence_inactive": "Sekvensen den melder inn i, er et utkast"
+    },
+    "errors": {
+      "not_connected_slack": "Slack er ikke koblet til.",
+      "not_connected_teams": "Teams er ikke koblet til.",
+      "not_connected_accounting": "Regnskapssystemet er ikke koblet til.",
+      "not_available_campaigns": "Kampanjehandlinger er ikke tilgjengelige ennå.",
+      "not_available_projects": "Prosjekthandlinger er ikke tilgjengelige ennå.",
+      "mailbox_not_connected": "Ingen innboks er koblet til for utsending.",
+      "sequence_inactive": "Sekvensen den melder inn i, er et utkast.",
+      "limit": "Grensen for aktive arbeidsflyter som er satt under Innstillinger, er nådd.",
+      "graph": "Et steg er ikke satt opp ennå. Sjekk det markerte steget.",
+      "owner": "Den personen kan ikke eie denne arbeidsflyten: hen trenger Administrere arbeidsflyter.",
+      "state": "Dette kan ikke gjøres lenger i nåværende tilstand.",
+      "retried": "Denne kjøringen er allerede forsøkt på nytt.",
+      "view": "Den lagrede visningen er ikke lenger tilgjengelig.",
+      "ids": "For mange poster på én gang.",
+      "trigger_type": "Sjekk utløseren.",
+      "trigger_config": {
+        "entity": "Velg objektet utløseren følger med på.",
+        "kind": "Oppgi produkthendelsen, for eksempel billing.changed."
+      },
+      "options": {
+        "assignee": "Velg hvem regelen tildeler til."
+      }
+    },
+    "words": {
+      "and": "OG",
+      "or": "ELLER",
+      "entity": {
+        "deal": "Avtale",
+        "lead": "Lead",
+        "person": "Person",
+        "organization": "Organisasjon",
+        "activity": "Aktivitet",
+        "ticket": "Sak"
+      },
+      "entityLower": {
+        "deal": "avtale",
+        "lead": "lead",
+        "person": "person",
+        "organization": "organisasjon",
+        "activity": "aktivitet",
+        "ticket": "sak"
+      },
+      "event": {
+        "created": "lagt til",
+        "updated": "oppdatert",
+        "deleted": "slettet",
+        "won": "vunnet",
+        "lost": "tapt",
+        "reopened": "gjenåpnet",
+        "stage_changed": "fase endret",
+        "converted": "konvertert",
+        "completed": "fullført",
+        "replied": "besvart",
+        "health_dropped": "helse falt",
+        "campaign_clicked": "kampanje-e-post klikket",
+        "no_reply": "uten svar"
+      },
+      "eventTitle": {
+        "created": "Lagt til",
+        "updated": "Oppdatert",
+        "deleted": "Slettet",
+        "won": "Vunnet",
+        "lost": "Tapt",
+        "reopened": "Gjenåpnet",
+        "stage_changed": "Fase endret",
+        "converted": "Konvertert",
+        "completed": "Fullført",
+        "replied": "Besvart",
+        "health_dropped": "Helse falt",
+        "campaign_clicked": "Kampanje-e-post klikket",
+        "no_reply": "Uten svar"
+      },
+      "fields": {
+        "title": "tittel",
+        "value": "verdi",
+        "status": "status",
+        "source": "kilde",
+        "product": "produkt",
+        "currency": "valuta",
+        "expected_close_date": "forventet lukkedato",
+        "score": "poengsum",
+        "idle_days": "dager uten aktivitet",
+        "labels": "etikett",
+        "name": "navn",
+        "email": "e-post",
+        "contact_type": "kontakttype",
+        "city": "sted",
+        "fylke": "fylke",
+        "industry": "bransje",
+        "employees": "ansatte",
+        "org_number": "org.nr.",
+        "country": "land",
+        "subject": "emne",
+        "priority": "prioritet",
+        "done": "utført",
+        "queue_key": "kø",
+        "urgency": "hastegrad",
+        "topic": "tema",
+        "org_products": "installerte applikasjoner",
+        "org_payment": "betalingsstatus",
+        "payment_state": "betalingsstatus",
+        "organization": "organisasjon",
+        "person": "person",
+        "owner_id": "eier",
+        "plan": "plan"
+      },
+      "dates": {
+        "rots_at": "faseterskel",
+        "renewal_at": "fornyelse",
+        "expected_close_date": "forventet lukkedato",
+        "won_at": "vunnetdato",
+        "lost_at": "tapsdato",
+        "created_at": "opprettelse",
+        "last_touch_at": "siste kontakt",
+        "starts_at": "start",
+        "done_at": "fullføring",
+        "resolution_due_at": "løsningsfrist",
+        "resolved_at": "løsning"
+      },
+      "mailTest": {
+        "opened": "e-post åpnet de siste {days} dagene",
+        "replied": "e-post besvart de siste {days} dagene",
+        "no_reply": "uten svar i {days} dager"
+      },
+      "ops": {
+        "empty": "er tom",
+        "notempty": "er ikke tom",
+        "contains": "inneholder",
+        "in": "er en av",
+        "nin": "er ingen av",
+        "has": "=",
+        "within_days": "innen dager"
+      },
+      "opNames": {
+        "eq": "=",
+        "neq": "≠",
+        "gt": ">",
+        "gte": "≥",
+        "lt": "<",
+        "lte": "≤",
+        "contains": "inneholder",
+        "empty": "tom",
+        "notempty": "ikke tom"
+      },
+      "trigger": {
+        "event": "{entity} {event}",
+        "fields": "{fields} endret",
+        "dateWhen": "{when, select, after {{n} dager etter {date}} before {{n} dager før {date}} other {på datoen for {date}}}",
+        "date": "Dato · {text}",
+        "product": "Produkthendelse · {kind}",
+        "enrollment": "Innmeldt én og én, samlet eller av en arbeidsflyt"
+      },
+      "waitEvent": {
+        "email": {
+          "replied": "e-post besvart",
+          "opened": "e-post åpnet",
+          "clicked": "lenke klikket"
+        },
+        "deal": {
+          "stage_changed": "fase endret",
+          "won": "avtale vunnet",
+          "lost": "avtale tapt"
+        },
+        "activity": {
+          "completed": "aktivitet fullført"
+        }
+      },
+      "activity": {
+        "task": "oppgave",
+        "call": "samtale",
+        "meeting": "møte",
+        "email": "e-post",
+        "deadline": "frist",
+        "lunch": "lunsj"
+      }
+    },
+    "scope": {
+      "everyone": "Alle",
+      "owner": "Bare eieren",
+      "nobody": "Ingen ennå"
+    },
+    "list": {
+      "cols": {
+        "workflow": "Arbeidsflyt",
+        "trigger": "Utløser",
+        "owner": "Eier",
+        "state": "Tilstand",
+        "runs": "Kjøringer 7 d",
+        "failed": "Feilet",
+        "activeFor": "Aktiv for"
+      },
+      "empty": "Ingen arbeidsflyter ennå. Start fra en mal.",
+      "active": "Aktiv",
+      "draft": "Utkast",
+      "activate": "Aktiver",
+      "deactivate": "Deaktiver",
+      "transfer": "Overfør",
+      "refused": "Ikke aktivert: {reason}",
+      "activated": "«{name}» er aktiv",
+      "deactivated": "«{name}» er et utkast igjen"
+    },
+    "transfer": {
+      "eyebrow": "Overfør eierskap",
+      "body": "Eier i dag: {owner}. Arbeidsflyten kjører med eierens rettigheter; dere varsles begge, og endringen logges.",
+      "to": "Ny eier",
+      "nobody": "Ingen andre kan administrere arbeidsflyter av denne typen.",
+      "cancel": "Avbryt",
+      "confirm": "Overfør",
+      "done": "Eierskap overført til {name}"
+    },
+    "templates": {
+      "groups": {
+        "follow_up": "Oppfølging og pleie",
+        "hygiene": "Pipelinehygiene",
+        "handover": "Overlevering og leveranse",
+        "health": "Kundehelse"
+      },
+      "items": {
+        "no_reply_task": {
+          "n": "Uten svar i 5 dager → oppgave",
+          "d": "Lager en oppfølgingsoppgave til avtaleeieren når en e-post ikke får svar."
+        },
+        "trial_nurture": {
+          "n": "Prøveperiodepleie",
+          "d": "Produkthendelser utløser en rekke tips gjennom den 30 dager lange prøveperioden."
+        },
+        "rotting_alert": {
+          "n": "Varsel om råtnende avtale",
+          "d": "Varsler eieren når en avtale passerer faseterskelen."
+        },
+        "close_date_passed": {
+          "n": "Lukkedato passert",
+          "d": "Ber eieren flytte datoen eller lukke avtalen."
+        },
+        "won_project": {
+          "n": "Vunnet → prosjekt",
+          "d": "Lager et prosjekt fra en mal når en avtale vinnes."
+        },
+        "won_invoice": {
+          "n": "Vunnet → faktura",
+          "d": "Lager en faktura i regnskapssystemet."
+        },
+        "health_drop": {
+          "n": "Helsefall → CSM-oppgave",
+          "d": "Lager en oppgave og en sak når helsen faller under en terskel."
+        },
+        "payment_failed": {
+          "n": "Betaling feilet → sak",
+          "d": "Åpner en faktureringssak når betalinger feiler."
+        }
+      },
+      "use": "Bruk mal →",
+      "created": "«{name}» satt opp og lagret som utkast"
+    },
+    "monitor": {
+      "health": {
+        "today": "Kjøringer i dag",
+        "d7": "Siste 7 dager",
+        "d14": "Siste 14 dager",
+        "loop": "Sløyfevern"
+      },
+      "succeeded": "{pct} lyktes",
+      "noRunsToday": "Ingen kjøringer i dag",
+      "failedRetried": "{failed} feilet · {retried} forsøkt på nytt",
+      "trend": {
+        "none": "Ingen kjøringer på 14 dager",
+        "up": "helsetrend stigende",
+        "down": "helsetrend fallende",
+        "stable": "helsetrend stabil"
+      },
+      "on": "På",
+      "off": "Av",
+      "loop": {
+        "source": "Kildeverdier · kan endres",
+        "custom": "Egendefinert · {n} kjøringer per 10 minutter · kan endres",
+        "off": "Slått av · kan endres"
+      },
+      "loopBlocked": "{n} stoppet siste 7 dager",
+      "overview": {
+        "mostFailed": "Flest feil",
+        "mostActive": "Mest aktive",
+        "neverRun": "Aldri kjørt",
+        "empty": {
+          "mostFailed": "Ingen feilede kjøringer siste 7 dager.",
+          "mostActive": "Ingen kjøringer siste 7 dager.",
+          "neverRun": "Alle arbeidsflyter har kjørt."
+        }
+      },
+      "state": {
+        "draft": "utkast",
+        "active": "aktiv"
+      },
+      "today": "I dag {time}",
+      "yesterday": "I går",
+      "history": "Kjørehistorikk",
+      "historyNote": "Eiere varsles ved feil · kjøringer rapporteres til jobbmonitoren",
+      "noRuns": "Ingen kjøringer ennå. En kjøring vises her når utløseren til en aktiv arbeidsflyt inntreffer.",
+      "chips": {
+        "trigger": "Utløser",
+        "condition": "Betingelse",
+        "if_else": "Forgrening",
+        "delay": "Forsinkelse",
+        "wait_for": "Vent",
+        "create_record": "Opprett",
+        "update_record": "Oppdater",
+        "delete_record": "Slett",
+        "create_activity": "Aktivitet",
+        "add_note": "Notat",
+        "notify": "Varsel",
+        "send_email": "E-post",
+        "email_auto": "E-post",
+        "email_manual": "E-post",
+        "activity": "Aktivitet",
+        "enroll_sequence": "Sekvens",
+        "assign_owner": "Tildel",
+        "create_ticket": "Sak",
+        "campaign_action": "Kampanje",
+        "project_action": "Prosjekt",
+        "webhook": "Webhook",
+        "slack": "Slack",
+        "teams": "Teams",
+        "accounting_invoice": "Faktura"
+      },
+      "stepState": {
+        "running": "Kjører",
+        "succeeded": "Lyktes",
+        "failed": "Feilet",
+        "not_met": "Betingelsen ikke oppfylt",
+        "waiting": "Venter",
+        "queued": "I kø hos arbeideren",
+        "skipped": "Hoppet over"
+      },
+      "runErrors": {
+        "not_connected": "Integrasjonen er ikke koblet til",
+        "template_missing": "Malen mangler",
+        "mailbox_not_connected": "Ingen tilkoblet innboks å sende fra",
+        "no_recipient": "Posten har ingen e-postadresse",
+        "consent": "Mangler samtykke til å sende e-post til denne personen",
+        "blocked_address": "Adressen er blokkert (privat eller intern)",
+        "not_available": "Dette steget er ikke tilgjengelig ennå",
+        "unknown_step": "Ukjent steg",
+        "no_assignee": "Ingen å tildele til",
+        "loop_protection": "Stoppet av sløyfevernet",
+        "forbidden": "Eieren har ikke lov til dette",
+        "failed": "Feilet"
+      },
+      "retry": "Prøv igjen",
+      "retried": "Kjøringen forsøkt på nytt · {state}",
+      "runState": {
+        "running": "Kjører",
+        "waiting": "Venter",
+        "completed": "Fullført",
+        "failed": "Feilet",
+        "stopped": "Stoppet",
+        "loop_blocked": "Stoppet av sløyfevern",
+        "retried": "Forsøkt på nytt"
+      }
+    },
+    "assign": {
+      "when": {
+        "lead": "lead lagt til",
+        "deal": "avtale lagt til",
+        "both": "lead eller avtale lagt til"
+      },
+      "or": "eller",
+      "and": "og",
+      "cond": {
+        "sources": "kilde er {list}",
+        "min": "ansatte > {n}",
+        "max": "ansatte ≤ {n}",
+        "orgExists": "organisasjonen finnes",
+        "orgNew": "organisasjonen er ny",
+        "labels": "organisasjonsetikett = {list}",
+        "else": "ingen annen regel traff"
+      },
+      "to": {
+        "team": "{team} · rundgang",
+        "orgOwner": "Organisasjonens eier",
+        "personOwner": "Personens eier"
+      },
+      "empty": "Ingen tildelingsregler ennå.",
+      "draft": "Utkast",
+      "line": "Når {when} · hvis {cond}",
+      "up": "Flytt «{name}» opp",
+      "down": "Flytt «{name}» ned",
+      "footer": "Reglene kjøres ovenfra og ned; første treff tildeler eieren og varsler hen.",
+      "add": "＋ Legg til regel",
+      "test": {
+        "title": "Test en post",
+        "entity": "Posttype",
+        "lead": "Lead",
+        "deal": "Avtale",
+        "source": "Kilde",
+        "employees": "Ansatte",
+        "orgExists": "Organisasjonen finnes",
+        "no": "Nei",
+        "yes": "Ja",
+        "label": "Organisasjonsetikett",
+        "noLabel": "Ingen",
+        "failed": "Testen kunne ikke kjøres."
+      },
+      "result": {
+        "matches": "Treffer regelen «{rule}»",
+        "noRule": "Ingen regel treffer",
+        "none": "Posten beholder eieren den ble opprettet med",
+        "next": "Rundgang → {name} står for tur · varslet",
+        "noMember": "Rundgang · teamet har ingen aktive medlemmer",
+        "orgOwnerNamed": "Tildelt {name} (organisasjonens eier) · varslet",
+        "orgOwner": "Tildelt organisasjonens eier · varslet",
+        "personOwnerNamed": "Tildelt {name} (personens eier) · varslet",
+        "personOwner": "Tildelt personens eier · varslet",
+        "user": "Tildelt {name} · varslet",
+        "inactive": "Regelens mottaker er ikke lenger aktiv"
+      },
+      "history": {
+        "title": "Siste tildelinger",
+        "empty": "Ingen tildelinger ennå."
+      }
+    },
+    "sources": {
+      "Web form": "Nettskjema",
+      "Chatbot": "Chatbot",
+      "Prospect search": "Prospektsøk",
+      "Import": "Import"
+    },
+    "rule": {
+      "eyebrow": "Tildelingsregel",
+      "new": "Ny regel",
+      "name": "Navn",
+      "when": "Når en post legges til",
+      "entity": {
+        "lead": "Lead",
+        "deal": "Avtale"
+      },
+      "sources": "Kilde er en av",
+      "min": "Flere ansatte enn",
+      "max": "Høyst antall ansatte",
+      "exists": "Organisasjonen finnes",
+      "any": "Uansett",
+      "yes": "Ja",
+      "no": "Nei",
+      "labels": "Organisasjonsetikett er en av",
+      "assignee": "Tildel til",
+      "kinds": {
+        "user": "En bruker",
+        "team_rr": "Et team, rundgang",
+        "org_owner": "Organisasjonens eier",
+        "person_owner": "Personens eier"
+      },
+      "user": "Bruker",
+      "team": "Team",
+      "active": "Aktiv",
+      "delete": "Slett regel",
+      "cancel": "Avbryt",
+      "save": "Lagre regel",
+      "saved": "«{name}» lagret",
+      "deleted": "«{name}» slettet"
+    },
+    "seq": {
+      "none": "Ingen sekvenser ennå.",
+      "kinds": {
+        "email_auto": "E-post · automatisk",
+        "email_manual": "E-post · manuell",
+        "delay": "Forsinkelse",
+        "activity": "Aktivitet"
+      },
+      "units": {
+        "minutes": "{n} min",
+        "hours": "{n} t",
+        "days": "{n, plural, one {# dag} other {# dager}}"
+      },
+      "skipsWeekends": "hopper over helger",
+      "activitySub": "Eier · {type}",
+      "queued": "I kø for gjennomgang",
+      "day": "Dag {n}",
+      "finished": "Ferdig",
+      "short": {
+        "email_auto": "E-post",
+        "email_manual": "E-post",
+        "delay": "Forsinkelse"
+      },
+      "stepN": "Steg {n} · {kind}",
+      "refused": "Ikke aktivert: {reason}",
+      "activated": "«{name}» er aktiv",
+      "deactivated": "«{name}» er et utkast igjen",
+      "sub": "{what} · {n} innmeldt",
+      "entities": {
+        "deal": "Avtaler",
+        "lead": "Leads"
+      },
+      "noSteps": "Denne sekvensen har ingen steg.",
+      "enrolled": "Innmeldt",
+      "enrollOne": {
+        "deal": "＋ Meld inn en avtale",
+        "lead": "＋ Meld inn en lead"
+      },
+      "enrollBulk": "Meld inn samlet",
+      "draft": "Utkast",
+      "draftNote": "Poster kan meldes inn når sekvensen er aktiv.",
+      "activate": "Aktiver",
+      "nobody": "Ingen poster er meldt inn ennå.",
+      "by": "Innmeldt · {via}",
+      "via": {
+        "one": "én og én",
+        "bulk": "samlet",
+        "workflow": "arbeidsflyt"
+      },
+      "exit": {
+        "reply": "Avsluttet: kontakten svarte",
+        "stage_change": "Avsluttet: fasen ble endret",
+        "manual": "Avsluttet manuelt",
+        "record_closed": "Avsluttet: posten ble lukket",
+        "record_deleted": "Avsluttet: posten ble slettet"
+      },
+      "state": {
+        "in_progress": "Pågår",
+        "failed": "Feilet",
+        "completed": "Fullført",
+        "exited": "Avsluttet"
+      },
+      "skip": "Hopp over steg",
+      "exitOne": "Avslutt",
+      "skipped": "Steget hoppet over",
+      "exited": "Meldt ut av sekvensen"
+    },
+    "enroll": {
+      "search": {
+        "deal": "Finn en avtale",
+        "lead": "Finn en lead"
+      },
+      "one": {
+        "deal": "Meld inn en avtale",
+        "lead": "Meld inn en lead"
+      },
+      "bulk": {
+        "deal": "Meld inn avtaler samlet",
+        "lead": "Meld inn leads samlet"
+      },
+      "noMatch": "Ingen treff.",
+      "fromView": "Fra en lagret visning",
+      "fromPick": "Velg poster",
+      "view": "Lagret visning",
+      "noViews": "Ingen lagrede visninger for denne posttypen.",
+      "picked": "{n} valgt",
+      "cancel": "Avbryt",
+      "confirm": "Meld inn",
+      "done": "{n} innmeldt{skipped, plural, =0 {} other { · # hoppet over}}"
+    },
+    "builder": {
+      "none": "Ingen arbeidsflyt ennå.",
+      "toTemplates": "Start fra en mal →",
+      "sharedEveryone": "aktiv for alle",
+      "sharedOwner": "aktiv for eierens poster",
+      "sharedWith": "delt med {names}",
+      "sub": "Eier {owner} · kjører med eierens rettigheter · {shared}",
+      "added": "Steg lagt til · lagre for å publisere",
+      "saved": "Lagret · versjon {n} publisert",
+      "refused": "Ikke aktivert: {reason}",
+      "activated": "Arbeidsflyten er aktivert",
+      "deactivated": "Arbeidsflyten er deaktivert",
+      "kinds": {
+        "trigger": "Utløser",
+        "cond": "Betingelse",
+        "delay": "Forsinkelse",
+        "wait": "Vent på",
+        "branch": "Hvis / ellers",
+        "action": "Handling",
+        "hook": "Webhook"
+      },
+      "anyRecord": "Enhver {entity}",
+      "triggerTitle": {
+        "date": "Dato på en {entity}",
+        "product_event": "Produkthendelse"
+      },
+      "noKind": "Ingen hendelse oppgitt ennå",
+      "insertHere": "Legg til et steg her",
+      "ifLabel": "Hvis {cond}",
+      "ifEmpty": "Hvis …",
+      "elseLabel": "Ellers",
+      "plusStep": "＋ steg",
+      "active": "Aktiv",
+      "draft": "Utkast",
+      "discard": "Forkast",
+      "save": "Lagre",
+      "activate": "Aktiver",
+      "deactivate": "Deaktiver",
+      "unsaved": "Ulagrede endringer · Lagre publiserer en ny versjon",
+      "choose": "Velg …",
+      "jsonBroken": "Ikke gyldig JSON ennå",
+      "group1": "Gruppe 1",
+      "groupOr": "Gruppe {n} (ELLER)",
+      "field": "Felt",
+      "op": "Operator",
+      "value": "Verdi",
+      "days": "Dager",
+      "removeFilter": "Fjern filter",
+      "and": "＋ OG",
+      "orGroup": "＋ ELLER-gruppe",
+      "owners": {
+        "record": "Postens eier",
+        "workflow": "Arbeidsflytens eier"
+      },
+      "unlimited": "ubegrenset",
+      "notes": {
+        "limits": "Handlinger og forsinkelser per gren: {limit} (innstilling).",
+        "trigger": "Også tilgjengelig: lagt til, slettet, og datoutløsere på, før eller etter et datofelt.",
+        "condition": "E-postbetingelser kan teste om en sendt e-post ble åpnet eller besvart.",
+        "wait": "Gir opp etter angitt antall dager, og fortsetter eller stopper da.",
+        "values": "Feltnavn som nøkler; @record_owner, @workflow_owner og @today+N fylles inn når steget kjører.",
+        "delete": "Sletter posten arbeidsflyten kjører på.",
+        "merge": "Flettefelt som '{'deal.title'}' fylles inn fra posten.",
+        "email": "Sendes fra den valgte eierens tilkoblede innboks; steget feiler så lenge ingen er koblet til.",
+        "webhook": "Private og lenkelokale adresser er blokkert · 10 s tidsavbrudd · ingen omdirigering til blokkerte områder.",
+        "notConnected": "{provider} er ikke koblet til. Steget kan ikke kjøre, og arbeidsflyten kan ikke aktiveres, før det er det.",
+        "invoice": "Person, organisasjon og produkter fra avtalen.",
+        "campaign_action": "Kampanjehandlinger kommer med kampanjemodulen.",
+        "project_action": "Prosjekthandlinger kommer med prosjektmodulen."
+      },
+      "providers": {
+        "slack": "Slack",
+        "teams": "Teams",
+        "accounting": "Regnskapssystemet"
+      },
+      "remove": "Fjern steg",
+      "addStep": "Legg til et steg",
+      "palette": {
+        "condition": "Betingelse",
+        "if_else": "Hvis / ellers",
+        "delay": "Forsinkelse",
+        "wait_for": "Vent på",
+        "create_record": "Opprett post",
+        "update_record": "Oppdater post",
+        "delete_record": "Slett post",
+        "send_email": "Send e-post",
+        "add_note": "Legg til notat",
+        "campaign_action": "Kampanjehandling",
+        "project_action": "Prosjekthandling",
+        "webhook": "Webhook",
+        "slack": "Slack",
+        "teams": "Teams",
+        "create_activity": "Opprett aktivitet",
+        "notify": "Varsle",
+        "enroll_sequence": "Meld inn i sekvens",
+        "assign_owner": "Tildel eier",
+        "create_ticket": "Opprett sak",
+        "accounting_invoice": "Faktura i regnskap"
+      },
+      "f": {
+        "triggerType": "Utløser",
+        "object": "Objekt",
+        "event": "Hendelse",
+        "fieldChanged": "Felt endret",
+        "date": "Dato",
+        "offset": "Dager etter (negativt: før)",
+        "productEvent": "Hendelse",
+        "amount": "Antall",
+        "unit": "Enhet",
+        "skipWeekends": "Hopp over helger",
+        "waitEvent": "Vent på",
+        "timeout": "Maks dager",
+        "then": "Deretter",
+        "values": "Verdier (rå JSON)",
+        "activityType": "Type",
+        "subject": "Emne",
+        "dueIn": "Frist om dager",
+        "assignedTo": "Tildelt",
+        "body": "Tekst",
+        "rawBody": "Innhold (rå JSON)",
+        "to": "Til",
+        "message": "Melding",
+        "template": "Mal",
+        "from": "Fra",
+        "sequence": "Sekvens",
+        "assignee": "Tildel til",
+        "user": "Bruker",
+        "team": "Team",
+        "category": "Kategori",
+        "method": "Metode",
+        "url": "URL",
+        "channel": "Kanal"
+      },
+      "triggerTypes": {
+        "event": "Posthendelse",
+        "date": "Dato",
+        "product_event": "Produkthendelse"
+      },
+      "units": {
+        "minutes": "Minutter",
+        "hours": "Timer",
+        "days": "Dager"
+      },
+      "then": {
+        "continue": "Fortsett",
+        "stop": "Stopp"
+      },
+      "assignee": {
+        "user": "En bruker",
+        "team_rr": "Et team, rundgang",
+        "org_owner": "Organisasjonens eier",
+        "person_owner": "Personens eier"
+      },
+      "nodes": {
+        "owner": {
+          "workflow": "arbeidsflytens eier",
+          "record": "eier av {entity}"
+        },
+        "notChosen": "ikke valgt",
+        "noFields": "Ingen felt ennå",
+        "assigned": "tildelt {who}",
+        "notAvailable": "Ikke tilgjengelig ennå",
+        "notConnected": "Ikke koblet til",
+        "condition": {
+          "empty": "Ingen filter ennå"
+        },
+        "if_else": {
+          "t": "Hvis / ellers"
+        },
+        "delay": {
+          "business": "Vent {n} virkedager",
+          "days": "Vent {n, plural, one {# dag} other {# dager}}",
+          "hours": "Vent {n} t",
+          "minutes": "Vent {n} min",
+          "skips": "Hopper over helger"
+        },
+        "wait_for": {
+          "t": "Vent på: {event}",
+          "continue": "Maks {n} dager, så fortsett",
+          "stop": "Maks {n} dager, så stopp"
+        },
+        "create_record": {
+          "t": "Opprett {entity}"
+        },
+        "update_record": {
+          "t": "Oppdater {entity}"
+        },
+        "delete_record": {
+          "t": "Slett {entity}"
+        },
+        "create_activity": {
+          "t": "Opprett aktivitet"
+        },
+        "add_note": {
+          "t": "Legg til notat på {entity}"
+        },
+        "notify": {
+          "t": "Varsle {who}"
+        },
+        "send_email": {
+          "t": "Send e-post fra mal",
+          "s": "«{template}» · fra {who}"
+        },
+        "enroll_sequence": {
+          "t": "Meld inn i sekvens"
+        },
+        "assign_owner": {
+          "t": "Tildel eier",
+          "team": "{team} · rundgang",
+          "org": "organisasjonens eier",
+          "person": "personens eier"
+        },
+        "create_ticket": {
+          "t": "Opprett sak"
+        },
+        "webhook": {
+          "t": "Kall webhook",
+          "noUrl": "Ingen URL ennå"
+        },
+        "slack": {
+          "t": "Post i Slack"
+        },
+        "teams": {
+          "t": "Post i Teams"
+        },
+        "accounting_invoice": {
+          "t": "Opprett faktura i regnskapssystemet",
+          "s": "Person, organisasjon og produkter fra avtalen"
+        },
+        "campaign_action": {
+          "t": "Kampanjehandling"
+        },
+        "project_action": {
+          "t": "Opprett prosjekt fra mal"
+        }
+      }
+    }
+  }
 }

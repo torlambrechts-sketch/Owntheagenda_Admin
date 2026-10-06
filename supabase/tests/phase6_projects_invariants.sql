@@ -489,8 +489,8 @@ select pg_temp.check((select bool_and((x ->> 'w')::numeric = case when (x ->> 'n
                      'bar width is n ÷ max × 100 (the design''s v × 22 % overflowed)');
 select pg_temp.check((select jsonb_agg(jsonb_build_object(x ->> 'phase', jsonb_build_array((x ->> 'n')::int, (x -> 'median_days')))) from t_rep, jsonb_array_elements(r -> 'duration') x)
                      = '[{"R1":[3,4.0]},{"R2":[2,2.0]},{"R3":[0,null]}]', 'duration by phase: the median days of finished stays, with n; a phase with none shows nothing');
-select pg_temp.check((select r -> 'hooks' -> 'triggers' ? 'phase_changed' and r -> 'hooks' -> 'actions' ? 'create_from_template' and not (r -> 'hooks' ->> 'actions_available')::boolean from t_rep),
-                     'the hooks come from the registry, and say the actions are not live until the executor calls them (V-P6P-01)');
+select pg_temp.check((select r -> 'hooks' -> 'triggers' ? 'phase_changed' and r -> 'hooks' -> 'actions' ? 'create_from_template' and (r -> 'hooks' ->> 'actions_available')::boolean from t_rep),
+                     'the hooks come from the registry, and the actions are live once the executor calls them (0039)');
 select pg_temp.as_staff('emma@orgpuls.no');
 create temp table t_rep_e as select public.project_reports((select id from t_b2)) r;
 select pg_temp.check((select (r ->> 'own_only')::boolean and (select jsonb_agg((x ->> 'n')::int) from jsonb_array_elements(r -> 'performance') x) = '[1,0,0,0,0]'
@@ -512,8 +512,10 @@ select pg_temp.check(exists (select 1 from app.workflow_runs where workflow_id =
 create temp table t_wf2 as select (public.workflow_save(null, '{"name":"P6 vunnet → prosjekt","trigger_type":"event","trigger_config":{"entity":"deal","event":"won"}}',
   jsonb_build_object('steps', jsonb_build_array(jsonb_build_object('key', 's1', 'kind', 'project_action', 'config',
     jsonb_build_object('action', 'create_from_template', 'template_id', (select id from t_tpl), 'board_id', (select id from t_b)))))) ->> 'id')::uuid id;
-select pg_temp.expect_detail(format($$select public.workflow_set_state(%L, 'active')$$, (select id from t_wf2)), 'invalid', 'not_available:projects',
-                             'until the merge wires the executor, a project_action workflow cannot be activated (V-P6P-01)');
+select public.workflow_set_state((select id from t_wf2), 'active');
+select pg_temp.check((select state from app.workflows where id = (select id from t_wf2)) = 'active' and app.project_actions_wired()
+                     and not exists (select 1 from unnest(app.wf_blockers((select id from t_wf2))) b where b like 'not_available%'),
+                     'with the engine wired (0039) a project_action workflow can be switched on');
 select pg_temp.expect_detail($$select app.wf_project_validate('s1', '{"action":"explode"}')$$, 'invalid', 'graph.s1.action', 'an unknown action is refused');
 select pg_temp.expect_detail($$select app.wf_project_validate('s1', '{"action":"move_phase"}')$$, 'invalid', 'graph.s1.phase_id', 'move_phase names its phase');
 select pg_temp.check(app.wf_project_blocker('{"action":"create_from_template"}') = 'project_template_missing'

@@ -5,21 +5,70 @@
     "mainMenu": "Hovedmeny",
     "openMenu": "Åpne meny",
     "residency": "Data i EU · Frankfurt",
-    "group": { "customers": "Kunder", "crm": "CRM", "growth": "Vekst", "platform": "Plattform" },
-    "crumb": { "all": "På tvers av alle applikasjoner", "customers": "Kunder", "crm": "CRM", "growth": "Vekst", "platform": "Plattform" },
+    "group": {
+      "customers": "Kunder",
+      "crm": "CRM",
+      "growth": "Vekst",
+      "platform": "Plattform"
+    },
+    "crumb": {
+      "all": "På tvers av alle applikasjoner",
+      "customers": "Kunder",
+      "crm": "CRM",
+      "growth": "Vekst",
+      "platform": "Plattform"
+    },
     "nav": {
-      "home": "Oversikt", "customers": "Organisasjoner", "analytics": "Analyse", "tickets": "Saker", "feed": "Strøm", "leads": "Leads",
-      "deals": "Avtaler", "contacts": "Kontakter", "activities": "Aktiviteter", "inbox": "Innboks", "meetings": "Møter", "projects": "Prosjekter",
-      "documents": "Dokumenter", "campaigns": "Kampanjer", "leadgen": "Leadfangst", "visitors": "Nettbesøkende", "automation": "Automatisering",
-      "insights": "Innsikt", "apps": "Applikasjoner", "platform": "API og integrasjoner", "settings": "Innstillinger", "security": "Sikkerhet og personvern",
-      "mobile": "Mobilapp", "coverage": "Spesifikasjonsdekning"
+      "home": "Oversikt",
+      "customers": "Organisasjoner",
+      "analytics": "Analyse",
+      "tickets": "Saker",
+      "feed": "Strøm",
+      "leads": "Leads",
+      "deals": "Avtaler",
+      "contacts": "Kontakter",
+      "activities": "Aktiviteter",
+      "inbox": "Innboks",
+      "meetings": "Møter",
+      "projects": "Prosjekter",
+      "documents": "Dokumenter",
+      "campaigns": "Kampanjer",
+      "leadgen": "Leadfangst",
+      "visitors": "Nettbesøkende",
+      "automation": "Automatisering",
+      "insights": "Innsikt",
+      "apps": "Applikasjoner",
+      "platform": "API og integrasjoner",
+      "settings": "Innstillinger",
+      "security": "Sikkerhet og personvern",
+      "mobile": "Mobilapp",
+      "coverage": "Spesifikasjonsdekning"
     },
     "title": {
-      "home": "Oversikt", "customers": "Organisasjoner", "analytics": "Analyse", "tickets": "Saker", "feed": "Strøm", "leads": "Leads",
-      "deals": "Avtaler", "contacts": "Kontakter", "activities": "Aktiviteter", "inbox": "Innboks", "meetings": "Møter", "projects": "Prosjekter",
-      "documents": "Dokumenter og e-signering", "campaigns": "Kampanjer", "leadgen": "Leadfangst", "visitors": "Nettbesøkende", "automation": "Automatisering",
-      "insights": "Innsikt", "apps": "Applikasjoner", "platform": "API og integrasjoner", "settings": "Innstillinger", "security": "Sikkerhet og personvern",
-      "mobile": "Mobilapp", "coverage": "Spesifikasjonsdekning"
+      "home": "Oversikt",
+      "customers": "Organisasjoner",
+      "analytics": "Analyse",
+      "tickets": "Saker",
+      "feed": "Strøm",
+      "leads": "Leads",
+      "deals": "Avtaler",
+      "contacts": "Kontakter",
+      "activities": "Aktiviteter",
+      "inbox": "Innboks",
+      "meetings": "Møter",
+      "projects": "Prosjekter",
+      "documents": "Dokumenter og e-signering",
+      "campaigns": "Kampanjer",
+      "leadgen": "Leadfangst",
+      "visitors": "Nettbesøkende",
+      "automation": "Automatisering",
+      "insights": "Innsikt",
+      "apps": "Applikasjoner",
+      "platform": "API og integrasjoner",
+      "settings": "Innstillinger",
+      "security": "Sikkerhet og personvern",
+      "mobile": "Mobilapp",
+      "coverage": "Spesifikasjonsdekning"
     },
     "products": {
       "all": "Alle applikasjoner",
@@ -35,8 +84,31 @@
       "noRecent": "Poster du åpner, vises her.",
       "failed": "Søket kunne ikke kjøres. Prøv igjen.",
       "footer": "Søker i avtaler, leads, personer, organisasjoner, saker, produkter og verdier i egne felt · følger synlighetsgruppene",
-      "groups": { "recent": "Nylig", "organization": "Organisasjoner", "person": "Personer", "lead": "Leads", "deal": "Avtaler", "ticket": "Saker", "catalog_item": "Produkter", "activity": "Aktiviteter", "project": "Prosjekter", "document": "Dokumenter", "campaign": "Kampanjer" },
-      "types": { "organization": "Organisasjon", "person": "Person", "lead": "Lead", "deal": "Avtale", "ticket": "Sak", "catalog_item": "Produkt", "activity": "Aktivitet", "project": "Prosjekt", "document": "Dokument", "campaign": "Kampanje" }
+      "groups": {
+        "recent": "Nylig",
+        "organization": "Organisasjoner",
+        "person": "Personer",
+        "lead": "Leads",
+        "deal": "Avtaler",
+        "ticket": "Saker",
+        "catalog_item": "Produkter",
+        "activity": "Aktiviteter",
+        "project": "Prosjekter",
+        "document": "Dokumenter",
+        "campaign": "Kampanjer"
+      },
+      "types": {
+        "organization": "Organisasjon",
+        "person": "Person",
+        "lead": "Lead",
+        "deal": "Avtale",
+        "ticket": "Sak",
+        "catalog_item": "Produkt",
+        "activity": "Aktivitet",
+        "project": "Prosjekt",
+        "document": "Dokument",
+        "campaign": "Kampanje"
+      }
     },
     "sandbox": {
       "toggle": "Sandkasse",
@@ -46,39 +118,176 @@
     },
     "notifications": {
       "label": "Varsler",
-      "tabs": { "all": "Alle", "mention": "Omtaler", "reminder": "Påminnelser", "security": "Sikkerhet" },
+      "tabs": {
+        "all": "Alle",
+        "mention": "Omtaler",
+        "reminder": "Påminnelser",
+        "security": "Sikkerhet"
+      },
       "empty": "Ingenting her ennå.",
       "failed": "Varslene kunne ikke lastes.",
       "channels": "I appen",
       "channelsLink": "Påminnelseskanaler →",
       "messages": {
-        "mention": { "title": "{actor} nevnte deg på {record}", "body": "«{excerpt}»" },
-        "reminder": { "title": "{subject} om {minutes} minutter", "body": "{type} · {record}" },
-        "security_new_device": { "title": "Ny enhet logget inn for {name}", "body": "{device}" },
-        "deal_stage": { "title": "{record} flyttet til {stage}", "body": "Du følger denne avtalen · av {actor}" },
-        "ticket_sla": { "title": "{record} nærmer seg fristen for første svar", "body": "{priority} · {minutes} min igjen" },
-        "workflow_failed": { "title": "Arbeidsflyten «{record}» feilet {count} ganger", "body": "{reason}" },
+        "mention": {
+          "title": "{actor} nevnte deg på {record}",
+          "body": "«{excerpt}»"
+        },
+        "reminder": {
+          "title": "{subject} om {minutes} minutter",
+          "body": "{type} · {record}"
+        },
+        "security_new_device": {
+          "title": "Ny enhet logget inn for {name}",
+          "body": "{device}"
+        },
+        "deal_stage": {
+          "title": "{record} flyttet til {stage}",
+          "body": "Du følger denne avtalen · av {actor}"
+        },
+        "ticket_sla": {
+          "title": "{record} nærmer seg fristen for første svar",
+          "body": "{priority} · {minutes} min igjen"
+        },
+        "workflow_failed": {
+          "title": "Arbeidsflyten «{record}» feilet {count} ganger",
+          "body": "{reason}"
+        },
         "document": {
-          "opened": { "title": "Dokument {number} ble åpnet", "body": "Åpne dokumentet for å se visningen." },
-          "completed": { "title": "Dokument {number} er signert av alle", "body": "Signeringsforespørselen er fullført." },
-          "declined": { "title": "Dokument {number} ble avvist", "body": "En signatar avslo å signere." }
+          "opened": {
+            "title": "Dokument {number} ble åpnet",
+            "body": "Åpne dokumentet for å se visningen."
+          },
+          "completed": {
+            "title": "Dokument {number} er signert av alle",
+            "body": "Signeringsforespørselen er fullført."
+          },
+          "declined": {
+            "title": "Dokument {number} ble avvist",
+            "body": "En signatar avslo å signere."
+          }
         },
         "workflow": {
-          "failed": { "title": "Arbeidsflyten «{workflow}» feilet", "body": "{error}" },
-          "notice": { "title": "{workflow}", "body": "{message}" },
-          "loop_blocked": { "title": "Arbeidsflyten «{workflow}» ble stanset av løkkevernet", "body": "Den kjørte oftere enn sikkerhetsgrensen tillater." },
-          "transferred_to": { "title": "Arbeidsflyten «{workflow}» er nå din", "body": "Du eier den og får varslene fra den." },
-          "transferred_from": { "title": "Arbeidsflyten «{workflow}» er overført", "body": "Noen andre eier den nå." }
+          "failed": {
+            "title": "Arbeidsflyten «{workflow}» feilet",
+            "body": "{error}"
+          },
+          "notice": {
+            "title": "{workflow}",
+            "body": "{message}"
+          },
+          "loop_blocked": {
+            "title": "Arbeidsflyten «{workflow}» ble stanset av løkkevernet",
+            "body": "Den kjørte oftere enn sikkerhetsgrensen tillater."
+          },
+          "transferred_to": {
+            "title": "Arbeidsflyten «{workflow}» er nå din",
+            "body": "Du eier den og får varslene fra den."
+          },
+          "transferred_from": {
+            "title": "Arbeidsflyten «{workflow}» er overført",
+            "body": "Noen andre eier den nå."
+          }
         },
         "assignment": {
-          "assigned": { "title": "En post ble tildelt deg", "body": "Av «{workflow}»" }
+          "assigned": {
+            "title": "En post ble tildelt deg",
+            "body": "Av «{workflow}»"
+          }
         },
         "mail": {
-          "reauth": { "title": "En innboks må kobles til på nytt", "body": "Sending fra den er stanset til den er koblet til igjen." },
-          "failed": { "title": "En e-post kunne ikke sendes", "body": "«{subject}»" },
-          "received": { "title": "Ny e-post i innboksen", "body": "Åpne innboksen for å lese den." },
-          "opened": { "title": "E-posten din ble åpnet", "body": "«{subject}»" },
-          "clicked": { "title": "En lenke i e-posten din ble klikket", "body": "«{subject}»" }
+          "reauth": {
+            "title": "En innboks må kobles til på nytt",
+            "body": "Sending fra den er stanset til den er koblet til igjen."
+          },
+          "failed": {
+            "title": "En e-post kunne ikke sendes",
+            "body": "«{subject}»"
+          },
+          "received": {
+            "title": "Ny e-post i innboksen",
+            "body": "Åpne innboksen for å lese den."
+          },
+          "opened": {
+            "title": "E-posten din ble åpnet",
+            "body": "«{subject}»"
+          },
+          "clicked": {
+            "title": "En lenke i e-posten din ble klikket",
+            "body": "«{subject}»"
+          }
+        },
+        "campaign": {
+          "held": {
+            "title": "Kampanjen «{campaign}» står på vent",
+            "body": "Den skulle gått ut, men kan ikke sendes ennå. Åpne kampanjen for å se hvorfor."
+          },
+          "sent": {
+            "title": "Kampanjen «{campaign}» er sendt",
+            "body": "{sent} sendt · {failed} feilet · returrate {bounce_rate} %"
+          },
+          "sent_with_problems": {
+            "title": "Kampanjen «{campaign}» ble sendt med problemer",
+            "body": "{sent} sendt · {failed} feilet · returrate {bounce_rate} %"
+          },
+          "ab_decided": {
+            "title": "A/B-testen i «{campaign}» er avgjort: {winner} vinner",
+            "body": "A {a} · B {b}"
+          },
+          "engaged": {
+            "title": "{person} {kind, select, opened {åpnet} clicked {klikket en lenke i} other {reagerte på}} «{campaign}»",
+            "body": "En kontakt du eier"
+          }
+        },
+        "project": {
+          "assigned": {
+            "title": "{actor} gjorde deg til eier av {record}",
+            "body": "Prosjekt"
+          },
+          "item_assigned": {
+            "title": "{actor} ga deg «{item}»",
+            "body": "{record}"
+          },
+          "phase_changed": {
+            "title": "{record} er flyttet til {phase}",
+            "body": "Du følger dette prosjektet · av {actor}"
+          },
+          "health_changed": {
+            "title": "{record}: status {health, select, on_track {i rute} at_risk {i faresonen} off_track {ute av kurs} on_hold {satt på vent} other {ikke satt}}",
+            "body": "Du følger dette prosjektet · av {actor}"
+          },
+          "closed": {
+            "title": "{record} er avsluttet",
+            "body": "{status, select, done {Ferdig} canceled {Avbrutt} other {Avsluttet}} · av {actor}"
+          },
+          "reopened": {
+            "title": "{record} er åpnet igjen",
+            "body": "Av {actor}"
+          },
+          "ai_summary_ready": {
+            "title": "AI-sammendraget av {record} er klart",
+            "body": "Åpne prosjektet for å lese det."
+          },
+          "ai_summary_failed": {
+            "title": "AI-sammendraget av {record} feilet",
+            "body": "Prøv igjen fra prosjektet."
+          },
+          "brief_ready": {
+            "title": "Briefen for {record} er skrevet",
+            "body": "Gå gjennom den før den brukes."
+          },
+          "brief_failed": {
+            "title": "Briefen for {record} kunne ikke skrives",
+            "body": "Prøv igjen fra prosjektet."
+          },
+          "status_report_ready": {
+            "title": "Statusrapporten for {record} er klar",
+            "body": "Den er lagt ved prosjektet."
+          },
+          "status_report_failed": {
+            "title": "Statusrapporten for {record} feilet",
+            "body": "Prøv igjen fra prosjektet."
+          }
         }
       }
     },
@@ -92,13 +301,22 @@
       "voice": "Taleinndata",
       "send": "Send",
       "footer": "Hvert kall går gjennom AI-porten · forespørsler logges · leverandører trener aldri på disse dataene",
-      "prompts": { "trials": "Hvilke prøveperioder utløper denne uken?", "summarize": "Oppsummer Lumio AS", "draft": "Lag utkast til oppfølging til Kari", "tickets": "Saker som venter på SLA", "pipeline": "Hvordan går pipelinen?" }
+      "prompts": {
+        "trials": "Hvilke prøveperioder utløper denne uken?",
+        "summarize": "Oppsummer Lumio AS",
+        "draft": "Lag utkast til oppfølging til Kari",
+        "tickets": "Saker som venter på SLA",
+        "pipeline": "Hvordan går pipelinen?"
+      }
     },
     "account": {
       "label": "Konto: {name}",
       "summary": "{role} · MFA med app · IP-tilgangsliste {allowlist, select, on {på} other {av}}",
       "language": "Språk",
-      "languages": { "en": "English", "no": "Norsk" },
+      "languages": {
+        "en": "English",
+        "no": "Norsk"
+      },
       "timeZone": "Tidssone",
       "numberFormat": "Tallformat",
       "idle": "Økten avsluttes etter 30 minutter uten aktivitet.",

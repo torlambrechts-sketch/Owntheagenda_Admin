@@ -5,21 +5,70 @@
     "mainMenu": "Main menu",
     "openMenu": "Open menu",
     "residency": "EU residency · Frankfurt",
-    "group": { "customers": "Customers", "crm": "CRM", "growth": "Growth", "platform": "Platform" },
-    "crumb": { "all": "Across all applications", "customers": "Customers", "crm": "CRM", "growth": "Growth", "platform": "Platform" },
+    "group": {
+      "customers": "Customers",
+      "crm": "CRM",
+      "growth": "Growth",
+      "platform": "Platform"
+    },
+    "crumb": {
+      "all": "Across all applications",
+      "customers": "Customers",
+      "crm": "CRM",
+      "growth": "Growth",
+      "platform": "Platform"
+    },
     "nav": {
-      "home": "Overview", "customers": "Organizations", "analytics": "Analytics", "tickets": "Tickets", "feed": "Feed", "leads": "Leads",
-      "deals": "Deals", "contacts": "Contacts", "activities": "Activities", "inbox": "Inbox", "meetings": "Meetings", "projects": "Projects",
-      "documents": "Documents", "campaigns": "Campaigns", "leadgen": "Lead capture", "visitors": "Web visitors", "automation": "Automation",
-      "insights": "Insights", "apps": "Applications", "platform": "API and integrations", "settings": "Settings", "security": "Security and privacy",
-      "mobile": "Mobile app", "coverage": "Spec coverage"
+      "home": "Overview",
+      "customers": "Organizations",
+      "analytics": "Analytics",
+      "tickets": "Tickets",
+      "feed": "Feed",
+      "leads": "Leads",
+      "deals": "Deals",
+      "contacts": "Contacts",
+      "activities": "Activities",
+      "inbox": "Inbox",
+      "meetings": "Meetings",
+      "projects": "Projects",
+      "documents": "Documents",
+      "campaigns": "Campaigns",
+      "leadgen": "Lead capture",
+      "visitors": "Web visitors",
+      "automation": "Automation",
+      "insights": "Insights",
+      "apps": "Applications",
+      "platform": "API and integrations",
+      "settings": "Settings",
+      "security": "Security and privacy",
+      "mobile": "Mobile app",
+      "coverage": "Spec coverage"
     },
     "title": {
-      "home": "Overview", "customers": "Organizations", "analytics": "Analytics", "tickets": "Tickets", "feed": "Feed", "leads": "Leads",
-      "deals": "Deals", "contacts": "Contacts", "activities": "Activities", "inbox": "Inbox", "meetings": "Meetings", "projects": "Projects",
-      "documents": "Documents and e-sign", "campaigns": "Campaigns", "leadgen": "Lead capture", "visitors": "Web visitors", "automation": "Automation",
-      "insights": "Insights", "apps": "Applications", "platform": "API and integrations", "settings": "Settings", "security": "Security and privacy",
-      "mobile": "Mobile app", "coverage": "Specification coverage"
+      "home": "Overview",
+      "customers": "Organizations",
+      "analytics": "Analytics",
+      "tickets": "Tickets",
+      "feed": "Feed",
+      "leads": "Leads",
+      "deals": "Deals",
+      "contacts": "Contacts",
+      "activities": "Activities",
+      "inbox": "Inbox",
+      "meetings": "Meetings",
+      "projects": "Projects",
+      "documents": "Documents and e-sign",
+      "campaigns": "Campaigns",
+      "leadgen": "Lead capture",
+      "visitors": "Web visitors",
+      "automation": "Automation",
+      "insights": "Insights",
+      "apps": "Applications",
+      "platform": "API and integrations",
+      "settings": "Settings",
+      "security": "Security and privacy",
+      "mobile": "Mobile app",
+      "coverage": "Specification coverage"
     },
     "products": {
       "all": "All applications",
@@ -35,8 +84,31 @@
       "noRecent": "Records you open appear here.",
       "failed": "The search could not be run. Try again.",
       "footer": "Searches deals, leads, people, organizations, tickets, products and custom-field values · respects visibility groups",
-      "groups": { "recent": "Recent", "organization": "Organizations", "person": "People", "lead": "Leads", "deal": "Deals", "ticket": "Tickets", "catalog_item": "Products", "activity": "Activities", "project": "Projects", "document": "Documents", "campaign": "Campaigns" },
-      "types": { "organization": "Organization", "person": "Person", "lead": "Lead", "deal": "Deal", "ticket": "Ticket", "catalog_item": "Product", "activity": "Activity", "project": "Project", "document": "Document", "campaign": "Campaign" }
+      "groups": {
+        "recent": "Recent",
+        "organization": "Organizations",
+        "person": "People",
+        "lead": "Leads",
+        "deal": "Deals",
+        "ticket": "Tickets",
+        "catalog_item": "Products",
+        "activity": "Activities",
+        "project": "Projects",
+        "document": "Documents",
+        "campaign": "Campaigns"
+      },
+      "types": {
+        "organization": "Organization",
+        "person": "Person",
+        "lead": "Lead",
+        "deal": "Deal",
+        "ticket": "Ticket",
+        "catalog_item": "Product",
+        "activity": "Activity",
+        "project": "Project",
+        "document": "Document",
+        "campaign": "Campaign"
+      }
     },
     "sandbox": {
       "toggle": "Sandbox",
@@ -46,39 +118,176 @@
     },
     "notifications": {
       "label": "Notifications",
-      "tabs": { "all": "All", "mention": "Mentions", "reminder": "Reminders", "security": "Security" },
+      "tabs": {
+        "all": "All",
+        "mention": "Mentions",
+        "reminder": "Reminders",
+        "security": "Security"
+      },
       "empty": "Nothing here yet.",
       "failed": "Notifications could not be loaded.",
       "channels": "In app",
       "channelsLink": "Reminder channels →",
       "messages": {
-        "mention": { "title": "{actor} mentioned you on {record}", "body": "«{excerpt}»" },
-        "reminder": { "title": "{subject} in {minutes} minutes", "body": "{type} · {record}" },
-        "security_new_device": { "title": "New device sign-in for {name}", "body": "{device}" },
-        "deal_stage": { "title": "{record} moved to {stage}", "body": "You follow this deal · by {actor}" },
-        "ticket_sla": { "title": "{record} is close to breaching first response", "body": "{priority} · {minutes} min left" },
-        "workflow_failed": { "title": "Workflow «{record}» failed {count} times", "body": "{reason}" },
+        "mention": {
+          "title": "{actor} mentioned you on {record}",
+          "body": "«{excerpt}»"
+        },
+        "reminder": {
+          "title": "{subject} in {minutes} minutes",
+          "body": "{type} · {record}"
+        },
+        "security_new_device": {
+          "title": "New device sign-in for {name}",
+          "body": "{device}"
+        },
+        "deal_stage": {
+          "title": "{record} moved to {stage}",
+          "body": "You follow this deal · by {actor}"
+        },
+        "ticket_sla": {
+          "title": "{record} is close to breaching first response",
+          "body": "{priority} · {minutes} min left"
+        },
+        "workflow_failed": {
+          "title": "Workflow «{record}» failed {count} times",
+          "body": "{reason}"
+        },
         "document": {
-          "opened": { "title": "Document {number} was opened", "body": "Open the document to see the view." },
-          "completed": { "title": "Document {number} is signed by everyone", "body": "The signature request is complete." },
-          "declined": { "title": "Document {number} was declined", "body": "A signer declined to sign." }
+          "opened": {
+            "title": "Document {number} was opened",
+            "body": "Open the document to see the view."
+          },
+          "completed": {
+            "title": "Document {number} is signed by everyone",
+            "body": "The signature request is complete."
+          },
+          "declined": {
+            "title": "Document {number} was declined",
+            "body": "A signer declined to sign."
+          }
         },
         "workflow": {
-          "failed": { "title": "Workflow «{workflow}» failed", "body": "{error}" },
-          "notice": { "title": "{workflow}", "body": "{message}" },
-          "loop_blocked": { "title": "Workflow «{workflow}» was paused by loop protection", "body": "It ran more often than the safeguard allows." },
-          "transferred_to": { "title": "Workflow «{workflow}» is now yours", "body": "You own it and receive its notices." },
-          "transferred_from": { "title": "Workflow «{workflow}» was handed over", "body": "Someone else owns it now." }
+          "failed": {
+            "title": "Workflow «{workflow}» failed",
+            "body": "{error}"
+          },
+          "notice": {
+            "title": "{workflow}",
+            "body": "{message}"
+          },
+          "loop_blocked": {
+            "title": "Workflow «{workflow}» was paused by loop protection",
+            "body": "It ran more often than the safeguard allows."
+          },
+          "transferred_to": {
+            "title": "Workflow «{workflow}» is now yours",
+            "body": "You own it and receive its notices."
+          },
+          "transferred_from": {
+            "title": "Workflow «{workflow}» was handed over",
+            "body": "Someone else owns it now."
+          }
         },
         "assignment": {
-          "assigned": { "title": "A record was assigned to you", "body": "By «{workflow}»" }
+          "assigned": {
+            "title": "A record was assigned to you",
+            "body": "By «{workflow}»"
+          }
         },
         "mail": {
-          "reauth": { "title": "A mailbox needs to be connected again", "body": "Sending from it is paused until it is reconnected." },
-          "failed": { "title": "An email could not be sent", "body": "«{subject}»" },
-          "received": { "title": "New email in your inbox", "body": "Open the inbox to read it." },
-          "opened": { "title": "Your email was opened", "body": "«{subject}»" },
-          "clicked": { "title": "A link in your email was clicked", "body": "«{subject}»" }
+          "reauth": {
+            "title": "A mailbox needs to be connected again",
+            "body": "Sending from it is paused until it is reconnected."
+          },
+          "failed": {
+            "title": "An email could not be sent",
+            "body": "«{subject}»"
+          },
+          "received": {
+            "title": "New email in your inbox",
+            "body": "Open the inbox to read it."
+          },
+          "opened": {
+            "title": "Your email was opened",
+            "body": "«{subject}»"
+          },
+          "clicked": {
+            "title": "A link in your email was clicked",
+            "body": "«{subject}»"
+          }
+        },
+        "campaign": {
+          "held": {
+            "title": "Campaign «{campaign}» is held",
+            "body": "It is due but cannot be sent yet. Open the campaign to see why."
+          },
+          "sent": {
+            "title": "Campaign «{campaign}» is sent",
+            "body": "{sent} sent · {failed} failed · bounce rate {bounce_rate} %"
+          },
+          "sent_with_problems": {
+            "title": "Campaign «{campaign}» was sent with problems",
+            "body": "{sent} sent · {failed} failed · bounce rate {bounce_rate} %"
+          },
+          "ab_decided": {
+            "title": "A/B test in «{campaign}» decided: {winner} wins",
+            "body": "A {a} · B {b}"
+          },
+          "engaged": {
+            "title": "{person} {kind, select, opened {opened} clicked {clicked a link in} other {engaged with}} «{campaign}»",
+            "body": "A contact you own"
+          }
+        },
+        "project": {
+          "assigned": {
+            "title": "{actor} made you owner of {record}",
+            "body": "Project"
+          },
+          "item_assigned": {
+            "title": "{actor} assigned you «{item}»",
+            "body": "{record}"
+          },
+          "phase_changed": {
+            "title": "{record} moved to {phase}",
+            "body": "You follow this project · by {actor}"
+          },
+          "health_changed": {
+            "title": "{record}: health {health, select, on_track {on track} at_risk {at risk} off_track {off track} on_hold {on hold} other {not set}}",
+            "body": "You follow this project · by {actor}"
+          },
+          "closed": {
+            "title": "{record} was closed",
+            "body": "{status, select, done {Done} canceled {Canceled} other {Closed}} · by {actor}"
+          },
+          "reopened": {
+            "title": "{record} was reopened",
+            "body": "By {actor}"
+          },
+          "ai_summary_ready": {
+            "title": "The AI summary of {record} is ready",
+            "body": "Open the project to read it."
+          },
+          "ai_summary_failed": {
+            "title": "The AI summary of {record} failed",
+            "body": "Try again from the project."
+          },
+          "brief_ready": {
+            "title": "The brief for {record} is drafted",
+            "body": "Review it before it is used."
+          },
+          "brief_failed": {
+            "title": "The brief for {record} could not be drafted",
+            "body": "Try again from the project."
+          },
+          "status_report_ready": {
+            "title": "The status report for {record} is ready",
+            "body": "It is attached to the project."
+          },
+          "status_report_failed": {
+            "title": "The status report for {record} failed",
+            "body": "Try again from the project."
+          }
         }
       }
     },
@@ -92,13 +301,22 @@
       "voice": "Voice input",
       "send": "Send",
       "footer": "Every call goes through the AI gateway · prompts are logged · providers never train on this data",
-      "prompts": { "trials": "Which trials expire this week?", "summarize": "Summarize Lumio AS", "draft": "Draft a follow-up to Kari", "tickets": "Tickets waiting on SLA", "pipeline": "How is the pipeline?" }
+      "prompts": {
+        "trials": "Which trials expire this week?",
+        "summarize": "Summarize Lumio AS",
+        "draft": "Draft a follow-up to Kari",
+        "tickets": "Tickets waiting on SLA",
+        "pipeline": "How is the pipeline?"
+      }
     },
     "account": {
       "label": "Account: {name}",
       "summary": "{role} · MFA by app · IP allowlist {allowlist, select, on {on} other {off}}",
       "language": "Language",
-      "languages": { "en": "English", "no": "Norsk" },
+      "languages": {
+        "en": "English",
+        "no": "Norsk"
+      },
       "timeZone": "Time zone",
       "numberFormat": "Number format",
       "idle": "Session ends after 30 min idle.",

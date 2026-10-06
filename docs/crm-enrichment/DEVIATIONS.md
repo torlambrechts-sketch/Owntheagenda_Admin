@@ -527,3 +527,12 @@ departures are V-P5-05..09 below.
 | V-P5-08 | `signature_events` | — | Adds kind `expired` and a `seq` column; `document_link_create` takes optional label, expiry and notify | Expiry is an event in the chain; `seq` keeps the chain's order under a lock |
 | V-P5-09 | Signing evidence «time and address» (SF-20) | — | The verified email address and the time; no IP, no place | D-37 and spec Q9: the built-in level is a simple electronic signature |
 | V-P5-10 | `suppressions.campaign_id` | Foreign key to campaigns | Plain uuid | Campaigns arrive in phase 6 |
+
+## Phase 6 schema (0037–0039) — departures from `specs/marketing-documents.md` (campaigns) and `specs/projects-meetings.md` (projects)
+
+The departures, the message keys and the RPC contracts are kept with each schema, because the screen builders read them
+as the contract: `deviations/campaigns-schema.md` (V-P6C-01..30) and `deviations/projects-schema.md` (V-P6P-01..17).
+Resolved at the merge by `0039_phase6_engine_wiring.sql`: V-P6P-01 — the workflow engine runs `project_action`
+(validation, blocker, executor), so a workflow with a project step can be switched on. Still open: V-P6P-02 (Insights
+report entities `project` and `campaign`, INS-01), the edge workers (campaign send, provider webhooks, DNS check,
+unsubscribe page, record-files signer, PDF and AI workers) and demo seed rows.

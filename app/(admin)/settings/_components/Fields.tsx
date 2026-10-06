@@ -198,10 +198,14 @@ function Editor({ entity, field, taken, pipelines, sets, optionLimit, editable, 
       ...(d.type === 'formula' ? { formula: d.formula.trim() } : {}),
     }
     if (isNew) {
-      run(() => saveField({ id: null, values: { ...values, entity, type: d.type, key: slug(d.label, taken) } }), (r) => {
-        onCreated(r.id)
-        return t('fields.created', { name: values.label })
-      })
+      run(
+        () => saveField({ id: null, values: { ...values, entity, type: d.type, key: slug(d.label, taken) } }),
+        (r) => {
+          onCreated(r.id)
+          return t('fields.created', { name: values.label })
+        },
+        (r) => (r.detail === 'key' ? t('fields.keyTaken', { key: slug(d.label, taken) }) : undefined),
+      )
     } else {
       run(() => saveField({ id: field.id, values }), () => t('fields.saved', { name: values.label }))
     }

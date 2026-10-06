@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { getFormatter, getNow, getTranslations } from 'next-intl/server'
-import { getShell } from '@/lib/shell'
+import { can, getShell } from '@/lib/shell'
 import {
-  RULE_GROUPS, SECTIONS, allowed, countRecords, effective, loadAccessModel, loadActivityTypes, loadFields, loadModules, loadPipelines,
-  loadSandboxCounts, loadSettings, loadSettingsLog, loadStaff, type Section,
+  RULE_GROUPS, SECTIONS, countRecords, effective, loadAccessModel, loadActivityTypes, loadEntities, loadFields, loadModules, loadPipelines,
+  loadSandboxCounts, sortEntities, loadSettings, loadSettingsLog, loadStaff, type Section,
 } from '@/lib/data/settings'
 import { Rules } from './_components/Rules'
 import { Modules } from './_components/Modules'
@@ -55,6 +55,12 @@ async function SectionBody({ sec }: { sec: Section }) {
   const nf = shell.me.number_format
   const format = await getFormatter()
   const now = await getNow()
+  const allowed = (scope: string, action: string) => can(shell, scope as Parameters<typeof can>[1], action)
+  // the registry's record types in the design's order (Deals, Leads, People, Organizations, Products, Activities …)
+  const entities = async () => {
+    const list = await loadEntities()
+    return sortEntities(list.map((e) => e.key)).map((k) => list.find((e) => e.key === k)!)
+  }
 
   switch (sec) {
     case 'rules': {
@@ -66,34 +72,34 @@ async function SectionBody({ sec }: { sec: Section }) {
           modules={modules.map((m) => m.key)}
           log={log.map((l) => ({ ...l, when: format.dateTime(new Date(l.at), { day: 'numeric', month: 'short' }) }))}
           nf={nf}
-          canEdit={allowed(shell, 'global', 'configure')}
+          canEdit={allowed('global', 'configure')}
         />
       )
     }
     case 'modules':
-      return <Modules modules={await loadModules()} canEdit={allowed(shell, 'global', 'configure')} />
+      return <Modules modules={await loadModules()} canEdit={allowed('global', 'configure')} />
     case 'fields': {
-      const [fields, sandbox, pipelines, access, settings] = await Promise.all([loadFields(null), loadSandboxCounts(), loadPipelines(), loadAccessModel(), loadSettings()])
+      const [fields, ents, pipelines, access, settings] = await Promise.all([loadFields(null), entities(), loadPipelines(), loadAccessModel(), loadSettings()])
       const limit = settings.find((s) => s.key === 'count_limits')
       const lim = limit ? effective(limit) : null
       return (
         <Fields
-          entities={sandbox.entities}
+          entities={ents.map((e) => e.key)}
           fields={fields}
           pipelines={pipelines ?? []}
           sets={access.permission_sets.map((p) => ({ id: p.id, name: p.name }))}
           optionLimit={lim && lim.value === 'number' && lim.number !== null ? lim.number : null}
-          canEdit={Object.fromEntries(sandbox.entities.map((e) => [e, allowed(shell, e === 'ticket' ? 'tickets' : 'deals', 'configure')]))}
+          canEdit={Object.fromEntries(ents.map((e) => [e.key, allowed(e.scope, 'configure')]))}
         />
       )
     }
     case 'pipelines': {
       const [pipelines, access] = await Promise.all([loadPipelines(), loadAccessModel()])
-      return <Pipelines pipelines={pipelines} groups={access.groups.map((g) => ({ id: g.id, name: g.name }))} canEdit={allowed(shell, 'deals', 'configure')} />
+      return <Pipelines pipelines={pipelines} groups={access.groups.map((g) => ({ id: g.id, name: g.name }))} canEdit={allowed('deals', 'configure')} />
     }
     case 'acttypes': {
       const [types, fields] = await Promise.all([loadActivityTypes(), loadFields('activity')])
-      return <ActTypes types={types} fields={fields.map((f) => ({ label: f.label, types: f.activity_type_ids ?? null }))} canEdit={allowed(shell, 'deals', 'configure')} />
+      return <ActTypes types={types} fields={fields.map((f) => ({ label: f.label, types: f.activity_type_ids ?? null }))} canEdit={allowed('deals', 'configure')} />
     }
     case 'locale': {
       const zones = Intl.supportedValuesOf('timeZone')
@@ -117,30 +123,30 @@ async function SectionBody({ sec }: { sec: Section }) {
           me={shell.me.id}
           staff={staff.map((s) => ({ ...s, seen: seen(s.last_seen_at) }))}
           access={access}
-          canEdit={allowed(shell, 'global', 'security')}
+          canEdit={allowed('global', 'security')}
         />
       )
     }
     case 'perms':
-      return <Perms sets={(await loadAccessModel()).permission_sets} canEdit={allowed(shell, 'global', 'security')} />
+      return <Perms sets={(await loadAccessModel()).permission_sets} canEdit={allowed('global', 'security')} />
     case 'groups': {
-      const [access, settings, sandbox] = await Promise.all([loadAccessModel(), loadSettings(), loadSandboxCounts()])
+      const [access, settings, ents] = await Promise.all([loadAccessModel(), loadSettings(), entities()])
       const vis = settings.find((s) => s.key === 'visibility_default')
       return (
         <Groups
           groups={access.groups}
-          entities={sandbox.entities.map((e) => ({ key: e, value: vis ? effective(vis, e).value : 'all' }))}
+          entities={ents.filter((e) => e.owned).map((e) => ({ key: e.key, value: vis ? effective(vis, e.key).value : 'all' }))}
           options={vis?.options ?? ['owner', 'group', 'group_sub', 'all']}
-          canEditGroups={allowed(shell, 'global', 'security')}
-          canEditDefaults={allowed(shell, 'global', 'configure')}
+          canEditGroups={allowed('global', 'security')}
+          canEditDefaults={allowed('global', 'configure')}
         />
       )
     }
     case 'plans': {
-      const [settings, sandbox, fields, staff, access, pipelines, types] = await Promise.all([
-        loadSettings(), loadSandboxCounts(), loadFields(null), loadStaff(), loadAccessModel(), loadPipelines(), loadActivityTypes(),
+      const [settings, ents, fields, staff, access, pipelines, types] = await Promise.all([
+        loadSettings(), entities(), loadFields(null), loadStaff(), loadAccessModel(), loadPipelines(), loadActivityTypes(),
       ])
-      const records = await Promise.all(sandbox.entities.map(async (e) => ({ key: e, n: await countRecords(e) })))
+      const records = await Promise.all(ents.map(async (e) => ({ key: e.key, n: await countRecords(e.key) })))
       const gates = settings.find((s) => s.key === 'plan_gates')
       return (
         <Plans
@@ -161,14 +167,14 @@ async function SectionBody({ sec }: { sec: Section }) {
       )
     }
     case 'sandbox': {
-      const sandbox = await loadSandboxCounts()
+      const [sandbox, ents] = await Promise.all([loadSandboxCounts(), entities()])
       return (
         <Sandbox
-          rows={sandbox.entities.map((e) => ({ key: e, n: sandbox.counts[e] ?? 0 }))}
+          rows={ents.map((e) => ({ key: e.key, n: sandbox.counts[e.key] ?? 0 }))}
           lastCleared={sandbox.lastCleared ? format.dateTime(new Date(sandbox.lastCleared), { day: 'numeric', month: 'short', year: 'numeric' }) : null}
           on={shell.me.sandbox}
           nf={nf}
-          canClear={allowed(shell, 'global', 'configure')}
+          canClear={allowed('global', 'configure')}
         />
       )
     }

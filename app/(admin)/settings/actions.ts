@@ -69,17 +69,15 @@ const FieldIn = z.object({
     })
     .partial(),
 })
-export async function saveField(input: z.input<typeof FieldIn>): Promise<Result<{ id: string }>> {
+/** A new field's key may still belong to an archived field (keys stay unique per record type): refused as invalid, detail key. */
+export async function saveField(input: z.input<typeof FieldIn>): Promise<({ ok: true; id: string }) | { ok: false; code: RpcCode; detail?: 'key' }> {
   const p = FieldIn.safeParse(input)
   if (!p.success) return bad
   if (!p.data.id && (!p.data.values.entity || !p.data.values.label || !p.data.values.type)) return bad
-  let r = await call('field_save', { p_id: p.data.id, p_values: p.data.values }, z.object({ id: uuid }))
-  // a new field's key may belong to an archived field (keys stay unique per record type): retry once with a suffix
-  if (!r.ok && r.code === 'failed' && !p.data.id && p.data.values.key) {
-    const key = `${p.data.values.key.slice(0, 36)}_${Math.random().toString(36).slice(2, 6)}`
-    r = await call('field_save', { p_id: null, p_values: { ...p.data.values, key } }, z.object({ id: uuid }))
-  }
-  return r.ok ? { ok: true, id: r.data.id } : r
+  const r = await rpc('field_save', { p_id: p.data.id, p_values: p.data.values }, z.object({ id: uuid }))
+  if (!r.ok) return { ok: false, code: r.code, ...(r.detail === 'key' ? { detail: 'key' as const } : {}) }
+  done()
+  return { ok: true, id: r.data.id }
 }
 
 // ---------------------------------------------------------------------------

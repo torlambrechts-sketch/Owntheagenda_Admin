@@ -60,6 +60,7 @@
         "limits": "Grenser",
         "safeguards": "Tekniske sikringer",
         "meetings": "Møter",
+        "ai": "KI",
         "platform_constant": "Plattformkonstant"
       },
       "items": {
@@ -165,6 +166,13 @@
           "options": {
             "on_24h": "På med 24 timers varsel",
             "custom": "Egendefinert tid",
+            "off": "Av"
+          }
+        },
+        "ai_scoring": {
+          "name": "KI-poengsetting av avtaler og leads",
+          "options": {
+            "on": "På",
             "off": "Av"
           }
         },
@@ -290,6 +298,7 @@
       "saved": "Felt lagret · {name}",
       "created": "Felt lagt til · {name}",
       "archived": "Felt arkivert · {name}",
+      "keyTaken": "Nøkkelen «{key}» tilhører fortsatt et arkivert felt på denne typen. Gi feltet et annet navn.",
       "allPipelines": "Alle salgsløp",
       "pipelineOnly": "Bare {name}",
       "nobody": "Ingen",

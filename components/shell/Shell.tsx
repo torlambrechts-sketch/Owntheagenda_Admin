@@ -8,6 +8,7 @@ import { Sidebar } from './Sidebar'
 import { Header, type Popover } from './Header'
 import { SearchDialog } from './SearchDialog'
 import { AssistantPanel } from './AssistantPanel'
+import { ToastProvider } from '@/components/ui/Toast'
 import type { ShellData } from './types'
 
 const IDLE_MS = 30 * 60 * 1000
@@ -46,6 +47,7 @@ export function Shell({ shell, product, children }: { shell: ShellData; product:
   }, [shell.settings.session_idle])
 
   return (
+    <ToastProvider>
     <div className="flex min-h-screen bg-canvas font-sans text-14 text-ink">
       {menu ? <div className="fixed inset-0 z-[74] bg-[rgba(25,21,16,.42)] md:hidden" onClick={() => setMenu(false)} /> : null}
       <Sidebar shell={shell} route={route} product={product} open={menu} onNavigate={() => setMenu(false)} />
@@ -65,5 +67,6 @@ export function Shell({ shell, product, children }: { shell: ShellData; product:
       {assist ? <AssistantPanel onClose={() => setAssist(false)} /> : null}
       {searchOpen ? <SearchDialog onClose={() => setSearchOpen(false)} /> : null}
     </div>
+    </ToastProvider>
   )
 }

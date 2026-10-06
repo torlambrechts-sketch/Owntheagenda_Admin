@@ -118,6 +118,166 @@ for (const p of D.people) {
   ${member ? "'orgpuls'" : 'null'}, ${member ? q('orgpuls-' + o.id) : 'null'}, ${member ? q('u-' + p.id) : 'null'}, ${ago(60)}, ${ago(p.lastTouch)});`)
 }
 
+// ---- consent: the design's marketing status per person, with a ledger row
+const consentKey = { Subscribed: 'subscribed', 'No consent': 'no_consent', 'Pending double opt-in': 'pending', Unsubscribed: 'unsubscribed', Bounced: 'bounced' }
+for (const p of D.people) {
+  const st = consentKey[p.consent]
+  sql(`update app.people set marketing_status = ${q(st)} where id = ${q(uid('person', p.id))};`)
+  if (st !== 'no_consent') sql(`insert into app.consent_events (person_id, status, source, basis, at) values (${q(uid('person', p.id))}, ${q(st)}, ${q(p.source)}, ${st === 'subscribed' ? q('Signed up') : 'null'}, ${ago(30)});`)
+}
+
+// ---- deal and lead labels (the design's label colours)
+for (const [i, l] of D.labelDefs.entries()) {
+  sql(`insert into app.labels (id, entity, name, bg, ink, ord) values (${q(uid('label-deal', l.n))}, 'deal', ${q(l.n)}, ${q(l.bg)}, ${q(l.c)}, ${i * 10});`)
+  sql(`insert into app.labels (id, entity, name, bg, ink, ord) values (${q(uid('label-lead', l.n))}, 'lead', ${q(l.n)}, ${q(l.bg)}, ${q(l.c)}, ${i * 10});`)
+}
+
+// ---- pipelines and stages
+for (const [pi, pl] of D.pipelines.entries()) {
+  sql(`insert into app.pipelines (id, name, ord) values (${q(uid('pipeline', pl.id))}, ${q(pl.name)}, ${(pi + 1) * 10});`)
+  for (const [si, st] of pl.stages.entries()) {
+    sql(`insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values (${q(uid('stage', st.id))}, ${q(uid('pipeline', pl.id))}, ${q(st.name)}, ${(si + 1) * 10}, ${st.prob}, ${st.rot ?? 'null'});`)
+  }
+}
+sql(`update app.pipelines set visibility_group_ids = array[${q(uid('group', 'Public sector'))}, ${q(uid('group', 'Sales'))}]::uuid[] where id = ${q(uid('pipeline', 'pub'))};`)
+
+// ---- deals: close «12 Nov» is read in the design's year; idle days drive the activity clock
+const monthNo = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 }
+const closeDate = (c) => { const [d, m] = c.split(' '); const mm = monthNo[m]; const y = mm < 10 ? 2027 : 2026; return `${y}-${String(mm).padStart(2, '0')}-${String(d).padStart(2, '0')}` }
+const stageOf = Object.fromEntries(D.pipelines.flatMap((p) => p.stages.map((st) => [st.id, p.id])))
+for (const d of D.deals) {
+  const pl = stageOf[d.stage]
+  sql(`insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values (${q(uid('deal', d.id))}, ${q(d.title)}, ${d.value}, 'NOK', ${q(uid('pipeline', pl))}, ${q(uid('stage', d.stage))}, ${ago(d.idle + 2)}, ${q(d.status)},
+  ${d.status === 'won' ? ago(3) : 'null'}, ${d.status === 'lost' ? ago(5) : 'null'}, ${q(d.lostReason ?? null)}, ${q(uid('person', d.person))}, ${q(uid('org', d.org))},
+  ${q(closeDate(d.close))}, ${q(d.source)}, ${q(d.product)}, ${ago(d.idle)}, ${q(uid('staff', d.owner))},
+  ${arr(d.labels.map((l) => uid('label-deal', l)), 'uuid')}, ${ago(d.created)}, ${ago(d.idle)});`)
+  sql(`insert into app.deal_stage_history (deal_id, stage_id, entered_at) values (${q(uid('deal', d.id))}, ${q(uid('stage', d.stage))}, ${ago(d.idle + 2)});`)
+  for (const f of d.followers) sql(`insert into app.followers (entity, record_id, staff_id) values ('deal', ${q(uid('deal', d.id))}, ${q(uid('staff', f))}) on conflict do nothing;`)
+}
+
+// ---- activities: «day» is days from today, at the design's hour in Oslo time
+const typeOf = (k) => `(select id from app.activity_types where key = ${q(k)})`
+const at = (day, hour, min) => `((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '${day} days' + interval '${hour} hours' + interval '${min} minutes') at time zone 'Europe/Oslo')`
+for (const a of D.activities) {
+  sql(`insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values (${q(uid('activity', a.id))}, ${typeOf(a.type)}, ${q(a.subject)}, ${at(a.day, a.hour, a.min)}, ${a.dur}, ${q(a.prio.toLowerCase())}, ${a.done}, ${a.done ? at(a.day, a.hour + 1, 0) : 'null'},
+  ${q(uid('deal', a.deal))}, ${q(uid('person', a.person))}, ${q(uid('org', a.org))}, ${a.video ? "'meet'" : 'null'}, ${q(uid('staff', a.owner))}, ${ago(10)});`)
+}
+
+// ---- leads (Contacts.dc.html, leadSeed), with the next activity the design names
+const leadSeed = [['L-501', 'Kystlinje Transport — 220 drivers', 'p6', 120000, ['Hot'], 'Web form', ['call', 0, 14]], ['L-502', 'Polarlys Media — HR survey', 'p9', 18000, ['Warm'], 'Chatbot', ['email', 0, 10]],
+  ['L-503', 'Mjøsa Energi — Avvikspunkt', 'p12', 64000, ['Hot'], 'Prospect search', null], ['L-504', 'Vardø Havn — verneombud training', 'p14', 22000, ['Cold'], 'Live chat', ['task', 1, 9]],
+  ['L-505', 'Fossheim Utleie — pilot', 'p16', 9000, ['Warm'], 'Web visitors', ['meeting', 3, 10]], ['L-506', 'Torget Apotek — 3 pharmacies', 'p18', 36000, [], 'Import', null],
+  ['L-507', 'Hamnvik Fiskeri — shift planning', 'p20', 48000, ['Hot', 'Multi-product'], 'Campaign', ['call', 2, 11]], ['L-508', 'Oddernes Bil — Kursrom', 'p22', 12000, ['Cold'], 'Messaging', ['task', 0, 15]],
+  ['L-509', 'Røros Kobber — baseline', 'p24', 26000, ['Warm'], 'API', null], ['L-510', 'Lindeberg Klinikk — HR suite', 'p26', 54000, [], 'Lead suggestions', ['email', 7, 9]]]
+for (const [i, [id, title, pid, value, labels, source, next]] of leadSeed.entries()) {
+  const person = D.personById[pid]
+  sql(`insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values (${q(uid('lead', id))}, ${q(title)}, ${q(uid('person', pid))}, ${q(uid('org', person.org))}, ${value}, ${q(source)}, ${q(uid('staff', person.owner))},
+  ${arr(labels.map((l) => uid('label-lead', l)), 'uuid')}, ${ago(i + 1)}, ${ago(i)});`)
+  if (next) sql(`insert into app.activities (type_id, subject, starts_at, duration_min, lead_id, person_id, organization_id, owner_id) values (${typeOf(next[0])},
+  ${q({ call: 'Call', email: 'Email', task: 'Follow up', meeting: 'Meeting' }[next[0]] + ' — ' + person.name)}, ${at(next[1], next[2], 0)}, 30, ${q(uid('lead', id))}, ${q(uid('person', pid))}, ${q(uid('org', person.org))}, ${q(uid('staff', person.owner))});`)
+}
+
+// ---- the sales catalog (Deals.dc.html, catalog)
+const catalog = [['Orgpuls — 1–25 employees', 'OP-B1', 'org / month', 265, '#DCEBD3', 'recurring', 'monthly', 'orgpuls'], ['Orgpuls — 26–100 employees', 'OP-B2', 'org / month', 565, '#DCEBD3', 'recurring', 'monthly', 'orgpuls'],
+  ['Orgpuls — 101–250 employees', 'OP-B3', 'org / month', 1190, '#DCEBD3', 'recurring', 'monthly', 'orgpuls'], ['Skiftly — per seat', 'SK-SEAT', 'seat / month', 39, '#CFE0F5', 'recurring', 'monthly', 'skiftly'],
+  ['Avvikspunkt — company', 'AV-CO', 'org / month', 390, '#F6D9C6', 'recurring', 'monthly', 'avvik'], ['Kursrom — course pack', 'KR-PACK', 'pack', 4900, '#E7DAF2', 'installments', null, 'kurs'],
+  ['Onboarding workshop', 'SRV-ONB', 'session', 7500, '#F3E2C9', 'one_off', null, null], ['Verneombud training', 'SRV-VO', 'participant', 1490, '#F3E2C9', 'one_off', null, null]]
+for (const [n, code, unit, nok, color, billing, freq, product] of catalog) {
+  sql(`insert into app.catalog_items (id, name, code, unit, color, billing, billing_frequency, product) values (${q(uid('item', code))}, ${q(n)}, ${q(code)}, ${q(unit)}, ${q(color)}, ${q(billing)}, ${q(freq)}, ${q(product)});`)
+  sql(`insert into app.catalog_prices (item_id, currency, unit_price) values (${q(uid('item', code))}, 'NOK', ${nok});`)
+}
+// the expansion deal's lines (the drawer's example)
+sql(`insert into app.deal_items (deal_id, item_id, name, quantity, unit_price, billing, billing_frequency, cycles, ord) values
+  (${q(uid('deal', 'd101'))}, ${q(uid('item', 'SK-SEAT'))}, 'Skiftly — per seat', 48, 39, 'recurring', 'monthly', 24, 10),
+  (${q(uid('deal', 'd101'))}, ${q(uid('item', 'SRV-ONB'))}, 'Onboarding workshop', 1, 7500, 'one_off', null, null, 20);`)
+
+// ---- notes (Customers.dc.html, Lumio AS)
+sql(`insert into app.notes (entity, record_id, body, pinned, author_id, created_at) values
+  ('organization', ${q(uid('org', 'o1'))}, 'Kari wants Skiftly for the two warehouse teams first. Budget decision at the October board meeting.', true, ${q(uid('staff', 'ingrid'))}, ${ago(8)}),
+  ('organization', ${q(uid('org', 'o1'))}, 'Walked HR through verneombud access. Happy with response — asked for nynorsk survey option.', false, ${q(uid('staff', 'magnus'))}, ${ago(4)}),
+  ('deal', ${q(uid('deal', 'd101'))}, 'Kari wants Skiftly for the two warehouse teams first. Budget decision at the October board meeting.', true, ${q(uid('staff', 'ingrid'))}, ${ago(8)});`)
+
+// ---- tickets (admin-data.js tickets): T-numbers, thread, personvern clock
+const tType = { Incident: 'incident', Question: 'question', 'Service request': 'service_request', Problem: 'problem' }
+const tCat = { 'Survey delivery': 'survey_delivery', 'Getting started': 'getting_started', Billing: 'billing', 'Results and anonymity': 'results_anonymity', Sales: 'sales', 'Personvern request': 'personvern', Bug: 'bug', Tiltak: 'tiltak', 'Feature request': 'feature_request' }
+const tStatus = { New: 'new', Open: 'open', 'Waiting on customer': 'waiting_customer', 'Waiting on us': 'waiting_us', Resolved: 'resolved', Closed: 'closed' }
+const tImpact = { 'One user': 'one_user', 'One org': 'one_org', 'Many orgs': 'many_orgs' }
+const tChannel = { 'In-app help': 'in_app', Email: 'email', 'Contact form': 'contact_form' }
+const tQueue = { Support: 'support', Billing: 'billing', Sales: 'sales', Personvern: 'personvern' }
+for (const t of D.tickets) {
+  const n = parseInt(t.id.slice(2), 10)
+  const created = `now() - interval '${t.ageH} hours'`
+  const person = D.personById[t.person]
+  const isProblem = t.type === 'Problem'
+  const fr = { Urgent: 240, High: 480, Normal: 960, Low: 2400 }[t.prio]
+  const res = { Urgent: 960, High: 2400, Normal: 4800, Low: 9600 }[t.prio]
+  sql(`insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values (${q(uid('ticket', t.id))}, ${n}, ${q(tType[t.type])}, ${q(tCat[t.cat])}, ${q(tQueue[t.queue])}, ${q(tStatus[t.status])}, ${q(tImpact[t.impact])},
+  ${q(t.urgency === 'Blocking' ? 'blocking' : 'not_blocking')}, ${q(t.subject)}, ${q(uid('org', t.org))}, ${q(uid('person', t.person))}, ${q(person.email)}, ${q(t.product)}, ${q(tChannel[t.channel])},
+  ${t.assignee ? q(uid('staff', t.assignee)) : 'null'}, ${isProblem ? q(n === 2316 ? 'investigating' : 'resolved') : 'null'},
+  jsonb_build_object('role', ${q(person.role)}, 'page', ${q(t.page)}, 'browser', ${q(t.browser)}), ${q(D.orgById[t.org].status === 'Trial' ? 'trial' : 'customer')},
+  app.business_add(${created}, ${fr}), app.business_add(${created}, ${res}), ${t.responded ? `${created} + interval '100 minutes'` : 'null'},
+  ${['Resolved', 'Closed'].includes(t.status) ? `${created} + interval '20 hours'` : 'null'}, ${t.status === 'Closed' ? `${created} + interval '30 hours'` : 'null'}, ${t.csat ?? 'null'},
+  ${t.assignee ? q(uid('staff', t.assignee)) : q(uid('staff', 'magnus'))}, ${created}, ${created});`)
+  if (n === 2310) {
+    sql(`insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values (${q(uid('ticket', t.id))}, 'customer', ${q(uid('person', t.person))}, 'Hei! 14 av de ansatte på lageret har ikke fått invitasjonen til baselinemålingen som gikk ut i morges. Alle har adresser på samme domene.', ${created});
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at) values (${q(uid('ticket', t.id))}, 'note', ${q(uid('staff', 'magnus'))}, '@Hanna this is the same pattern as Elvebakken. Workaround in the known error works — can you take the reply while I check the provider status?', ${created} + interval '18 minutes');`)
+  } else {
+    const o = D.orgById[t.org]
+    sql(`insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values (${q(uid('ticket', t.id))}, 'customer', ${q(uid('person', t.person))}, ${q('Hei, ' + t.subject.toLowerCase() + '. Kan dere hjelpe oss med dette? Vi er ' + o.employees + ' ansatte i ' + o.name + '.')}, ${created});`)
+    if (t.responded) {
+      const agent = D.staffById[t.assignee || 'magnus']
+      sql(`insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values (${q(uid('ticket', t.id))}, 'reply', ${q(uid('staff', t.assignee || 'magnus'))}, ${q('Hei ' + person.name.split(' ')[0] + ', takk for beskjeden — vi ser på det nå og kommer tilbake i dag.')}, ${created} + interval '100 minutes', 'sent');`)
+    }
+  }
+  if (t.cat === 'Personvern request') sql(`insert into app.privacy_requests (ticket_id, organization_id, kind, received_at, due_at, owner_id) values (${q(uid('ticket', t.id))}, ${q(uid('org', t.org))}, ${q(t.subject.startsWith('Deletion') ? 'deletion' : 'access')}, ${created}, ${created} + interval '30 days', ${t.assignee ? q(uid('staff', t.assignee)) : 'null'});`)
+}
+for (const t of D.tickets.filter((x) => x.problem)) sql(`update app.tickets set problem_id = ${q(uid('ticket', t.problem))} where id = ${q(uid('ticket', t.id))};`)
+sql(`update app.tickets set root_cause = 'The mail provider greylists first-time senders on several @kommune.no domains (451).', workaround = 'Ask IT to allow varsler@orgpuls.no as a sender; resend from Oppsett → Invitasjoner.' where number = 2316;`)
+
+// ---- macros (Tickets.dc.html) — the group-threshold macro states the real rule: the organisation's threshold, never under three
+const macros = [['Invitasjoner — sjekk søppelpost og domene', 'survey_delivery', 'Hei [fornavn],\n\nTakk for at du sier fra. Vi ser at [antall] invitasjoner ikke er levert til [domene]. Det skyldes oftest at e-postserveren deres holder igjen meldinger fra nye avsendere.\n\nBe IT legge til varsler@orgpuls.no som godkjent avsender. Vi sender invitasjonene på nytt så snart det er gjort.\n\nVennlig hilsen\n[agent]'],
+  ['Hvorfor vises gruppen som «—»?', 'results_anonymity', 'Hei [fornavn],\n\nGrupper med færre svar enn terskelen dere har satt, vises ikke. Terskelen er fem som standard og aldri under tre, og det er produktets regel — ikke deres. Slå sammen små team under Oppsett → Struktur, så vises resultatet for den samlede gruppen.\n\nVennlig hilsen\n[agent]'],
+  ['Prøveperioden er forlenget', 'billing', 'Hei [fornavn],\n\nVi har forlenget prøveperioden med [dager] dager, til [dato]. Alt dere har satt opp, ligger der fortsatt.\n\nVennlig hilsen\n[agent]'],
+  ['Overgang til EHF-faktura', 'billing', 'Hei [fornavn],\n\nFra neste periode sender vi faktura som EHF til organisasjonsnummer [orgnr]. Gi oss gjerne en referanse eller et bestillingsnummer.\n\nVennlig hilsen\n[agent]'],
+  ['Personvern — forespørsel mottatt', 'personvern', 'Hei,\n\nVi har mottatt forespørselen og svarer innen 30 dager. Svar i undersøkelser kan ikke spores tilbake til en person, og de inngår derfor ikke i et innsyn.\n\nVennlig hilsen\n[agent]']]
+for (const [n, cat, body] of macros) {
+  sql(`insert into app.ticket_macros (id, name, category_key) values (${q(uid('macro', n))}, ${q(n)}, ${q(cat)});`)
+  sql(`insert into app.ticket_macro_versions (macro_id, locale, version, body) values (${q(uid('macro', n))}, 'nb', 1, ${q(body)});`)
+}
+
+// ---- help centre (Tickets.dc.html, articles)
+const articles = [['invitasjoner-kommer-ikke-frem', 'Invitasjoner kommer ikke frem', 'survey_delivery', 'published', 2316], ['gruppe-vises-som-strek', 'Hvorfor vises en gruppe som «—»?', 'results_anonymity', 'published', null],
+  ['legg-til-verneombud', 'Slik legger du til verneombud', 'getting_started', 'published', null], ['kjent-feil-kommunale-domener', 'Kjent feil: kommunale e-postdomener', 'survey_delivery', 'published', 2316],
+  ['kort-til-ehf', 'Bytte fra kort til EHF-faktura', 'billing', 'published', null], ['importere-ansatte-visma', 'Importere ansatte fra Visma', 'getting_started', 'draft', null]]
+for (const [slug, title, cat, status, problem] of articles) {
+  sql(`insert into app.help_articles (slug, title, category_key, status, published_at, problem_id) values (${q(slug)}, ${q(title)}, ${q(cat)}, ${q(status)}, ${status === 'published' ? ago(10) : 'null'},
+  ${problem ? `(select id from app.tickets where number = ${problem})` : 'null'});`)
+}
+
+// ---- plan catalogue: Orgpuls' bands (annual is ten months)
+for (const [i, b] of D.bands.entries()) {
+  sql(`insert into app.plan_versions (product, band_label, min_employees, max_employees, monthly_price, annual_price, version) values ('orgpuls', ${q(b.label)}, ${b.min}, ${b.max}, ${b.price}, ${b.price * 10}, 1);`)
+}
+
+// ---- what Orgpuls reports as counts (D-21): one round per company that has surveyed, and activation milestones
+const steps = ['account_created', 'employees_uploaded', 'survey_scheduled', 'survey_sent', 'result_unlocked', 'results_viewed', 'first_tiltak', 'converted']
+for (const o of D.orgs) {
+  const tenant = `orgpuls-${o.id}`
+  if (o.lastSurvey) {
+    const invited = Math.round(o.employees * 0.95), delivered = Math.max(invited - 1, 0)
+    sql(`insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', ${q(tenant)}, 'r1', 'Baseline 2026', 'main', ${ago(o.lastSurvey)}, ${ago(o.lastSurvey)} + interval '14 days', ${invited}, ${delivered}, ${invited - delivered}, ${Math.round(delivered * o.response / 100)}, 2);`)
+  }
+  const done = o.status === 'Trial' ? (o.lastSurvey ? 5 : 2) : 8
+  for (let i = 0; i < done; i++) sql(`insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', ${q(tenant)}, ${q(steps[i])}, ${ago(o.signupDaysAgo)} + interval '${i * 2} days');`)
+}
+
 // ---- MRR history: the design's twelve months (mrrSeries), month-end snapshots before this month; today's is computed
 // the series is scaled per product so its last month meets the seeded subscriptions (the design's series and
 // its per-organization prices are drawn independently)

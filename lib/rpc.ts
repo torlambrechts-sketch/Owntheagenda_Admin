@@ -5,10 +5,10 @@ import { createClient } from '@/lib/supabase/server'
 /**
  * One way to call the platform's database functions: the result is parsed with its zod schema, never cast,
  * and a refusal comes back as a code the UI has a message for. The database raises with a short message
- * (forbidden, not_found, version_conflict, invalid, reason_required, module_off, not_signed_in) and a detail
+ * (forbidden, not_found, version_conflict, invalid, reason_required, module_off, not_signed_in, approval_required) and a detail
  * naming the field or right.
  */
-export const RPC_CODES = ['forbidden', 'not_found', 'version_conflict', 'invalid', 'reason_required', 'module_off', 'not_signed_in', 'fixed_setting', 'failed'] as const
+export const RPC_CODES = ['forbidden', 'not_found', 'version_conflict', 'invalid', 'reason_required', 'module_off', 'not_signed_in', 'fixed_setting', 'approval_required', 'failed'] as const
 export type RpcCode = (typeof RPC_CODES)[number]
 
 export class RpcError extends Error {

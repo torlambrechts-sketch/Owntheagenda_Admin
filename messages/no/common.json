@@ -14,7 +14,8 @@
       "module_off": "Denne modulen er slått av.",
       "not_signed_in": "Økten er avsluttet. Logg inn igjen.",
       "fixed_setting": "Denne innstillingen er fast.",
-      "failed": "Noe gikk galt. Prøv igjen."
+      "failed": "Noe gikk galt. Prøv igjen.",
+      "approval_required": "En annen administrator må godkjenne dette først."
     },
     "pending": {
       "title": "Denne skjermen bygges nå",

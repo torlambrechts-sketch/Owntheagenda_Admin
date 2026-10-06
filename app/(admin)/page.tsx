@@ -202,12 +202,12 @@ export default async function OverviewPage() {
       </div>
 
       <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr))]">
-        <div className="rounded-20 border border-line bg-surface px-[22px] py-5">
-          <div className="mb-[10px] flex items-baseline justify-between">
+        <div className="overflow-x-auto rounded-20 border border-line bg-surface px-[22px] py-5">
+          <div className="mb-[10px] flex min-w-[520px] items-baseline justify-between">
             <span className="text-15 font-bold">{t('trials.title')}</span>
             <Link href="/customers" className="text-12.5 font-semibold">{t('trials.all')}</Link>
           </div>
-          <div className={`grid gap-[10px] border-b border-line px-1 py-2 [grid-template-columns:minmax(0,2fr)_70px_minmax(0,1fr)_minmax(0,1fr)_90px] ${ui.colHead}`}>
+          <div className={`grid min-w-[520px] gap-[10px] border-b border-line px-1 py-2 [grid-template-columns:minmax(0,2fr)_70px_minmax(0,1fr)_minmax(0,1fr)_90px] ${ui.colHead}`}>
             <span>{t('trials.cols.org')}</span><span>{t('trials.cols.days')}</span><span>{t('trials.cols.survey')}</span><span>{t('trials.cols.source')}</span><span>{t('trials.cols.owner')}</span>
           </div>
           {o.trials_list.map((r) => {
@@ -216,7 +216,7 @@ export default async function OverviewPage() {
               <Link
                 key={r.account_id}
                 href={(r.organization_id ? `/customers?org=${r.organization_id}` : '/customers') as never}
-                className={`grid w-full cursor-pointer items-center gap-[10px] border-b border-line bg-transparent px-1 py-[10px] text-left text-13 [grid-template-columns:minmax(0,2fr)_70px_minmax(0,1fr)_minmax(0,1fr)_90px] ${ui.plainLink}`}
+                className={`grid w-full min-w-[520px] cursor-pointer items-center gap-[10px] border-b border-line bg-transparent px-1 py-[10px] text-left text-13 [grid-template-columns:minmax(0,2fr)_70px_minmax(0,1fr)_minmax(0,1fr)_90px] ${ui.plainLink}`}
               >
                 <span className="flex flex-col">
                   <span className="font-semibold">{r.name}</span>

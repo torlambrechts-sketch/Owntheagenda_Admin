@@ -980,6 +980,1234 @@ insert into app.people (id, name, email, phone, organization_id, title, contact_
   values ('c698e247-a1b5-4991-a3d0-86edd073f22c', 'Morten Dahl', 'morten.dahl@roroskobber.no', '+47 401 91 829', '57f7447d-a544-4820-aeff-f4a5ce6d594f', 'Daglig leder', 'trial_user', 'Event', 'Lillestrøm', 'Akershus',
   'a56d1006-261a-4159-acba-5928ecb0540a', array[]::uuid[], now() - interval '23 days',
   'orgpuls', 'orgpuls-o34', 'u-p32', now() - interval '60 days', now() - interval '23 days');
+update app.people set marketing_status = 'subscribed' where id = '0b29480e-c6f6-44ca-aca1-efb63d0ffac5';
+insert into app.consent_events (person_id, status, source, basis, at) values ('0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'subscribed', 'Contact form', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'pending' where id = '4fe0d13d-17df-48f8-a617-baaa37e2e0a4';
+insert into app.consent_events (person_id, status, source, basis, at) values ('4fe0d13d-17df-48f8-a617-baaa37e2e0a4', 'pending', 'Web visitor', null, now() - interval '30 days');
+update app.people set marketing_status = 'no_consent' where id = 'b6a51c65-69e8-4b7d-a3dc-38bc4441500a';
+update app.people set marketing_status = 'unsubscribed' where id = 'a7bae5fa-5643-4e9f-aeee-d76f6c33836c';
+insert into app.consent_events (person_id, status, source, basis, at) values ('a7bae5fa-5643-4e9f-aeee-d76f6c33836c', 'unsubscribed', 'Signup', null, now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = '720900f5-c8a6-4098-a8f1-ac9fb0f53b93';
+insert into app.consent_events (person_id, status, source, basis, at) values ('720900f5-c8a6-4098-a8f1-ac9fb0f53b93', 'subscribed', 'Prospect search', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'no_consent' where id = '1df7fc68-300c-4bb7-a9ff-538263f7e6f4';
+update app.people set marketing_status = 'pending' where id = '15c6d004-0d70-47d1-a256-cf47c4cb890e';
+insert into app.consent_events (person_id, status, source, basis, at) values ('15c6d004-0d70-47d1-a256-cf47c4cb890e', 'pending', 'Newsletter', null, now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = 'fdda4fe8-b00b-4b72-a858-beea3922741e';
+insert into app.consent_events (person_id, status, source, basis, at) values ('fdda4fe8-b00b-4b72-a858-beea3922741e', 'subscribed', 'Import', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'bounced' where id = '09b8bc1e-ec1b-43f3-adac-f6d35452e175';
+insert into app.consent_events (person_id, status, source, basis, at) values ('09b8bc1e-ec1b-43f3-adac-f6d35452e175', 'bounced', 'Contact form', null, now() - interval '30 days');
+update app.people set marketing_status = 'bounced' where id = '94ae646c-109b-48c9-a0db-facedbfefac8';
+insert into app.consent_events (person_id, status, source, basis, at) values ('94ae646c-109b-48c9-a0db-facedbfefac8', 'bounced', 'Import', null, now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = '5e0d56bd-82f3-44ed-adf7-cdf56354e798';
+insert into app.consent_events (person_id, status, source, basis, at) values ('5e0d56bd-82f3-44ed-adf7-cdf56354e798', 'subscribed', 'Contact form', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = '52158070-0c8e-4592-a311-b5ef3a5a8fda';
+insert into app.consent_events (person_id, status, source, basis, at) values ('52158070-0c8e-4592-a311-b5ef3a5a8fda', 'subscribed', 'Newsletter', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = 'b133b02a-13ed-4583-a1bb-7a82aa3f93c4';
+insert into app.consent_events (person_id, status, source, basis, at) values ('b133b02a-13ed-4583-a1bb-7a82aa3f93c4', 'subscribed', 'Import', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = 'fb128665-befa-460c-ab93-7e7b726120b0';
+insert into app.consent_events (person_id, status, source, basis, at) values ('fb128665-befa-460c-ab93-7e7b726120b0', 'subscribed', 'Web visitor', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'no_consent' where id = '3747e428-d430-4bce-a3e2-34708a89dadf';
+update app.people set marketing_status = 'bounced' where id = 'a37ecc9f-1f3e-4343-a277-6903aa6a6bc3';
+insert into app.consent_events (person_id, status, source, basis, at) values ('a37ecc9f-1f3e-4343-a277-6903aa6a6bc3', 'bounced', 'Contact form', null, now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = '9fccfb54-8736-40c7-ae6c-cb44ae85c623';
+insert into app.consent_events (person_id, status, source, basis, at) values ('9fccfb54-8736-40c7-ae6c-cb44ae85c623', 'subscribed', 'Prospect search', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'unsubscribed' where id = '2c64c379-eb53-4479-a34d-19f60b34b5be';
+insert into app.consent_events (person_id, status, source, basis, at) values ('2c64c379-eb53-4479-a34d-19f60b34b5be', 'unsubscribed', 'Web visitor', null, now() - interval '30 days');
+update app.people set marketing_status = 'unsubscribed' where id = '3ac11dbd-8933-4f9e-aef8-3376e446e49a';
+insert into app.consent_events (person_id, status, source, basis, at) values ('3ac11dbd-8933-4f9e-aef8-3376e446e49a', 'unsubscribed', 'Import', null, now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = 'be2444b2-cda0-4a7c-a743-c92fec71cfc7';
+insert into app.consent_events (person_id, status, source, basis, at) values ('be2444b2-cda0-4a7c-a743-c92fec71cfc7', 'subscribed', 'Web visitor', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'unsubscribed' where id = '676c57fd-45bc-42aa-ac4e-e2f519d515fb';
+insert into app.consent_events (person_id, status, source, basis, at) values ('676c57fd-45bc-42aa-ac4e-e2f519d515fb', 'unsubscribed', 'Web visitor', null, now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = '88500134-e1b6-440b-a1fa-4c172446958c';
+insert into app.consent_events (person_id, status, source, basis, at) values ('88500134-e1b6-440b-a1fa-4c172446958c', 'subscribed', 'Newsletter', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = '62ef7070-cc18-49c2-a5e7-b948a3aab9e8';
+insert into app.consent_events (person_id, status, source, basis, at) values ('62ef7070-cc18-49c2-a5e7-b948a3aab9e8', 'subscribed', 'Web visitor', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'pending' where id = 'acbc5eab-093f-4e63-a283-04ab297d5e22';
+insert into app.consent_events (person_id, status, source, basis, at) values ('acbc5eab-093f-4e63-a283-04ab297d5e22', 'pending', 'Prospect search', null, now() - interval '30 days');
+update app.people set marketing_status = 'pending' where id = '91719a56-47ef-4782-aa0c-25907f274884';
+insert into app.consent_events (person_id, status, source, basis, at) values ('91719a56-47ef-4782-aa0c-25907f274884', 'pending', 'Event', null, now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = 'ef64ce65-52fa-4d77-a677-1e928a30843b';
+insert into app.consent_events (person_id, status, source, basis, at) values ('ef64ce65-52fa-4d77-a677-1e928a30843b', 'subscribed', 'Import', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = '738f1f02-bf6f-4f31-a8ba-12458572e137';
+insert into app.consent_events (person_id, status, source, basis, at) values ('738f1f02-bf6f-4f31-a8ba-12458572e137', 'subscribed', 'Newsletter', 'Signed up', now() - interval '30 days');
+update app.people set marketing_status = 'bounced' where id = 'f22a6240-8332-4d97-a42f-81ff178e4f05';
+insert into app.consent_events (person_id, status, source, basis, at) values ('f22a6240-8332-4d97-a42f-81ff178e4f05', 'bounced', 'Contact form', null, now() - interval '30 days');
+update app.people set marketing_status = 'pending' where id = 'a1b00ce6-b88f-4531-af55-fb0455c29b4e';
+insert into app.consent_events (person_id, status, source, basis, at) values ('a1b00ce6-b88f-4531-af55-fb0455c29b4e', 'pending', 'Signup', null, now() - interval '30 days');
+update app.people set marketing_status = 'unsubscribed' where id = 'f13a882e-abcb-4194-afb6-9d11c9612acb';
+insert into app.consent_events (person_id, status, source, basis, at) values ('f13a882e-abcb-4194-afb6-9d11c9612acb', 'unsubscribed', 'Import', null, now() - interval '30 days');
+update app.people set marketing_status = 'bounced' where id = '29330cef-7cd7-416a-a7e4-6fe368f5136d';
+insert into app.consent_events (person_id, status, source, basis, at) values ('29330cef-7cd7-416a-a7e4-6fe368f5136d', 'bounced', 'Web visitor', null, now() - interval '30 days');
+update app.people set marketing_status = 'subscribed' where id = 'c698e247-a1b5-4991-a3d0-86edd073f22c';
+insert into app.consent_events (person_id, status, source, basis, at) values ('c698e247-a1b5-4991-a3d0-86edd073f22c', 'subscribed', 'Event', 'Signed up', now() - interval '30 days');
+insert into app.labels (id, entity, name, bg, ink, ord) values ('00584d8e-2ab4-493e-acbd-fe8fbc85f6a3', 'deal', 'Hot', '#F0B9A0', '#6B240C', 0);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('300f3916-f50c-4820-a3c8-66051f4861f5', 'lead', 'Hot', '#F0B9A0', '#6B240C', 0);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('6caf2869-0599-429f-a4a7-1349a6a50ea4', 'deal', 'Warm', '#F5DC96', '#5C4600', 10);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('0bce1189-9234-4e5f-a4c8-a81f50bc9705', 'lead', 'Warm', '#F5DC96', '#5C4600', 10);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('0fadc6c0-97a5-4e37-a0d2-fd34c8325a93', 'deal', 'Cold', '#CFE0F5', '#1F3A5C', 20);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('b8ca72a0-6a4b-4dca-ad93-d3b0cfda8d58', 'lead', 'Cold', '#CFE0F5', '#1F3A5C', 20);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('ba0b7d6b-fa55-4c04-abd2-a17d22cccd49', 'deal', 'Multi-product', '#E7DAF2', '#3E2A5C', 30);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('a8680c35-6305-40fd-a889-e37b873f0e09', 'lead', 'Multi-product', '#E7DAF2', '#3E2A5C', 30);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('d8048663-2126-4503-a407-93d6be0486da', 'deal', 'Municipality', '#DCEBD3', '#20431C', 40);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('d7c15942-3381-4d28-aa17-e13ccd941377', 'lead', 'Municipality', '#DCEBD3', '#20431C', 40);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('b0d94a73-76b2-4b08-a4e9-7566a3899617', 'deal', 'Partner', '#F3E2C9', '#5C4600', 50);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('ca5bbcc9-7704-4c2f-a906-bbbc60f73300', 'lead', 'Partner', '#F3E2C9', '#5C4600', 50);
+insert into app.pipelines (id, name, ord) values ('e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'New business', 10);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('4bd3fc77-341c-45ba-a130-45b11dc0e245', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'Qualified', 10, 10, 14);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('fbf5553a-2504-4335-a1d9-c2ab5db7bedd', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'Discovery call', 20, 25, 10);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('9faaa4ab-973a-4bf2-a82b-33ee568844e6', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'Demo', 30, 40, 10);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('489091c6-9b98-4f39-a955-edc2cd4129b5', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'Proposal sent', 40, 60, 7);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('28b1d947-0f2f-409a-a4ab-f07c992a586a', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'Negotiation', 50, 80, 7);
+insert into app.pipelines (id, name, ord) values ('82a20afc-c5aa-4e99-a42d-9c25448f3f07', 'Expansion and cross-sell', 20);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('6f26cbe6-ae63-4a0f-a39c-1a9eb6184cae', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', 'Signal', 10, 15, 21);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('b039aa74-6431-49c6-a4c5-66b378062e3b', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', 'Conversation', 20, 35, 14);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('7f9a78c8-cc42-41b2-aba6-637a7a320dee', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', 'Offer', 30, 65, 10);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('561b2839-a75c-41b9-a125-23d53963d81a', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', 'Agreement', 40, 85, 7);
+insert into app.pipelines (id, name, ord) values ('b5fa05b0-f07f-4521-a464-89795102de33', 'Public sector tenders', 30);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('bb2099b0-20ad-48c6-a2f0-f6fc79193dda', 'b5fa05b0-f07f-4521-a464-89795102de33', 'Notice found', 10, 5, 30);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('1c4e449e-1409-41fe-a764-d2ac9ecdd797', 'b5fa05b0-f07f-4521-a464-89795102de33', 'Bid preparation', 20, 30, 14);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('44e4e3d0-b9fa-47a2-a662-2c0f8785342e', 'b5fa05b0-f07f-4521-a464-89795102de33', 'Submitted', 30, 50, 45);
+insert into app.stages (id, pipeline_id, name, ord, probability, rot_days) values ('5fdfd7e7-32a3-463d-ae2b-916c48cfc1e0', 'b5fa05b0-f07f-4521-a464-89795102de33', 'Award', 40, 90, 14);
+update app.pipelines set visibility_group_ids = array['938995a0-e057-47c8-ae45-6ee837429309', 'cfacaf78-fcf8-4e7e-a5d8-015f7962b465']::uuid[] where id = 'b5fa05b0-f07f-4521-a464-89795102de33';
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('e881fda1-c2f4-4d97-a646-535096f3fd6b', 'Lumio AS — Expansion to Skiftly', 64000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '4 days', 'open',
+  null, null, null, '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9',
+  '2026-12-05', 'Chatbot', 'avvik', now() - interval '2 days', 'a56d1006-261a-4159-acba-5928ecb0540a',
+  array['00584d8e-2ab4-493e-acbd-fe8fbc85f6a3', 'ba0b7d6b-fa55-4c04-abd2-a17d22cccd49']::uuid[], now() - interval '117 days', now() - interval '2 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('e881fda1-c2f4-4d97-a646-535096f3fd6b', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '4 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('9e13de0d-9bfe-457b-a8d9-faf43415c0ea', 'Havbris Sjømat — Tender: HMS-system', 23000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'fbf5553a-2504-4335-a1d9-c2ab5db7bedd', now() - interval '8 days', 'open',
+  null, null, null, '3747e428-d430-4bce-a3e2-34708a89dadf', '859e3e5a-170f-4a29-a996-65d77f5f88e3',
+  '2026-11-19', 'Prospect search', 'avvik', now() - interval '6 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['d8048663-2126-4503-a407-93d6be0486da']::uuid[], now() - interval '80 days', now() - interval '6 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('9e13de0d-9bfe-457b-a8d9-faf43415c0ea', 'fbf5553a-2504-4335-a1d9-c2ab5db7bedd', now() - interval '8 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('3bf0e6f4-1a4a-4f77-a65c-c38fa9b4b22a', 'Mørkved IT — Tender: HMS-system', 34000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '9faaa4ab-973a-4bf2-a82b-33ee568844e6', now() - interval '24 days', 'open',
+  null, null, null, '15c6d004-0d70-47d1-a256-cf47c4cb890e', '2a8591b9-1d16-4630-ad88-4e36a1447e21',
+  '2026-12-24', 'API', 'avvik', now() - interval '22 days', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb',
+  array[]::uuid[], now() - interval '81 days', now() - interval '22 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('3bf0e6f4-1a4a-4f77-a65c-c38fa9b4b22a', '9faaa4ab-973a-4bf2-a82b-33ee568844e6', now() - interval '24 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', '3bf0e6f4-1a4a-4f77-a65c-c38fa9b4b22a', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('f20097b4-5a15-48fd-a683-e4224d69497d', 'Kystlinje Transport — Verneombud training bundle', 41000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '4 days', 'open',
+  null, null, null, '62ef7070-cc18-49c2-a5e7-b948a3aab9e8', '2d7585f5-06f1-427f-a2bd-e17f761f6ac6',
+  '2026-11-21', 'Chatbot', 'kurs', now() - interval '2 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['6caf2869-0599-429f-a4a7-1349a6a50ea4']::uuid[], now() - interval '8 days', now() - interval '2 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('f20097b4-5a15-48fd-a683-e4224d69497d', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '4 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('8fee9bc8-5d94-407e-a989-15333a947f64', 'Sandvik Elektro — Upgrade to 101–250 band', 156000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '28b1d947-0f2f-409a-a4ab-f07c992a586a', now() - interval '32 days', 'open',
+  null, null, null, 'a7bae5fa-5643-4e9f-aeee-d76f6c33836c', 'f142d9eb-3e73-496d-a54a-68fb777bcf0f',
+  '2026-10-09', 'Web form', 'avvik', now() - interval '30 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['6caf2869-0599-429f-a4a7-1349a6a50ea4']::uuid[], now() - interval '65 days', now() - interval '30 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('8fee9bc8-5d94-407e-a989-15333a947f64', '28b1d947-0f2f-409a-a4ab-f07c992a586a', now() - interval '32 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', '8fee9bc8-5d94-407e-a989-15333a947f64', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('bd23e1ef-fd42-444a-a1f7-e0baabd24ab4', 'Kråkerøy Marina — HR suite for 3 sites', 23000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '4bd3fc77-341c-45ba-a130-45b11dc0e245', now() - interval '24 days', 'open',
+  null, null, null, '29330cef-7cd7-416a-a7e4-6fe368f5136d', '8b6bf1ad-a509-409c-ad76-3e55ed46a6bd',
+  '2026-10-06', 'API', 'skiftly', now() - interval '22 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '113 days', now() - interval '22 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('bd23e1ef-fd42-444a-a1f7-e0baabd24ab4', '4bd3fc77-341c-45ba-a130-45b11dc0e245', now() - interval '24 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('68780152-3ab8-43d1-a553-045c614ec160', 'Polarlys Media — Survey for new department', 154000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'fbf5553a-2504-4335-a1d9-c2ab5db7bedd', now() - interval '2 days', 'open',
+  null, null, null, '52158070-0c8e-4592-a311-b5ef3a5a8fda', 'fa517631-ecef-4c38-a016-fb63c810226c',
+  '2026-11-04', 'Campaign', 'kurs', now() - interval '0 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['0fadc6c0-97a5-4e37-a0d2-fd34c8325a93']::uuid[], now() - interval '76 days', now() - interval '0 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('68780152-3ab8-43d1-a553-045c614ec160', 'fbf5553a-2504-4335-a1d9-c2ab5db7bedd', now() - interval '2 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', '68780152-3ab8-43d1-a553-045c614ec160', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('4176ce42-bd5b-43c6-a9b0-7b995155ee03', 'Fossheim Utleie — Tender: HMS-system', 38000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '9faaa4ab-973a-4bf2-a82b-33ee568844e6', now() - interval '3 days', 'open',
+  null, null, null, '88500134-e1b6-440b-a1fa-4c172446958c', 'b04fcefc-04d9-4382-a4f3-542db4ed20a8',
+  '2026-12-10', 'Web form', 'orgpuls', now() - interval '1 days', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb',
+  array['ba0b7d6b-fa55-4c04-abd2-a17d22cccd49']::uuid[], now() - interval '109 days', now() - interval '1 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('4176ce42-bd5b-43c6-a9b0-7b995155ee03', '9faaa4ab-973a-4bf2-a82b-33ee568844e6', now() - interval '3 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', '4176ce42-bd5b-43c6-a9b0-7b995155ee03', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('c82784ef-2de5-4509-ad91-2c5762349bc8', 'Bjørkly Pleie — Verneombud training bundle', 145000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '22 days', 'open',
+  null, null, null, 'be2444b2-cda0-4a7c-a743-c92fec71cfc7', '7a8d923c-97e2-4350-a6d4-1b43d8db87b5',
+  '2026-10-02', 'Import', 'orgpuls', now() - interval '20 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['00584d8e-2ab4-493e-acbd-fe8fbc85f6a3']::uuid[], now() - interval '91 days', now() - interval '20 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('c82784ef-2de5-4509-ad91-2c5762349bc8', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '22 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', 'c82784ef-2de5-4509-ad91-2c5762349bc8', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('da9c424b-523d-4538-ad25-f5bde2039532', 'Lumio — Annual pulse + baseline', 75000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '28b1d947-0f2f-409a-a4ab-f07c992a586a', now() - interval '7 days', 'open',
+  null, null, null, '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9',
+  '2026-12-10', 'Campaign', 'avvik', now() - interval '5 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '6 days', now() - interval '5 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('da9c424b-523d-4538-ad25-f5bde2039532', '28b1d947-0f2f-409a-a4ab-f07c992a586a', now() - interval '7 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', 'da9c424b-523d-4538-ad25-f5bde2039532', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('9ad1af5f-8157-4446-ac73-b0789a9feb32', 'Tindra Barnehager — Skiftly add-on', 136000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '4bd3fc77-341c-45ba-a130-45b11dc0e245', now() - interval '7 days', 'open',
+  null, null, null, 'f22a6240-8332-4d97-a42f-81ff178e4f05', '4e617412-6788-4d9f-ac8c-97a03da2914a',
+  '2026-11-23', 'Web form', 'avvik', now() - interval '5 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '51 days', now() - interval '5 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('9ad1af5f-8157-4446-ac73-b0789a9feb32', '4bd3fc77-341c-45ba-a130-45b11dc0e245', now() - interval '7 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('ece6a8c0-aaeb-48d9-afa1-71be8a972195', 'Brattli Tannklinikk — Skiftly add-on', 96000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'fbf5553a-2504-4335-a1d9-c2ab5db7bedd', now() - interval '7 days', 'open',
+  null, null, null, '09b8bc1e-ec1b-43f3-adac-f6d35452e175', 'bb5bc2fb-39f9-4fc3-a983-cb1a50d8ec88',
+  '2026-12-15', 'Import', 'orgpuls', now() - interval '5 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '57 days', now() - interval '5 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('ece6a8c0-aaeb-48d9-afa1-71be8a972195', 'fbf5553a-2504-4335-a1d9-c2ab5db7bedd', now() - interval '7 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('c555ed5a-f8a5-4625-a92c-35af017b72b7', 'Askeland Advokat — HR suite for 3 sites', 14000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '9faaa4ab-973a-4bf2-a82b-33ee568844e6', now() - interval '6 days', 'open',
+  null, null, null, '720900f5-c8a6-4098-a8f1-ac9fb0f53b93', 'b73ecda4-4123-4d55-a935-7b6e4ee258b9',
+  '2026-11-26', 'Campaign', 'kurs', now() - interval '4 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['0fadc6c0-97a5-4e37-a0d2-fd34c8325a93']::uuid[], now() - interval '106 days', now() - interval '4 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('c555ed5a-f8a5-4625-a92c-35af017b72b7', '9faaa4ab-973a-4bf2-a82b-33ee568844e6', now() - interval '6 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', 'c555ed5a-f8a5-4625-a92c-35af017b72b7', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('393551c8-77cc-4bc5-a46a-2b2e87041daa', 'Tveit Omsorg — HR suite for 3 sites', 27000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '2 days', 'open',
+  null, null, null, '9fccfb54-8736-40c7-ae6c-cb44ae85c623', '76ce311b-ca87-4f8b-ae29-18344febfe78',
+  '2026-12-06', 'API', 'orgpuls', now() - interval '0 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['ba0b7d6b-fa55-4c04-abd2-a17d22cccd49']::uuid[], now() - interval '74 days', now() - interval '0 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('393551c8-77cc-4bc5-a46a-2b2e87041daa', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '2 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', '393551c8-77cc-4bc5-a46a-2b2e87041daa', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('c0984ffd-a037-4ff2-a80d-102835b49bc0', 'Blåfjell Reiseliv — Verneombud training bundle', 27000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '28b1d947-0f2f-409a-a4ab-f07c992a586a', now() - interval '2 days', 'open',
+  null, null, null, '5e0d56bd-82f3-44ed-adf7-cdf56354e798', 'e39ce338-c769-4466-a1d7-2c4117a820ec',
+  '2026-11-27', 'Import', 'skiftly', now() - interval '0 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '87 days', now() - interval '0 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('c0984ffd-a037-4ff2-a80d-102835b49bc0', '28b1d947-0f2f-409a-a4ab-f07c992a586a', now() - interval '2 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('c1b5158c-b8bf-4571-a4ab-1a549831e84e', 'Engen Snekkeri — Verneombud training bundle', 12000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '4bd3fc77-341c-45ba-a130-45b11dc0e245', now() - interval '4 days', 'open',
+  null, null, null, '91719a56-47ef-4782-aa0c-25907f274884', '8e3e2e86-3cbd-4ed2-a620-24b681998849',
+  '2026-12-01', 'Import', 'kurs', now() - interval '2 days', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb',
+  array[]::uuid[], now() - interval '39 days', now() - interval '2 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('c1b5158c-b8bf-4571-a4ab-1a549831e84e', '4bd3fc77-341c-45ba-a130-45b11dc0e245', now() - interval '4 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', 'c1b5158c-b8bf-4571-a4ab-1a549831e84e', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('02ab571e-7251-445a-aaa5-000dcd07da71', 'Mjøsa Energi — Renewal and expansion', 158000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'fbf5553a-2504-4335-a1d9-c2ab5db7bedd', now() - interval '6 days', 'open',
+  null, null, null, '1df7fc68-300c-4bb7-a9ff-538263f7e6f4', '212f9abe-09b0-4798-acea-891718be1ff1',
+  '2026-12-27', 'Web visitors', 'orgpuls', now() - interval '4 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['6caf2869-0599-429f-a4a7-1349a6a50ea4']::uuid[], now() - interval '119 days', now() - interval '4 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('02ab571e-7251-445a-aaa5-000dcd07da71', 'fbf5553a-2504-4335-a1d9-c2ab5db7bedd', now() - interval '6 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('0149d41f-eb40-4f39-a651-dbe46bfb05a1', 'Stavsjø Laks — Tender: HMS-system', 56000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '9faaa4ab-973a-4bf2-a82b-33ee568844e6', now() - interval '2 days', 'open',
+  null, null, null, 'be2444b2-cda0-4a7c-a743-c92fec71cfc7', 'a5963be4-463a-44b5-a28f-ae617fe9de62',
+  '2026-11-21', 'Import', 'avvik', now() - interval '0 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['ba0b7d6b-fa55-4c04-abd2-a17d22cccd49']::uuid[], now() - interval '18 days', now() - interval '0 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('0149d41f-eb40-4f39-a651-dbe46bfb05a1', '9faaa4ab-973a-4bf2-a82b-33ee568844e6', now() - interval '2 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('58fbe098-9a07-49d0-a5af-3e8839e2cca4', 'Bergtun Data — Avvikspunkt rollout', 53000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '20 days', 'open',
+  null, null, null, 'fb128665-befa-460c-ab93-7e7b726120b0', '4b8881a8-e92c-42be-a95f-7a94c8119eb0',
+  '2026-10-14', 'Prospect search', 'orgpuls', now() - interval '18 days', 'a56d1006-261a-4159-acba-5928ecb0540a',
+  array['0fadc6c0-97a5-4e37-a0d2-fd34c8325a93']::uuid[], now() - interval '29 days', now() - interval '18 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('58fbe098-9a07-49d0-a5af-3e8839e2cca4', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '20 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', '58fbe098-9a07-49d0-a5af-3e8839e2cca4', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('a62c234e-2384-425b-a6ad-8adc6548cc1b', 'Kvamme Regnskap — HR suite for 3 sites', 93000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '28b1d947-0f2f-409a-a4ab-f07c992a586a', now() - interval '8 days', 'open',
+  null, null, null, 'ef64ce65-52fa-4d77-a677-1e928a30843b', '33b11070-2b4f-4b6f-ac0d-994760006b58',
+  '2026-10-05', 'Manual', 'orgpuls', now() - interval '6 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '99 days', now() - interval '6 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('a62c234e-2384-425b-a6ad-8adc6548cc1b', '28b1d947-0f2f-409a-a4ab-f07c992a586a', now() - interval '8 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('53ff504b-b94a-44d4-a82c-33cb09f58af8', 'Granli Eiendom — Avvikspunkt rollout', 60000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '4bd3fc77-341c-45ba-a130-45b11dc0e245', now() - interval '7 days', 'open',
+  null, null, null, '88500134-e1b6-440b-a1fa-4c172446958c', 'b6aa023f-6d43-4e34-ae38-90c5be501749',
+  '2026-12-01', 'API', 'orgpuls', now() - interval '5 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '17 days', now() - interval '5 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('53ff504b-b94a-44d4-a82c-33cb09f58af8', '4bd3fc77-341c-45ba-a130-45b11dc0e245', now() - interval '7 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('defe94d8-1ca3-477f-ad29-cf6cc1fc2fe1', 'Fjellheim skole — Tender: HMS-system', 27000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', 'fbf5553a-2504-4335-a1d9-c2ab5db7bedd', now() - interval '6 days', 'open',
+  null, null, null, 'b6a51c65-69e8-4b7d-a3dc-38bc4441500a', 'c08bd479-9ca7-4884-ac80-5fc865ab689f',
+  '2026-11-25', 'Chatbot', 'orgpuls', now() - interval '4 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '68 days', now() - interval '4 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('defe94d8-1ca3-477f-ad29-cf6cc1fc2fe1', 'fbf5553a-2504-4335-a1d9-c2ab5db7bedd', now() - interval '6 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', 'defe94d8-1ca3-477f-ad29-cf6cc1fc2fe1', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('1a81d38c-b696-4362-a807-a68c5fb9544b', 'Østmark Maskin — Survey for new department', 73000, 'NOK', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', '7f9a78c8-cc42-41b2-aba6-637a7a320dee', now() - interval '5 days', 'open',
+  null, null, null, 'f13a882e-abcb-4194-afb6-9d11c9612acb', 'ee512a75-7906-42c6-a7af-27bc44ef6a7a',
+  '2026-10-06', 'Prospect search', 'avvik', now() - interval '3 days', 'a56d1006-261a-4159-acba-5928ecb0540a',
+  array[]::uuid[], now() - interval '101 days', now() - interval '3 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('1a81d38c-b696-4362-a807-a68c5fb9544b', '7f9a78c8-cc42-41b2-aba6-637a7a320dee', now() - interval '5 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('e252e536-579a-4185-aa25-a8ecfe74a2dc', 'Furuly Sykehjem — Skiftly add-on', 39000, 'NOK', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', '561b2839-a75c-41b9-a125-23d53963d81a', now() - interval '5 days', 'open',
+  null, null, null, '5e0d56bd-82f3-44ed-adf7-cdf56354e798', '2725102e-cbf0-4a7f-afe9-e8e5c8ed5bb2',
+  '2026-12-20', 'Web visitors', 'orgpuls', now() - interval '3 days', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb',
+  array['6caf2869-0599-429f-a4a7-1349a6a50ea4']::uuid[], now() - interval '84 days', now() - interval '3 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('e252e536-579a-4185-aa25-a8ecfe74a2dc', '561b2839-a75c-41b9-a125-23d53963d81a', now() - interval '5 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', 'e252e536-579a-4185-aa25-a8ecfe74a2dc', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('93b62baa-b588-43e4-a9ed-0c0154540005', 'Torget Apotek — Annual pulse + baseline', 91000, 'NOK', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', '6f26cbe6-ae63-4a0f-a39c-1a9eb6184cae', now() - interval '5 days', 'open',
+  null, null, null, '09b8bc1e-ec1b-43f3-adac-f6d35452e175', '8fec8260-ec68-4b20-a4cb-f2e352cc42ac',
+  '2026-11-13', 'Prospect search', 'skiftly', now() - interval '3 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['b0d94a73-76b2-4b08-a4e9-7566a3899617']::uuid[], now() - interval '115 days', now() - interval '3 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('93b62baa-b588-43e4-a9ed-0c0154540005', '6f26cbe6-ae63-4a0f-a39c-1a9eb6184cae', now() - interval '5 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', '93b62baa-b588-43e4-a9ed-0c0154540005', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('1bbe65b4-5140-48d5-a866-46b07c14095f', 'Lindeberg Klinikk — HR suite for 3 sites', 8000, 'NOK', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', 'b039aa74-6431-49c6-a4c5-66b378062e3b', now() - interval '8 days', 'open',
+  null, null, null, '3ac11dbd-8933-4f9e-aef8-3376e446e49a', '5097f623-cf96-4bef-a170-678c8c0a02f7',
+  '2026-10-06', 'Web form', 'avvik', now() - interval '6 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['6caf2869-0599-429f-a4a7-1349a6a50ea4']::uuid[], now() - interval '9 days', now() - interval '6 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('1bbe65b4-5140-48d5-a866-46b07c14095f', 'b039aa74-6431-49c6-a4c5-66b378062e3b', now() - interval '8 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('b109612c-6eb8-4648-ace7-2368b8c8223f', 'Grønli Barnehage — HR suite for 3 sites', 46000, 'NOK', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', '7f9a78c8-cc42-41b2-aba6-637a7a320dee', now() - interval '3 days', 'open',
+  null, null, null, '3747e428-d430-4bce-a3e2-34708a89dadf', '2ce3beab-ff03-4bb5-a2e8-b2af7b0a7d70',
+  '2026-11-08', 'Chatbot', 'orgpuls', now() - interval '1 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['00584d8e-2ab4-493e-acbd-fe8fbc85f6a3']::uuid[], now() - interval '70 days', now() - interval '1 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('b109612c-6eb8-4648-ace7-2368b8c8223f', '7f9a78c8-cc42-41b2-aba6-637a7a320dee', now() - interval '3 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('26af4925-67d3-486d-a290-b58b22e05e5b', 'Hamnvik Fiskeri — Kursrom pilot', 82000, 'NOK', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', '561b2839-a75c-41b9-a125-23d53963d81a', now() - interval '8 days', 'open',
+  null, null, null, '738f1f02-bf6f-4f31-a8ba-12458572e137', '6f52cd56-f112-4360-ab25-ee3a47ac2059',
+  '2026-10-04', 'API', 'skiftly', now() - interval '6 days', 'a56d1006-261a-4159-acba-5928ecb0540a',
+  array['b0d94a73-76b2-4b08-a4e9-7566a3899617']::uuid[], now() - interval '119 days', now() - interval '6 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('26af4925-67d3-486d-a290-b58b22e05e5b', '561b2839-a75c-41b9-a125-23d53963d81a', now() - interval '8 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', '26af4925-67d3-486d-a290-b58b22e05e5b', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('a233a367-575c-4609-aacd-220d5acf2e83', 'Solstrand Helse — Kursrom pilot', 120000, 'NOK', '82a20afc-c5aa-4e99-a42d-9c25448f3f07', '6f26cbe6-ae63-4a0f-a39c-1a9eb6184cae', now() - interval '8 days', 'open',
+  null, null, null, 'fdda4fe8-b00b-4b72-a858-beea3922741e', 'd8e6d1a5-820f-4952-a9dc-6c367c76c647',
+  '2026-11-04', 'Web form', 'skiftly', now() - interval '6 days', 'a56d1006-261a-4159-acba-5928ecb0540a',
+  array[]::uuid[], now() - interval '59 days', now() - interval '6 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('a233a367-575c-4609-aacd-220d5acf2e83', '6f26cbe6-ae63-4a0f-a39c-1a9eb6184cae', now() - interval '8 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('67c3e48c-5b68-4eb8-a984-dd51326e7a61', 'Nordlys Logistikk — Avvikspunkt rollout', 75000, 'NOK', 'b5fa05b0-f07f-4521-a464-89795102de33', '1c4e449e-1409-41fe-a764-d2ac9ecdd797', now() - interval '6 days', 'open',
+  null, null, null, 'acbc5eab-093f-4e63-a283-04ab297d5e22', '31433ce8-231b-42e5-afc0-064c77bab0ef',
+  '2026-10-08', 'Campaign', 'kurs', now() - interval '4 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '72 days', now() - interval '4 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('67c3e48c-5b68-4eb8-a984-dd51326e7a61', '1c4e449e-1409-41fe-a764-d2ac9ecdd797', now() - interval '6 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('4c8c24ed-ff55-4a51-a1c2-7a1c7f0579e4', 'Lyngvær Rør — Full platform', 27000, 'NOK', 'b5fa05b0-f07f-4521-a464-89795102de33', '44e4e3d0-b9fa-47a2-a662-2c0f8785342e', now() - interval '4 days', 'open',
+  null, null, null, 'a37ecc9f-1f3e-4343-a277-6903aa6a6bc3', 'cefcd348-52f2-4f37-a3b3-5e42346717c2',
+  '2026-11-13', 'API', 'skiftly', now() - interval '2 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '102 days', now() - interval '2 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('4c8c24ed-ff55-4a51-a1c2-7a1c7f0579e4', '44e4e3d0-b9fa-47a2-a662-2c0f8785342e', now() - interval '4 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('29772afc-d60b-4d94-a065-7d8dae0ffcf6', 'Vardø Havn — Kursrom pilot', 16000, 'NOK', 'b5fa05b0-f07f-4521-a464-89795102de33', '5fdfd7e7-32a3-463d-ae2b-916c48cfc1e0', now() - interval '3 days', 'open',
+  null, null, null, 'f13a882e-abcb-4194-afb6-9d11c9612acb', '5c3fd076-21bc-41a3-a9ca-5f6a76bd936c',
+  '2026-10-11', 'Prospect search', 'skiftly', now() - interval '1 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['b0d94a73-76b2-4b08-a4e9-7566a3899617']::uuid[], now() - interval '76 days', now() - interval '1 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('29772afc-d60b-4d94-a065-7d8dae0ffcf6', '5fdfd7e7-32a3-463d-ae2b-916c48cfc1e0', now() - interval '3 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('2164b275-e388-4b58-a4ce-4580857d5734', 'Hovland Gartneri — Skiftly add-on', 157000, 'NOK', 'b5fa05b0-f07f-4521-a464-89795102de33', 'bb2099b0-20ad-48c6-a2f0-f6fc79193dda', now() - interval '2 days', 'open',
+  null, null, null, 'acbc5eab-093f-4e63-a283-04ab297d5e22', '9bed6b5b-639a-45c4-aed7-749552fac442',
+  '2026-10-23', 'Web visitors', 'kurs', now() - interval '0 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['b0d94a73-76b2-4b08-a4e9-7566a3899617']::uuid[], now() - interval '18 days', now() - interval '0 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('2164b275-e388-4b58-a4ce-4580857d5734', 'bb2099b0-20ad-48c6-a2f0-f6fc79193dda', now() - interval '2 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('1ea7d883-7e30-4082-a24b-8d3f9bc07dc8', 'Skarpeid Revisjon — Skiftly add-on', 118000, 'NOK', 'b5fa05b0-f07f-4521-a464-89795102de33', '1c4e449e-1409-41fe-a764-d2ac9ecdd797', now() - interval '20 days', 'open',
+  null, null, null, '720900f5-c8a6-4098-a8f1-ac9fb0f53b93', 'd535ea56-4bb0-428b-a17e-048c1660991e',
+  '2026-12-28', 'Campaign', 'skiftly', now() - interval '18 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['ba0b7d6b-fa55-4c04-abd2-a17d22cccd49']::uuid[], now() - interval '3 days', now() - interval '18 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('1ea7d883-7e30-4082-a24b-8d3f9bc07dc8', '1c4e449e-1409-41fe-a764-d2ac9ecdd797', now() - interval '20 days');
+insert into app.followers (entity, record_id, staff_id) values ('deal', '1ea7d883-7e30-4082-a24b-8d3f9bc07dc8', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb') on conflict do nothing;
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('7bf729a0-1d77-4b7f-a5de-f94960a4516d', 'Fjellheim skole — Full platform', 84000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '28b1d947-0f2f-409a-a4ab-f07c992a586a', now() - interval '2 days', 'won',
+  now() - interval '3 days', null, null, '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'c08bd479-9ca7-4884-ac80-5fc865ab689f',
+  '2026-12-05', 'Chatbot', 'avvik', now() - interval '0 days', 'a56d1006-261a-4159-acba-5928ecb0540a',
+  array['ba0b7d6b-fa55-4c04-abd2-a17d22cccd49']::uuid[], now() - interval '117 days', now() - interval '0 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('7bf729a0-1d77-4b7f-a5de-f94960a4516d', '28b1d947-0f2f-409a-a4ab-f07c992a586a', now() - interval '2 days');
+insert into app.deals (id, title, value, currency, pipeline_id, stage_id, stage_entered_at, status, won_at, lost_at, lost_reason, person_id, organization_id,
+  expected_close_date, source, product, last_activity_at, owner_id, labels, created_at, updated_at)
+  values ('71de11d3-c491-4e23-a9d3-c57237251a24', 'Strandby Hotell — Skiftly add-on', 36000, 'NOK', 'e5dc1ac5-3dd0-45a8-ad02-97392468e705', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '2 days', 'lost',
+  null, now() - interval '5 days', 'Price', '3747e428-d430-4bce-a3e2-34708a89dadf', 'f2d9b825-2672-42a3-ab82-2170b4812f5a',
+  '2026-11-19', 'Prospect search', 'avvik', now() - interval '0 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['d8048663-2126-4503-a407-93d6be0486da']::uuid[], now() - interval '80 days', now() - interval '0 days');
+insert into app.deal_stage_history (deal_id, stage_id, entered_at) values ('71de11d3-c491-4e23-a9d3-c57237251a24', '489091c6-9b98-4f39-a955-edc2cd4129b5', now() - interval '2 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('c4f89dc7-5f79-4013-aecf-e9afc6fbed09', (select id from app.activity_types where key = 'email'), 'Reply on pricing', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '2 days' + interval '15 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, 'medium', false, null,
+  'e881fda1-c2f4-4d97-a646-535096f3fd6b', '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9', null, 'a56d1006-261a-4159-acba-5928ecb0540a', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('d4c6a1c0-9600-41b8-ae4e-c059a7cbd177', (select id from app.activity_types where key = 'task'), 'Prepare quote', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '0 days' + interval '14 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 15, 'low', false, null,
+  'f20097b4-5a15-48fd-a683-e4224d69497d', '62ef7070-cc18-49c2-a5e7-b948a3aab9e8', '2d7585f5-06f1-427f-a2bd-e17f761f6ac6', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('38d8aebb-f4b2-479d-a8e8-520b01240340', (select id from app.activity_types where key = 'task'), 'Update contact data', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '1 days' + interval '9 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 30, 'medium', false, null,
+  '68780152-3ab8-43d1-a553-045c614ec160', '52158070-0c8e-4592-a311-b5ef3a5a8fda', 'fa517631-ecef-4c38-a016-fb63c810226c', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('54cb954d-e734-46c8-a90d-e690e07a80d5', (select id from app.activity_types where key = 'call'), 'Discovery call', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '11 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 15, 'medium', false, null,
+  'da9c424b-523d-4538-ad25-f5bde2039532', '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('114ca4c0-ede0-4c6a-a07d-d1379e73bd70', (select id from app.activity_types where key = 'task'), 'Prepare quote', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-3 days' + interval '11 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 60, 'high', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-3 days' + interval '12 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  'c555ed5a-f8a5-4625-a92c-35af017b72b7', '720900f5-c8a6-4098-a8f1-ac9fb0f53b93', 'b73ecda4-4123-4d55-a935-7b6e4ee258b9', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('0eb11328-d1ad-4942-a98d-b9fe6bc48e77', (select id from app.activity_types where key = 'demo'), 'Demo: Avvikspunkt', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '3 days' + interval '14 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 60, 'medium', false, null,
+  'c1b5158c-b8bf-4571-a4ab-1a549831e84e', '91719a56-47ef-4782-aa0c-25907f274884', '8e3e2e86-3cbd-4ed2-a620-24b681998849', 'meet', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('dbe1924e-b53b-4afd-ad21-f0649fd29134', (select id from app.activity_types where key = 'email'), 'Send case study', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '5 days' + interval '8 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 45, 'high', false, null,
+  '58fbe098-9a07-49d0-a5af-3e8839e2cca4', 'fb128665-befa-460c-ab93-7e7b726120b0', '4b8881a8-e92c-42be-a95f-7a94c8119eb0', null, 'a56d1006-261a-4159-acba-5928ecb0540a', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('fe15ecff-a720-410f-a3f8-ab15f0e9aad1', (select id from app.activity_types where key = 'demo'), 'Demo: Skiftly', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '10 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 90, 'high', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '11 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  'defe94d8-1ca3-477f-ad29-cf6cc1fc2fe1', 'b6a51c65-69e8-4b7d-a3dc-38bc4441500a', 'c08bd479-9ca7-4884-ac80-5fc865ab689f', 'meet', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('fa85ca04-4a37-4f2c-a131-be2421327396', (select id from app.activity_types where key = 'demo'), 'Demo: Avvikspunkt', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '11 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 90, 'low', false, null,
+  '93b62baa-b588-43e4-a9ed-0c0154540005', '09b8bc1e-ec1b-43f3-adac-f6d35452e175', '8fec8260-ec68-4b20-a4cb-f2e352cc42ac', 'meet', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('87b8e70c-cc78-46ad-a1a1-3289c19e5381', (select id from app.activity_types where key = 'task'), 'Prepare quote', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '6 days' + interval '13 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 15, 'low', false, null,
+  '26af4925-67d3-486d-a290-b58b22e05e5b', '738f1f02-bf6f-4f31-a8ba-12458572e137', '6f52cd56-f112-4360-ab25-ee3a47ac2059', null, 'a56d1006-261a-4159-acba-5928ecb0540a', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('44946828-0bd2-4649-a6cb-e0e59d50e9ac', (select id from app.activity_types where key = 'task'), 'Check band reconciliation', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '3 days' + interval '14 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, 'high', false, null,
+  '4c8c24ed-ff55-4a51-a1c2-7a1c7f0579e4', 'a37ecc9f-1f3e-4343-a277-6903aa6a6bc3', 'cefcd348-52f2-4f37-a3b3-5e42346717c2', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('16529e45-1cef-421e-ad90-5d0244c7675d', (select id from app.activity_types where key = 'meeting'), 'Quarterly review', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '15 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 45, 'high', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '16 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  '1ea7d883-7e30-4082-a24b-8d3f9bc07dc8', '720900f5-c8a6-4098-a8f1-ac9fb0f53b93', 'd535ea56-4bb0-428b-a17e-048c1660991e', 'meet', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('56b03667-541d-400e-a1f9-c0c831c6acd4', (select id from app.activity_types where key = 'task'), 'Update contact data', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '13 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 45, 'medium', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '14 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  '3bf0e6f4-1a4a-4f77-a65c-c38fa9b4b22a', '15c6d004-0d70-47d1-a256-cf47c4cb890e', '2a8591b9-1d16-4630-ad88-4e36a1447e21', null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('37cd2639-db0f-4a3e-a1c1-2a7e8fcfde7c', (select id from app.activity_types where key = 'task'), 'Prepare quote', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '6 days' + interval '8 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 15, 'medium', false, null,
+  'bd23e1ef-fd42-444a-a1f7-e0baabd24ab4', '29330cef-7cd7-416a-a7e4-6fe368f5136d', '8b6bf1ad-a509-409c-ad76-3e55ed46a6bd', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('cc31cfcc-dc6f-43ec-abed-074ae7655c0d', (select id from app.activity_types where key = 'email'), 'Intro email', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '6 days' + interval '14 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, 'low', false, null,
+  'c82784ef-2de5-4509-ad91-2c5762349bc8', 'be2444b2-cda0-4a7c-a743-c92fec71cfc7', '7a8d923c-97e2-4350-a6d4-1b43d8db87b5', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('176106d0-b06f-4308-afd3-3a1e2d91fa30', (select id from app.activity_types where key = 'task'), 'Update contact data', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '2 days' + interval '11 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 60, 'low', false, null,
+  'ece6a8c0-aaeb-48d9-afa1-71be8a972195', '09b8bc1e-ec1b-43f3-adac-f6d35452e175', 'bb5bc2fb-39f9-4fc3-a983-cb1a50d8ec88', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('c420f0ab-9021-4885-a923-c448b4bfc589', (select id from app.activity_types where key = 'email'), 'Intro email', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '13 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 15, 'medium', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '14 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  'c0984ffd-a037-4ff2-a80d-102835b49bc0', '5e0d56bd-82f3-44ed-adf7-cdf56354e798', 'e39ce338-c769-4466-a1d7-2c4117a820ec', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('99fab633-dd94-4502-a4c8-60a3ed092ff4', (select id from app.activity_types where key = 'demo'), 'Demo: Avvikspunkt', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-3 days' + interval '13 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 45, 'high', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-3 days' + interval '14 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  '0149d41f-eb40-4f39-a651-dbe46bfb05a1', 'be2444b2-cda0-4a7c-a743-c92fec71cfc7', 'a5963be4-463a-44b5-a28f-ae617fe9de62', 'meet', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('c890a33f-3916-450c-ad3e-dae309f0ea31', (select id from app.activity_types where key = 'lunch'), 'Lunch with partner', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-3 days' + interval '8 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 45, 'high', false, null,
+  '53ff504b-b94a-44d4-a82c-33cb09f58af8', '88500134-e1b6-440b-a1fa-4c172446958c', 'b6aa023f-6d43-4e34-ae38-90c5be501749', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('9b75969d-1150-4ef4-ad62-19bee02172ef', (select id from app.activity_types where key = 'meeting'), 'Steering group', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-3 days' + interval '10 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, 'medium', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-3 days' + interval '11 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  'e252e536-579a-4185-aa25-a8ecfe74a2dc', '5e0d56bd-82f3-44ed-adf7-cdf56354e798', '2725102e-cbf0-4a7f-afe9-e8e5c8ed5bb2', 'meet', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('6e2c99c0-0b37-4b80-a985-21fb0ee5f65c', (select id from app.activity_types where key = 'call'), 'Check-in on trial', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '11 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, 'high', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '12 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  'b109612c-6eb8-4648-ace7-2368b8c8223f', '3747e428-d430-4bce-a3e2-34708a89dadf', '2ce3beab-ff03-4bb5-a2e8-b2af7b0a7d70', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('3c448b69-6c95-4002-afd4-9eef968fbd39', (select id from app.activity_types where key = 'task'), 'Update contact data', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '4 days' + interval '13 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 15, 'medium', false, null,
+  '67c3e48c-5b68-4eb8-a984-dd51326e7a61', 'acbc5eab-093f-4e63-a283-04ab297d5e22', '31433ce8-231b-42e5-afc0-064c77bab0ef', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('579bd3f7-ccd6-4343-a0b9-60d39de24b1c', (select id from app.activity_types where key = 'task'), 'Check band reconciliation', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '14 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 45, 'medium', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-2 days' + interval '15 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  '2164b275-e388-4b58-a4ce-4580857d5734', 'acbc5eab-093f-4e63-a283-04ab297d5e22', '9bed6b5b-639a-45c4-aed7-749552fac442', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('4c438d82-6d28-4ec2-aeaf-07ec26815735', (select id from app.activity_types where key = 'lunch'), 'Lunch with partner', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '13 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 30, 'low', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '14 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  '9e13de0d-9bfe-457b-a8d9-faf43415c0ea', '3747e428-d430-4bce-a3e2-34708a89dadf', '859e3e5a-170f-4a29-a996-65d77f5f88e3', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('68fac1ac-204b-47c0-a6d1-94a22a43fb12', (select id from app.activity_types where key = 'email'), 'Send case study', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '2 days' + interval '9 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 15, 'medium', false, null,
+  '8fee9bc8-5d94-407e-a989-15333a947f64', 'a7bae5fa-5643-4e9f-aeee-d76f6c33836c', 'f142d9eb-3e73-496d-a54a-68fb777bcf0f', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('8656c69c-f66e-4520-a422-ab9767d29802', (select id from app.activity_types where key = 'deadline'), 'Proposal expires', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '9 hours' + interval '30 minutes') at time zone 'Europe/Oslo'), 45, 'high', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-1 days' + interval '10 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  '4176ce42-bd5b-43c6-a9b0-7b995155ee03', '88500134-e1b6-440b-a1fa-4c172446958c', 'b04fcefc-04d9-4382-a4f3-542db4ed20a8', null, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('292d7b6c-e03b-4f73-a1e5-1f3b0ea70c18', (select id from app.activity_types where key = 'meeting'), 'Steering group', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '5 days' + interval '10 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, 'medium', false, null,
+  '9ad1af5f-8157-4446-ac73-b0789a9feb32', 'f22a6240-8332-4d97-a42f-81ff178e4f05', '4e617412-6788-4d9f-ac8c-97a03da2914a', 'meet', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('2cbdfe30-8bc0-474c-aa7a-6a9016747d2e', (select id from app.activity_types where key = 'deadline'), 'Contract renewal', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '4 days' + interval '13 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 15, 'medium', false, null,
+  '393551c8-77cc-4bc5-a46a-2b2e87041daa', '9fccfb54-8736-40c7-ae6c-cb44ae85c623', '76ce311b-ca87-4f8b-ae29-18344febfe78', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('c8be1345-6caf-47bd-a445-360a0bdf7b85', (select id from app.activity_types where key = 'email'), 'Reply on pricing', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '6 days' + interval '16 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 15, 'high', false, null,
+  '02ab571e-7251-445a-aaa5-000dcd07da71', '1df7fc68-300c-4bb7-a9ff-538263f7e6f4', '212f9abe-09b0-4798-acea-891718be1ff1', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, done_at, deal_id, person_id, organization_id, video_provider, owner_id, created_at)
+  values ('10b7de99-24dd-4890-a6a1-368a9db65a92', (select id from app.activity_types where key = 'deadline'), 'Proposal expires', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-3 days' + interval '15 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 45, 'low', true, ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '-3 days' + interval '16 hours' + interval '0 minutes') at time zone 'Europe/Oslo'),
+  'a62c234e-2384-425b-a6ad-8adc6548cc1b', 'ef64ce65-52fa-4d77-a677-1e928a30843b', '33b11070-2b4f-4b6f-ac0d-994760006b58', null, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '10 days');
+insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values ('964e6d82-2f7c-4d7e-a370-40baf54308c0', 'Kystlinje Transport — 220 drivers', '1df7fc68-300c-4bb7-a9ff-538263f7e6f4', '212f9abe-09b0-4798-acea-891718be1ff1', 120000, 'Web form', 'a56d1006-261a-4159-acba-5928ecb0540a',
+  array['300f3916-f50c-4820-a3c8-66051f4861f5']::uuid[], now() - interval '1 days', now() - interval '0 days');
+insert into app.activities (type_id, subject, starts_at, duration_min, lead_id, person_id, organization_id, owner_id) values ((select id from app.activity_types where key = 'call'),
+  'Call — Anders Hagen', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '0 days' + interval '14 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, '964e6d82-2f7c-4d7e-a370-40baf54308c0', '1df7fc68-300c-4bb7-a9ff-538263f7e6f4', '212f9abe-09b0-4798-acea-891718be1ff1', 'a56d1006-261a-4159-acba-5928ecb0540a');
+insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values ('9c3e2027-889e-4ed1-ad1a-8c4eb5565774', 'Polarlys Media — HR survey', '09b8bc1e-ec1b-43f3-adac-f6d35452e175', 'bb5bc2fb-39f9-4fc3-a983-cb1a50d8ec88', 18000, 'Chatbot', 'a56d1006-261a-4159-acba-5928ecb0540a',
+  array['0bce1189-9234-4e5f-a4c8-a81f50bc9705']::uuid[], now() - interval '2 days', now() - interval '1 days');
+insert into app.activities (type_id, subject, starts_at, duration_min, lead_id, person_id, organization_id, owner_id) values ((select id from app.activity_types where key = 'email'),
+  'Email — Hilde Nordmann', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '0 days' + interval '10 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, '9c3e2027-889e-4ed1-ad1a-8c4eb5565774', '09b8bc1e-ec1b-43f3-adac-f6d35452e175', 'bb5bc2fb-39f9-4fc3-a983-cb1a50d8ec88', 'a56d1006-261a-4159-acba-5928ecb0540a');
+insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values ('f5adfbd3-21af-4661-a89f-ec2afa39af5a', 'Mjøsa Energi — Avvikspunkt', '52158070-0c8e-4592-a311-b5ef3a5a8fda', 'fa517631-ecef-4c38-a016-fb63c810226c', 64000, 'Prospect search', 'a56d1006-261a-4159-acba-5928ecb0540a',
+  array['300f3916-f50c-4820-a3c8-66051f4861f5']::uuid[], now() - interval '3 days', now() - interval '2 days');
+insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values ('d68521ab-181e-456a-a20a-e07c28088840', 'Vardø Havn — verneombud training', 'fb128665-befa-460c-ab93-7e7b726120b0', '4b8881a8-e92c-42be-a95f-7a94c8119eb0', 22000, 'Live chat', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['b8ca72a0-6a4b-4dca-ad93-d3b0cfda8d58']::uuid[], now() - interval '4 days', now() - interval '3 days');
+insert into app.activities (type_id, subject, starts_at, duration_min, lead_id, person_id, organization_id, owner_id) values ((select id from app.activity_types where key = 'task'),
+  'Follow up — Erik Olsen', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '1 days' + interval '9 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, 'd68521ab-181e-456a-a20a-e07c28088840', 'fb128665-befa-460c-ab93-7e7b726120b0', '4b8881a8-e92c-42be-a95f-7a94c8119eb0', 'e1d74515-623a-48b1-a3ae-2b9cb638a560');
+insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values ('4a10c111-ab88-43d2-a0d4-443b64145bf6', 'Fossheim Utleie — pilot', 'a37ecc9f-1f3e-4343-a277-6903aa6a6bc3', 'cefcd348-52f2-4f37-a3b3-5e42346717c2', 9000, 'Web visitors', 'a56d1006-261a-4159-acba-5928ecb0540a',
+  array['0bce1189-9234-4e5f-a4c8-a81f50bc9705']::uuid[], now() - interval '5 days', now() - interval '4 days');
+insert into app.activities (type_id, subject, starts_at, duration_min, lead_id, person_id, organization_id, owner_id) values ((select id from app.activity_types where key = 'meeting'),
+  'Meeting — Stian Larsen', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '3 days' + interval '10 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, '4a10c111-ab88-43d2-a0d4-443b64145bf6', 'a37ecc9f-1f3e-4343-a277-6903aa6a6bc3', 'cefcd348-52f2-4f37-a3b3-5e42346717c2', 'a56d1006-261a-4159-acba-5928ecb0540a');
+insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values ('7ae16767-27d3-43f9-afb2-677d6520fc39', 'Torget Apotek — 3 pharmacies', '2c64c379-eb53-4479-a34d-19f60b34b5be', '011cb3ee-717c-488c-a02a-5b1c00281f19', 36000, 'Import', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array[]::uuid[], now() - interval '6 days', now() - interval '5 days');
+insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values ('a66985e7-59b8-4868-ab21-dc81b0bdec33', 'Hamnvik Fiskeri — shift planning', 'be2444b2-cda0-4a7c-a743-c92fec71cfc7', '7a8d923c-97e2-4350-a6d4-1b43d8db87b5', 48000, 'Campaign', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb',
+  array['300f3916-f50c-4820-a3c8-66051f4861f5', 'a8680c35-6305-40fd-a889-e37b873f0e09']::uuid[], now() - interval '7 days', now() - interval '6 days');
+insert into app.activities (type_id, subject, starts_at, duration_min, lead_id, person_id, organization_id, owner_id) values ((select id from app.activity_types where key = 'call'),
+  'Call — Bjørn Nilsen', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '2 days' + interval '11 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, 'a66985e7-59b8-4868-ab21-dc81b0bdec33', 'be2444b2-cda0-4a7c-a743-c92fec71cfc7', '7a8d923c-97e2-4350-a6d4-1b43d8db87b5', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values ('8088e0b6-521b-4911-a654-bc0a089227cb', 'Oddernes Bil — Kursrom', '88500134-e1b6-440b-a1fa-4c172446958c', 'b6aa023f-6d43-4e34-ae38-90c5be501749', 12000, 'Messaging', 'e1d74515-623a-48b1-a3ae-2b9cb638a560',
+  array['b8ca72a0-6a4b-4dca-ad93-d3b0cfda8d58']::uuid[], now() - interval '8 days', now() - interval '7 days');
+insert into app.activities (type_id, subject, starts_at, duration_min, lead_id, person_id, organization_id, owner_id) values ((select id from app.activity_types where key = 'task'),
+  'Follow up — Henrik Dahl', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '0 days' + interval '15 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, '8088e0b6-521b-4911-a654-bc0a089227cb', '88500134-e1b6-440b-a1fa-4c172446958c', 'b6aa023f-6d43-4e34-ae38-90c5be501749', 'e1d74515-623a-48b1-a3ae-2b9cb638a560');
+insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values ('1f50893a-bf08-493d-ab3b-b954f2b401c9', 'Røros Kobber — baseline', 'acbc5eab-093f-4e63-a283-04ab297d5e22', '9bed6b5b-639a-45c4-aed7-749552fac442', 26000, 'API', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb',
+  array['0bce1189-9234-4e5f-a4c8-a81f50bc9705']::uuid[], now() - interval '9 days', now() - interval '8 days');
+insert into app.leads (id, title, person_id, organization_id, value, source, owner_id, labels, created_at, updated_at)
+  values ('a875ce27-d2a8-486d-a08e-f15cb503ae49', 'Lindeberg Klinikk — HR suite', 'ef64ce65-52fa-4d77-a677-1e928a30843b', '6cdd00cd-9cd1-4d81-af5e-c77d1170ef83', 54000, 'Lead suggestions', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb',
+  array[]::uuid[], now() - interval '10 days', now() - interval '9 days');
+insert into app.activities (type_id, subject, starts_at, duration_min, lead_id, person_id, organization_id, owner_id) values ((select id from app.activity_types where key = 'email'),
+  'Email — Håkon Aas', ((date_trunc('day', now() at time zone 'Europe/Oslo') + interval '7 days' + interval '9 hours' + interval '0 minutes') at time zone 'Europe/Oslo'), 30, 'a875ce27-d2a8-486d-a08e-f15cb503ae49', 'ef64ce65-52fa-4d77-a677-1e928a30843b', '6cdd00cd-9cd1-4d81-af5e-c77d1170ef83', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+insert into app.catalog_items (id, name, code, unit, color, billing, billing_frequency, product) values ('b84628b6-3645-408a-ad2d-4b15e4f2d15c', 'Orgpuls — 1–25 employees', 'OP-B1', 'org / month', '#DCEBD3', 'recurring', 'monthly', 'orgpuls');
+insert into app.catalog_prices (item_id, currency, unit_price) values ('b84628b6-3645-408a-ad2d-4b15e4f2d15c', 'NOK', 265);
+insert into app.catalog_items (id, name, code, unit, color, billing, billing_frequency, product) values ('b91cfae4-eec5-4469-a446-102969e19622', 'Orgpuls — 26–100 employees', 'OP-B2', 'org / month', '#DCEBD3', 'recurring', 'monthly', 'orgpuls');
+insert into app.catalog_prices (item_id, currency, unit_price) values ('b91cfae4-eec5-4469-a446-102969e19622', 'NOK', 565);
+insert into app.catalog_items (id, name, code, unit, color, billing, billing_frequency, product) values ('b35ec6aa-9057-41bc-a425-efecb4abf96a', 'Orgpuls — 101–250 employees', 'OP-B3', 'org / month', '#DCEBD3', 'recurring', 'monthly', 'orgpuls');
+insert into app.catalog_prices (item_id, currency, unit_price) values ('b35ec6aa-9057-41bc-a425-efecb4abf96a', 'NOK', 1190);
+insert into app.catalog_items (id, name, code, unit, color, billing, billing_frequency, product) values ('23c0de4c-444e-442a-af32-ea4af0093d2a', 'Skiftly — per seat', 'SK-SEAT', 'seat / month', '#CFE0F5', 'recurring', 'monthly', 'skiftly');
+insert into app.catalog_prices (item_id, currency, unit_price) values ('23c0de4c-444e-442a-af32-ea4af0093d2a', 'NOK', 39);
+insert into app.catalog_items (id, name, code, unit, color, billing, billing_frequency, product) values ('cd526898-a60e-4c3a-ade8-32396acf0a86', 'Avvikspunkt — company', 'AV-CO', 'org / month', '#F6D9C6', 'recurring', 'monthly', 'avvik');
+insert into app.catalog_prices (item_id, currency, unit_price) values ('cd526898-a60e-4c3a-ade8-32396acf0a86', 'NOK', 390);
+insert into app.catalog_items (id, name, code, unit, color, billing, billing_frequency, product) values ('95b656a7-6fc7-4eee-abe4-f4974f66d6e5', 'Kursrom — course pack', 'KR-PACK', 'pack', '#E7DAF2', 'installments', null, 'kurs');
+insert into app.catalog_prices (item_id, currency, unit_price) values ('95b656a7-6fc7-4eee-abe4-f4974f66d6e5', 'NOK', 4900);
+insert into app.catalog_items (id, name, code, unit, color, billing, billing_frequency, product) values ('a93535a6-746a-4d8b-ad4b-b381a92d01ce', 'Onboarding workshop', 'SRV-ONB', 'session', '#F3E2C9', 'one_off', null, null);
+insert into app.catalog_prices (item_id, currency, unit_price) values ('a93535a6-746a-4d8b-ad4b-b381a92d01ce', 'NOK', 7500);
+insert into app.catalog_items (id, name, code, unit, color, billing, billing_frequency, product) values ('c1030f4f-8444-4a1b-a669-cc0565bf8e62', 'Verneombud training', 'SRV-VO', 'participant', '#F3E2C9', 'one_off', null, null);
+insert into app.catalog_prices (item_id, currency, unit_price) values ('c1030f4f-8444-4a1b-a669-cc0565bf8e62', 'NOK', 1490);
+insert into app.deal_items (deal_id, item_id, name, quantity, unit_price, billing, billing_frequency, cycles, ord) values
+  ('e881fda1-c2f4-4d97-a646-535096f3fd6b', '23c0de4c-444e-442a-af32-ea4af0093d2a', 'Skiftly — per seat', 48, 39, 'recurring', 'monthly', 24, 10),
+  ('e881fda1-c2f4-4d97-a646-535096f3fd6b', 'a93535a6-746a-4d8b-ad4b-b381a92d01ce', 'Onboarding workshop', 1, 7500, 'one_off', null, null, 20);
+insert into app.notes (entity, record_id, body, pinned, author_id, created_at) values
+  ('organization', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9', 'Kari wants Skiftly for the two warehouse teams first. Budget decision at the October board meeting.', true, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '8 days'),
+  ('organization', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9', 'Walked HR through verneombud access. Happy with response — asked for nynorsk survey option.', false, 'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '4 days'),
+  ('deal', 'e881fda1-c2f4-4d97-a646-535096f3fd6b', 'Kari wants Skiftly for the two warehouse teams first. Budget decision at the October board meeting.', true, 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '8 days');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('09e3c9fb-b7e7-41ae-adbb-fc09bfd89f9a', 2310, 'incident', 'survey_delivery', 'support', 'new', 'one_org',
+  'blocking', 'Survey invitations not delivered to 14 employees', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9', '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'kari.nordmann@lumio.no', 'avvik', 'in_app',
+  null, null,
+  jsonb_build_object('role', 'Daglig leder', 'page', '/oppsett/ansatte', 'browser', 'Chrome 129 · macOS'), 'customer',
+  app.business_add(now() - interval '39 hours', 480), app.business_add(now() - interval '39 hours', 2400), null,
+  null, null, null,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '39 hours', now() - interval '39 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('09e3c9fb-b7e7-41ae-adbb-fc09bfd89f9a', 'customer', '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'Hei! 14 av de ansatte på lageret har ikke fått invitasjonen til baselinemålingen som gikk ut i morges. Alle har adresser på samme domene.', now() - interval '39 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at) values ('09e3c9fb-b7e7-41ae-adbb-fc09bfd89f9a', 'note', 'e53792ad-5466-4510-a48c-6321c729dace', '@Hanna this is the same pattern as Elvebakken. Workaround in the known error works — can you take the reply while I check the provider status?', now() - interval '39 hours' + interval '18 minutes');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('8aea9ca0-d6f2-41cd-a5a7-db4cbd7b7d44', 2311, 'question', 'getting_started', 'support', 'new', 'one_user',
+  'not_blocking', 'How do we add verneombud to the results?', '4e617412-6788-4d9f-ac8c-97a03da2914a', 'f22a6240-8332-4d97-a42f-81ff178e4f05', 'rune.karlsen@tindrabarnehag.no', 'orgpuls', 'in_app',
+  null, null,
+  jsonb_build_object('role', 'Verneombud', 'page', '/tiltak', 'browser', 'Chrome 129 · macOS'), 'trial',
+  app.business_add(now() - interval '74 hours', 2400), app.business_add(now() - interval '74 hours', 9600), null,
+  null, null, null,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '74 hours', now() - interval '74 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('8aea9ca0-d6f2-41cd-a5a7-db4cbd7b7d44', 'customer', 'f22a6240-8332-4d97-a42f-81ff178e4f05', 'Hei, how do we add verneombud to the results?. Kan dere hjelpe oss med dette? Vi er 25 ansatte i Tindra Barnehager AS.', now() - interval '74 hours');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('07e9b053-a045-4696-aab2-257d6ff06945', 2312, 'service_request', 'billing', 'billing', 'new', 'one_org',
+  'not_blocking', 'Extend trial by 14 days — board meeting moved', '31433ce8-231b-42e5-afc0-064c77bab0ef', 'b6a51c65-69e8-4b7d-a3dc-38bc4441500a', 'ingrid.berg@fjellheimskole.no', 'orgpuls', 'in_app',
+  null, null,
+  jsonb_build_object('role', 'HR', 'page', '/resultater', 'browser', 'Edge 128 · Windows 11'), 'customer',
+  app.business_add(now() - interval '105 hours', 960), app.business_add(now() - interval '105 hours', 4800), null,
+  null, null, null,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '105 hours', now() - interval '105 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('07e9b053-a045-4696-aab2-257d6ff06945', 'customer', 'b6a51c65-69e8-4b7d-a3dc-38bc4441500a', 'Hei, extend trial by 14 days — board meeting moved. Kan dere hjelpe oss med dette? Vi er 226 ansatte i Nordlys Logistikk AS.', now() - interval '105 hours');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('24b1ccfb-fb92-4324-ab6b-12ea3393c910', 2313, 'incident', 'survey_delivery', 'support', 'waiting_us', 'one_user',
+  'not_blocking', 'Reminder sent twice to the whole company', '2a8591b9-1d16-4630-ad88-4e36a1447e21', 'a7bae5fa-5643-4e9f-aeee-d76f6c33836c', 'lars.olsen@sandvikelektro.no', 'avvik', 'contact_form',
+  'f91ec3fc-2bb3-4015-ad40-8933763d7be0', null,
+  jsonb_build_object('role', 'Daglig leder', 'page', '/innsikt', 'browser', 'Safari 18 · iOS'), 'customer',
+  app.business_add(now() - interval '21 hours', 2400), app.business_add(now() - interval '21 hours', 9600), now() - interval '21 hours' + interval '100 minutes',
+  null, null, null,
+  'f91ec3fc-2bb3-4015-ad40-8933763d7be0', now() - interval '21 hours', now() - interval '21 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('24b1ccfb-fb92-4324-ab6b-12ea3393c910', 'customer', 'a7bae5fa-5643-4e9f-aeee-d76f6c33836c', 'Hei, reminder sent twice to the whole company. Kan dere hjelpe oss med dette? Vi er 6 ansatte i Mørkved IT AS.', now() - interval '21 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('24b1ccfb-fb92-4324-ab6b-12ea3393c910', 'reply', 'f91ec3fc-2bb3-4015-ad40-8933763d7be0', 'Hei Lars, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '21 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('75a62fd5-673a-4045-a956-5d328017ffb3', 2314, 'question', 'results_anonymity', 'support', 'resolved', 'one_user',
+  'not_blocking', 'Why is the warehouse team shown as «—»?', 'c08bd479-9ca7-4884-ac80-5fc865ab689f', 'b6a51c65-69e8-4b7d-a3dc-38bc4441500a', 'ingrid.berg@fjellheimskole.no', 'orgpuls', 'in_app',
+  'e53792ad-5466-4510-a48c-6321c729dace', null,
+  jsonb_build_object('role', 'HR', 'page', '/innsikt', 'browser', 'Safari 18 · iOS'), 'trial',
+  app.business_add(now() - interval '112 hours', 2400), app.business_add(now() - interval '112 hours', 9600), null,
+  now() - interval '112 hours' + interval '20 hours', null, null,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '112 hours', now() - interval '112 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('75a62fd5-673a-4045-a956-5d328017ffb3', 'customer', 'b6a51c65-69e8-4b7d-a3dc-38bc4441500a', 'Hei, why is the warehouse team shown as «—»?. Kan dere hjelpe oss med dette? Vi er 33 ansatte i Fjellheim skole.', now() - interval '112 hours');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('4601bf38-6a73-413f-aa01-f5a10745dca8', 2315, 'service_request', 'billing', 'billing', 'waiting_us', 'one_user',
+  'not_blocking', 'Switch from card to EHF invoice', 'f058e182-e3f9-4e3c-a237-aa2e67da9238', '94ae646c-109b-48c9-a0db-facedbfefac8', 'per.larsen@rimfrostbakeri.no', 'avvik', 'email',
+  'e53792ad-5466-4510-a48c-6321c729dace', null,
+  jsonb_build_object('role', 'Daglig leder', 'page', '/oppsett/ansatte', 'browser', 'Chrome 129 · macOS'), 'customer',
+  app.business_add(now() - interval '52 hours', 2400), app.business_add(now() - interval '52 hours', 9600), now() - interval '52 hours' + interval '100 minutes',
+  null, null, null,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '52 hours', now() - interval '52 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('4601bf38-6a73-413f-aa01-f5a10745dca8', 'customer', '94ae646c-109b-48c9-a0db-facedbfefac8', 'Hei, switch from card to ehf invoice. Kan dere hjelpe oss med dette? Vi er 74 ansatte i Rimfrost Bakeri AS.', now() - interval '52 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('4601bf38-6a73-413f-aa01-f5a10745dca8', 'reply', 'e53792ad-5466-4510-a48c-6321c729dace', 'Hei Per, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '52 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('bc9345fe-eeb7-4358-ac24-4f4094f41dbf', 2316, 'problem', 'survey_delivery', 'support', 'open', 'many_orgs',
+  'not_blocking', 'Mail provider rejecting @kommune.no domains', '76ce311b-ca87-4f8b-ae29-18344febfe78', '9fccfb54-8736-40c7-ae6c-cb44ae85c623', 'linn.lie@tveitomsorg.no', 'orgpuls', 'in_app',
+  'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'investigating',
+  jsonb_build_object('role', 'HR', 'page', '/malinger/ny', 'browser', 'Edge 128 · Windows 11'), 'customer',
+  app.business_add(now() - interval '89 hours', 480), app.business_add(now() - interval '89 hours', 2400), null,
+  null, null, null,
+  'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '89 hours', now() - interval '89 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('bc9345fe-eeb7-4358-ac24-4f4094f41dbf', 'customer', '9fccfb54-8736-40c7-ae6c-cb44ae85c623', 'Hei, mail provider rejecting @kommune.no domains. Kan dere hjelpe oss med dette? Vi er 313 ansatte i Tveit Omsorg AS.', now() - interval '89 hours');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('8275252f-c1e4-4d5a-a60c-44debb10ec06', 2317, 'question', 'sales', 'sales', 'waiting_us', 'one_org',
+  'not_blocking', 'Price for 3 sites with 140 employees in total', '9bed6b5b-639a-45c4-aed7-749552fac442', 'acbc5eab-093f-4e63-a283-04ab297d5e22', 'trond.bakken@hovlandgartner.no', 'avvik', 'in_app',
+  'e1d74515-623a-48b1-a3ae-2b9cb638a560', null,
+  jsonb_build_object('role', 'Leder', 'page', '/oppsett/ansatte', 'browser', 'Chrome 129 · macOS'), 'customer',
+  app.business_add(now() - interval '81 hours', 960), app.business_add(now() - interval '81 hours', 4800), null,
+  null, null, null,
+  'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '81 hours', now() - interval '81 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('8275252f-c1e4-4d5a-a60c-44debb10ec06', 'customer', 'acbc5eab-093f-4e63-a283-04ab297d5e22', 'Hei, price for 3 sites with 140 employees in total. Kan dere hjelpe oss med dette? Vi er 423 ansatte i Hovland Gartneri AS.', now() - interval '81 hours');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('0bb1baa9-8e1d-425f-adf4-c4322618aff6', 2318, 'service_request', 'personvern', 'personvern', 'waiting_us', 'one_org',
+  'not_blocking', 'Deletion request from former employee', '8b6bf1ad-a509-409c-ad76-3e55ed46a6bd', '29330cef-7cd7-416a-a7e4-6fe368f5136d', 'julie.kristiansen@krakeroymarina.no', 'avvik', 'contact_form',
+  'e1d74515-623a-48b1-a3ae-2b9cb638a560', null,
+  jsonb_build_object('role', 'Daglig leder', 'page', '/oppsett/ansatte', 'browser', 'Edge 128 · Windows 11'), 'customer',
+  app.business_add(now() - interval '43 hours', 960), app.business_add(now() - interval '43 hours', 4800), now() - interval '43 hours' + interval '100 minutes',
+  null, null, null,
+  'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '43 hours', now() - interval '43 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('0bb1baa9-8e1d-425f-adf4-c4322618aff6', 'customer', '29330cef-7cd7-416a-a7e4-6fe368f5136d', 'Hei, deletion request from former employee. Kan dere hjelpe oss med dette? Vi er 62 ansatte i Kråkerøy Marina AS.', now() - interval '43 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('0bb1baa9-8e1d-425f-adf4-c4322618aff6', 'reply', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'Hei Julie, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '43 hours' + interval '100 minutes', 'sent');
+insert into app.privacy_requests (ticket_id, organization_id, kind, received_at, due_at, owner_id) values ('0bb1baa9-8e1d-425f-adf4-c4322618aff6', '8b6bf1ad-a509-409c-ad76-3e55ed46a6bd', 'deletion', now() - interval '43 hours', now() - interval '43 hours' + interval '30 days', 'e1d74515-623a-48b1-a3ae-2b9cb638a560');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('0ee19614-d8ec-4d01-aafb-bbf0799cbc86', 2319, 'incident', 'bug', 'support', 'resolved', 'one_user',
+  'not_blocking', 'Tiltak export to PDF shows empty pages', '8fec8260-ec68-4b20-a4cb-f2e352cc42ac', '94ae646c-109b-48c9-a0db-facedbfefac8', 'per.larsen@rimfrostbakeri.no', 'orgpuls', 'in_app',
+  'e53792ad-5466-4510-a48c-6321c729dace', null,
+  jsonb_build_object('role', 'Daglig leder', 'page', '/malinger/ny', 'browser', 'Edge 128 · Windows 11'), 'customer',
+  app.business_add(now() - interval '26 hours', 2400), app.business_add(now() - interval '26 hours', 9600), now() - interval '26 hours' + interval '100 minutes',
+  now() - interval '26 hours' + interval '20 hours', null, null,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '26 hours', now() - interval '26 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('0ee19614-d8ec-4d01-aafb-bbf0799cbc86', 'customer', '94ae646c-109b-48c9-a0db-facedbfefac8', 'Hei, tiltak export to pdf shows empty pages. Kan dere hjelpe oss med dette? Vi er 61 ansatte i Torget Apotek AS.', now() - interval '26 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('0ee19614-d8ec-4d01-aafb-bbf0799cbc86', 'reply', 'e53792ad-5466-4510-a48c-6321c729dace', 'Hei Per, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '26 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('b5a2b7a9-90b1-4f02-a6f9-c03ce38f8e9f', 2320, 'question', 'tiltak', 'support', 'waiting_us', 'one_org',
+  'not_blocking', 'Can tiltak have two owners?', '362c4f6f-56ba-426f-ae0f-6d4a0867af5e', '5e0d56bd-82f3-44ed-adf7-cdf56354e798', 'ida.strand@furulysykehjem.no', 'orgpuls', 'contact_form',
+  'e1d74515-623a-48b1-a3ae-2b9cb638a560', null,
+  jsonb_build_object('role', 'HR', 'page', '/resultater', 'browser', 'Chrome 129 · macOS'), 'customer',
+  app.business_add(now() - interval '26 hours', 960), app.business_add(now() - interval '26 hours', 4800), now() - interval '26 hours' + interval '100 minutes',
+  null, null, null,
+  'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '26 hours', now() - interval '26 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('b5a2b7a9-90b1-4f02-a6f9-c03ce38f8e9f', 'customer', '5e0d56bd-82f3-44ed-adf7-cdf56354e798', 'Hei, can tiltak have two owners?. Kan dere hjelpe oss med dette? Vi er 98 ansatte i Heggedal Vekst AS.', now() - interval '26 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('b5a2b7a9-90b1-4f02-a6f9-c03ce38f8e9f', 'reply', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'Hei Ida, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '26 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('3426b083-09ef-4efb-ad19-7521c0d0725a', 2321, 'service_request', 'billing', 'billing', 'closed', 'one_org',
+  'not_blocking', 'Change plan to 26–100 band', '212f9abe-09b0-4798-acea-891718be1ff1', '1df7fc68-300c-4bb7-a9ff-538263f7e6f4', 'anders.hagen@mjosaenergi.no', 'orgpuls', 'email',
+  '386b3cba-bde4-4644-a59b-4dc72ac99cd6', null,
+  jsonb_build_object('role', 'Daglig leder', 'page', '/resultater', 'browser', 'Safari 18 · iOS'), 'customer',
+  app.business_add(now() - interval '137 hours', 960), app.business_add(now() - interval '137 hours', 4800), now() - interval '137 hours' + interval '100 minutes',
+  now() - interval '137 hours' + interval '20 hours', now() - interval '137 hours' + interval '30 hours', 3,
+  '386b3cba-bde4-4644-a59b-4dc72ac99cd6', now() - interval '137 hours', now() - interval '137 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('3426b083-09ef-4efb-ad19-7521c0d0725a', 'customer', '1df7fc68-300c-4bb7-a9ff-538263f7e6f4', 'Hei, change plan to 26–100 band. Kan dere hjelpe oss med dette? Vi er 65 ansatte i Mjøsa Energi AS.', now() - interval '137 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('3426b083-09ef-4efb-ad19-7521c0d0725a', 'reply', '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'Hei Anders, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '137 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('a14b2307-a67c-4489-a8ca-870c5062848d', 2322, 'question', 'feature_request', 'support', 'open', 'many_orgs',
+  'not_blocking', 'Nynorsk version of the survey', '95368868-20aa-4627-a36b-f1e799eba468', 'b133b02a-13ed-4583-a1bb-7a82aa3f93c4', 'nora.hagen@oddernesbil.no', 'orgpuls', 'in_app',
+  'f91ec3fc-2bb3-4015-ad40-8933763d7be0', null,
+  jsonb_build_object('role', 'HR', 'page', '/oppsett/ansatte', 'browser', 'Edge 128 · Windows 11'), 'customer',
+  app.business_add(now() - interval '116 hours', 480), app.business_add(now() - interval '116 hours', 2400), null,
+  null, null, null,
+  'f91ec3fc-2bb3-4015-ad40-8933763d7be0', now() - interval '116 hours', now() - interval '116 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('a14b2307-a67c-4489-a8ca-870c5062848d', 'customer', 'b133b02a-13ed-4583-a1bb-7a82aa3f93c4', 'Hei, nynorsk version of the survey. Kan dere hjelpe oss med dette? Vi er 196 ansatte i Oddernes Bil AS.', now() - interval '116 hours');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('07b7eded-f315-43df-a579-26b17a2e55f5', 2323, 'incident', 'bug', 'support', 'open', 'one_user',
+  'blocking', 'Skiftly: shift swap not syncing to calendar', '7a8d923c-97e2-4350-a6d4-1b43d8db87b5', 'be2444b2-cda0-4a7c-a743-c92fec71cfc7', 'bjorn.nilsen@bjorklypleie.no', 'skiftly', 'contact_form',
+  'e1d74515-623a-48b1-a3ae-2b9cb638a560', null,
+  jsonb_build_object('role', 'HR', 'page', '/innsikt', 'browser', 'Safari 18 · iOS'), 'customer',
+  app.business_add(now() - interval '125 hours', 480), app.business_add(now() - interval '125 hours', 2400), now() - interval '125 hours' + interval '100 minutes',
+  null, null, null,
+  'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '125 hours', now() - interval '125 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('07b7eded-f315-43df-a579-26b17a2e55f5', 'customer', 'be2444b2-cda0-4a7c-a743-c92fec71cfc7', 'Hei, skiftly: shift swap not syncing to calendar. Kan dere hjelpe oss med dette? Vi er 416 ansatte i Bjørkly Pleie AS.', now() - interval '125 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('07b7eded-f315-43df-a579-26b17a2e55f5', 'reply', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'Hei Bjørn, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '125 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('0b455aca-f9f6-4105-a1ea-05a1c19adbf5', 2324, 'service_request', 'getting_started', 'support', 'open', 'one_org',
+  'not_blocking', 'Data export for annual HSE report', '6f52cd56-f112-4360-ab25-ee3a47ac2059', '738f1f02-bf6f-4f31-a8ba-12458572e137', 'eva.larsen@hamnvikfiskeri.no', 'skiftly', 'email',
+  'e53792ad-5466-4510-a48c-6321c729dace', null,
+  jsonb_build_object('role', 'Verneombud', 'page', '/resultater', 'browser', 'Edge 128 · Windows 11'), 'customer',
+  app.business_add(now() - interval '74 hours', 960), app.business_add(now() - interval '74 hours', 4800), now() - interval '74 hours' + interval '100 minutes',
+  null, null, null,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '74 hours', now() - interval '74 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('0b455aca-f9f6-4105-a1ea-05a1c19adbf5', 'customer', '738f1f02-bf6f-4f31-a8ba-12458572e137', 'Hei, data export for annual hse report. Kan dere hjelpe oss med dette? Vi er 118 ansatte i Hamnvik Fiskeri AS.', now() - interval '74 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('0b455aca-f9f6-4105-a1ea-05a1c19adbf5', 'reply', 'e53792ad-5466-4510-a48c-6321c729dace', 'Hei Eva, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '74 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('ec1bbdf3-b75c-4127-a5ce-3c93dc1acdbc', 2325, 'question', 'results_anonymity', 'support', 'open', 'one_org',
+  'not_blocking', 'Can HR see who answered?', 'a0c6edf4-cb52-4f00-adaa-77becd8cc14a', 'a37ecc9f-1f3e-4343-a277-6903aa6a6bc3', 'stian.larsen@lyngvaerror.no', 'orgpuls', 'in_app',
+  'e53792ad-5466-4510-a48c-6321c729dace', null,
+  jsonb_build_object('role', 'Verneombud', 'page', '/oppsett/ansatte', 'browser', 'Chrome 129 · macOS'), 'trial',
+  app.business_add(now() - interval '90 hours', 960), app.business_add(now() - interval '90 hours', 4800), now() - interval '90 hours' + interval '100 minutes',
+  null, null, null,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '90 hours', now() - interval '90 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('ec1bbdf3-b75c-4127-a5ce-3c93dc1acdbc', 'customer', 'a37ecc9f-1f3e-4343-a277-6903aa6a6bc3', 'Hei, can hr see who answered?. Kan dere hjelpe oss med dette? Vi er 88 ansatte i Nordvik Anlegg AS.', now() - interval '90 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('ec1bbdf3-b75c-4127-a5ce-3c93dc1acdbc', 'reply', 'e53792ad-5466-4510-a48c-6321c729dace', 'Hei Stian, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '90 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('1752041c-b629-46cb-aac7-79e0bf2f6e0f', 2326, 'incident', 'survey_delivery', 'support', 'closed', 'one_org',
+  'not_blocking', 'SMS invitations delayed for night shift', '33b11070-2b4f-4b6f-ac0d-994760006b58', '9fccfb54-8736-40c7-ae6c-cb44ae85c623', 'linn.lie@tveitomsorg.no', 'skiftly', 'email',
+  '386b3cba-bde4-4644-a59b-4dc72ac99cd6', null,
+  jsonb_build_object('role', 'HR', 'page', '/malinger/ny', 'browser', 'Edge 128 · Windows 11'), 'customer',
+  app.business_add(now() - interval '85 hours', 960), app.business_add(now() - interval '85 hours', 4800), now() - interval '85 hours' + interval '100 minutes',
+  now() - interval '85 hours' + interval '20 hours', now() - interval '85 hours' + interval '30 hours', 5,
+  '386b3cba-bde4-4644-a59b-4dc72ac99cd6', now() - interval '85 hours', now() - interval '85 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('1752041c-b629-46cb-aac7-79e0bf2f6e0f', 'customer', '9fccfb54-8736-40c7-ae6c-cb44ae85c623', 'Hei, sms invitations delayed for night shift. Kan dere hjelpe oss med dette? Vi er 54 ansatte i Kvamme Regnskap AS.', now() - interval '85 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('1752041c-b629-46cb-aac7-79e0bf2f6e0f', 'reply', '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'Hei Linn, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '85 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('fa5266ab-1bc9-4879-ac19-a95494226e22', 2327, 'question', 'billing', 'billing', 'closed', 'one_user',
+  'not_blocking', 'Invoice reference missing PO number', '4e8d8728-68d8-4be4-abf8-c65654b80ac6', '4fe0d13d-17df-48f8-a617-baaa37e2e0a4', 'ole.johansen@elvebakkenkomm.no', 'orgpuls', 'contact_form',
+  'e53792ad-5466-4510-a48c-6321c729dace', null,
+  jsonb_build_object('role', 'Daglig leder', 'page', '/innsikt', 'browser', 'Edge 128 · Windows 11'), 'customer',
+  app.business_add(now() - interval '99 hours', 2400), app.business_add(now() - interval '99 hours', 9600), now() - interval '99 hours' + interval '100 minutes',
+  now() - interval '99 hours' + interval '20 hours', now() - interval '99 hours' + interval '30 hours', 4,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '99 hours', now() - interval '99 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('fa5266ab-1bc9-4879-ac19-a95494226e22', 'customer', '4fe0d13d-17df-48f8-a617-baaa37e2e0a4', 'Hei, invoice reference missing po number. Kan dere hjelpe oss med dette? Vi er 60 ansatte i Elvebakken kommune.', now() - interval '99 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('fa5266ab-1bc9-4879-ac19-a95494226e22', 'reply', 'e53792ad-5466-4510-a48c-6321c729dace', 'Hei Ole, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '99 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('5e5f031c-253e-46b5-a28e-ca2bc24dc705', 2328, 'service_request', 'personvern', 'personvern', 'open', 'one_org',
+  'not_blocking', 'Access request under GDPR art. 15', 'bb5bc2fb-39f9-4fc3-a983-cb1a50d8ec88', '09b8bc1e-ec1b-43f3-adac-f6d35452e175', 'hilde.nordmann@brattlitannkli.no', 'orgpuls', 'email',
+  'e53792ad-5466-4510-a48c-6321c729dace', null,
+  jsonb_build_object('role', 'HR', 'page', '/oppsett/ansatte', 'browser', 'Chrome 129 · macOS'), 'customer',
+  app.business_add(now() - interval '35 hours', 960), app.business_add(now() - interval '35 hours', 4800), now() - interval '35 hours' + interval '100 minutes',
+  null, null, null,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '35 hours', now() - interval '35 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('5e5f031c-253e-46b5-a28e-ca2bc24dc705', 'customer', '09b8bc1e-ec1b-43f3-adac-f6d35452e175', 'Hei, access request under gdpr art. 15. Kan dere hjelpe oss med dette? Vi er 111 ansatte i Brattli Tannklinikk.', now() - interval '35 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('5e5f031c-253e-46b5-a28e-ca2bc24dc705', 'reply', 'e53792ad-5466-4510-a48c-6321c729dace', 'Hei Hilde, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '35 hours' + interval '100 minutes', 'sent');
+insert into app.privacy_requests (ticket_id, organization_id, kind, received_at, due_at, owner_id) values ('5e5f031c-253e-46b5-a28e-ca2bc24dc705', 'bb5bc2fb-39f9-4fc3-a983-cb1a50d8ec88', 'access', now() - interval '35 hours', now() - interval '35 hours' + interval '30 days', 'e53792ad-5466-4510-a48c-6321c729dace');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('0f71eb54-b4d4-481a-a44d-c77882acaed4', 2329, 'problem', 'bug', 'support', 'open', 'many_orgs',
+  'not_blocking', 'PDF renderer times out on large reports', 'cefcd348-52f2-4f37-a3b3-5e42346717c2', 'a37ecc9f-1f3e-4343-a277-6903aa6a6bc3', 'stian.larsen@lyngvaerror.no', 'orgpuls', 'email',
+  'f91ec3fc-2bb3-4015-ad40-8933763d7be0', 'resolved',
+  jsonb_build_object('role', 'Verneombud', 'page', '/resultater', 'browser', 'Edge 128 · Windows 11'), 'customer',
+  app.business_add(now() - interval '101 hours', 480), app.business_add(now() - interval '101 hours', 2400), null,
+  null, null, null,
+  'f91ec3fc-2bb3-4015-ad40-8933763d7be0', now() - interval '101 hours', now() - interval '101 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('0f71eb54-b4d4-481a-a44d-c77882acaed4', 'customer', 'a37ecc9f-1f3e-4343-a277-6903aa6a6bc3', 'Hei, pdf renderer times out on large reports. Kan dere hjelpe oss med dette? Vi er 6 ansatte i Lyngvær Rør AS.', now() - interval '101 hours');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('a214573e-92d5-4716-aa3b-3e476f2fefcd', 2330, 'question', 'getting_started', 'support', 'waiting_us', 'one_org',
+  'not_blocking', 'Import employees from Visma', '2d7585f5-06f1-427f-a2bd-e17f761f6ac6', '62ef7070-cc18-49c2-a5e7-b948a3aab9e8', 'camilla.hansen@kystlinjetrans.no', 'orgpuls', 'in_app',
+  'f91ec3fc-2bb3-4015-ad40-8933763d7be0', null,
+  jsonb_build_object('role', 'Leder', 'page', '/oppsett/ansatte', 'browser', 'Edge 128 · Windows 11'), 'customer',
+  app.business_add(now() - interval '114 hours', 960), app.business_add(now() - interval '114 hours', 4800), now() - interval '114 hours' + interval '100 minutes',
+  null, null, null,
+  'f91ec3fc-2bb3-4015-ad40-8933763d7be0', now() - interval '114 hours', now() - interval '114 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('a214573e-92d5-4716-aa3b-3e476f2fefcd', 'customer', '62ef7070-cc18-49c2-a5e7-b948a3aab9e8', 'Hei, import employees from visma. Kan dere hjelpe oss med dette? Vi er 4 ansatte i Kystlinje Transport AS.', now() - interval '114 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('a214573e-92d5-4716-aa3b-3e476f2fefcd', 'reply', 'f91ec3fc-2bb3-4015-ad40-8933763d7be0', 'Hei Camilla, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '114 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('09413d40-1f09-4cff-a678-92f33c7be7ea', 2331, 'incident', 'billing', 'billing', 'open', 'one_org',
+  'not_blocking', 'Payment failed but card is valid', 'ee512a75-7906-42c6-a7af-27bc44ef6a7a', 'f13a882e-abcb-4194-afb6-9d11c9612acb', 'arne.olsen@ostmarkmaskin.no', 'skiftly', 'contact_form',
+  '386b3cba-bde4-4644-a59b-4dc72ac99cd6', null,
+  jsonb_build_object('role', 'Verneombud', 'page', '/malinger/ny', 'browser', 'Safari 18 · iOS'), 'customer',
+  app.business_add(now() - interval '19 hours', 960), app.business_add(now() - interval '19 hours', 4800), now() - interval '19 hours' + interval '100 minutes',
+  null, null, null,
+  '386b3cba-bde4-4644-a59b-4dc72ac99cd6', now() - interval '19 hours', now() - interval '19 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('09413d40-1f09-4cff-a678-92f33c7be7ea', 'customer', 'f13a882e-abcb-4194-afb6-9d11c9612acb', 'Hei, payment failed but card is valid. Kan dere hjelpe oss med dette? Vi er 31 ansatte i Østmark Maskin AS.', now() - interval '19 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('09413d40-1f09-4cff-a678-92f33c7be7ea', 'reply', '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'Hei Arne, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '19 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('469b82f4-b995-49bc-a3d0-2050f6d7b5f7', 2332, 'question', 'sales', 'sales', 'waiting_customer', 'one_org',
+  'not_blocking', 'Do you support SSO with Entra ID?', '2ada062d-15f8-411d-a5c0-2258d7966e61', '62ef7070-cc18-49c2-a5e7-b948a3aab9e8', 'camilla.hansen@kystlinjetrans.no', 'skiftly', 'in_app',
+  '386b3cba-bde4-4644-a59b-4dc72ac99cd6', null,
+  jsonb_build_object('role', 'Leder', 'page', '/resultater', 'browser', 'Safari 18 · iOS'), 'customer',
+  app.business_add(now() - interval '69 hours', 960), app.business_add(now() - interval '69 hours', 4800), now() - interval '69 hours' + interval '100 minutes',
+  null, null, null,
+  '386b3cba-bde4-4644-a59b-4dc72ac99cd6', now() - interval '69 hours', now() - interval '69 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('469b82f4-b995-49bc-a3d0-2050f6d7b5f7', 'customer', '62ef7070-cc18-49c2-a5e7-b948a3aab9e8', 'Hei, do you support sso with entra id?. Kan dere hjelpe oss med dette? Vi er 12 ansatte i Lundegaard Arkitekter.', now() - interval '69 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('469b82f4-b995-49bc-a3d0-2050f6d7b5f7', 'reply', '386b3cba-bde4-4644-a59b-4dc72ac99cd6', 'Hei Camilla, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '69 hours' + interval '100 minutes', 'sent');
+insert into app.tickets (id, number, type, category_key, queue_key, status, impact, urgency, subject, organization_id, person_id, requester_email, product, channel, assignee_id,
+  problem_status, context, org_stage_at_open, first_response_due_at, resolution_due_at, first_response_at, resolved_at, closed_at, csat_score, owner_id, created_at, updated_at)
+  overriding system value values ('5b7423b3-943d-40ac-ab4f-bd11f5206d25', 2333, 'service_request', 'getting_started', 'support', 'waiting_customer', 'one_org',
+  'not_blocking', 'Transfer ownership to new daglig leder', 'e39ce338-c769-4466-a1d7-2c4117a820ec', 'acbc5eab-093f-4e63-a283-04ab297d5e22', 'trond.bakken@hovlandgartner.no', 'orgpuls', 'email',
+  'e53792ad-5466-4510-a48c-6321c729dace', null,
+  jsonb_build_object('role', 'Leder', 'page', '/malinger/ny', 'browser', 'Chrome 129 · macOS'), 'customer',
+  app.business_add(now() - interval '7 hours', 960), app.business_add(now() - interval '7 hours', 4800), now() - interval '7 hours' + interval '100 minutes',
+  null, null, null,
+  'e53792ad-5466-4510-a48c-6321c729dace', now() - interval '7 hours', now() - interval '7 hours');
+insert into app.ticket_messages (ticket_id, kind, author_person_id, body, created_at) values ('5b7423b3-943d-40ac-ab4f-bd11f5206d25', 'customer', 'acbc5eab-093f-4e63-a283-04ab297d5e22', 'Hei, transfer ownership to new daglig leder. Kan dere hjelpe oss med dette? Vi er 12 ansatte i Blåfjell Reiseliv AS.', now() - interval '7 hours');
+insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created_at, delivery_status) values ('5b7423b3-943d-40ac-ab4f-bd11f5206d25', 'reply', 'e53792ad-5466-4510-a48c-6321c729dace', 'Hei Trond, takk for beskjeden — vi ser på det nå og kommer tilbake i dag.', now() - interval '7 hours' + interval '100 minutes', 'sent');
+update app.tickets set problem_id = 'bc9345fe-eeb7-4358-ac24-4f4094f41dbf' where id = '09e3c9fb-b7e7-41ae-adbb-fc09bfd89f9a';
+update app.tickets set problem_id = 'bc9345fe-eeb7-4358-ac24-4f4094f41dbf' where id = '24b1ccfb-fb92-4324-ab6b-12ea3393c910';
+update app.tickets set problem_id = 'bc9345fe-eeb7-4358-ac24-4f4094f41dbf' where id = '1752041c-b629-46cb-aac7-79e0bf2f6e0f';
+update app.tickets set root_cause = 'The mail provider greylists first-time senders on several @kommune.no domains (451).', workaround = 'Ask IT to allow varsler@orgpuls.no as a sender; resend from Oppsett → Invitasjoner.' where number = 2316;
+insert into app.ticket_macros (id, name, category_key) values ('7a8cfe45-9886-472b-a157-7d3613c8f75a', 'Invitasjoner — sjekk søppelpost og domene', 'survey_delivery');
+insert into app.ticket_macro_versions (macro_id, locale, version, body) values ('7a8cfe45-9886-472b-a157-7d3613c8f75a', 'nb', 1, 'Hei [fornavn],
+
+Takk for at du sier fra. Vi ser at [antall] invitasjoner ikke er levert til [domene]. Det skyldes oftest at e-postserveren deres holder igjen meldinger fra nye avsendere.
+
+Be IT legge til varsler@orgpuls.no som godkjent avsender. Vi sender invitasjonene på nytt så snart det er gjort.
+
+Vennlig hilsen
+[agent]');
+insert into app.ticket_macros (id, name, category_key) values ('397e994f-6a18-4b6d-aaf8-80f768e2335d', 'Hvorfor vises gruppen som «—»?', 'results_anonymity');
+insert into app.ticket_macro_versions (macro_id, locale, version, body) values ('397e994f-6a18-4b6d-aaf8-80f768e2335d', 'nb', 1, 'Hei [fornavn],
+
+Grupper med færre svar enn terskelen dere har satt, vises ikke. Terskelen er fem som standard og aldri under tre, og det er produktets regel — ikke deres. Slå sammen små team under Oppsett → Struktur, så vises resultatet for den samlede gruppen.
+
+Vennlig hilsen
+[agent]');
+insert into app.ticket_macros (id, name, category_key) values ('d9fd913d-2637-4acf-a798-5c77159ef054', 'Prøveperioden er forlenget', 'billing');
+insert into app.ticket_macro_versions (macro_id, locale, version, body) values ('d9fd913d-2637-4acf-a798-5c77159ef054', 'nb', 1, 'Hei [fornavn],
+
+Vi har forlenget prøveperioden med [dager] dager, til [dato]. Alt dere har satt opp, ligger der fortsatt.
+
+Vennlig hilsen
+[agent]');
+insert into app.ticket_macros (id, name, category_key) values ('3ef48fb8-31f5-4d23-a6e6-0afed26f078f', 'Overgang til EHF-faktura', 'billing');
+insert into app.ticket_macro_versions (macro_id, locale, version, body) values ('3ef48fb8-31f5-4d23-a6e6-0afed26f078f', 'nb', 1, 'Hei [fornavn],
+
+Fra neste periode sender vi faktura som EHF til organisasjonsnummer [orgnr]. Gi oss gjerne en referanse eller et bestillingsnummer.
+
+Vennlig hilsen
+[agent]');
+insert into app.ticket_macros (id, name, category_key) values ('19214f70-b741-47b9-a7e8-7874b191352b', 'Personvern — forespørsel mottatt', 'personvern');
+insert into app.ticket_macro_versions (macro_id, locale, version, body) values ('19214f70-b741-47b9-a7e8-7874b191352b', 'nb', 1, 'Hei,
+
+Vi har mottatt forespørselen og svarer innen 30 dager. Svar i undersøkelser kan ikke spores tilbake til en person, og de inngår derfor ikke i et innsyn.
+
+Vennlig hilsen
+[agent]');
+insert into app.help_articles (slug, title, category_key, status, published_at, problem_id) values ('invitasjoner-kommer-ikke-frem', 'Invitasjoner kommer ikke frem', 'survey_delivery', 'published', now() - interval '10 days',
+  (select id from app.tickets where number = 2316));
+insert into app.help_articles (slug, title, category_key, status, published_at, problem_id) values ('gruppe-vises-som-strek', 'Hvorfor vises en gruppe som «—»?', 'results_anonymity', 'published', now() - interval '10 days',
+  null);
+insert into app.help_articles (slug, title, category_key, status, published_at, problem_id) values ('legg-til-verneombud', 'Slik legger du til verneombud', 'getting_started', 'published', now() - interval '10 days',
+  null);
+insert into app.help_articles (slug, title, category_key, status, published_at, problem_id) values ('kjent-feil-kommunale-domener', 'Kjent feil: kommunale e-postdomener', 'survey_delivery', 'published', now() - interval '10 days',
+  (select id from app.tickets where number = 2316));
+insert into app.help_articles (slug, title, category_key, status, published_at, problem_id) values ('kort-til-ehf', 'Bytte fra kort til EHF-faktura', 'billing', 'published', now() - interval '10 days',
+  null);
+insert into app.help_articles (slug, title, category_key, status, published_at, problem_id) values ('importere-ansatte-visma', 'Importere ansatte fra Visma', 'getting_started', 'draft', null,
+  null);
+insert into app.plan_versions (product, band_label, min_employees, max_employees, monthly_price, annual_price, version) values ('orgpuls', '1–25', 1, 25, 265, 2650, 1);
+insert into app.plan_versions (product, band_label, min_employees, max_employees, monthly_price, annual_price, version) values ('orgpuls', '26–100', 26, 100, 565, 5650, 1);
+insert into app.plan_versions (product, band_label, min_employees, max_employees, monthly_price, annual_price, version) values ('orgpuls', '101–250', 101, 250, 1190, 11900, 1);
+insert into app.plan_versions (product, band_label, min_employees, max_employees, monthly_price, annual_price, version) values ('orgpuls', '251–500', 251, 500, 2290, 22900, 1);
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o1', 'r1', 'Baseline 2026', 'main', now() - interval '27 days', now() - interval '27 days' + interval '14 days', 46, 45, 1, 37, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o1', 'account_created', now() - interval '78 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o1', 'employees_uploaded', now() - interval '78 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o1', 'survey_scheduled', now() - interval '78 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o1', 'survey_sent', now() - interval '78 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o1', 'result_unlocked', now() - interval '78 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o1', 'results_viewed', now() - interval '78 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o1', 'first_tiltak', now() - interval '78 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o1', 'converted', now() - interval '78 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o2', 'r1', 'Baseline 2026', 'main', now() - interval '86 days', now() - interval '86 days' + interval '14 days', 84, 83, 1, 45, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o2', 'account_created', now() - interval '18 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o2', 'employees_uploaded', now() - interval '18 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o2', 'survey_scheduled', now() - interval '18 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o2', 'survey_sent', now() - interval '18 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o2', 'result_unlocked', now() - interval '18 days' + interval '8 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o3', 'r1', 'Baseline 2026', 'main', now() - interval '97 days', now() - interval '97 days' + interval '14 days', 15, 14, 1, 10, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o3', 'account_created', now() - interval '22 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o3', 'employees_uploaded', now() - interval '22 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o3', 'survey_scheduled', now() - interval '22 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o3', 'survey_sent', now() - interval '22 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o3', 'result_unlocked', now() - interval '22 days' + interval '8 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o4', 'r1', 'Baseline 2026', 'main', now() - interval '61 days', now() - interval '61 days' + interval '14 days', 145, 144, 1, 91, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o4', 'account_created', now() - interval '17 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o4', 'employees_uploaded', now() - interval '17 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o4', 'survey_scheduled', now() - interval '17 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o4', 'survey_sent', now() - interval '17 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o4', 'result_unlocked', now() - interval '17 days' + interval '8 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o5', 'r1', 'Baseline 2026', 'main', now() - interval '45 days', now() - interval '45 days' + interval '14 days', 51, 50, 1, 44, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o5', 'account_created', now() - interval '533 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o5', 'employees_uploaded', now() - interval '533 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o5', 'survey_scheduled', now() - interval '533 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o5', 'survey_sent', now() - interval '533 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o5', 'result_unlocked', now() - interval '533 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o5', 'results_viewed', now() - interval '533 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o5', 'first_tiltak', now() - interval '533 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o5', 'converted', now() - interval '533 days' + interval '14 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o6', 'account_created', now() - interval '28 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o6', 'employees_uploaded', now() - interval '28 days' + interval '2 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o7', 'r1', 'Baseline 2026', 'main', now() - interval '21 days', now() - interval '21 days' + interval '14 days', 86, 85, 1, 68, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o7', 'account_created', now() - interval '519 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o7', 'employees_uploaded', now() - interval '519 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o7', 'survey_scheduled', now() - interval '519 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o7', 'survey_sent', now() - interval '519 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o7', 'result_unlocked', now() - interval '519 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o7', 'results_viewed', now() - interval '519 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o7', 'first_tiltak', now() - interval '519 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o7', 'converted', now() - interval '519 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o8', 'r1', 'Baseline 2026', 'main', now() - interval '69 days', now() - interval '69 days' + interval '14 days', 57, 56, 1, 39, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o8', 'account_created', now() - interval '582 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o8', 'employees_uploaded', now() - interval '582 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o8', 'survey_scheduled', now() - interval '582 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o8', 'survey_sent', now() - interval '582 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o8', 'result_unlocked', now() - interval '582 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o8', 'results_viewed', now() - interval '582 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o8', 'first_tiltak', now() - interval '582 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o8', 'converted', now() - interval '582 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o9', 'r1', 'Baseline 2026', 'main', now() - interval '2 days', now() - interval '2 days' + interval '14 days', 215, 214, 1, 182, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o9', 'account_created', now() - interval '308 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o9', 'employees_uploaded', now() - interval '308 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o9', 'survey_scheduled', now() - interval '308 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o9', 'survey_sent', now() - interval '308 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o9', 'result_unlocked', now() - interval '308 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o9', 'results_viewed', now() - interval '308 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o9', 'first_tiltak', now() - interval '308 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o9', 'converted', now() - interval '308 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o10', 'r1', 'Baseline 2026', 'main', now() - interval '73 days', now() - interval '73 days' + interval '14 days', 25, 24, 1, 22, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o10', 'account_created', now() - interval '184 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o10', 'employees_uploaded', now() - interval '184 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o10', 'survey_scheduled', now() - interval '184 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o10', 'survey_sent', now() - interval '184 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o10', 'result_unlocked', now() - interval '184 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o10', 'results_viewed', now() - interval '184 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o10', 'first_tiltak', now() - interval '184 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o10', 'converted', now() - interval '184 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o11', 'r1', 'Baseline 2026', 'main', now() - interval '101 days', now() - interval '101 days' + interval '14 days', 105, 104, 1, 57, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o11', 'account_created', now() - interval '353 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o11', 'employees_uploaded', now() - interval '353 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o11', 'survey_scheduled', now() - interval '353 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o11', 'survey_sent', now() - interval '353 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o11', 'result_unlocked', now() - interval '353 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o11', 'results_viewed', now() - interval '353 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o11', 'first_tiltak', now() - interval '353 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o11', 'converted', now() - interval '353 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o12', 'r1', 'Baseline 2026', 'main', now() - interval '119 days', now() - interval '119 days' + interval '14 days', 6, 5, 1, 4, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o12', 'account_created', now() - interval '769 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o12', 'employees_uploaded', now() - interval '769 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o12', 'survey_scheduled', now() - interval '769 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o12', 'survey_sent', now() - interval '769 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o12', 'result_unlocked', now() - interval '769 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o12', 'results_viewed', now() - interval '769 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o12', 'first_tiltak', now() - interval '769 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o12', 'converted', now() - interval '769 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o13', 'r1', 'Baseline 2026', 'main', now() - interval '61 days', now() - interval '61 days' + interval '14 days', 71, 70, 1, 38, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o13', 'account_created', now() - interval '54 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o13', 'employees_uploaded', now() - interval '54 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o13', 'survey_scheduled', now() - interval '54 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o13', 'survey_sent', now() - interval '54 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o13', 'result_unlocked', now() - interval '54 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o13', 'results_viewed', now() - interval '54 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o13', 'first_tiltak', now() - interval '54 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o13', 'converted', now() - interval '54 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o14', 'r1', 'Baseline 2026', 'main', now() - interval '35 days', now() - interval '35 days' + interval '14 days', 6, 5, 1, 5, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o14', 'account_created', now() - interval '387 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o14', 'employees_uploaded', now() - interval '387 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o14', 'survey_scheduled', now() - interval '387 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o14', 'survey_sent', now() - interval '387 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o14', 'result_unlocked', now() - interval '387 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o14', 'results_viewed', now() - interval '387 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o14', 'first_tiltak', now() - interval '387 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o14', 'converted', now() - interval '387 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o15', 'r1', 'Baseline 2026', 'main', now() - interval '100 days', now() - interval '100 days' + interval '14 days', 31, 30, 1, 23, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o15', 'account_created', now() - interval '21 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o15', 'employees_uploaded', now() - interval '21 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o15', 'survey_scheduled', now() - interval '21 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o15', 'survey_sent', now() - interval '21 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o15', 'result_unlocked', now() - interval '21 days' + interval '8 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o16', 'r1', 'Baseline 2026', 'main', now() - interval '88 days', now() - interval '88 days' + interval '14 days', 45, 44, 1, 33, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o16', 'account_created', now() - interval '15 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o16', 'employees_uploaded', now() - interval '15 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o16', 'survey_scheduled', now() - interval '15 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o16', 'survey_sent', now() - interval '15 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o16', 'result_unlocked', now() - interval '15 days' + interval '8 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o17', 'r1', 'Baseline 2026', 'main', now() - interval '32 days', now() - interval '32 days' + interval '14 days', 4, 3, 1, 2, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o17', 'account_created', now() - interval '444 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o17', 'employees_uploaded', now() - interval '444 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o17', 'survey_scheduled', now() - interval '444 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o17', 'survey_sent', now() - interval '444 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o17', 'result_unlocked', now() - interval '444 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o17', 'results_viewed', now() - interval '444 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o17', 'first_tiltak', now() - interval '444 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o17', 'converted', now() - interval '444 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o18', 'r1', 'Baseline 2026', 'main', now() - interval '79 days', now() - interval '79 days' + interval '14 days', 70, 69, 1, 47, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o18', 'account_created', now() - interval '334 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o18', 'employees_uploaded', now() - interval '334 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o18', 'survey_scheduled', now() - interval '334 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o18', 'survey_sent', now() - interval '334 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o18', 'result_unlocked', now() - interval '334 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o18', 'results_viewed', now() - interval '334 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o18', 'first_tiltak', now() - interval '334 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o18', 'converted', now() - interval '334 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o19', 'r1', 'Baseline 2026', 'main', now() - interval '94 days', now() - interval '94 days' + interval '14 days', 1, 0, 1, 0, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o19', 'account_created', now() - interval '617 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o19', 'employees_uploaded', now() - interval '617 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o19', 'survey_scheduled', now() - interval '617 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o19', 'survey_sent', now() - interval '617 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o19', 'result_unlocked', now() - interval '617 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o19', 'results_viewed', now() - interval '617 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o19', 'first_tiltak', now() - interval '617 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o19', 'converted', now() - interval '617 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o20', 'r1', 'Baseline 2026', 'main', now() - interval '85 days', now() - interval '85 days' + interval '14 days', 29, 28, 1, 23, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o20', 'account_created', now() - interval '796 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o20', 'employees_uploaded', now() - interval '796 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o20', 'survey_scheduled', now() - interval '796 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o20', 'survey_sent', now() - interval '796 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o20', 'result_unlocked', now() - interval '796 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o20', 'results_viewed', now() - interval '796 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o20', 'first_tiltak', now() - interval '796 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o20', 'converted', now() - interval '796 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o21', 'r1', 'Baseline 2026', 'main', now() - interval '73 days', now() - interval '73 days' + interval '14 days', 297, 296, 1, 252, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o21', 'account_created', now() - interval '118 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o21', 'employees_uploaded', now() - interval '118 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o21', 'survey_scheduled', now() - interval '118 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o21', 'survey_sent', now() - interval '118 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o21', 'result_unlocked', now() - interval '118 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o21', 'results_viewed', now() - interval '118 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o21', 'first_tiltak', now() - interval '118 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o21', 'converted', now() - interval '118 days' + interval '14 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o22', 'account_created', now() - interval '6 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o22', 'employees_uploaded', now() - interval '6 days' + interval '2 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o23', 'r1', 'Baseline 2026', 'main', now() - interval '27 days', now() - interval '27 days' + interval '14 days', 11, 10, 1, 8, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o23', 'account_created', now() - interval '101 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o23', 'employees_uploaded', now() - interval '101 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o23', 'survey_scheduled', now() - interval '101 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o23', 'survey_sent', now() - interval '101 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o23', 'result_unlocked', now() - interval '101 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o23', 'results_viewed', now() - interval '101 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o23', 'first_tiltak', now() - interval '101 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o23', 'converted', now() - interval '101 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o24', 'r1', 'Baseline 2026', 'main', now() - interval '91 days', now() - interval '91 days' + interval '14 days', 402, 401, 1, 361, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o24', 'account_created', now() - interval '315 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o24', 'employees_uploaded', now() - interval '315 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o24', 'survey_scheduled', now() - interval '315 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o24', 'survey_sent', now() - interval '315 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o24', 'result_unlocked', now() - interval '315 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o24', 'results_viewed', now() - interval '315 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o24', 'first_tiltak', now() - interval '315 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o24', 'converted', now() - interval '315 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o25', 'r1', 'Baseline 2026', 'main', now() - interval '49 days', now() - interval '49 days' + interval '14 days', 48, 47, 1, 35, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o25', 'account_created', now() - interval '687 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o25', 'employees_uploaded', now() - interval '687 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o25', 'survey_scheduled', now() - interval '687 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o25', 'survey_sent', now() - interval '687 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o25', 'result_unlocked', now() - interval '687 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o25', 'results_viewed', now() - interval '687 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o25', 'first_tiltak', now() - interval '687 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o25', 'converted', now() - interval '687 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o26', 'r1', 'Baseline 2026', 'main', now() - interval '24 days', now() - interval '24 days' + interval '14 days', 11, 10, 1, 8, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o26', 'account_created', now() - interval '692 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o26', 'employees_uploaded', now() - interval '692 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o26', 'survey_scheduled', now() - interval '692 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o26', 'survey_sent', now() - interval '692 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o26', 'result_unlocked', now() - interval '692 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o26', 'results_viewed', now() - interval '692 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o26', 'first_tiltak', now() - interval '692 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o26', 'converted', now() - interval '692 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o27', 'r1', 'Baseline 2026', 'main', now() - interval '97 days', now() - interval '97 days' + interval '14 days', 59, 58, 1, 49, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o27', 'account_created', now() - interval '573 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o27', 'employees_uploaded', now() - interval '573 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o27', 'survey_scheduled', now() - interval '573 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o27', 'survey_sent', now() - interval '573 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o27', 'result_unlocked', now() - interval '573 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o27', 'results_viewed', now() - interval '573 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o27', 'first_tiltak', now() - interval '573 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o27', 'converted', now() - interval '573 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o28', 'r1', 'Baseline 2026', 'main', now() - interval '113 days', now() - interval '113 days' + interval '14 days', 7, 6, 1, 3, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o28', 'account_created', now() - interval '11 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o28', 'employees_uploaded', now() - interval '11 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o28', 'survey_scheduled', now() - interval '11 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o28', 'survey_sent', now() - interval '11 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o28', 'result_unlocked', now() - interval '11 days' + interval '8 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o29', 'r1', 'Baseline 2026', 'main', now() - interval '90 days', now() - interval '90 days' + interval '14 days', 5, 4, 1, 3, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o29', 'account_created', now() - interval '11 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o29', 'employees_uploaded', now() - interval '11 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o29', 'survey_scheduled', now() - interval '11 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o29', 'survey_sent', now() - interval '11 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o29', 'result_unlocked', now() - interval '11 days' + interval '8 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o30', 'r1', 'Baseline 2026', 'main', now() - interval '99 days', now() - interval '99 days' + interval '14 days', 58, 57, 1, 52, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o30', 'account_created', now() - interval '644 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o30', 'employees_uploaded', now() - interval '644 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o30', 'survey_scheduled', now() - interval '644 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o30', 'survey_sent', now() - interval '644 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o30', 'result_unlocked', now() - interval '644 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o30', 'results_viewed', now() - interval '644 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o30', 'first_tiltak', now() - interval '644 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o30', 'converted', now() - interval '644 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o31', 'r1', 'Baseline 2026', 'main', now() - interval '96 days', now() - interval '96 days' + interval '14 days', 75, 74, 1, 44, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o31', 'account_created', now() - interval '639 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o31', 'employees_uploaded', now() - interval '639 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o31', 'survey_scheduled', now() - interval '639 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o31', 'survey_sent', now() - interval '639 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o31', 'result_unlocked', now() - interval '639 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o31', 'results_viewed', now() - interval '639 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o31', 'first_tiltak', now() - interval '639 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o31', 'converted', now() - interval '639 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o32', 'r1', 'Baseline 2026', 'main', now() - interval '52 days', now() - interval '52 days' + interval '14 days', 145, 144, 1, 114, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o32', 'account_created', now() - interval '516 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o32', 'employees_uploaded', now() - interval '516 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o32', 'survey_scheduled', now() - interval '516 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o32', 'survey_sent', now() - interval '516 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o32', 'result_unlocked', now() - interval '516 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o32', 'results_viewed', now() - interval '516 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o32', 'first_tiltak', now() - interval '516 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o32', 'converted', now() - interval '516 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o33', 'r1', 'Baseline 2026', 'main', now() - interval '22 days', now() - interval '22 days' + interval '14 days', 93, 92, 1, 65, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o33', 'account_created', now() - interval '69 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o33', 'employees_uploaded', now() - interval '69 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o33', 'survey_scheduled', now() - interval '69 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o33', 'survey_sent', now() - interval '69 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o33', 'result_unlocked', now() - interval '69 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o33', 'results_viewed', now() - interval '69 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o33', 'first_tiltak', now() - interval '69 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o33', 'converted', now() - interval '69 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o34', 'r1', 'Baseline 2026', 'main', now() - interval '103 days', now() - interval '103 days' + interval '14 days', 3, 2, 1, 1, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o34', 'account_created', now() - interval '5 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o34', 'employees_uploaded', now() - interval '5 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o34', 'survey_scheduled', now() - interval '5 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o34', 'survey_sent', now() - interval '5 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o34', 'result_unlocked', now() - interval '5 days' + interval '8 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o35', 'r1', 'Baseline 2026', 'main', now() - interval '87 days', now() - interval '87 days' + interval '14 days', 15, 14, 1, 9, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o35', 'account_created', now() - interval '674 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o35', 'employees_uploaded', now() - interval '674 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o35', 'survey_scheduled', now() - interval '674 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o35', 'survey_sent', now() - interval '674 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o35', 'result_unlocked', now() - interval '674 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o35', 'results_viewed', now() - interval '674 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o35', 'first_tiltak', now() - interval '674 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o35', 'converted', now() - interval '674 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o36', 'r1', 'Baseline 2026', 'main', now() - interval '35 days', now() - interval '35 days' + interval '14 days', 62, 61, 1, 45, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o36', 'account_created', now() - interval '493 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o36', 'employees_uploaded', now() - interval '493 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o36', 'survey_scheduled', now() - interval '493 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o36', 'survey_sent', now() - interval '493 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o36', 'result_unlocked', now() - interval '493 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o36', 'results_viewed', now() - interval '493 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o36', 'first_tiltak', now() - interval '493 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o36', 'converted', now() - interval '493 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o37', 'r1', 'Baseline 2026', 'main', now() - interval '15 days', now() - interval '15 days' + interval '14 days', 49, 48, 1, 35, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o37', 'account_created', now() - interval '20 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o37', 'employees_uploaded', now() - interval '20 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o37', 'survey_scheduled', now() - interval '20 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o37', 'survey_sent', now() - interval '20 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o37', 'result_unlocked', now() - interval '20 days' + interval '8 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o38', 'r1', 'Baseline 2026', 'main', now() - interval '52 days', now() - interval '52 days' + interval '14 days', 119, 118, 1, 67, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o38', 'account_created', now() - interval '98 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o38', 'employees_uploaded', now() - interval '98 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o38', 'survey_scheduled', now() - interval '98 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o38', 'survey_sent', now() - interval '98 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o38', 'result_unlocked', now() - interval '98 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o38', 'results_viewed', now() - interval '98 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o38', 'first_tiltak', now() - interval '98 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o38', 'converted', now() - interval '98 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o39', 'r1', 'Baseline 2026', 'main', now() - interval '77 days', now() - interval '77 days' + interval '14 days', 186, 185, 1, 146, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o39', 'account_created', now() - interval '263 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o39', 'employees_uploaded', now() - interval '263 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o39', 'survey_scheduled', now() - interval '263 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o39', 'survey_sent', now() - interval '263 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o39', 'result_unlocked', now() - interval '263 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o39', 'results_viewed', now() - interval '263 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o39', 'first_tiltak', now() - interval '263 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o39', 'converted', now() - interval '263 days' + interval '14 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o40', 'account_created', now() - interval '27 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o40', 'employees_uploaded', now() - interval '27 days' + interval '2 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o41', 'r1', 'Baseline 2026', 'main', now() - interval '119 days', now() - interval '119 days' + interval '14 days', 68, 67, 1, 56, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o41', 'account_created', now() - interval '113 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o41', 'employees_uploaded', now() - interval '113 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o41', 'survey_scheduled', now() - interval '113 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o41', 'survey_sent', now() - interval '113 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o41', 'result_unlocked', now() - interval '113 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o41', 'results_viewed', now() - interval '113 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o41', 'first_tiltak', now() - interval '113 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o41', 'converted', now() - interval '113 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o42', 'r1', 'Baseline 2026', 'main', now() - interval '31 days', now() - interval '31 days' + interval '14 days', 395, 394, 1, 335, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o42', 'account_created', now() - interval '342 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o42', 'employees_uploaded', now() - interval '342 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o42', 'survey_scheduled', now() - interval '342 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o42', 'survey_sent', now() - interval '342 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o42', 'result_unlocked', now() - interval '342 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o42', 'results_viewed', now() - interval '342 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o42', 'first_tiltak', now() - interval '342 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o42', 'converted', now() - interval '342 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o43', 'r1', 'Baseline 2026', 'main', now() - interval '73 days', now() - interval '73 days' + interval '14 days', 95, 94, 1, 58, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o43', 'account_created', now() - interval '736 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o43', 'employees_uploaded', now() - interval '736 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o43', 'survey_scheduled', now() - interval '736 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o43', 'survey_sent', now() - interval '736 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o43', 'result_unlocked', now() - interval '736 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o43', 'results_viewed', now() - interval '736 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o43', 'first_tiltak', now() - interval '736 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o43', 'converted', now() - interval '736 days' + interval '14 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o44', 'r1', 'Baseline 2026', 'main', now() - interval '45 days', now() - interval '45 days' + interval '14 days', 36, 35, 1, 32, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o44', 'account_created', now() - interval '11 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o44', 'employees_uploaded', now() - interval '11 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o44', 'survey_scheduled', now() - interval '11 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o44', 'survey_sent', now() - interval '11 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o44', 'result_unlocked', now() - interval '11 days' + interval '8 days');
+insert into app.product_survey_rounds (product, tenant_id, round_ref, name, kind, opens_at, closes_at, invited, delivered, bounced, answered, reminders_sent)
+  values ('orgpuls', 'orgpuls-o45', 'r1', 'Baseline 2026', 'main', now() - interval '25 days', now() - interval '25 days' + interval '14 days', 112, 111, 1, 74, 2);
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o45', 'account_created', now() - interval '120 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o45', 'employees_uploaded', now() - interval '120 days' + interval '2 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o45', 'survey_scheduled', now() - interval '120 days' + interval '4 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o45', 'survey_sent', now() - interval '120 days' + interval '6 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o45', 'result_unlocked', now() - interval '120 days' + interval '8 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o45', 'results_viewed', now() - interval '120 days' + interval '10 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o45', 'first_tiltak', now() - interval '120 days' + interval '12 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o45', 'converted', now() - interval '120 days' + interval '14 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o46', 'account_created', now() - interval '7 days' + interval '0 days');
+insert into app.activation_milestones (product, tenant_id, key, reached_at) values ('orgpuls', 'orgpuls-o46', 'employees_uploaded', now() - interval '7 days' + interval '2 days');
 insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '10 months' - interval '1 day')::date, 'orgpuls', 12819, 16, 0);
 insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '10 months' - interval '1 day')::date, 'skiftly', 2359, 3, 0);
 insert into app.mrr_daily (day, product, mrr, paying, trials) values ((date_trunc('month', now()) - interval '10 months' - interval '1 day')::date, 'avvik', 0, 0, 0);

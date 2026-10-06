@@ -42,6 +42,7 @@ select pg_temp.check(not exists (
 select pg_temp.check(exists (select 1 from pg_trigger where tgname = 'audit_fixed' and tgrelid = 'app.audit'::regclass), 'audit has its append-only trigger');
 select pg_temp.check(exists (select 1 from pg_trigger where tgname = 'audit_no_truncate' and tgrelid = 'app.audit'::regclass), 'audit has its truncate guard');
 select pg_temp.check(exists (select 1 from pg_trigger where tgname = 'changelog_fixed' and tgrelid = 'app.changelog'::regclass), 'changelog has its append-only trigger');
+insert into app.audit (actor, action, ok) values ('test', 'test.row', true);
 select pg_temp.expect_error($$update app.audit set ok = ok$$, 'the audit is append-only', 'an audit row cannot be updated');
 select pg_temp.expect_error($$truncate app.audit$$, 'the audit is append-only', 'the audit cannot be truncated');
 insert into app.changelog (entity, record_id, field) values ('organization', gen_random_uuid(), 'name');

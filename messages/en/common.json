@@ -14,7 +14,8 @@
       "module_off": "This module is switched off.",
       "not_signed_in": "Your session has ended. Sign in again.",
       "fixed_setting": "This setting is fixed.",
-      "failed": "Something went wrong. Try again."
+      "failed": "Something went wrong. Try again.",
+      "approval_required": "A second administrator must approve this first."
     },
     "pending": {
       "title": "This screen is being built",

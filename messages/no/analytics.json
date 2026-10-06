@@ -1,3 +1,411 @@
 {
-  "analytics": {}
+  "analytics": {
+    "tabs": {
+      "business": "Forretningsnøkkeltall",
+      "activation": "Aktiveringstrakt",
+      "retention": "Lojalitet og frafall",
+      "usage": "Produktbruk",
+      "web": "Nettanalyse",
+      "attribution": "Attribusjon",
+      "health": "Helsescore",
+      "defs": "Definisjoner"
+    },
+    "ranges": {
+      "30d": "30 d",
+      "90d": "90 d",
+      "12m": "12 m"
+    },
+    "rangeOwnPeriod": "Denne visningen har sin egen periode: perioden gjelder ikke",
+    "allApplications": "Alle applikasjoner",
+    "noAccess": {
+      "title": "Analyse krever retten til å se andres rapporter",
+      "body": "Rettighetssettet ditt gir ikke «Se andres rapporter» for Global, så plattformens tall vises ikke for deg."
+    },
+    "excludedCurrency": "{count, plural, one {# abonnement i en annen valuta enn NOK er} other {# abonnementer i andre valutaer enn NOK er}} holdt utenfor summene.",
+    "channels": {
+      "paid_search": "Betalt søk",
+      "paid_social": "Betalt sosialt",
+      "email": "E-post",
+      "organic_search": "Organisk søk",
+      "social": "Sosiale medier",
+      "partner": "Henvisninger og partnere",
+      "direct": "Direkte"
+    },
+    "business": {
+      "eyebrow": "Det første spørsmålet",
+      "headline": {
+        "yes": "Ja — prøveperioder blir til organisasjoner som kjører undersøkelser og handler på dem: {conv} konverterer, og {tiltak} av betalende kunder opprettet et tiltak innen 30 dager etter sitt første resultat.",
+        "partly": "Delvis — {conv} av prøveperiodene konverterer, og {tiltak} av betalende kunder opprettet et tiltak innen 30 dager etter sitt første resultat.",
+        "no": "Ikke ennå — {conv} av prøveperiodene konverterer, og {tiltak} av betalende kunder opprettet et tiltak innen 30 dager etter sitt første resultat.",
+        "noData": "Ikke kjent ennå — ingen prøvekohort i perioden er avsluttet, og ingen betalende kunde har et første resultat, så tallene som svarer på det finnes ikke."
+      },
+      "kpi": {
+        "mrr": "MRR",
+        "arr": "ARR",
+        "arrSub": "Årstakt",
+        "netNew": "Netto ny MRR",
+        "netNewSub": {
+          "30d": "Denne måneden",
+          "90d": "Siste 3 måneder",
+          "12m": "Siste 12 måneder"
+        },
+        "paying": "Betalende org.",
+        "payingSub": "én per konto",
+        "trials": "Aktive prøveperioder",
+        "trialsEnding": "{count} ≤ 7 d",
+        "trialsSub": "utløper de neste 7 dagene",
+        "conversion": "Prøve → betalende",
+        "conversionSub": "kohort {from}",
+        "conversionSpan": "kohortene {from}–{to}",
+        "conversionNone": "ingen prøvekohort er avsluttet",
+        "logoChurn": "Kundefrafall",
+        "logoChurnSub": {
+          "30d": "tapt på 30 dager",
+          "90d": "tapt på 90 dager",
+          "12m": "tapt på 12 måneder"
+        },
+        "revenueChurn": "Inntektsfrafall",
+        "revenueChurnSub": "netto etter utvidelse: {net}",
+        "revenueChurnNoBase": "ingen MRR ved starten",
+        "arpa": "ARPA",
+        "arpaSub": "per betalende org.",
+        "customers": "Kunder",
+        "customersSub": "inkl. prøveperioder og avsluttede"
+      },
+      "nn": {
+        "title": "Netto ny MRR",
+        "sub": "ny · utvidelse · reduksjon · frafall",
+        "legend": {
+          "new": "Ny",
+          "expansion": "Utvidelse",
+          "contraction": "Reduksjon",
+          "churn": "Frafall"
+        },
+        "tip": "{month} · ny {new} · utvidelse {expansion} · reduksjon {contraction} · frafall {churn}",
+        "noData": "{month} · ingen øyeblikksbilde",
+        "empty": "Ingen MRR-bevegelser ennå — de måles fra det nattlige øyeblikksbildet av hvert abonnement.",
+        "baseline": "Bevegelsene starter med det første øyeblikksbildet i {month}, som teller hvert betalende abonnement som nytt."
+      },
+      "byApp": {
+        "title": "MRR per applikasjon",
+        "sub": "12 måneder",
+        "empty": "Ingen MRR registrert de siste 12 månedene."
+      },
+      "bySource": {
+        "title": "Prøve → betalende per registreringskilde",
+        "tip": "{converted} av {trials} prøveperioder konverterte",
+        "empty": "Ingen prøveperiode startet i perioden."
+      },
+      "tiers": {
+        "title": "ARPA og prisnivåer",
+        "sub": "ARPA <b>{arpa}</b> · intervaller for antall ansatte",
+        "empty": "Ingen betalende organisasjon ennå."
+      },
+      "dims": {
+        "title": "Kunder etter",
+        "industry": "Bransje",
+        "fylke": "Fylke",
+        "size": "Størrelse",
+        "note": "Bransje fra NACE i Brønnøysund · størrelse fra ansattlisten",
+        "noteSize": "Størrelse teller betalende organisasjoner per intervall for antall ansatte",
+        "unknown": "Ikke satt",
+        "employees": "{band} ansatte",
+        "empty": "Ingen kunder ennå."
+      }
+    },
+    "activation": {
+      "promise": {
+        "title": "Løftet på nettsiden",
+        "sub": "Mediantid fra registrering til første undersøkelse sendt · mål {target} min",
+        "subNoTarget": "Mediantid fra registrering til første undersøkelse sendt"
+      },
+      "cards": {
+        "drop": "Største frafall",
+        "dropValue": "Steg {from} → {to}",
+        "dropSub": "{pct} når «{prev}», men ikke «{next}»",
+        "dropNone": "ingen organisasjon falt fra mellom stegene",
+        "activated": "Aktivert (steg 5)",
+        "activatedSub": "av kohorten {cohort} · {delta} mot {earlier}",
+        "activatedSubNoDelta": "av kohorten {cohort}",
+        "paid": "Registrering → betalende",
+        "paidSub": "median for konverterte org."
+      },
+      "funnel": {
+        "title": "Aktiveringstrakt per registreringskohort",
+        "cohort": "Kohort {month}",
+        "legend": {
+          "bar": "Søyle = organisasjoner som når steget",
+          "red": "Rødt = frafall fra forrige steg",
+          "right": "Høyre = mediantid per steg"
+        },
+        "empty": "Ingen organisasjon registrerte seg i kohorten {month}."
+      },
+      "steps": {
+        "account_created": "Konto opprettet",
+        "employees_uploaded": "Ansattliste lastet opp",
+        "survey_scheduled": "Første undersøkelse planlagt",
+        "survey_sent": "Første undersøkelse sendt",
+        "result_unlocked": "Resultat låst opp",
+        "results_viewed": "Resultater sett",
+        "first_tiltak": "Første tiltak opprettet",
+        "converted": "Konvertert til betalende"
+      },
+      "dur": {
+        "min": "{n} min",
+        "h": "{n} t",
+        "days": "{n, plural, one {# dag} other {# dager}}"
+      }
+    },
+    "retention": {
+      "title": "Kohortlojalitet — betalende organisasjoner",
+      "modes": {
+        "logos": "Kunder",
+        "revenue": "Inntekt"
+      },
+      "cohort": "Kohort",
+      "orgs": "Org.",
+      "tip": "Kohort {cohort} · måned {k}",
+      "noSnapshot": "Ingen øyeblikksbilde for denne måneden",
+      "note": "Det nattlige øyeblikksbildet starter i {month}; tidligere måneder har ikke tall.",
+      "noteNone": "Det nattlige øyeblikksbildet har ikke kjørt ennå; månedene har ikke tall.",
+      "empty": "Ingen organisasjon begynte å betale de siste 12 månedene.",
+      "churn": {
+        "title": "Kundefrafall og inntektsfrafall per måned",
+        "logo": "Kundefrafall",
+        "revenue": "Inntektsfrafall",
+        "tipLogo": "{month} · kundefrafall: {count, plural, one {# abonnement} other {# abonnementer}}",
+        "tipRevenue": "{month} · inntektsfrafall: {pct}",
+        "tipNone": "{month} · ingen MRR registrert måneden før",
+        "scale": "Hver serie tegnes i sin egen skala; hold over en søyle for tallet.",
+        "empty": "Ingen frafall registrert de siste 12 månedene."
+      },
+      "reasons": {
+        "title": "Årsaker til frafall (siste 6 måneder)",
+        "empty": "Ingen frafall de siste 6 månedene.",
+        "codes": {
+          "price": "Prisen for intervallet",
+          "no_value": "Fikk ikke nok ut av det",
+          "missing_feature": "Mangler en funksjon",
+          "switched_competitor": "Gikk over til en annen leverandør",
+          "company_closed": "Organisasjonen er lagt ned eller fusjonert",
+          "payment_failure": "Betalingsfeil, ikke løst",
+          "other": "Annet",
+          "unknown": "Ingen årsak registrert"
+        }
+      }
+    },
+    "usage": {
+      "rangeLong": {
+        "30d": "30 dager",
+        "90d": "90 dager",
+        "12m": "12 måneder"
+      },
+      "kpi": {
+        "surveys": "Undersøkelser sendt · {range}",
+        "surveysSub": "{main} hoved · {pulse} puls",
+        "response": "Gj.snittlig svarprosent",
+        "responseSub": "hoved {main} · puls {pulse}",
+        "reminder": "Effekt av påminnelser",
+        "reminderSub": "svar etter første påminnelse",
+        "tiltak": "Tiltak opprettet",
+        "tiltakSub": "{pct} med ansvarlig og frist",
+        "tiltakSubNone": "slik applikasjonene rapporterer det",
+        "closed": "Tiltak lukket i tide",
+        "closedSub": "av {count} lukket"
+      },
+      "surveys": {
+        "title": "Undersøkelser sendt per måned",
+        "main": "Hoved",
+        "pulse": "Puls",
+        "tip": "{month} · {main} hoved · {pulse} puls",
+        "empty": "Ingen undersøkelsesrunde rapportert de siste 12 månedene."
+      },
+      "roles": {
+        "title": "Innlogginger per rolle ({range})",
+        "daglig_leder": "Daglig leder",
+        "avdelingsleder": "Avdelingsleder",
+        "verneombud": "Verneombud",
+        "empty": "Ingen innlogginger rapportert ennå — Orgpuls sender innlogginger per rolle én gang om dagen."
+      },
+      "features": {
+        "title": "Funksjonsbruk per organisasjon",
+        "empty": "Ikke rapportert av applikasjonene ennå."
+      },
+      "apps": {
+        "title": "Bruk på tvers av applikasjoner",
+        "sub": "Hver applikasjon rapporterer sine egne kjernehendelser gjennom API-et",
+        "none": "Ingen kjernehendelser rapportert ennå",
+        "combined": "Velg denne applikasjonen i velgeren for å se tallene"
+      },
+      "metrics": {
+        "tiltak_created": "tiltak opprettet",
+        "tiltak_open": "åpne tiltak",
+        "tiltak_closed": "tiltak lukket",
+        "tiltak_closed_on_time": "tiltak lukket i tide",
+        "tiltak_with_owner_deadline": "tiltak med ansvarlig og frist",
+        "employees": "ansatte",
+        "groups": "grupper"
+      }
+    },
+    "web": {
+      "banner": "Egenutviklet og uten informasjonskapsler · ingen informasjonskapsel og ingen IP-adresse lagres, bare en hash av IP + nettleser med et daglig salt som slettes hver natt · besøkende over en periode er en sum av daglige unike · lastes aldri i undersøkelsesflyten",
+      "kpi": {
+        "visitors": "Besøkende",
+        "sessions": "Økter",
+        "pages": "Sider / besøk",
+        "bounce": "Fluktfrekvens",
+        "signups": "Registreringer"
+      },
+      "empty": {
+        "title": "Ingen besøk registrert ennå",
+        "body": "Sporingen på {sites} har ikke sendt en sidevisning i perioden."
+      },
+      "chart": {
+        "title": "Besøkende · {sites}",
+        "visitors": "Besøkende"
+      },
+      "funnel": {
+        "title": "Trakt på nettsiden",
+        "visit": "Besøk",
+        "kom_i_gang": "Klikk på «Kom i gang»",
+        "orgnr_entered": "Org.nr. fylt inn",
+        "account_created": "Konto opprettet"
+      },
+      "personas": {
+        "title": "Inngang per persona — «Hvem er du?»",
+        "sub": "klikk",
+        "empty": "Ingen personaklikk registrert i perioden.",
+        "names": {
+          "daglig_leder": "Daglig leder",
+          "hr": "HR",
+          "avdelingsleder": "Avdelingsleder",
+          "verneombud": "Verneombud"
+        }
+      },
+      "sources": {
+        "title": "Kilder",
+        "cols": {
+          "source": "Kilde",
+          "visits": "Besøk",
+          "bounce": "Flukt",
+          "signups": "Registr.",
+          "conv": "Konv."
+        }
+      },
+      "pages": {
+        "title": "Mest brukte landingssider og innhold"
+      },
+      "campaigns": {
+        "title": "Kampanjer — fra kostnad til betalende kunder",
+        "sub": "Kostnad registrert per kanal",
+        "cols": {
+          "campaign": "Kampanje",
+          "spend": "Kostnad",
+          "visits": "Besøk",
+          "signups": "Registr.",
+          "paid": "Betalt",
+          "cpp": "Kost / betalende"
+        },
+        "noChannel": "Ingen kanal",
+        "empty": "Ingen kostnad registrert for perioden.",
+        "prompt": "Registrer hva en kampanje kostet nedenfor for å se kostnad per betalende kunde og CAC.",
+        "promptNoRight": "Den som har rett til å se kampanjerapporter, kan registrere den.",
+        "amountLabel": "Kostnad for {campaign}, {month}",
+        "saved": "Kostnad lagret",
+        "removed": "Kostnad fjernet",
+        "add": {
+          "campaign": "Kampanje",
+          "channel": "Kanal",
+          "month": "Måned",
+          "amount": "Kostnad (kr)",
+          "submit": "＋ Kostnad"
+        }
+      },
+      "search": {
+        "title": "Search Console",
+        "sub": "Importeres hver natt",
+        "cols": {
+          "query": "Søk",
+          "impr": "Visn.",
+          "clicks": "Klikk",
+          "pos": "Pos."
+        },
+        "empty": "Ingen søk importert for perioden.",
+        "notConnected": {
+          "tag": "Ikke tilkoblet",
+          "title": "Search Console er ikke tilkoblet",
+          "body": "Ingen søk importeres, så ingen vises. Når den er tilkoblet, kommer visninger og klikk per søk hver natt."
+        }
+      }
+    },
+    "attribution": {
+      "touch": {
+        "first": "Første kontakt",
+        "last": "Siste kontakt"
+      },
+      "note": "Lagret på organisasjonen ved registrering · UTM-kilde, -medium, -kampanje og henviser",
+      "cols": {
+        "channel": "Kanal",
+        "signups": "Registr.",
+        "activated": "Aktivert",
+        "paid": "Betalt",
+        "mrr": "MRR vunnet",
+        "spend": "Kostnad",
+        "cac": "CAC"
+      },
+      "empty": "Ingen registreringer i perioden.",
+      "noLastTouch": {
+        "title": "Ingen attribusjon for siste kontakt ennå",
+        "body": "Orgpuls sender første kontakt ved registrering. Siste kontakt vises her når den sender begge."
+      },
+      "noSpend": "Ingen markedsføringskostnad er registrert for perioden, så det finnes ingen CAC.",
+      "enterSpend": "Registrer kostnad under Nettanalyse →"
+    },
+    "health": {
+      "dist": {
+        "title": "Fordeling av helsescore",
+        "tip": "{count} med score {from}–{to}",
+        "empty": "Ingen helsescore ennå — de beregnes hver natt."
+      },
+      "built": {
+        "title": "Slik bygges scoren",
+        "model": "Modell v{version}",
+        "edit": "Rediger",
+        "save": "Lagre vekter",
+        "cancel": "Avbryt",
+        "saved": "Vekter lagret · score beregnet på nytt",
+        "hint": "Vektene er relative: scoren skalerer dem til 100 % og utelater et signal applikasjonen ikke har sendt."
+      },
+      "signals": {
+        "admin_login": "Siste admin-innlogging (hvor nylig)",
+        "survey_cadence": "Undersøkelsesrytme mot årshjul",
+        "response_trend": "Utvikling i svarprosent",
+        "tiltak_activity": "Tiltaksaktivitet",
+        "payment": "Betalingsstatus"
+      },
+      "risk": {
+        "title": "I faresonen før fornyelse",
+        "sub": "score < 40 · betalende · fornyes innen {days} d",
+        "renews": "Fornyes om {count} d",
+        "factor": "{signal} −{points}",
+        "empty": "Ingen betalende organisasjon under 40 fornyes innen {days} dager."
+      }
+    },
+    "defs": {
+      "title": "Definisjoner av nøkkeltall",
+      "sub": "Definert én gang som SQL-visninger, versjonert i git · rapporter og CRM leser de samme visningene",
+      "version": "{migration} · v{version}",
+      "tip": "{view} ({version}): {text}",
+      "empty": "Ingen definisjoner funnet.",
+      "rows": {
+        "mrr": "Sum av aktive abonnementer per måned fra faktureringsspeilet (billing.changed), uten gratis- og prøveabonnementer. Årsplaner delt på 12.",
+        "net_new_mrr": "Nye og gjenopptatte + utvidelse − reduksjon − frafall, ved å sammenligne hvert abonnements MRR med siste øyeblikksbilde før måneden.",
+        "trial_conversion": "Andelen av en prøvekohort som er bekreftet som betalende innen 45 dager etter at prøveperioden startet.",
+        "activated": "Organisasjoner der minst én gruppe når organisasjonens egen svargrense (resultat låst opp).",
+        "logo_churn": "Betalende abonnementer som faller til null MRR, telt i måneden det skjer.",
+        "revenue_churn": "MRR tapt til frafall og reduksjon per måned.",
+        "health": "Vektet score 0–100 fra fem signaler; siste score per applikasjon, beregnet hver natt og når modellen endres."
+      }
+    }
+  }
 }

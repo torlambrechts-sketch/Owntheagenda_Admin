@@ -95,3 +95,24 @@ database requests you filed, gate results (exit codes), and any problem in the s
   form (spec Q8) or copy claiming k = 5 (spec Q18). Regenerate `supabase/seed.sql`; do not reset the database
   (the lead does that after merging).
 - Deviations: `docs/crm-enrichment/deviations/<screen>.md` as before; the lead folds them in.
+
+## Phase 6 screens (Campaigns, Projects)
+- Campaigns: `Marketing.dc.html`, route `campaigns` → `/campaigns` with its tabs Campaigns, Email builder, Audience
+  and consent, Deliverability (`?tab=builder|audience|deliverability`, the links Lead capture already uses). Data spec
+  `docs/crm-enrichment/specs/marketing-documents.md` §1 (those four tabs), §3, §10. Functions in
+  `0037_campaigns.sql`; their contract (RPC signatures, return shapes, enums, error details) is
+  `docs/crm-enrichment/deviations/campaigns-schema.md` — read it first; the suite is `phase6_campaigns_invariants.sql`.
+  The pill row is the one in `app/(admin)/lead-capture/_components/CaptureTabs.tsx` (reuse the same visual; you may
+  import it, not edit it). The email renderer is TypeScript (V-P6C-01): `campaign_schedule` receives the rendered HTML,
+  which must carry `[Unsubscribe]` and the sender domain's postal address — build the renderer in `lib/data/campaigns-render.ts`.
+- Projects: `Projects.dc.html`, route `projects` → `/projects`. Data spec `docs/crm-enrichment/specs/projects-meetings.md`
+  §1 (Meetings is phase 7). Functions in `0038_projects.sql` (+ `0039` engine wiring); contract in
+  `docs/crm-enrichment/deviations/projects-schema.md`; suite `phase6_projects_invariants.sql`.
+- Not connected: the email provider (sending, test sends), DNS checks, the AI provider (summaries, briefs, report
+  drafts), storage signers (file upload/download), the PDF worker. Show the honest not-connected state (D-41).
+- Notification texts for `campaign.*` and `project.*` already exist in `shell.json`. Namespaces `campaigns` and
+  `projects` are registered (empty files).
+- Seed: the design's fixtures in your own module (`scripts/seed/phase6-campaigns.mjs` or `phase6-projects.mjs`), called
+  from `scripts/seed/generate.mjs` with one line, rows that pass the schema's triggers (check them in a rolled-back
+  `psql` session: `begin; … rollback;`). Regenerate `supabase/seed.sql`; never reset or write to the shared database.
+- Deviations: `docs/crm-enrichment/deviations/<screen>.md`; requests: `docs/crm-enrichment/requests/<screen>.md`.

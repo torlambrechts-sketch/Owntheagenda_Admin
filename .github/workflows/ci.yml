@@ -37,7 +37,7 @@ jobs:
           node-version: 22
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.118.0 # pinned: «latest» asks the GitHub API and failed on its rate limit (2026-10-06); same as local
       - name: Seed is generated from the design data and committed unchanged
         run: node scripts/seed/generate.mjs && git diff --exit-code supabase/seed.sql
       - name: Start the local stack (migrations and seed)

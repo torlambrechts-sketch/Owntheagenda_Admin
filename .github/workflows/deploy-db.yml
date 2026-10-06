@@ -40,7 +40,7 @@ jobs:
           echo "connected ($kind)"
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.118.0 # pinned: «latest» asks the GitHub API and failed on its rate limit (2026-10-06); same as local
       - name: Mark the migrations applied through the MCP
         run: |
           # the MCP recorded 0001–0005 under timestamps; record them under the file versions instead

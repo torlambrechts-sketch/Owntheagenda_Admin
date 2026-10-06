@@ -19,6 +19,8 @@ import enAutomation from '@/messages/en/automation.json'
 import enInsights from '@/messages/en/insights.json'
 import enAnalytics from '@/messages/en/analytics.json'
 import enCapture from '@/messages/en/capture.json'
+import enCampaigns from '@/messages/en/campaigns.json'
+import enProjects from '@/messages/en/projects.json'
 import enDocuments from '@/messages/en/documents.json'
 import noAuth from '@/messages/no/auth.json'
 import noShell from '@/messages/no/shell.json'
@@ -37,14 +39,16 @@ import noAutomation from '@/messages/no/automation.json'
 import noInsights from '@/messages/no/insights.json'
 import noAnalytics from '@/messages/no/analytics.json'
 import noCapture from '@/messages/no/capture.json'
+import noCampaigns from '@/messages/no/campaigns.json'
+import noProjects from '@/messages/no/projects.json'
 import noDocuments from '@/messages/no/documents.json'
 
 export const locales = ['en', 'no'] as const
 export type Locale = (typeof locales)[number]
 
 const catalogue = {
-  en: { ...enAuth, ...enShell, ...enCommon, ...enOverview, ...enCustomers, ...enContacts, ...enDeals, ...enActivities, ...enTickets, ...enSettings, ...enCoverage, ...enInbox, ...enFeed, ...enAutomation, ...enInsights, ...enAnalytics, ...enCapture, ...enDocuments },
-  no: { ...noAuth, ...noShell, ...noCommon, ...noOverview, ...noCustomers, ...noContacts, ...noDeals, ...noActivities, ...noTickets, ...noSettings, ...noCoverage, ...noInbox, ...noFeed, ...noAutomation, ...noInsights, ...noAnalytics, ...noCapture, ...noDocuments },
+  en: { ...enAuth, ...enShell, ...enCommon, ...enOverview, ...enCustomers, ...enContacts, ...enDeals, ...enActivities, ...enTickets, ...enSettings, ...enCoverage, ...enInbox, ...enFeed, ...enAutomation, ...enInsights, ...enAnalytics, ...enCapture, ...enDocuments, ...enCampaigns, ...enProjects },
+  no: { ...noAuth, ...noShell, ...noCommon, ...noOverview, ...noCustomers, ...noContacts, ...noDeals, ...noActivities, ...noTickets, ...noSettings, ...noCoverage, ...noInbox, ...noFeed, ...noAutomation, ...noInsights, ...noAnalytics, ...noCapture, ...noDocuments, ...noCampaigns, ...noProjects },
 }
 
 export const messagesFor = (locale: Locale) => catalogue[locale]

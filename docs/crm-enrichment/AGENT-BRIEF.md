@@ -78,3 +78,20 @@ database requests you filed, gate results (exit codes), and any problem in the s
 - The public dashboard link waits for go.owntheagenda.com (D-28). PNG/PDF export needs a renderer that
   does not exist yet. Show those controls in their unavailable state and log a deviation.
 - Deviations: `docs/crm-enrichment/deviations/<screen>.md` as before; the lead folds them in.
+
+## Phase 5 screens (Lead capture and Web visitors, Documents)
+- Your data spec is `docs/crm-enrichment/specs/marketing-documents.md` (§1 for Lead capture and Web visitors,
+  §2 for Documents). It marks every figure the prototype invents. Read it before the design file
+  (`Marketing.dc.html`: routes `leadgen` → `/lead-capture`, `visitors` → `/web-visitors`; `Documents.dc.html`).
+  The Campaigns tab waits for phase 6 and keeps its Pending page.
+- The functions are in `0031_capture.sql` and `0032_documents.sql`, proved by
+  `supabase/tests/phase5_capture_invariants.sql` and `phase5_documents_invariants.sql`; read the tests to see
+  how each is called. The schema's own departures are logged as V-P5-* in DEVIATIONS.md.
+- Nothing public runs yet: go.owntheagenda.com (D-28), the email provider, IP-to-company, contact data,
+  drives, e-signature and the PDF worker are not connected. Embed snippets, form links and document links are
+  shown as what they will be, with the honest not-connected state where an action needs a provider (D-41).
+- Seed: the design's fixtures for your screen go in your own module (`scripts/seed/phase5-capture.mjs` or
+  `phase5-documents.mjs`) called from `scripts/seed/generate.mjs` with one line. Never seed an employee-list
+  form (spec Q8) or copy claiming k = 5 (spec Q18). Regenerate `supabase/seed.sql`; do not reset the database
+  (the lead does that after merging).
+- Deviations: `docs/crm-enrichment/deviations/<screen>.md` as before; the lead folds them in.

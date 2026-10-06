@@ -447,6 +447,10 @@ sql(`update app.event_cursors set last_event_id = coalesce((select max(id) from 
 // scores and feed cards are computed from the seeded records, as the jobs would
 sql(`select app.scores_nightly();`)
 sql(`select app.feed_checks();`)
+// the daily snapshots and health scores start from the seeded state, as the nightly jobs would
+sql(`select app.snapshot_pipeline();`)
+sql(`select app.snapshot_mrr_tenants();`)
+sql(`select app.health_nightly();`)
 
 sql(`
 commit;

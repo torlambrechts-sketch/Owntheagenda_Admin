@@ -7,7 +7,7 @@ import { formatNumber, type NumberFormat } from '@/lib/format'
 import { setSetting } from '../actions'
 import { k, useRun } from './kit'
 
-const GROUPS = ['contacts_consent', 'tracking', 'approvals_audit', 'limits', 'safeguards', 'meetings', 'platform_constant']
+const GROUPS = ['contacts_consent', 'tracking', 'approvals_audit', 'limits', 'safeguards', 'meetings', 'ai', 'platform_constant']
 
 /** Rules and limits (Settings.dc.html, v.rules): the register by group, the option pills, and the change log. */
 export function Rules({ settings, registry, modules, log, nf, canEdit }: {

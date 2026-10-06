@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { rpc, type RpcCode } from '@/lib/rpc'
 import { ACTIONS, SCOPES } from '@/lib/data/settings'
+import { numberOk } from './_components/numbers'
 
 /**
  * Settings' writes. Each parses its input with zod, calls one database function through rpc(), and answers
@@ -32,7 +33,7 @@ const SettingIn = z.object({
   value: z.string().regex(/^[a-z0-9_]{1,40}$/),
   scopeId: z.string().regex(/^[a-z0-9_-]{0,80}$/).default(''),
   number: z.number().min(0).max(1_000_000_000).nullable().default(null),
-})
+}).refine((s) => s.number === null || numberOk(s.key, s.number), { path: ['number'] })
 export async function setSetting(input: z.input<typeof SettingIn>): Promise<Result> {
   const p = SettingIn.safeParse(input)
   if (!p.success) return bad

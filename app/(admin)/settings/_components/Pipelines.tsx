@@ -2,22 +2,48 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import type { Pipeline } from '@/lib/data/settings'
+import type { Pipeline, Setting } from '@/lib/data/settings'
+import type { NumberFormat } from '@/lib/format'
 import { deleteStage, reorderStages, savePipeline, saveStage } from '../actions'
 import { k, useRun } from './kit'
+import { RuleCard } from './Rules'
 
 type Stage = Pipeline['stages'][number]
 const COLS = '[grid-template-columns:50px_minmax(0,1.5fr)_120px_140px_130px]'
 
-/** Pipelines and stages (Settings.dc.html, v.pipelines): pipeline chips, the stage table, add and delete with a target. */
-export function Pipelines({ pipelines, groups, canEdit }: { pipelines: Pipeline[] | null; groups: { id: string; name: string }[]; canEdit: boolean }) {
+/**
+ * Pipelines and stages (Settings.dc.html, v.pipelines): pipeline chips, the stage table, add and delete with a
+ * target; under them the register's pipeline rules in the Rules row style (V-SETTINGS-38).
+ */
+export function Pipelines({ pipelines, groups, canEdit, rules, nf, canEditRules }: {
+  pipelines: Pipeline[] | null
+  groups: { id: string; name: string }[]
+  canEdit: boolean
+  rules: Setting[]
+  nf: NumberFormat
+  canEditRules: boolean
+}) {
   const t = useTranslations('settings')
   const { run, pending } = useRun()
   const [pl, setPl] = useState<string | null>(pipelines?.[0]?.id ?? null)
   const [adding, setAdding] = useState(false)
   const [name, setName] = useState('')
 
-  if (!pipelines) return <div className={`${k.card} px-[18px] py-4 text-12.5 text-muted`}>{t('unavailable')}</div>
+  const ruleCard = rules.length ? (
+    <>
+      {!canEditRules && canEdit ? (
+        <div className="px-1 text-12 text-muted">{t('readOnly', { right: t('perms.cell', { action: t('perms.actions.configure'), scope: t('perms.scopes.global') }) })}</div>
+      ) : null}
+      <RuleCard title={t('rules.groups.pipelines')} items={rules} nf={nf} canEdit={canEditRules} />
+    </>
+  ) : null
+
+  if (!pipelines) return (
+    <>
+      <div className={`${k.card} px-[18px] py-4 text-12.5 text-muted`}>{t('unavailable')}</div>
+      {ruleCard}
+    </>
+  )
   const cur = pipelines.find((p) => p.id === pl) ?? pipelines[0] ?? null
   const vis = cur?.visibility_group_ids?.length ? cur.visibility_group_ids.map((id) => groups.find((g) => g.id === id)?.name ?? '—').join(', ') : t('pipelines.everyone')
 
@@ -59,6 +85,7 @@ export function Pipelines({ pipelines, groups, canEdit }: { pipelines: Pipeline[
       </div>
       {!canEdit ? <div className="px-1 text-12 text-muted">{t('readOnly', { right: t('rights.configure') })}</div> : null}
       {cur ? <StageTable key={cur.id} pipeline={cur} canEdit={canEdit} /> : <div className={`${k.card} px-[18px] py-4 text-12.5 text-muted`}>{t('pipelines.empty')}</div>}
+      {ruleCard}
     </div>
   )
 }

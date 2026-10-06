@@ -10,8 +10,12 @@ import { rpc, rpcOrThrow } from '@/lib/rpc'
 export const SECTIONS = ['rules', 'modules', 'fields', 'pipelines', 'acttypes', 'locale', 'users', 'perms', 'groups', 'plans', 'sandbox'] as const
 export type Section = (typeof SECTIONS)[number]
 
-/** The design's groups of «Rules and limits», in its order; the register's other groups live elsewhere. */
-export const RULE_GROUPS = ['contacts_consent', 'tracking', 'approvals_audit', 'limits', 'safeguards', 'meetings', 'ai', 'platform_constant'] as const
+/**
+ * The design's groups of «Rules and limits», in its order, with the register's later groups (AI, Analytics,
+ * Documents) before the constants. The others live where their controls are: pipelines under «Pipelines and
+ * stages», visibility under «Visibility groups», duplicates in Contacts › Duplicates, security on Security.
+ */
+export const RULE_GROUPS = ['contacts_consent', 'tracking', 'approvals_audit', 'limits', 'safeguards', 'meetings', 'ai', 'analytics', 'documents', 'platform_constant'] as const
 
 /** The record types in the design's order (Deals, Leads, People, Organizations, Products, Activities), then the rest. */
 const ENTITY_ORDER = ['deal', 'lead', 'person', 'organization', 'catalog_item', 'project', 'activity', 'ticket']

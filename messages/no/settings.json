@@ -61,7 +61,10 @@
         "safeguards": "Tekniske sikringer",
         "meetings": "Møter",
         "ai": "KI",
-        "platform_constant": "Plattformkonstant"
+        "analytics": "Analyse",
+        "documents": "Dokumenter",
+        "platform_constant": "Plattformkonstant",
+        "pipelines": "Regler for salgsløp"
       },
       "items": {
         "contact_rule": {
@@ -85,6 +88,24 @@
             "off": "Av",
             "warn": "Varsle",
             "block": "Stopp"
+          }
+        },
+        "double_opt_in": {
+          "name": "Dobbel bekreftelse ved påmelding til nyhetsbrev",
+          "stateDefault": "Standard — på (samtykkeregel)",
+          "options": {
+            "on": "På",
+            "off": "Av"
+          }
+        },
+        "list_hygiene": {
+          "name": "Listehygiene: foreslå arkivering av personer uten engasjement",
+          "applies": "CMP-04, CMP-08 (måneder uten engasjement; 12 som standard)",
+          "unit": "{count, plural, one {{n} måned} other {{n} måneder}}",
+          "options": {
+            "source_values": "Kildeverdi (12 måneder)",
+            "custom": "Egendefinert",
+            "off": "Av"
           }
         },
         "tracking": {
@@ -176,6 +197,38 @@
             "off": "Av"
           }
         },
+        "activation_target": {
+          "name": "Aktiveringsmål: tid fra registrering til første utsendelse",
+          "applies": "Analyse › Aktivering (20 min til første utsendelse)",
+          "unit": "{count, plural, one {{n} minutt} other {{n} minutter}}",
+          "options": {
+            "source_values": "Kildeverdi (20 minutter)",
+            "custom": "Egendefinert"
+          }
+        },
+        "renewal_window": {
+          "name": "Fornyelsesvindu for kunder i faresonen",
+          "applies": "Analyse › Helse (fornyelser innen 60 dager)",
+          "unit": "{count, plural, one {{n} dag} other {{n} dager}}",
+          "options": {
+            "source_values": "Kildeverdi (60 dager)",
+            "custom": "Egendefinert"
+          }
+        },
+        "doc_branding": {
+          "name": "Plattformmerking på dokumenter og signeringssider",
+          "options": {
+            "hidden": "Skjult",
+            "shown": "Vist"
+          }
+        },
+        "esign_service": {
+          "name": "Tjeneste for e-signering",
+          "options": {
+            "builtin": "Innebygd e-signering",
+            "external": "Ekstern tjeneste"
+          }
+        },
         "firewall": {
           "name": "Anonymitetsbrannmur",
           "everywhere": "Alle funksjoner — en plattformkonstant",
@@ -186,6 +239,18 @@
         "mfa": {
           "name": "Andre faktor ved hver innlogging for ansatte",
           "everywhere": "Hver innlogging — en plattformkonstant",
+          "options": {
+            "fixed": "Fast"
+          }
+        },
+        "campaign_rules": {
+          "name": "Kampanjeregler: avmeldingslenke og avsenderidentitet i hver kampanje, aldri til avmeldte, aldri fra et uautentisert domene",
+          "options": {
+            "fixed": "Fast"
+          }
+        },
+        "survey_flow_block": {
+          "name": "Ingen sporingskode eller nettsidemodul på et undersøkelsesdomene",
           "options": {
             "fixed": "Fast"
           }
@@ -206,6 +271,48 @@
         },
         "login_alerts": {
           "name": "Varsler ved innlogging",
+          "options": {
+            "off": "Av",
+            "on": "På"
+          }
+        },
+        "lost_reason_required": {
+          "name": "Tapsårsak påkrevd når en avtale tapes",
+          "options": {
+            "off": "Av",
+            "on": "På"
+          }
+        },
+        "deal_capacity": {
+          "name": "Kapasitet for leads og avtaler (venteliste når den er brukt opp)",
+          "options": {
+            "unlimited": "Ubegrenset",
+            "number": "Et tall"
+          }
+        },
+        "dedupe_name": {
+          "name": "Duplikatregel: navnelikhet ≥ 90 %",
+          "options": {
+            "on": "På",
+            "off": "Av"
+          }
+        },
+        "dedupe_email": {
+          "name": "Duplikatregel: samme e-postadresse",
+          "options": {
+            "on": "På",
+            "off": "Av"
+          }
+        },
+        "dedupe_orgnr": {
+          "name": "Duplikatregel: samme org.nr (organisasjoner)",
+          "options": {
+            "on": "På",
+            "off": "Av"
+          }
+        },
+        "dedupe_phone": {
+          "name": "Duplikatregel: samme telefonnummer",
           "options": {
             "off": "Av",
             "on": "På"

@@ -115,7 +115,8 @@
       "businessLeft": "{dur} business time left",
       "daysLeft": "{n, plural, one {# day left} other {# days left}}",
       "resolved": "Resolved",
-      "saved": "Saved"
+      "saved": "Saved",
+      "queueForbidden": "This ticket is in a queue you do not work in, or the change would move it into one."
     },
     "thread": {
       "customer": "Customer · {channel}",
@@ -129,7 +130,14 @@
       "requester": "Requester",
       "notConfigured": "Not e-mailed: the mail provider is not connected yet, so this reply is stored in the thread only.",
       "queued": "Queued for e-mail",
-      "failed": "E-mail delivery failed"
+      "failed": "E-mail delivery failed",
+      "actionOk": "{action} executed by {name}. Reason: {ref}. Written to the audit trail of {org}.",
+      "actionFailed": "{action} attempted by {name} and refused by the product. Reason: {ref}. Written to the audit trail of {org}.",
+      "actionOkNoOrg": "{action} executed by {name}. Reason: {ref}. Written to the audit trail.",
+      "actionFailedNoOrg": "{action} attempted by {name} and refused by the product. Reason: {ref}. Written to the audit trail.",
+      "actions": {
+        "billing_extend_trial": "Extend trial 14 days"
+      }
     },
     "composer": {
       "reply": "Reply",

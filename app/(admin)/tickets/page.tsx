@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { z } from 'zod'
 import { can, getShell } from '@/lib/shell'
 import {
-  SORTS, VIEWS, canTickets, loadConfig, loadHelp, loadMacros, loadReports, loadSuperAdmins, loadTicketDetail, loadTickets, type TicketQuery,
+  SORTS, VIEWS, loadConfig, loadHelp, loadMacros, loadReports, loadSuperAdmins, loadTicketDetail, loadTickets, type TicketQuery,
 } from '@/lib/data/tickets'
 import { TABS, type Tab } from '@/lib/data/tickets-shared'
 import { TicketsFrame } from './_components/TicketsFrame'
@@ -39,12 +39,12 @@ export default async function TicketsPage({ searchParams }: { searchParams: Prom
   const shell = await getShell()
   const product = (await cookies()).get('product')?.value ?? 'all'
   const config = await loadConfig()
-  const canReports = canTickets(shell, 'reports_others')
+  const canReports = can(shell, 'tickets', 'reports_others')
   const tabs = TABS.filter((k) => k !== 'reports' || canReports)
   const tab: Tab = tabs.includes(p.tab) ? p.tab : 'inbox'
   const products = Object.fromEntries(shell.products.map((x) => [x.key, x.name]))
   const me = { id: shell.me.id, name: shell.me.name }
-  const canConfigure = canTickets(shell, 'configure')
+  const canConfigure = can(shell, 'tickets', 'configure')
   const now = new Date().toISOString()
 
   let body: React.ReactNode = null
@@ -60,7 +60,7 @@ export default async function TicketsPage({ searchParams }: { searchParams: Prom
       loadSuperAdmins(),
       loadTickets({ view: 'problems', q: '', sort: 'newest', product: 'all' }),
     ])
-    const editOthers = canTickets(shell, 'edit_others')
+    const editOthers = can(shell, 'tickets', 'edit_others')
     body = (
       <Inbox
         list={list}
@@ -90,12 +90,12 @@ export default async function TicketsPage({ searchParams }: { searchParams: Prom
         articles={help.articles}
         config={config}
         products={products}
-        canResolve={canTickets(shell, 'edit_others')}
+        canResolve={can(shell, 'tickets', 'edit_others')}
         canConfigure={canConfigure}
       />
     )
   } else if (tab === 'help') {
-    body = <HelpCentre help={await loadHelp()} now={now} nf={shell.me.number_format} canConfigure={canConfigure} canAdd={canTickets(shell, 'add')} />
+    body = <HelpCentre help={await loadHelp()} now={now} nf={shell.me.number_format} canConfigure={canConfigure} canAdd={can(shell, 'tickets', 'add')} />
   } else if (tab === 'macros') {
     body = <Macros macros={await loadMacros()} canConfigure={canConfigure} />
   } else if (tab === 'reports') {
@@ -105,7 +105,7 @@ export default async function TicketsPage({ searchParams }: { searchParams: Prom
   }
 
   return (
-    <TicketsFrame tab={tab} tabs={tabs} config={config} product={product} canAdd={canTickets(shell, 'add')} seed={p.new ? { organizationId: p.new } : null}>
+    <TicketsFrame tab={tab} tabs={tabs} config={config} product={product} canAdd={can(shell, 'tickets', 'add')} seed={p.new ? { organizationId: p.new } : null}>
       {body}
     </TicketsFrame>
   )

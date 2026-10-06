@@ -63,3 +63,18 @@ database requests you filed, gate results (exit codes), and any problem in the s
   rules and three sequences as configuration (no runs), three scoring models with scores computed, and
   feed cards computed by `app.feed_checks()`.
 - Deviations: `docs/crm-enrichment/deviations/<screen>.md` as before; the lead folds them in.
+
+## Phase 4 screens (Insights, Analytics)
+- Your data spec is `docs/crm-enrichment/specs/insights-analytics.md`. It marks every figure the prototype
+  fabricates and gives the real formula. Read it before the design file.
+- The functions are in `0024_insights.sql` (report_run/drill/export, reports, dashboards with four role
+  templates, goals, forecasts) and `0025_analytics.sql` (analytics_business/activation/retention/usage/web/
+  attribution/health, health_model_save, churn reasons, metric definitions, set_spend). They are proved by
+  `supabase/tests/phase4_invariants.sql`; read the test to see how each is called and what it returns.
+- Every analytics read takes a period. The prototype's range selector changes nothing; yours must.
+- What has no source shows the honest empty state (D-41), never a number. Examples: web traffic before the
+  tracker runs, Search Console before it is connected, marketing spend nobody has entered, a goal with no
+  matching records. Money is NOK only; rows in other currencies are reported as `excluded_currency`, so say so.
+- The public dashboard link waits for go.owntheagenda.com (D-28). PNG/PDF export needs a renderer that
+  does not exist yet. Show those controls in their unavailable state and log a deviation.
+- Deviations: `docs/crm-enrichment/deviations/<screen>.md` as before; the lead folds them in.

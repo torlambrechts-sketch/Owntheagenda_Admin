@@ -7,7 +7,7 @@ import { ui } from '@/components/ui/styles'
 import { formatNumber, type NumberFormat } from '@/lib/format'
 import { COUNT_OPS, CRIT_FIELDS, GROUPS, PAYMENT_STATES, type CritField, type Group } from '@/lib/data/feed-shared'
 import type { PreviewRecord, ScoreModel, ScorePreview } from '@/lib/data/feed'
-import { activateModel, addCriterion, createModel, removeCriterion, type CritSpec } from '../actions'
+import { activateModel, addCriterion, createModel, deleteModel, removeCriterion, type CritSpec } from '../actions'
 import { useErr, useGo } from './go'
 
 const GROUP_TONE: Record<Group, string> = { high: 'bg-ok-bg text-ok-ink', slight: 'bg-teal-soft text-ok-ink', negative: 'bg-peach text-rust-ink' }
@@ -33,6 +33,7 @@ export function ScoringView({ models, limit, model, records, record, preview, pi
   const { go } = useGo()
   const [busy, start] = useTransition()
   const [adding, setAdding] = useState<Group | null>(null)
+  const [confirm, setConfirm] = useState(false)
 
   const sub = (m: ScoreModel) => [t(`entity.${m.entity}`), m.entity === 'deal' ? (m.pipeline ? t('pipeline', { name: m.pipeline }) : t('allPipelines')) : null, t(`state.${m.state}`)]
     .filter(Boolean).join(' · ')
@@ -42,6 +43,14 @@ export function ScoringView({ models, limit, model, records, record, preview, pi
   const toggle = () => model && start(async () => {
     const r = await activateModel({ id: model.id, active: model.state !== 'active' })
     flash(r.ok ? t(model.state === 'active' ? 'toast.deactivated' : 'toast.activated') : err(r.code))
+  })
+  // a draft model is removed after a confirmation (score_model_delete refuses an active one)
+  const del = () => model && start(async () => {
+    const r = await deleteModel({ id: model.id })
+    if (!r.ok) { flash(err(r.code)); return }
+    setConfirm(false)
+    flash(t('toast.deleted'))
+    go({ model: null, record: null })
   })
   const remove = (id: string) => model && start(async () => {
     const r = await removeCriterion({ modelId: model.id, criterionId: id })
@@ -77,9 +86,24 @@ export function ScoringView({ models, limit, model, records, record, preview, pi
           <div className="flex flex-wrap items-center justify-between gap-2 text-12 text-muted">
             <span>{t('summary', { base: model.base, scored: model.scored })}</span>
             {canConfigure ? (
-              <button type="button" disabled={busy} onClick={toggle} className={`${ui.btnSmall} disabled:opacity-50`}>
-                {t(model.state === 'active' ? 'deactivate' : 'activate')}
-              </button>
+              <span className="flex flex-wrap items-center gap-2">
+                {confirm ? (
+                  <>
+                    <span className="text-ink">{t('confirmDelete', { name: model.name })}</span>
+                    <button type="button" onClick={() => setConfirm(false)} className={ui.btnSmall}>{t('cancel')}</button>
+                    <button type="button" disabled={busy} onClick={del} className="h-[30px] cursor-pointer whitespace-nowrap rounded-9 border border-danger bg-transparent px-3 text-12 font-semibold text-danger disabled:opacity-50">{t('delete')}</button>
+                  </>
+                ) : (
+                  <>
+                    {model.state === 'draft' ? (
+                      <button type="button" disabled={busy} onClick={() => setConfirm(true)} className={`${ui.btnSmall} disabled:opacity-50`}>{t('delete')}</button>
+                    ) : null}
+                    <button type="button" disabled={busy} onClick={toggle} className={`${ui.btnSmall} disabled:opacity-50`}>
+                      {t(model.state === 'active' ? 'deactivate' : 'activate')}
+                    </button>
+                  </>
+                )}
+              </span>
             ) : null}
           </div>
         ) : null}

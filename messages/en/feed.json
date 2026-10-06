@@ -20,7 +20,10 @@
       "stage": "Stage",
       "allStages": "All stages",
       "button": "Filters",
-      "buttonActive": "Filters · {n}"
+      "buttonActive": "Filters · {n}",
+      "score": "Deal score",
+      "scoreMin": "From",
+      "scoreMax": "To"
     },
     "scope": {
       "title": "Feed scope",
@@ -104,7 +107,8 @@
         "label": "Link clicked",
         "title": "{person} clicked «{label}»",
         "sub": "Tracked link in «{subject}»",
-        "subSequence": "Tracked link in the sequence email «{subject}»"
+        "subSequence": "Tracked link in sequence «{sequence}»",
+        "subStep": "Tracked link in sequence «{sequence}» step {step}"
       },
       "sequence_review": {
         "name": "Sequence email waiting",
@@ -146,7 +150,8 @@
         "name": "Likely to advance",
         "label": "Likely to advance",
         "labelPct": "Likely to advance — {pct} %"
-      }
+      },
+      "dealSubNoOwner": "{value} · {org}"
     },
     "scoring": {
       "entity": {
@@ -163,7 +168,8 @@
       "toast": {
         "activated": "Model active · scores recomputed",
         "deactivated": "Model set to draft · scores recomputed",
-        "removed": "Criterion removed"
+        "removed": "Criterion removed",
+        "deleted": "Model deleted"
       },
       "limitNone": "Score models: unlimited (setting)",
       "limit": "Score models: {used} of {limit} (setting)",
@@ -262,7 +268,10 @@
           },
           "orgText": "Organization {field} contains «{text}»"
         }
-      }
+      },
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "confirmDelete": "Delete «{name}»?"
     },
     "enrich": {
       "toast": {
@@ -334,7 +343,8 @@
         "create": "Create linked records",
         "noRight": "Creating records needs «Add» on deals",
         "created": "Person created and linked to the email",
-        "dismissed": "Dismissed"
+        "dismissed": "Dismissed",
+        "titleSubject": "{from} wrote «{subject}»"
       }
     }
   }

@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { rpc, type RpcCode } from '@/lib/rpc'
-import { FeedData, ScoreModels } from '@/lib/data/feed'
+import { Enrichment, FeedData, ScoreModels } from '@/lib/data/feed'
 import { COUNT_OPS, CRIT_FIELDS, ENRICH_FIELDS, GROUPS, PAYMENT_STATES } from '@/lib/data/feed-shared'
 
 /** Server actions of the Feed screen: each parses its input and answers `{ ok } | { ok: false, code }`. */
@@ -155,6 +155,16 @@ export async function createModel(input: { name: string; entity: 'deal' | 'lead'
   return { ok: true, id: r.data.id }
 }
 
+/** A draft model made by mistake is removed (score_model_delete, 0027); an active one is refused. */
+export async function deleteModel(input: { id: string }): Promise<Result> {
+  const p = z.object({ id: uuid }).safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('score_model_delete', { p_id: p.data.id }, z.object({ id: uuid }))
+  if (!r.ok) return fail(r)
+  done()
+  return { ok: true }
+}
+
 export async function activateModel(input: { id: string; active: boolean }): Promise<Result> {
   const p = z.object({ id: uuid, active: z.boolean() }).safeParse(input)
   if (!p.success) return bad
@@ -166,14 +176,13 @@ export async function activateModel(input: { id: string; active: boolean }): Pro
 
 // ---------------------------------------------------------------------------
 // enrichment
-/** «Enrich N organizations with gaps»: the first hundred organizations with an org.nr and an empty field. */
+/** «Enrich N organizations with gaps»: the first hundred candidates enrichment_get names (candidate_ids, 0027). */
 export async function requestBulkEnrich(): Promise<Result<{ requested: number }>> {
-  const gaps = ENRICH_FIELDS.map((f) => [{ f, op: 'empty' }])
-  const list = await rpc('rec_list', { p_entity: 'organization', p_query: { limit: 100, filters: [{ f: 'org_number', op: 'notempty' }, { or: gaps }] } },
-    z.object({ rows: z.array(z.object({ id: uuid })) }))
-  if (!list.ok) return fail(list)
-  if (list.data.rows.length === 0) return { ok: true, requested: 0 }
-  const r = await rpc('enrich_request', { p_ids: list.data.rows.map((x) => x.id) }, z.object({ requested: z.coerce.number() }))
+  const e = await rpc('enrichment_get', {}, Enrichment)
+  if (!e.ok) return fail(e)
+  const ids = e.data.candidate_ids.slice(0, 100)
+  if (ids.length === 0) return { ok: true, requested: 0 }
+  const r = await rpc('enrich_request', { p_ids: ids }, z.object({ requested: z.coerce.number() }))
   if (!r.ok) return fail(r)
   done()
   return { ok: true, requested: r.data.requested }

@@ -27,6 +27,8 @@ export const FeedCard = z.object({
     score: num.nullable(),
     person: z.string().nullable(),
     person_id: id.nullable(),
+    owner_id: id.nullable().optional(),
+    owner: z.string().nullable().optional(),
   }).nullable(),
   organization: z.object({ id, name: z.string(), city: z.string().nullable() }).nullable(),
 })
@@ -99,11 +101,14 @@ export const Lookup = z.object({
   domain: z.string(),
   proposed: z.record(z.string(), z.unknown()),
   organization: z.object({ id, name: z.string() }).nullable(),
+  subject: z.string().nullable().optional(),
+  at: z.string().optional(),
 })
 export type Lookup = z.infer<typeof Lookup>
 
 export const Enrichment = z.object({
   candidates: num,
+  candidate_ids: z.array(id).default([]),
   contact_data: z.string().nullable(),
   credits: z.object({ used_month: num, limit: num.nullable() }),
   requests: z.array(EnrichRequest),
@@ -115,7 +120,7 @@ export const PreviewRecord = z.object({ id, title: z.string() })
 export type PreviewRecord = z.infer<typeof PreviewRecord>
 
 // ---------------------------------------------------------------------------
-export async function loadFeed(tab: FeedTab, filter: { stage_ids?: string[]; kinds?: string[] }) {
+export async function loadFeed(tab: FeedTab, filter: { stage_ids?: string[]; kinds?: string[]; score_min?: number; score_max?: number }) {
   const [feed, progress, pipelines, types, mail] = await Promise.all([
     rpcOrThrow('feed_get', { p_tab: tab, p_filter: filter }, FeedData),
     rpcOrThrow('feed_progress', {}, Progress),

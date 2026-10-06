@@ -188,7 +188,7 @@ function LookupCard({ lookup, canAdd }: { lookup: Lookup; canAdd: boolean }) {
     <div className="flex flex-wrap items-center gap-[14px] rounded-20 border border-ink bg-surface px-5 py-4">
       <div className="flex flex-[1_1_360px] flex-col gap-1">
         <span className="text-11 font-bold uppercase tracking-eyebrow text-muted">{t('eyebrow')}</span>
-        <b className="text-14">{t('title', { from: lookup.from })}</b>
+        <b className="text-14">{lookup.subject ? t('titleSubject', { from: lookup.from, subject: lookup.subject }) : t('title', { from: lookup.from })}</b>
         <span className="text-12.5 text-muted">
           {lookup.organization ? t('proposedOrg', { name, org: lookup.organization.name }) : t('proposedNoOrg', { name, domain: lookup.domain })}
         </span>

@@ -1,3 +1,459 @@
 {
-  "deals": {}
+  "deals": {
+    "empty": {
+      "noPipelines": "No pipeline exists yet. Create one under Settings › Pipelines and stages."
+    },
+    "close": "Close",
+    "newDeal": "＋ Deal",
+    "readOnly": "View rights only — cards cannot be moved",
+    "views": {
+      "label": "Views",
+      "pipeline": "Pipeline",
+      "list": "List",
+      "forecast": "Forecast",
+      "archive": "Archive and restore",
+      "products": "Products"
+    },
+    "quick": {
+      "pipeline": "Pipeline",
+      "owner": "Owner",
+      "everyone": "Everyone",
+      "label": "Label",
+      "anyLabel": "Any label",
+      "status": "Status",
+      "wonLost": "Won and lost"
+    },
+    "status": {
+      "open": "Open",
+      "won": "Won",
+      "lost": "Lost",
+      "all": "All"
+    },
+    "summary": {
+      "line": "{count, plural, one {<b>#</b> deal} other {<b>#</b> deals}} · <b>{value}</b> · weighted <b>{weighted}</b>",
+      "capacity": "Capacity: <b>{capacity}</b> (setting)",
+      "unlimited": "unlimited"
+    },
+    "legend": {
+      "planned": "planned",
+      "overdue": "overdue",
+      "noNext": "no next step"
+    },
+    "act": {
+      "overdue": "Activity overdue",
+      "planned": "Next activity planned",
+      "none": "No planned activity"
+    },
+    "board": {
+      "customize": "Customize cards",
+      "fieldsOn": "Fields on cards in {pipeline}",
+      "field": {
+        "organization": "Organization",
+        "value": "Value",
+        "close": "Expected close date"
+      },
+      "rots": "rots {days} d",
+      "rotting": "Rotting · idle {days} days"
+    },
+    "drop": {
+      "won": "Won",
+      "lost": "Lost",
+      "archive": "Archive",
+      "delete": "Delete"
+    },
+    "flash": {
+      "viewOnlyMove": "View rights only — you cannot move this deal",
+      "viewOnly": "View rights only",
+      "moved": "Moved to {stage}",
+      "movedNotified": "Moved to {stage} · followers notified",
+      "won": "Won · {title}",
+      "lost": "Lost · reason recorded",
+      "archived": "Archived · findable in the archive view",
+      "unarchived": "Back in the pipeline",
+      "deleted": "Deleted · restorable for 30 days",
+      "restored": "Restored to {stage} with links intact",
+      "reopened": "Reopened",
+      "closeMoved": "Expected close moved to {month}",
+      "bulk": "Bulk edit · one changelog entry per changed deal ({count})",
+      "bulkMovedHeld": "Bulk edit · {moved} moved · {held} need required fields first",
+      "bulkDeleted": "{count, plural, one {# deal deleted} other {# deals deleted}} · restorable for 30 days",
+      "csv": "CSV with {rows} visible rows and {cols} columns · formulas neutralized",
+      "xlsx": "XLSX export ready",
+      "created": "Deal created",
+      "nextPlanned": "Next step planned",
+      "filterSaved": "Filter saved",
+      "productAdded": "Product added to the catalog",
+      "duplicated": "Duplicated with fields and products",
+      "lineChanged": "Product lines updated"
+    },
+    "filter": {
+      "button": "Filter",
+      "title": "Advanced filter",
+      "same": "Same result in pipeline, list and forecast",
+      "where": "Where",
+      "and": "And",
+      "field": "Field",
+      "op": "Operator",
+      "value": "Value",
+      "remove": "Remove condition",
+      "addAnd": "＋ AND condition",
+      "save": "Save as filter",
+      "saved": "Saved",
+      "noneSaved": "No saved filters yet",
+      "fields": {
+        "value": "Value",
+        "source": "Source",
+        "label": "Label"
+      },
+      "ops": {
+        "is": "is",
+        "gt": ">",
+        "lt": "<",
+        "contains": "contains"
+      }
+    },
+    "list": {
+      "sort": "Sort: <b>{sort}</b> · shift-click a header to add a sort",
+      "then": ", then ",
+      "selected": "{count} selected",
+      "moveTo": "Move to stage …",
+      "setOwner": "Set owner …",
+      "delete": "Delete",
+      "columns": "Columns",
+      "exportCsv": "Export CSV",
+      "xlsx": "XLSX",
+      "empty": "No deals match these filters.",
+      "cols": {
+        "id": "System ID",
+        "title": "Title",
+        "org": "Organization",
+        "value": "Value",
+        "stage": "Stage",
+        "owner": "Owner",
+        "close": "Close",
+        "source": "Source",
+        "labels": "Labels"
+      }
+    },
+    "forecast": {
+      "open": "Open",
+      "won": "Won",
+      "projected": "Projected"
+    },
+    "archive": {
+      "archived": "Archived deals",
+      "archivedSub": "Out of active views · history kept",
+      "archivedWhen": "archived {when}",
+      "unarchive": "Unarchive",
+      "noArchived": "Nothing archived yet.",
+      "deleted": "Deleted — restorable for 30 days",
+      "deletedSub": "Returns to the stage it left",
+      "deletedBy": "deleted by {by}",
+      "daysLeft": "{count, plural, one {# day} other {# days}} left",
+      "restore": "Restore",
+      "noDeleted": "No deleted deals in the last 30 days."
+    },
+    "products": {
+      "title": "Product catalog",
+      "currency": "Default currency NOK · other currencies only where a price is set",
+      "add": "＋ Product",
+      "empty": "No products in the catalog yet.",
+      "cols": {
+        "product": "Product",
+        "code": "Code",
+        "unit": "Unit",
+        "nok": "NOK",
+        "eur": "EUR",
+        "sek": "SEK",
+        "tax": "Tax",
+        "billing": "Billing",
+        "variations": "Variations"
+      }
+    },
+    "billing": {
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "semiannual": "Semi-annual",
+      "annual": "Annual",
+      "one_off": "One-off",
+      "installments": "Installments"
+    },
+    "valueSource": {
+      "manual": "set by hand",
+      "items": "from product lines"
+    },
+    "activityTypes": {
+      "call": "Call",
+      "meeting": "Meeting",
+      "task": "Task",
+      "deadline": "Deadline",
+      "email": "Email",
+      "lunch": "Lunch",
+      "demo": "Product demo"
+    },
+    "modal": {
+      "new": {
+        "title": "New deal",
+        "text": "A title is enough. Everything else can be added later, and every change is in the history.",
+        "ph": "Deal title",
+        "cta": "Create deal",
+        "titleRequired": "Give the deal a title."
+      },
+      "lost": {
+        "title": "Why was it lost?",
+        "text": "The reason becomes a reporting dimension. An optional comment is saved as a note.",
+        "ph": "Comment (optional)",
+        "cta": "Mark as lost",
+        "reasonRequired": "Pick a reason — a lost reason is required (setting)."
+      },
+      "required": {
+        "title": "Required before {stage}",
+        "text": "{fields} {count, plural, one {is} other {are}} required from the {stage} stage (field quality rule). Fill {count, plural, one {it} other {them}} to complete the move.",
+        "cta": "Save and move",
+        "fill": "Fill every field to complete the move.",
+        "unsupported": "«{field}» is filled in the deal’s details."
+      },
+      "next": {
+        "title": "Done — what is the next step?",
+        "text": "«{subject}» is marked done. Plan the next activity so the deal keeps moving.",
+        "ph": "e.g. Send revised proposal Thursday",
+        "cta": "Schedule next activity",
+        "fallback": "Follow-up"
+      },
+      "saveFilter": {
+        "title": "Save as filter",
+        "text": "The conditions are saved for you and show under Saved in the filter.",
+        "ph": "Filter name",
+        "cta": "Save filter",
+        "nameRequired": "Give the filter a name."
+      },
+      "product": {
+        "title": "New product",
+        "text": "A name is enough; code, unit and billing are set in the catalog later. The price is in NOK.",
+        "ph": "Product name",
+        "cta": "Add product",
+        "nameRequired": "Give the product a name.",
+        "price": "Price in NOK (optional)",
+        "priceInvalid": "The price must be a number of zero or more."
+      }
+    },
+    "drawer": {
+      "idLabel": "ID {id}",
+      "source": "source {source}",
+      "owner": "Owner",
+      "ownerChanged": "Owner changed",
+      "following": "✓ Following",
+      "follow": "Follow",
+      "followers": "{count, plural, one {# follower} other {# followers}}",
+      "won": "Won",
+      "lost": "Lost",
+      "stages": "Stages",
+      "days": "{count} d",
+      "daysNow": "{count} d · now",
+      "more": {
+        "label": "More …",
+        "dup": "Duplicate with products",
+        "reopen": "Reopen",
+        "unarchive": "Unarchive",
+        "archive": "Archive",
+        "delete": "Delete"
+      },
+      "ai": {
+        "head": "Assistant not connected",
+        "text": "Suggestions for this deal appear here once the AI gateway is connected under API and integrations. Nothing is guessed until then.",
+        "cta": "Open API and integrations"
+      },
+      "summary": {
+        "title": "Summary",
+        "value": "Value",
+        "probability": "Probability",
+        "probabilityValue": "{pct} % (stage)",
+        "close": "Expected close",
+        "closeSaved": "Expected close date saved",
+        "status": "Status",
+        "source": "Source",
+        "lostReason": "Lost reason"
+      },
+      "details": {
+        "title": "Details · custom fields",
+        "formula": "formula",
+        "requiredFrom": "required from {stage}",
+        "required": "required",
+        "important": "important",
+        "saved": "Field saved",
+        "employees": "Employees in scope",
+        "weighted": "Weighted value",
+        "weightedTag": "formula · value × probability"
+      },
+      "people": {
+        "title": "Person · organization · participants",
+        "primary": "primary",
+        "change": "Change",
+        "participant": "participant",
+        "remove": "Remove",
+        "removed": "Participant removed",
+        "added": "Participant added",
+        "addParticipant": "＋ Participant",
+        "addPerson": "＋ Person",
+        "addOrganization": "＋ Organization"
+      },
+      "picker": {
+        "person": "Search people …",
+        "organization": "Search organizations …",
+        "cancel": "Cancel",
+        "none": "No matches",
+        "participant": "Search people …"
+      },
+      "products": {
+        "title": "Products",
+        "fromLines": "Deal value is calculated from lines",
+        "useLines": "Calculate deal value from lines",
+        "manual": "Deal value is set by hand",
+        "cycles": "{count, plural, one {# cycle} other {# cycles}}",
+        "untilCancelled": "until canceled",
+        "removeLine": "Remove {name}",
+        "none": "No product lines yet.",
+        "add": "＋ Product …",
+        "cols": {
+          "product": "Product",
+          "qty": "Qty",
+          "price": "Price",
+          "disc": "Disc. %",
+          "billing": "Billing",
+          "total": "Total"
+        },
+        "per": {
+          "monthly": "/mo",
+          "quarterly": "/qtr",
+          "semiannual": "/6 mo",
+          "annual": "/yr"
+        },
+        "rev": {
+          "mrr": "MRR",
+          "arr": "ARR",
+          "acv": "ACV",
+          "tcv": "TCV"
+        }
+      },
+      "composer": {
+        "label": "Add to the deal",
+        "type": "Activity type",
+        "when": "Date and time",
+        "notConnected": "Not connected yet",
+        "tabs": {
+          "note": "Note",
+          "activity": "Activity",
+          "call": "Call",
+          "email": "Email",
+          "files": "Files",
+          "documents": "Documents",
+          "invoice": "Invoice"
+        },
+        "ph": {
+          "note": "Write a note — saved on the deal and in its history",
+          "activity": "Subject, e.g. «Walkthrough with shift leads»",
+          "call": "Call outcome and notes",
+          "email": "Write to {person} — participants are suggested",
+          "files": "Drop files here",
+          "documents": "Create from template «Tilbud — standard»",
+          "invoice": "Create invoice in the accounting system"
+        },
+        "off": {
+          "call": "Calling is not connected — click-to-call and logged calls arrive with a calling provider.",
+          "email": "Email is not connected — connect a mailbox under API and integrations to write from the deal.",
+          "files": "File storage is not connected yet — files arrive with the documents module.",
+          "documents": "Documents and e-signature are not connected yet.",
+          "invoice": "The accounting system is not connected — invoices are created there once it is."
+        },
+        "hint": {
+          "note": "Notes follow the deal’s visibility",
+          "activity": "Call · meeting · task · deadline · email · lunch"
+        },
+        "cta": {
+          "note": "Save note",
+          "activity": "Schedule",
+          "call": "Log call",
+          "email": "Send",
+          "files": "Upload",
+          "documents": "Create document",
+          "invoice": "Create invoice"
+        },
+        "saved": {
+          "note": "Note saved on the deal",
+          "activity": "Activity scheduled"
+        }
+      },
+      "focus": {
+        "title": "Focus",
+        "done": "Activity done",
+        "today": "today {time}",
+        "inDays": "in {count} d",
+        "overdue": "{count} d overdue",
+        "markDone": "Mark «{subject}» as done",
+        "prio": {
+          "high": "High",
+          "medium": "Medium",
+          "low": "Low"
+        },
+        "none": "⚠ No next step planned — schedule an activity to keep the deal moving."
+      },
+      "history": {
+        "empty": "Nothing in the history yet.",
+        "filters": {
+          "All": "All",
+          "Notes": "Notes",
+          "Activities": "Activities",
+          "Changelog": "Changelog"
+        }
+      }
+    },
+    "history": {
+      "source": {
+        "ui": "user",
+        "api": "API",
+        "import": "import",
+        "workflow": "workflow",
+        "assistant": "assistant",
+        "product": "product",
+        "system": "system"
+      },
+      "sourceLabel": "source: {source}",
+      "duplicated": "Deal duplicated",
+      "created": "Deal created",
+      "archived": "Archived",
+      "unarchived": "Unarchived",
+      "deleted": "Deleted",
+      "restored": "Restored",
+      "stage": "Stage changed",
+      "won": "Marked as won",
+      "lost": "Marked as lost",
+      "reopened": "Reopened",
+      "value": "Value changed",
+      "owner": "Owner changed",
+      "close": "Expected close date changed",
+      "labels": "Labels changed",
+      "itemChanged": "Product line changed",
+      "itemRemoved": "Product line removed",
+      "participantAdded": "Participant added",
+      "participantRemoved": "Participant removed",
+      "person": "Person changed",
+      "organization": "Organization changed",
+      "valueSource": "Value source changed",
+      "custom": "{field} changed",
+      "other": "{field} changed",
+      "notePinned": "Note by {author} — pinned",
+      "note": "Note by {author}",
+      "activityDone": "{subject} — done",
+      "f": {
+        "stage": "Stage",
+        "status": "Status",
+        "value": "Value",
+        "owner": "Owner",
+        "close": "Close",
+        "labels": "Labels",
+        "valueSource": "Value",
+        "source": "Source"
+      }
+    }
+  }
 }

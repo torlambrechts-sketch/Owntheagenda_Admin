@@ -1,3 +1,459 @@
 {
-  "deals": {}
+  "deals": {
+    "empty": {
+      "noPipelines": "Det finnes ingen pipeline ennå. Opprett en under Innstillinger › Pipelines og trinn."
+    },
+    "close": "Lukk",
+    "newDeal": "＋ Avtale",
+    "readOnly": "Kun visningsrett — kort kan ikke flyttes",
+    "views": {
+      "label": "Visninger",
+      "pipeline": "Pipeline",
+      "list": "Liste",
+      "forecast": "Prognose",
+      "archive": "Arkiv og gjenoppretting",
+      "products": "Produkter"
+    },
+    "quick": {
+      "pipeline": "Pipeline",
+      "owner": "Eier",
+      "everyone": "Alle",
+      "label": "Etikett",
+      "anyLabel": "Alle etiketter",
+      "status": "Status",
+      "wonLost": "Vunnet og tapt"
+    },
+    "status": {
+      "open": "Åpen",
+      "won": "Vunnet",
+      "lost": "Tapt",
+      "all": "Alle"
+    },
+    "summary": {
+      "line": "{count, plural, one {<b>#</b> avtale} other {<b>#</b> avtaler}} · <b>{value}</b> · vektet <b>{weighted}</b>",
+      "capacity": "Kapasitet: <b>{capacity}</b> (innstilling)",
+      "unlimited": "ubegrenset"
+    },
+    "legend": {
+      "planned": "planlagt",
+      "overdue": "forfalt",
+      "noNext": "ingen neste steg"
+    },
+    "act": {
+      "overdue": "Aktivitet forfalt",
+      "planned": "Neste aktivitet planlagt",
+      "none": "Ingen planlagt aktivitet"
+    },
+    "board": {
+      "customize": "Tilpass kort",
+      "fieldsOn": "Felt på kort i {pipeline}",
+      "field": {
+        "organization": "Organisasjon",
+        "value": "Verdi",
+        "close": "Forventet lukkedato"
+      },
+      "rots": "råtner {days} d",
+      "rotting": "Råtner · inaktiv {days} dager"
+    },
+    "drop": {
+      "won": "Vunnet",
+      "lost": "Tapt",
+      "archive": "Arkiver",
+      "delete": "Slett"
+    },
+    "flash": {
+      "viewOnlyMove": "Kun visningsrett — du kan ikke flytte denne avtalen",
+      "viewOnly": "Kun visningsrett",
+      "moved": "Flyttet til {stage}",
+      "movedNotified": "Flyttet til {stage} · følgere varslet",
+      "won": "Vunnet · {title}",
+      "lost": "Tapt · årsak registrert",
+      "archived": "Arkivert · finnes i arkivvisningen",
+      "unarchived": "Tilbake i pipelinen",
+      "deleted": "Slettet · kan gjenopprettes i 30 dager",
+      "restored": "Gjenopprettet til {stage} med koblinger intakt",
+      "reopened": "Gjenåpnet",
+      "closeMoved": "Forventet lukking flyttet til {month}",
+      "bulk": "Masseendring · én endringslogg-oppføring per endret avtale ({count})",
+      "bulkMovedHeld": "Masseendring · {moved} flyttet · {held} mangler påkrevde felt",
+      "bulkDeleted": "{count, plural, one {# avtale slettet} other {# avtaler slettet}} · kan gjenopprettes i 30 dager",
+      "csv": "CSV med {rows} synlige rader og {cols} kolonner · formler nøytralisert",
+      "xlsx": "XLSX-eksport klar",
+      "created": "Avtale opprettet",
+      "nextPlanned": "Neste steg planlagt",
+      "filterSaved": "Filter lagret",
+      "productAdded": "Produkt lagt til i katalogen",
+      "duplicated": "Duplisert med felt og produkter",
+      "lineChanged": "Produktlinjer oppdatert"
+    },
+    "filter": {
+      "button": "Filter",
+      "title": "Avansert filter",
+      "same": "Samme resultat i pipeline, liste og prognose",
+      "where": "Hvor",
+      "and": "Og",
+      "field": "Felt",
+      "op": "Operator",
+      "value": "Verdi",
+      "remove": "Fjern betingelse",
+      "addAnd": "＋ OG-betingelse",
+      "save": "Lagre som filter",
+      "saved": "Lagret",
+      "noneSaved": "Ingen lagrede filtre ennå",
+      "fields": {
+        "value": "Verdi",
+        "source": "Kilde",
+        "label": "Etikett"
+      },
+      "ops": {
+        "is": "er",
+        "gt": ">",
+        "lt": "<",
+        "contains": "inneholder"
+      }
+    },
+    "list": {
+      "sort": "Sortering: <b>{sort}</b> · shift-klikk en overskrift for å legge til en sortering",
+      "then": ", deretter ",
+      "selected": "{count} valgt",
+      "moveTo": "Flytt til trinn …",
+      "setOwner": "Sett eier …",
+      "delete": "Slett",
+      "columns": "Kolonner",
+      "exportCsv": "Eksporter CSV",
+      "xlsx": "XLSX",
+      "empty": "Ingen avtaler passer disse filtrene.",
+      "cols": {
+        "id": "System-ID",
+        "title": "Tittel",
+        "org": "Organisasjon",
+        "value": "Verdi",
+        "stage": "Trinn",
+        "owner": "Eier",
+        "close": "Lukking",
+        "source": "Kilde",
+        "labels": "Etiketter"
+      }
+    },
+    "forecast": {
+      "open": "Åpen",
+      "won": "Vunnet",
+      "projected": "Anslått"
+    },
+    "archive": {
+      "archived": "Arkiverte avtaler",
+      "archivedSub": "Ute av aktive visninger · historikk beholdt",
+      "archivedWhen": "arkivert {when}",
+      "unarchive": "Hent fra arkiv",
+      "noArchived": "Ingenting arkivert ennå.",
+      "deleted": "Slettet — kan gjenopprettes i 30 dager",
+      "deletedSub": "Går tilbake til trinnet den forlot",
+      "deletedBy": "slettet av {by}",
+      "daysLeft": "{count, plural, one {# dag} other {# dager}} igjen",
+      "restore": "Gjenopprett",
+      "noDeleted": "Ingen slettede avtaler de siste 30 dagene."
+    },
+    "products": {
+      "title": "Produktkatalog",
+      "currency": "Standardvaluta NOK · andre valutaer bare der en pris er satt",
+      "add": "＋ Produkt",
+      "empty": "Ingen produkter i katalogen ennå.",
+      "cols": {
+        "product": "Produkt",
+        "code": "Kode",
+        "unit": "Enhet",
+        "nok": "NOK",
+        "eur": "EUR",
+        "sek": "SEK",
+        "tax": "MVA",
+        "billing": "Fakturering",
+        "variations": "Varianter"
+      }
+    },
+    "billing": {
+      "monthly": "Månedlig",
+      "quarterly": "Kvartalsvis",
+      "semiannual": "Halvårlig",
+      "annual": "Årlig",
+      "one_off": "Engangs",
+      "installments": "Avdrag"
+    },
+    "valueSource": {
+      "manual": "satt manuelt",
+      "items": "fra produktlinjer"
+    },
+    "activityTypes": {
+      "call": "Samtale",
+      "meeting": "Møte",
+      "task": "Oppgave",
+      "deadline": "Frist",
+      "email": "E-post",
+      "lunch": "Lunsj",
+      "demo": "Produktdemo"
+    },
+    "modal": {
+      "new": {
+        "title": "Ny avtale",
+        "text": "En tittel er nok. Alt annet kan legges til senere, og hver endring står i historikken.",
+        "ph": "Avtaletittel",
+        "cta": "Opprett avtale",
+        "titleRequired": "Gi avtalen en tittel."
+      },
+      "lost": {
+        "title": "Hvorfor ble den tapt?",
+        "text": "Årsaken blir en rapporteringsdimensjon. En valgfri kommentar lagres som notat.",
+        "ph": "Kommentar (valgfritt)",
+        "cta": "Merk som tapt",
+        "reasonRequired": "Velg en årsak — tapsårsak er påkrevd (innstilling)."
+      },
+      "required": {
+        "title": "Påkrevd før {stage}",
+        "text": "{fields} er påkrevd fra trinnet {stage} (regel for feltkvalitet). Fyll {count, plural, one {det} other {dem}} ut for å fullføre flyttingen.",
+        "cta": "Lagre og flytt",
+        "fill": "Fyll ut alle feltene for å fullføre flyttingen.",
+        "unsupported": "«{field}» fylles ut i avtalens detaljer."
+      },
+      "next": {
+        "title": "Ferdig — hva er neste steg?",
+        "text": "«{subject}» er merket som ferdig. Planlegg neste aktivitet så avtalen holder seg i bevegelse.",
+        "ph": "f.eks. Send revidert tilbud torsdag",
+        "cta": "Planlegg neste aktivitet",
+        "fallback": "Oppfølging"
+      },
+      "saveFilter": {
+        "title": "Lagre som filter",
+        "text": "Betingelsene lagres for deg og vises under Lagret i filteret.",
+        "ph": "Filternavn",
+        "cta": "Lagre filter",
+        "nameRequired": "Gi filteret et navn."
+      },
+      "product": {
+        "title": "Nytt produkt",
+        "text": "Et navn er nok; kode, enhet og fakturering settes i katalogen senere. Prisen er i NOK.",
+        "ph": "Produktnavn",
+        "cta": "Legg til produkt",
+        "nameRequired": "Gi produktet et navn.",
+        "price": "Pris i NOK (valgfritt)",
+        "priceInvalid": "Prisen må være et tall på null eller mer."
+      }
+    },
+    "drawer": {
+      "idLabel": "ID {id}",
+      "source": "kilde {source}",
+      "owner": "Eier",
+      "ownerChanged": "Eier endret",
+      "following": "✓ Følger",
+      "follow": "Følg",
+      "followers": "{count, plural, one {# følger} other {# følgere}}",
+      "won": "Vunnet",
+      "lost": "Tapt",
+      "stages": "Trinn",
+      "days": "{count} d",
+      "daysNow": "{count} d · nå",
+      "more": {
+        "label": "Mer …",
+        "dup": "Dupliser med produkter",
+        "reopen": "Gjenåpne",
+        "unarchive": "Hent fra arkiv",
+        "archive": "Arkiver",
+        "delete": "Slett"
+      },
+      "ai": {
+        "head": "Assistenten er ikke koblet til",
+        "text": "Forslag for denne avtalen vises her når AI-gatewayen er koblet til under API og integrasjoner. Ingenting gjettes før det.",
+        "cta": "Åpne API og integrasjoner"
+      },
+      "summary": {
+        "title": "Sammendrag",
+        "value": "Verdi",
+        "probability": "Sannsynlighet",
+        "probabilityValue": "{pct} % (trinn)",
+        "close": "Forventet lukking",
+        "closeSaved": "Forventet lukkedato lagret",
+        "status": "Status",
+        "source": "Kilde",
+        "lostReason": "Tapsårsak"
+      },
+      "details": {
+        "title": "Detaljer · egendefinerte felt",
+        "formula": "formel",
+        "requiredFrom": "påkrevd fra {stage}",
+        "required": "påkrevd",
+        "important": "viktig",
+        "saved": "Felt lagret",
+        "employees": "Ansatte i omfang",
+        "weighted": "Vektet verdi",
+        "weightedTag": "formel · verdi × sannsynlighet"
+      },
+      "people": {
+        "title": "Person · organisasjon · deltakere",
+        "primary": "primær",
+        "change": "Endre",
+        "participant": "deltaker",
+        "remove": "Fjern",
+        "removed": "Deltaker fjernet",
+        "added": "Deltaker lagt til",
+        "addParticipant": "＋ Deltaker",
+        "addPerson": "＋ Person",
+        "addOrganization": "＋ Organisasjon"
+      },
+      "picker": {
+        "person": "Søk etter personer …",
+        "organization": "Søk etter organisasjoner …",
+        "cancel": "Avbryt",
+        "none": "Ingen treff",
+        "participant": "Søk etter personer …"
+      },
+      "products": {
+        "title": "Produkter",
+        "fromLines": "Avtaleverdien beregnes fra linjene",
+        "useLines": "Beregn avtaleverdien fra linjene",
+        "manual": "Avtaleverdien er satt manuelt",
+        "cycles": "{count, plural, one {# periode} other {# perioder}}",
+        "untilCancelled": "til oppsigelse",
+        "removeLine": "Fjern {name}",
+        "none": "Ingen produktlinjer ennå.",
+        "add": "＋ Produkt …",
+        "cols": {
+          "product": "Produkt",
+          "qty": "Ant.",
+          "price": "Pris",
+          "disc": "Rabatt %",
+          "billing": "Fakturering",
+          "total": "Sum"
+        },
+        "per": {
+          "monthly": "/md",
+          "quarterly": "/kv",
+          "semiannual": "/6 md",
+          "annual": "/år"
+        },
+        "rev": {
+          "mrr": "MRR",
+          "arr": "ARR",
+          "acv": "ACV",
+          "tcv": "TCV"
+        }
+      },
+      "composer": {
+        "label": "Legg til på avtalen",
+        "type": "Aktivitetstype",
+        "when": "Dato og tid",
+        "notConnected": "Ikke koblet til ennå",
+        "tabs": {
+          "note": "Notat",
+          "activity": "Aktivitet",
+          "call": "Samtale",
+          "email": "E-post",
+          "files": "Filer",
+          "documents": "Dokumenter",
+          "invoice": "Faktura"
+        },
+        "ph": {
+          "note": "Skriv et notat — lagres på avtalen og i historikken",
+          "activity": "Emne, f.eks. «Gjennomgang med skiftledere»",
+          "call": "Utfall og notater fra samtalen",
+          "email": "Skriv til {person} — deltakere foreslås",
+          "files": "Slipp filer her",
+          "documents": "Opprett fra malen «Tilbud — standard»",
+          "invoice": "Opprett faktura i regnskapssystemet"
+        },
+        "off": {
+          "call": "Telefoni er ikke koblet til — klikk-for-å-ringe og loggede samtaler kommer med en telefonileverandør.",
+          "email": "E-post er ikke koblet til — koble til en innboks under API og integrasjoner for å skrive fra avtalen.",
+          "files": "Fillagring er ikke koblet til ennå — filer kommer med dokumentmodulen.",
+          "documents": "Dokumenter og e-signering er ikke koblet til ennå.",
+          "invoice": "Regnskapssystemet er ikke koblet til — fakturaer opprettes der når det er det."
+        },
+        "hint": {
+          "note": "Notater følger avtalens synlighet",
+          "activity": "Samtale · møte · oppgave · frist · e-post · lunsj"
+        },
+        "cta": {
+          "note": "Lagre notat",
+          "activity": "Planlegg",
+          "call": "Logg samtale",
+          "email": "Send",
+          "files": "Last opp",
+          "documents": "Opprett dokument",
+          "invoice": "Opprett faktura"
+        },
+        "saved": {
+          "note": "Notat lagret på avtalen",
+          "activity": "Aktivitet planlagt"
+        }
+      },
+      "focus": {
+        "title": "Fokus",
+        "done": "Aktivitet fullført",
+        "today": "i dag {time}",
+        "inDays": "om {count} d",
+        "overdue": "{count} d forfalt",
+        "markDone": "Merk «{subject}» som ferdig",
+        "prio": {
+          "high": "Høy",
+          "medium": "Middels",
+          "low": "Lav"
+        },
+        "none": "⚠ Ingen neste steg planlagt — planlegg en aktivitet så avtalen holder seg i bevegelse."
+      },
+      "history": {
+        "empty": "Ingenting i historikken ennå.",
+        "filters": {
+          "All": "Alle",
+          "Notes": "Notater",
+          "Activities": "Aktiviteter",
+          "Changelog": "Endringslogg"
+        }
+      }
+    },
+    "history": {
+      "source": {
+        "ui": "bruker",
+        "api": "API",
+        "import": "import",
+        "workflow": "arbeidsflyt",
+        "assistant": "assistent",
+        "product": "produkt",
+        "system": "system"
+      },
+      "sourceLabel": "kilde: {source}",
+      "duplicated": "Avtale duplisert",
+      "created": "Avtale opprettet",
+      "archived": "Arkivert",
+      "unarchived": "Hentet fra arkiv",
+      "deleted": "Slettet",
+      "restored": "Gjenopprettet",
+      "stage": "Trinn endret",
+      "won": "Merket som vunnet",
+      "lost": "Merket som tapt",
+      "reopened": "Gjenåpnet",
+      "value": "Verdi endret",
+      "owner": "Eier endret",
+      "close": "Forventet lukkedato endret",
+      "labels": "Etiketter endret",
+      "itemChanged": "Produktlinje endret",
+      "itemRemoved": "Produktlinje fjernet",
+      "participantAdded": "Deltaker lagt til",
+      "participantRemoved": "Deltaker fjernet",
+      "person": "Person endret",
+      "organization": "Organisasjon endret",
+      "valueSource": "Verdikilde endret",
+      "custom": "{field} endret",
+      "other": "{field} endret",
+      "notePinned": "Notat av {author} — festet",
+      "note": "Notat av {author}",
+      "activityDone": "{subject} — ferdig",
+      "f": {
+        "stage": "Trinn",
+        "status": "Status",
+        "value": "Verdi",
+        "owner": "Eier",
+        "close": "Lukking",
+        "labels": "Etiketter",
+        "valueSource": "Verdi",
+        "source": "Kilde"
+      }
+    }
+  }
 }

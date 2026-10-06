@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import type { Base, Pickers } from '@/lib/data/automation'
 import { NOT_AVAILABLE, PALETTE, type Step } from '@/lib/data/automation-graph'
-import { DATES, EVENTS, FILTER_FIELDS, NUMERIC, WAIT_EVENTS } from './builder-text'
+import { EVENTS, WAIT_EVENTS, datesFor, fieldsFor, isNumeric, writableFor } from './builder-text'
 import { useWords } from './shared'
 
 export type Trigger = { type: 'event' | 'date' | 'product_event'; config: Record<string, unknown> }
@@ -49,12 +49,12 @@ function Json({ k, v, onChange, bad, disabled }: { k: string; v: unknown; onChan
 }
 
 /** Condition groups (AND inside a group, OR between groups, app.wf_match): «Group 1», «Group 2 (OR)». */
-function Groups({ entity, groups, onChange, bad, disabled, labels }: { entity: string; groups: unknown; onChange: (g: unknown[][]) => void; bad?: boolean; disabled: boolean; labels: { id: string; name: string }[] }) {
+function Groups({ entity, groups, onChange, bad, disabled, labels, columns }: { entity: string; groups: unknown; onChange: (g: unknown[][]) => void; bad?: boolean; disabled: boolean; labels: { id: string; name: string }[]; columns: Pickers['columns'] }) {
   const t = useTranslations('automation.builder')
   const w = useWords()
   const gs = (Array.isArray(groups) ? groups : []).map((g) => (Array.isArray(g) ? g : [g])) as Cfg[][]
   const set = (gi: number, fi: number, patch: Cfg) => onChange(gs.map((g, i) => (i === gi ? g.map((f, j) => (j === fi ? { ...f, ...patch } : f)) : g)))
-  const fields = FILTER_FIELDS[entity] ?? []
+  const fields = fieldsFor(entity, columns)
   const ops = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'contains', 'empty', 'notempty']
   return (
     <div className="flex flex-col gap-2">
@@ -85,7 +85,7 @@ function Groups({ entity, groups, onChange, bad, disabled, labels }: { entity: s
                     </select>
                   ) : (
                     <input aria-label={mail ? t('days') : t('value')} disabled={disabled} value={f.v == null ? '' : String(f.v)}
-                      onChange={(e) => set(gi, fi, { v: NUMERIC.has(field) && e.target.value.trim() !== '' && !Number.isNaN(Number(e.target.value)) ? Number(e.target.value) : e.target.value })}
+                      onChange={(e) => set(gi, fi, { v: isNumeric(field, entity, columns) && e.target.value.trim() !== '' && !Number.isNaN(Number(e.target.value)) ? Number(e.target.value) : e.target.value })}
                       className={`${input} border-line w-[90px]`} />
                   )
                 ) : null}
@@ -137,10 +137,10 @@ export function BuilderPanel({ step, trigger, entity, base, pickers, labels, kin
     fields = (
       <>
         <Pick k={t('f.triggerType')} v={trigger.type} disabled={disabled} options={(['event', 'date', 'product_event'] as const).map((x) => ({ id: x, name: t(`triggerTypes.${x}`) }))}
-          onChange={(v) => onTrigger(v === 'product_event' ? { type: 'product_event', config: { kind: '' } } : v === 'date' ? { type: 'date', config: { entity: ent, date: DATES[ent]?.[0] ?? 'created_at', offset_days: 0 } } : { type: 'event', config: { entity: ent, event: 'created' } })} />
+          onChange={(v) => onTrigger(v === 'product_event' ? { type: 'product_event', config: { kind: '' } } : v === 'date' ? { type: 'date', config: { entity: ent, date: datesFor(ent, pickers.columns)[0] ?? '', offset_days: 0 } } : { type: 'event', config: { entity: ent, event: 'created' } })} />
         {trigger.type !== 'product_event' ? (
           <Pick k={t('f.object')} v={ent} disabled={disabled} bad={bad('entity')} options={Object.keys(EVENTS).map((e) => ({ id: e, name: w.pick('entity', e) }))}
-            onChange={(v) => onTrigger({ ...trigger, config: trigger.type === 'date' ? { entity: v, date: DATES[v]?.[0] ?? 'created_at', offset_days: Number(tc.offset_days ?? 0) } : { entity: v, event: 'created' } })} />
+            onChange={(v) => onTrigger({ ...trigger, config: trigger.type === 'date' ? { entity: v, date: datesFor(v, pickers.columns)[0] ?? '', offset_days: Number(tc.offset_days ?? 0) } : { entity: v, event: 'created' } })} />
         ) : null}
         {trigger.type === 'event' ? (
           <>
@@ -153,14 +153,14 @@ export function BuilderPanel({ step, trigger, entity, base, pickers, labels, kin
         ) : null}
         {trigger.type === 'date' ? (
           <>
-            <Pick k={t('f.date')} v={tc.date} disabled={disabled} options={(DATES[ent] ?? []).map((d) => ({ id: d, name: w.pick('dates', d) }))} onChange={(v) => setT({ date: v })} />
+            <Pick k={t('f.date')} v={tc.date} disabled={disabled} options={datesFor(ent, pickers.columns).map((d) => ({ id: d, name: w.pick('dates', d) }))} onChange={(v) => setT({ date: v })} />
             <Text k={t('f.offset')} v={tc.offset_days} numeric disabled={disabled} onChange={(v) => setT({ offset_days: Number(v.replace(/[^\d-]/g, '')) || 0 })} />
           </>
         ) : null}
         {trigger.type === 'product_event' ? (
           <Text k={t('f.productEvent')} v={tc.kind} bad={bad('kind')} disabled={disabled} onChange={(v) => setT({ kind: v.trim() })} />
         ) : null}
-        {trigger.type !== 'product_event' ? <Groups entity={ent} groups={tc.groups ?? []} labels={labels} disabled={disabled} onChange={(g) => setT({ groups: g })} /> : null}
+        {trigger.type !== 'product_event' ? <Groups entity={ent} groups={tc.groups ?? []} labels={labels} columns={pickers.columns} disabled={disabled} onChange={(g) => setT({ groups: g })} /> : null}
       </>
     )
   } else {
@@ -168,7 +168,7 @@ export function BuilderPanel({ step, trigger, entity, base, pickers, labels, kin
       case 'condition':
       case 'if_else':
         note = t('notes.condition')
-        fields = <Groups entity={entity} groups={c.groups} labels={labels} bad={bad('groups')} disabled={disabled} onChange={(g) => set({ groups: g })} />
+        fields = <Groups entity={entity} groups={c.groups} labels={labels} columns={pickers.columns} bad={bad('groups')} disabled={disabled} onChange={(g) => set({ groups: g })} />
         break
       case 'delay':
         fields = (
@@ -196,10 +196,11 @@ export function BuilderPanel({ step, trigger, entity, base, pickers, labels, kin
             <Json k={t('f.values')} v={c.values} bad={bad('values')} disabled={disabled} onChange={(v) => set({ values: v })} />
           </>
         )
+        note = t('notes.values', { cols: writableFor(String(c.entity ?? 'deal'), pickers.columns).join(', ') })
         break
       case 'update_record':
         fields = <Json k={t('f.values')} v={c.values} bad={bad('values')} disabled={disabled} onChange={(v) => set({ values: v })} />
-        note = t('notes.values')
+        note = t('notes.values', { cols: writableFor(entity, pickers.columns).join(', ') })
         break
       case 'delete_record':
         note = t('notes.delete')

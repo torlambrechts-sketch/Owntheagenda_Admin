@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import { Switch } from '@/components/ui/Switch'
-import type { Option, Person, Team, WorkflowDetail } from '@/lib/data/automation'
+import type { Option, Person, Team, WorkflowRow } from '@/lib/data/automation'
 import { deleteRule, saveRule } from '../actions'
 import { Modal, btnCancel, btnConfirm, field, fieldInput } from './Modal'
 import { useErrorText } from './shared'
@@ -15,13 +15,13 @@ export const SOURCES = ['Web form', 'Chatbot', 'Prospect search', 'Import'] as c
 const check = 'flex items-center gap-[6px] text-12.5 font-medium text-ink'
 
 /** One assignment rule: when, if and to whom (an assignment workflow's options, 0021). */
-export function RuleModal({ rule, labels, people, teams, onClose }: { rule: WorkflowDetail | null; labels: Option[]; people: Person[]; teams: Team[]; onClose: () => void }) {
+export function RuleModal({ rule, labels, people, teams, onClose }: { rule: WorkflowRow | null; labels: Option[]; people: Person[]; teams: Team[]; onClose: () => void }) {
   const t = useTranslations('automation.rule')
   const src = useTranslations('automation.sources')
   const flash = useToast()
   const err = useErrorText()
-  const c = (rule?.options.condition ?? {}) as Record<string, unknown>
-  const a = (rule?.options.assignee ?? { kind: 'org_owner' }) as Record<string, string>
+  const c = (rule?.options?.condition ?? {}) as Record<string, unknown>
+  const a = (rule?.options?.assignee ?? { kind: 'org_owner' }) as Record<string, string>
   const ents = (Array.isArray(rule?.trigger_config.entities) ? rule!.trigger_config.entities : ['lead']) as string[]
   const [name, setName] = useState(rule?.name ?? '')
   const [entities, setEntities] = useState<string[]>(ents)

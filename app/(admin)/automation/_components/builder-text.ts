@@ -2,22 +2,37 @@
 
 import { useCallback } from 'react'
 import { useTranslations } from 'next-intl'
-import type { Base, Pickers } from '@/lib/data/automation'
+import type { Base, Column, Pickers } from '@/lib/data/automation'
 import { NOT_AVAILABLE, type Step } from '@/lib/data/automation-graph'
 import { useWords } from './shared'
 
-/** Fields a condition can test, per record type (app.entity_columns that filter, and the engine's extra tests). */
-export const FILTER_FIELDS: Record<string, string[]> = {
-  deal: ['title', 'value', 'status', 'source', 'product', 'currency', 'expected_close_date', 'score', 'idle_days', 'labels', 'email.opened', 'email.replied', 'email.no_reply', 'org_products', 'org_payment'],
-  lead: ['title', 'value', 'source', 'currency', 'labels', 'email.opened', 'email.replied', 'email.no_reply', 'org_payment'],
-  person: ['name', 'email', 'title', 'contact_type', 'source', 'city', 'labels', 'email.opened', 'email.replied', 'email.no_reply'],
-  organization: ['name', 'org_number', 'city', 'fylke', 'industry', 'employees', 'source', 'country', 'labels', 'org_products', 'org_payment'],
-  activity: ['subject', 'priority', 'done'],
-  ticket: ['queue_key', 'urgency', 'product', 'topic'],
+/** The engine's own tests beside a record's columns (app.wf_match: labels, mail tests, the organisation's
+ *  applications and payment state; idle days on a deal, app.filter_sql). */
+const EXTRA_FIELDS: Record<string, string[]> = {
+  deal: ['idle_days', 'labels', 'email.opened', 'email.replied', 'email.no_reply', 'org_products', 'org_payment'],
+  lead: ['labels', 'email.opened', 'email.replied', 'email.no_reply', 'org_payment'],
+  person: ['labels', 'email.opened', 'email.replied', 'email.no_reply'],
+  organization: ['labels', 'org_products', 'org_payment'],
 }
-export const NUMERIC = new Set(['value', 'score', 'employees', 'idle_days', 'org_products', 'email.opened', 'email.replied', 'email.no_reply'])
+const EXTRA_NUMERIC = new Set(['idle_days', 'org_products', 'email.opened', 'email.replied', 'email.no_reply'])
+/** Derived dates a date trigger can count from (app.wf_dates): a deal's rotting date, an organisation's renewal. */
+const DERIVED_DATES: Record<string, string[]> = { deal: ['rots_at'], organization: ['renewal_at'] }
 
-/** Events a trigger can start on, per record type (what the platform emits: rec_save, deal_status, …). */
+/** Fields a condition can test: the record type's columns (entity_columns_get) that take a typed value, then
+ *  the engine's extra tests. */
+export const fieldsFor = (entity: string, columns: Record<string, Column[]>) =>
+  [...(columns[entity] ?? []).filter((c) => !['uuid', 'jsonb', 'uuid[]'].includes(c.kind)).map((c) => c.col), ...(EXTRA_FIELDS[entity] ?? [])]
+export const isNumeric = (field: string, entity: string, columns: Record<string, Column[]>) =>
+  EXTRA_NUMERIC.has(field) || (columns[entity] ?? []).some((c) => c.col === field && (c.kind === 'int' || c.kind === 'numeric'))
+/** Dates a date trigger can count from: the derived ones, then the record type's date and timestamp columns. */
+export const datesFor = (entity: string, columns: Record<string, Column[]>) =>
+  [...(DERIVED_DATES[entity] ?? []), ...(columns[entity] ?? []).filter((c) => c.kind === 'date' || c.kind === 'timestamptz').map((c) => c.col)]
+/** Fields an update step may write (writable columns; app.wf_validate also takes owner_id, labels, custom). */
+export const writableFor = (entity: string, columns: Record<string, Column[]>) =>
+  [...(columns[entity] ?? []).filter((c) => c.writable).map((c) => c.col), 'owner_id', 'labels']
+
+/** Events a trigger can start on, per record type (what the platform emits: rec_save, deal_status, …). No
+ *  database list of event kinds exists yet, so they are kept here (requests R-AUTOMATION-04). */
 export const EVENTS: Record<string, string[]> = {
   deal: ['created', 'updated', 'deleted', 'stage_changed', 'won', 'lost', 'reopened'],
   lead: ['created', 'updated', 'deleted', 'converted'],
@@ -25,15 +40,6 @@ export const EVENTS: Record<string, string[]> = {
   organization: ['created', 'updated', 'deleted'],
   activity: ['created', 'updated', 'deleted', 'completed'],
   ticket: ['created', 'updated', 'deleted', 'replied'],
-}
-/** Dates a date trigger can count from (app.wf_dates: date columns, a deal's rotting date, a renewal). */
-export const DATES: Record<string, string[]> = {
-  deal: ['rots_at', 'expected_close_date', 'won_at', 'lost_at', 'created_at'],
-  lead: ['created_at'],
-  person: ['last_touch_at', 'created_at'],
-  organization: ['renewal_at', 'created_at'],
-  activity: ['starts_at', 'done_at'],
-  ticket: ['resolution_due_at', 'resolved_at'],
 }
 export const WAIT_EVENTS = ['email.replied', 'email.opened', 'email.clicked', 'deal.stage_changed', 'deal.won', 'deal.lost', 'activity.completed']
 

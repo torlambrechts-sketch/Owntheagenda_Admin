@@ -12,10 +12,9 @@ const STEP_TONE: Record<string, string> = { succeeded: TONE.ok, failed: TONE.fai
 
 /** Monitoring (Automation.dc.html, v.monitor): health, overview and run history from workflow_monitor and
  *  workflow_runs_get. With no runs every figure is zero and every list shows its empty line. */
-export function MonitorTab({ monitor: m, runs, safeguards, canRetry, nf }: {
+export function MonitorTab({ monitor: m, runs, canRetry, nf }: {
   monitor: Monitor
   runs: Run[]
-  safeguards: { value: string; number: number | null }
   canRetry: boolean
   nf: NumberFormat
 }) {
@@ -28,7 +27,7 @@ export function MonitorTab({ monitor: m, runs, safeguards, canRetry, nf }: {
   const n = (x: number) => formatNumber(x, nf)
 
   const trend = m.d14.runs === 0 ? t('trend.none') : m.d14.last7 > m.d14.prev7 * 1.1 ? t('trend.up') : m.d14.last7 < m.d14.prev7 * 0.9 ? t('trend.down') : t('trend.stable')
-  const loop = safeguards.value === 'off' ? 'off' : safeguards.value === 'custom' ? 'custom' : 'source'
+  const loop = m.loop_protection === 'off' ? 'off' : m.loop_protection === 'custom' ? 'custom' : 'source'
   const health = [
     { k: 'today', v: n(m.today.runs), c: 'text-ink', s: m.today.runs ? t('succeeded', { pct: percent((m.today.completed / m.today.runs) * 100, nf) }) : t('noRunsToday') },
     { k: 'd7', v: n(m.d7.runs), c: 'text-ink', s: t('failedRetried', { failed: n(m.d7.failed), retried: n(m.d7.retried) }) },
@@ -37,7 +36,7 @@ export function MonitorTab({ monitor: m, runs, safeguards, canRetry, nf }: {
       k: 'loop',
       v: t(loop === 'off' ? 'off' : 'on'),
       c: loop === 'off' ? 'text-danger' : 'text-link',
-      s: t(`loop.${loop}`, { n: n(safeguards.number ?? 0) }) + (m.loop_blocked_7d ? ` · ${t('loopBlocked', { n: n(m.loop_blocked_7d) })}` : ''),
+      s: t(`loop.${loop}`, { n: m.loop_protection_runs == null ? '—' : n(m.loop_protection_runs) }) + (m.loop_blocked_7d ? ` · ${t('loopBlocked', { n: n(m.loop_blocked_7d) })}` : ''),
     },
   ]
   const overview = [
@@ -101,7 +100,7 @@ export function MonitorTab({ monitor: m, runs, safeguards, canRetry, nf }: {
             <div key={r.id} className="grid min-w-[720px] items-center gap-[10px] border-b border-line px-[18px] py-[10px] text-12.5 last:border-b-0 [grid-template-columns:110px_minmax(0,1.3fr)_minmax(0,1.2fr)_minmax(0,2fr)_90px]">
               <span className="text-muted">{when(r.started_at)}</span>
               <b>{r.workflow}</b>
-              <span className="text-muted">{r.record ?? '—'}</span>
+              <span className="text-muted">{r.subject_title ?? '—'}</span>
               <span className="flex flex-wrap gap-1">
                 <span title={t('stepState.succeeded')} className={`rounded-7 px-2 py-[2px] text-11 font-bold ${TONE.ok}`}>{t('chips.trigger')}</span>
                 {r.steps.map((s, i) => (

@@ -1,3 +1,503 @@
 {
-  "contacts": {}
+  "contacts": {
+    "tabsLabel": "Kontakter – deler",
+    "tabs": {
+      "people": "Personer",
+      "orgs": "Organisasjoner",
+      "leads": "Leads",
+      "timeline": "Tidslinje",
+      "map": "Kart",
+      "dupes": "Duplikater",
+      "import": "Import",
+      "export": "Eksport",
+      "restore": "Gjenopprett"
+    },
+    "sync": "Google Contacts · Microsoft 365 · ikke tilkoblet",
+    "add": {
+      "person": "＋ Person",
+      "organization": "＋ Organisasjon",
+      "lead": "＋ Lead",
+      "import": "＋ Ny import"
+    },
+    "any": "Alle",
+    "edit": "Rediger",
+    "cancel": "Avbryt",
+    "close": "Lukk",
+    "on": "på",
+    "off": "av",
+    "errors": {
+      "too_large": "Filen er større enn 1 MB. Del den opp i mindre filer.",
+      "empty_file": "Filen har ingen rader under overskriftsraden.",
+      "too_many_rows": "Filen har mer enn 50 000 rader.",
+      "xlsx": "XLSX støttes ikke ennå. Lagre arket som CSV og last opp det."
+    },
+    "contactType": {
+      "prospect": "Prospekt",
+      "trial_user": "Prøvebruker",
+      "customer_user": "Kundebruker",
+      "former_customer": "Tidligere kunde",
+      "partner": "Partner",
+      "other": "Annet"
+    },
+    "marketing": {
+      "subscribed": "Abonnerer",
+      "no_consent": "Ikke samtykke",
+      "pending": "Venter på dobbel bekreftelse",
+      "unsubscribed": "Avmeldt",
+      "bounced": "Avvist"
+    },
+    "people": {
+      "search": "Søk på navn, e-post eller telefon",
+      "filter": {
+        "type": "Type",
+        "consent": "Markedsføringsstatus",
+        "label": "Etikett"
+      },
+      "col": {
+        "person": "Person",
+        "organization": "Organisasjon",
+        "role": "Rolle",
+        "email": "E-post",
+        "type": "Type",
+        "marketing": "Markedsføringsstatus",
+        "source": "Kilde",
+        "owner": "Eier"
+      },
+      "empty": "Ingen personer passer søket og filtrene."
+    },
+    "orgs": {
+      "col": {
+        "organization": "Organisasjon",
+        "address": "Adresse",
+        "owner": "Eier",
+        "people": "Personer",
+        "deals": "Avtaler",
+        "relation": "Relasjon"
+      },
+      "daughterOf": "Datter av {name}",
+      "parent": "Mor",
+      "daughter": "Datter",
+      "related": "Relatert",
+      "relatedNote": "Relatert · {note}",
+      "relatedHead": "Relaterte organisasjoner",
+      "noRelated": "Ingen relaterte organisasjoner",
+      "addRelation": "Legg til en relasjon …",
+      "addParent": "Legg til som mor …",
+      "addDaughter": "Legg til som datter …",
+      "addRelated": "Legg til som relatert …",
+      "chooseOrg": "Velg en organisasjon …",
+      "add": "Legg til",
+      "relationAdded": "Relasjonen er lagret",
+      "removeRelation": "Fjern relasjonen til {name}",
+      "peopleHead": "Personer",
+      "noPeople": "Ingen personer i denne organisasjonen.",
+      "openCustomer": "Åpne kundekortet →",
+      "empty": "Ingen organisasjoner ennå."
+    },
+    "leads": {
+      "all": "Alle",
+      "selected": "{count} valgt",
+      "select": "Velg {title}",
+      "labelBulk": "Etikett {label}",
+      "archive": "Arkiver",
+      "unarchive": "Tilbake til åpne leads",
+      "activityEach": "＋ Aktivitet for hver",
+      "archiveToggle": "Arkiv",
+      "col": {
+        "lead": "Lead",
+        "value": "Verdi",
+        "labels": "Etiketter",
+        "source": "Kilde",
+        "next": "Neste aktivitet"
+      },
+      "today": "i dag {time}",
+      "tomorrow": "i morgen {time}",
+      "noActivity": "Ingen aktivitet",
+      "overdue": "Forfalt · {what}",
+      "employees": "{count, plural, one {# ansatt} other {# ansatte}}",
+      "companyData": "Firmadata",
+      "formAnswers": "Skjemasvar",
+      "chatAnswers": "Chattesvar",
+      "emailsHead": "E-poster på denne leaden",
+      "noMailbox": "Ingen innboks er koblet til ennå, så ingen e-poster er knyttet til denne leaden.",
+      "convert": "Konverter til avtale",
+      "openDeal": "Åpne avtalen →",
+      "email": "E-post",
+      "notRelevant": "Ikke relevant → arkiver",
+      "moveNote": "Notater, e-poster, filer og aktiviteter flyttes til avtalen ved konvertering.",
+      "labelAdded": "Etiketten {label} er lagt til på {count, plural, one {# lead} other {# leads}}",
+      "archived": "{count} leads arkivert",
+      "archivedOne": "Leaden er arkivert",
+      "unarchived": "Tilbake blant de åpne leadsene",
+      "empty": "Ingen åpne leads passer dette filteret.",
+      "emptyArchived": "Ingen arkiverte leads passer dette filteret."
+    },
+    "convert": {
+      "title": "Konverter til avtale",
+      "pipeline": "Pipeline",
+      "stage": "Steg",
+      "note": "Notater, e-poster, filer og aktiviteter flyttes til avtalen. Du blir bedt om å planlegge neste aktivitet.",
+      "go": "Konverter",
+      "done": "Konvertert til en avtale i {pipeline} · planlegg neste aktivitet"
+    },
+    "activity": {
+      "title": "{count, plural, one {En aktivitet for # lead} other {En aktivitet for hver av # leads}}",
+      "type": "Type",
+      "subject": "Emne",
+      "date": "Dato",
+      "time": "Tid",
+      "go": "Opprett",
+      "done": "Én aktivitet opprettet per valgt lead ({count})"
+    },
+    "timeline": {
+      "person": "Person",
+      "week": "U{n}",
+      "overdueShort": "forfalt",
+      "legendToday": "Gul kolonne = denne uken (dagens markør)",
+      "legendOverdue": "Rød = forfalt",
+      "legendSame": "De samme aktivitetene som i hver posts historikk",
+      "empty": "Ingen aktiviteter knyttet til personer i disse tolv ukene."
+    },
+    "map": {
+      "tiles": "kartfliser · leverandøradapter",
+      "noProvider": "Ingen kartleverandør eller geokoding er koblet til ennå, så ingenting er plottet. Stedene telles ved siden av kartet.",
+      "filter": "Filtrer kartet",
+      "country": "Land",
+      "allCountries": "Alle land",
+      "region": "Region (fylke)",
+      "allRegions": "Alle regioner",
+      "mode": {
+        "orgs": "Organisasjoner",
+        "people": "Personer"
+      },
+      "count": "{count} av {total} poster har en by · plottes ikke før geokoding er koblet til"
+    },
+    "dupes": {
+      "rules": "Samsvarsregler",
+      "rule": {
+        "dedupe_name": "Navnelikhet ≥ 90 %",
+        "dedupe_email": "Samme e-postadresse",
+        "dedupe_orgnr": "Samme org.nr (organisasjoner)",
+        "dedupe_phone": "Samme telefonnummer"
+      },
+      "rulesLocked": "Å endre reglene krever retten til å konfigurere plattformen.",
+      "approval": "Godkjenning fra en annen administrator ved sammenslåing: <b>{state}</b> (innstilling)",
+      "scan": "Skann nå",
+      "scanned": "Skanningen er ferdig · {count, plural, one {# par} other {# par}} venter på gjennomgang",
+      "kind": {
+        "person": "Person",
+        "organization": "Organisasjon"
+      },
+      "why": {
+        "email": "samme e-post",
+        "phone": "samme telefonnummer",
+        "orgnr": "samme org.nr",
+        "name": "likt navn"
+      },
+      "score": "{pct} % samsvar",
+      "keep": "Behold",
+      "mergeInto": "Slå sammen inn i den",
+      "f": {
+        "name": "Navn",
+        "email": "E-post",
+        "phone": "Telefon",
+        "organization": "Organisasjon",
+        "orgnr": "Org.nr",
+        "city": "By"
+      },
+      "notDuplicate": "Ikke et duplikat",
+      "merge": "Slå sammen — behold samlet historikk",
+      "merged": "Slått sammen · én post med samlet historikk",
+      "empty": "Ingen duplikater venter på gjennomgang."
+    },
+    "import": {
+      "steps": {
+        "upload": "Last opp",
+        "map": "Koble felt",
+        "dupes": "Duplikater",
+        "result": "Resultat"
+      },
+      "uploadTitle": "Last opp et regneark — én posttype per fil",
+      "entity": {
+        "person": "Personer",
+        "organization": "Organisasjoner",
+        "lead": "Leads"
+      },
+      "drop": "Slipp en .csv-fil eller klikk for å velge · opptil 50 000 rader og 1 MB",
+      "noXlsx": "XLSX støttes ikke ennå — lagre arket som CSV",
+      "reading": "Leser filen …",
+      "rows": "{count, plural, one {{n} rad} other {{n} rader}}",
+      "consentOff": "Krev en samtykkekilde per rad (innstillingen «Samtykkekilde ved import» er av)",
+      "consentOn": "En samtykkekilde kreves per rad (innstillingen «Samtykkekilde ved import» er på)",
+      "mapTitle": "Koble kolonner til felt",
+      "mapHint": "Koblet etter kolonnenavn — kontroller og juster",
+      "mapFor": "Felt for kolonnen {column}",
+      "skipColumn": "Hopp over kolonnen",
+      "field": {
+        "custom": "Egendefinert · {label}",
+        "person": {
+          "name": "Person · navn",
+          "email": "Person · e-post",
+          "phone": "Person · telefon",
+          "title": "Person · rolle",
+          "source": "Person · kilde",
+          "city": "Person · by",
+          "fylke": "Person · fylke",
+          "linkedin": "Person · LinkedIn",
+          "org_name": "Organisasjon · navn",
+          "org_nr": "Organisasjon · org.nr",
+          "consent_source": "Person · samtykkekilde",
+          "consent_basis": "Person · samtykkegrunnlag"
+        },
+        "organization": {
+          "name": "Organisasjon · navn",
+          "org_number": "Organisasjon · org.nr",
+          "address": "Organisasjon · adresse",
+          "postal_code": "Organisasjon · postnummer",
+          "city": "Organisasjon · by",
+          "fylke": "Organisasjon · fylke",
+          "industry": "Organisasjon · bransje",
+          "employees": "Organisasjon · ansatte",
+          "website": "Organisasjon · nettside",
+          "phone": "Organisasjon · telefon",
+          "email": "Organisasjon · e-post",
+          "source": "Organisasjon · kilde"
+        },
+        "lead": {
+          "title": "Lead · tittel",
+          "value": "Lead · verdi",
+          "source": "Lead · kilde",
+          "org_name": "Organisasjon · navn",
+          "org_nr": "Organisasjon · org.nr",
+          "person_email": "Person · e-post"
+        }
+      },
+      "matches": "{count, plural, one {{n} rad samsvarer med en eksisterende post} other {{n} rader samsvarer med eksisterende poster}}",
+      "noMatches": "Ingen rader samsvarer med eksisterende poster",
+      "leadsAlwaysNew": "Leads opprettes alltid som nye poster",
+      "mode": {
+        "merge": "Slå sammen med eksisterende",
+        "create": "Opprett nye poster",
+        "skip": "Hopp over samsvarende rader"
+      },
+      "modeSub": {
+        "merge": "Fyll tomme felt, behold eksisterende verdier",
+        "create": "Duplikater flagges for gjennomgang",
+        "skip": "Radene havner i hoppfilen"
+      },
+      "doneTitle": "Importen er ferdig — hver rad er gjort rede for",
+      "result": {
+        "created": "Opprettet",
+        "merged": "Slått sammen",
+        "skipped": "Hoppet over (hoppfil)",
+        "read": "Rader lest"
+      },
+      "skipFile": "Last ned hoppfilen ({count, plural, one {# rad} other {# rader}} med årsak)",
+      "skipRow": "Rad",
+      "skipReason": "Årsak",
+      "reasons": {
+        "duplicate": "Samsvarer med en eksisterende post",
+        "consent_source_missing": "Mangler samtykkekilde",
+        "invalid": "En verdi er ugyldig",
+        "forbidden": "Ikke tillatt",
+        "not_found": "Posten finnes ikke"
+      },
+      "revert": "Angre denne importen",
+      "revertedState": "Importen er angret",
+      "reverted": "Importen er angret · {created} poster fjernet, {merged} sammenslåinger tilbakestilt",
+      "revertedShort": "angret",
+      "back": "← Tilbake",
+      "continue": "Fortsett →",
+      "run": "Kjør import",
+      "again": "Start en ny import",
+      "history": "Importhistorikk",
+      "hCreated": "{n} opprettet",
+      "hMerged": "{n} slått sammen",
+      "hSkipped": "{n} hoppet over",
+      "noHistory": "Ingen importer ennå."
+    },
+    "export": {
+      "title": "Eksporter data",
+      "entity": {
+        "person": "Personer",
+        "organization": "Organisasjoner",
+        "lead": "Leads",
+        "deal": "Avtaler",
+        "activity": "Aktiviteter",
+        "catalog_item": "Produkter"
+      },
+      "file": {
+        "person": "personer",
+        "organization": "organisasjoner",
+        "lead": "leads",
+        "deal": "avtaler",
+        "activity": "aktiviteter",
+        "catalog_item": "produkter"
+      },
+      "scope": {
+        "current": "Gjeldende listevisning",
+        "full": "Hele datasettet"
+      },
+      "scopeDone": {
+        "current": "gjeldende listevisning",
+        "full": "hele datasettet"
+      },
+      "note": "Inneholder nøyaktig de radene og kolonnene du kan se. Celler som starter med = + − @ nøytraliseres. Eksporten skrives til revisjonsloggen.",
+      "noView": "Denne posttypen har ingen liste på denne skjermen, så eksporten inneholder hele datasettet du kan se.",
+      "csv": "Eksporter CSV",
+      "xlsx": "Eksporter XLSX",
+      "noXlsx": "XLSX-eksport støttes ikke ennå — eksporter CSV",
+      "noRight": "Eksport krever eksportretten.",
+      "done": "{entity} eksportert · {scope} · {count} rader · revisjonslogget"
+    },
+    "restore": {
+      "title": "Slettet de siste 30 dagene",
+      "purge": "Slettes automatisk for godt etter 30 dager",
+      "type": {
+        "person": "Person",
+        "organization": "Organisasjon",
+        "lead": "Lead",
+        "deal": "Avtale",
+        "activity": "Aktivitet",
+        "catalog_item": "Produkt",
+        "ticket": "Sak"
+      },
+      "source": {
+        "ui": "Nettappen",
+        "api": "API",
+        "import": "Import",
+        "workflow": "Automasjon",
+        "assistant": "Assistent",
+        "product": "Applikasjon",
+        "system": "System",
+        "merge": "Sammenslåing"
+      },
+      "restore": "Gjenopprett",
+      "done": "{name} er gjenopprettet med koblingene intakt",
+      "empty": "Ingenting er slettet de siste 30 dagene."
+    },
+    "drawer": {
+      "sync": "Ikke synkronisert · Google Contacts og Microsoft 365 er ikke tilkoblet",
+      "type": "Type",
+      "marketing": "Markedsføring",
+      "source": "Kilde",
+      "owner": "Eier",
+      "notes": "Notater, omtaler og kommentarer",
+      "notePlaceholder": "Skriv et notat — @Ingrid for å varsle",
+      "addNote": "Legg til notat",
+      "noteSaved": "Notatet er lagret",
+      "noteMentioned": "Notatet er lagret · omtalt bruker er varslet",
+      "noteUndelivered": "Notatet er lagret · omtalen kunne ikke leveres ennå",
+      "pinned": "Festet",
+      "pin": "Fest",
+      "reply": "Svar",
+      "send": "Send",
+      "history": "Historikk — avtaler, aktiviteter og endringer du kan se",
+      "noHistory": "Ingenting har skjedd på denne posten ennå.",
+      "dealStatus": {
+        "open": "åpen",
+        "won": "vunnet",
+        "lost": "tapt"
+      },
+      "done": "utført",
+      "planned": "planlagt",
+      "minutes": "{n} min",
+      "change": {
+        "created": "Opprettet",
+        "deleted": "Slettet",
+        "restored": "Gjenopprettet",
+        "merged": "Slått sammen med et duplikat",
+        "field": "{field} endret"
+      },
+      "field": {
+        "name": "Navn",
+        "email": "E-post",
+        "phone": "Telefon",
+        "organization_id": "Organisasjon",
+        "title": "Rolle",
+        "contact_type": "Type",
+        "source": "Kilde",
+        "city": "By",
+        "fylke": "Fylke",
+        "linkedin": "LinkedIn",
+        "labels": "Etiketter",
+        "owner_id": "Eier",
+        "marketing_status": "Markedsføringsstatus"
+      },
+      "contact": "kontakt",
+      "footer": "Respondenter i undersøkelser blir aldri kontakter. Denne personen er {type} — endringer i markedsføringsstatus logges med tidspunkt og kilde."
+    },
+    "consent": {
+      "title": "Markedsføringsstatus",
+      "status": "Status",
+      "source": "Kilde (f.eks. nettskjema)",
+      "basis": "Grunnlag (f.eks. meldte seg på på messen)",
+      "save": "Endre status",
+      "saved": "Markedsføringsstatus endret · logget med tidspunkt og kilde",
+      "basisRequired": "Et grunnlag kreves for å melde noen på (innstillingen «Kontaktregel»).",
+      "none": "Ingen endringer registrert."
+    },
+    "form": {
+      "title": {
+        "new": {
+          "person": "Ny person",
+          "organization": "Ny organisasjon",
+          "lead": "Ny lead"
+        },
+        "edit": {
+          "person": "Rediger person",
+          "organization": "Rediger organisasjon",
+          "lead": "Rediger lead"
+        }
+      },
+      "f": {
+        "person": {
+          "name": "Navn",
+          "email": "E-post",
+          "phone": "Telefon",
+          "title": "Rolle",
+          "source": "Kilde",
+          "city": "By",
+          "fylke": "Fylke",
+          "linkedin": "LinkedIn",
+          "contact_type": "Type"
+        },
+        "organization": {
+          "name": "Navn",
+          "org_number": "Org.nr",
+          "address": "Adresse",
+          "postal_code": "Postnummer",
+          "city": "By",
+          "fylke": "Fylke",
+          "industry": "Bransje",
+          "website": "Nettside",
+          "phone": "Telefon",
+          "email": "E-post",
+          "source": "Kilde",
+          "employees": "Ansatte"
+        },
+        "lead": {
+          "title": "Tittel",
+          "source": "Kilde",
+          "value": "Verdi (NOK)",
+          "person_id": "Person"
+        },
+        "organization_id": "Organisasjon",
+        "owner": "Eier"
+      },
+      "labels": "Etiketter",
+      "leadNeeds": "En lead trenger en person eller en organisasjon.",
+      "invalid": "En verdi ble avvist. Kontroller feltene og prøv igjen.",
+      "save": "Lagre",
+      "saved": "Lagret",
+      "created": {
+        "person": "Personen er opprettet",
+        "organization": "Organisasjonen er opprettet",
+        "lead": "Leaden er opprettet"
+      },
+      "delete": "Slett",
+      "confirmDelete": "Slette denne posten? Den kan gjenopprettes i 30 dager.",
+      "deleted": "Slettet · kan gjenopprettes i 30 dager"
+    }
+  }
 }

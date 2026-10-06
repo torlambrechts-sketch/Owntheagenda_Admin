@@ -1,5 +1,6 @@
-import { Pending } from '@/components/ui/Pending'
+import { ContactsPage } from '../contacts/_components/ContactsPage'
 
-export default function Page() {
-  return <Pending phase={1} />
+/** Leads (route key «leads»): the Contacts screen with its Leads tab. */
+export default function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <ContactsPage searchParams={searchParams} defaultTab="leads" />
 }

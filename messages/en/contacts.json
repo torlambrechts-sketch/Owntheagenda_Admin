@@ -1,3 +1,503 @@
 {
-  "contacts": {}
+  "contacts": {
+    "tabsLabel": "Contacts sections",
+    "tabs": {
+      "people": "People",
+      "orgs": "Organizations",
+      "leads": "Leads",
+      "timeline": "Timeline",
+      "map": "Map",
+      "dupes": "Duplicates",
+      "import": "Import",
+      "export": "Export",
+      "restore": "Restore"
+    },
+    "sync": "Google Contacts · Microsoft 365 · not connected",
+    "add": {
+      "person": "＋ Person",
+      "organization": "＋ Organization",
+      "lead": "＋ Lead",
+      "import": "＋ New import"
+    },
+    "any": "Any",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "close": "Close",
+    "on": "on",
+    "off": "off",
+    "errors": {
+      "too_large": "The file is larger than 1 MB. Split it into smaller files.",
+      "empty_file": "The file has no rows under its header.",
+      "too_many_rows": "The file has more than 50 000 rows.",
+      "xlsx": "XLSX is not supported yet. Save the sheet as CSV and upload that."
+    },
+    "contactType": {
+      "prospect": "Prospect",
+      "trial_user": "Trial user",
+      "customer_user": "Customer user",
+      "former_customer": "Former customer",
+      "partner": "Partner",
+      "other": "Other"
+    },
+    "marketing": {
+      "subscribed": "Subscribed",
+      "no_consent": "No consent",
+      "pending": "Pending double opt-in",
+      "unsubscribed": "Unsubscribed",
+      "bounced": "Bounced"
+    },
+    "people": {
+      "search": "Search name, email or phone",
+      "filter": {
+        "type": "Type",
+        "consent": "Marketing status",
+        "label": "Label"
+      },
+      "col": {
+        "person": "Person",
+        "organization": "Organization",
+        "role": "Role",
+        "email": "Email",
+        "type": "Type",
+        "marketing": "Marketing status",
+        "source": "Source",
+        "owner": "Owner"
+      },
+      "empty": "No people match the search and filters."
+    },
+    "orgs": {
+      "col": {
+        "organization": "Organization",
+        "address": "Address",
+        "owner": "Owner",
+        "people": "People",
+        "deals": "Deals",
+        "relation": "Relation"
+      },
+      "daughterOf": "Daughter of {name}",
+      "parent": "Parent",
+      "daughter": "Daughter",
+      "related": "Related",
+      "relatedNote": "Related · {note}",
+      "relatedHead": "Related organizations",
+      "noRelated": "No related organizations",
+      "addRelation": "Add a relation …",
+      "addParent": "Add as parent …",
+      "addDaughter": "Add as daughter …",
+      "addRelated": "Add as related …",
+      "chooseOrg": "Choose an organization …",
+      "add": "Add",
+      "relationAdded": "Relation saved",
+      "removeRelation": "Remove the relation to {name}",
+      "peopleHead": "People",
+      "noPeople": "No people at this organization.",
+      "openCustomer": "Open customer record →",
+      "empty": "No organizations yet."
+    },
+    "leads": {
+      "all": "All",
+      "selected": "{count} selected",
+      "select": "Select {title}",
+      "labelBulk": "Label {label}",
+      "archive": "Archive",
+      "unarchive": "Back to open leads",
+      "activityEach": "＋ Activity for each",
+      "archiveToggle": "Archive",
+      "col": {
+        "lead": "Lead",
+        "value": "Value",
+        "labels": "Labels",
+        "source": "Source",
+        "next": "Next activity"
+      },
+      "today": "today {time}",
+      "tomorrow": "tomorrow {time}",
+      "noActivity": "No activity",
+      "overdue": "Overdue · {what}",
+      "employees": "{count, plural, one {# employee} other {# employees}}",
+      "companyData": "Company data",
+      "formAnswers": "Form answers",
+      "chatAnswers": "Chat answers",
+      "emailsHead": "Emails on this lead",
+      "noMailbox": "No mailbox is connected yet, so no emails are linked to this lead.",
+      "convert": "Convert to deal",
+      "openDeal": "Open the deal →",
+      "email": "Email",
+      "notRelevant": "Not relevant → archive",
+      "moveNote": "Notes, emails, files and activities move to the deal on conversion.",
+      "labelAdded": "Label {label} added to {count, plural, one {# lead} other {# leads}}",
+      "archived": "{count} leads archived",
+      "archivedOne": "Lead archived",
+      "unarchived": "Back among the open leads",
+      "empty": "No open leads match this filter.",
+      "emptyArchived": "No archived leads match this filter."
+    },
+    "convert": {
+      "title": "Convert to deal",
+      "pipeline": "Pipeline",
+      "stage": "Stage",
+      "note": "Notes, emails, files and activities move to the deal. You will be asked to plan the next activity.",
+      "go": "Convert",
+      "done": "Converted to a deal in {pipeline} · plan the next activity"
+    },
+    "activity": {
+      "title": "{count, plural, one {An activity for # lead} other {An activity for each of # leads}}",
+      "type": "Type",
+      "subject": "Subject",
+      "date": "Date",
+      "time": "Time",
+      "go": "Create",
+      "done": "One activity created per selected lead ({count})"
+    },
+    "timeline": {
+      "person": "Person",
+      "week": "W{n}",
+      "overdueShort": "overdue",
+      "legendToday": "Yellow column = this week (today marker)",
+      "legendOverdue": "Red = overdue",
+      "legendSame": "Same activities as each record’s history",
+      "empty": "No activities linked to people in these twelve weeks."
+    },
+    "map": {
+      "tiles": "map tiles · provider adapter",
+      "noProvider": "No map provider or geocoding is connected yet, so nothing is plotted. The places are counted beside the map.",
+      "filter": "Filter the map",
+      "country": "Country",
+      "allCountries": "All countries",
+      "region": "Region (fylke)",
+      "allRegions": "All regions",
+      "mode": {
+        "orgs": "Organizations",
+        "people": "People"
+      },
+      "count": "{count} of {total} records have a city · not plotted until geocoding is connected"
+    },
+    "dupes": {
+      "rules": "Matching rules",
+      "rule": {
+        "dedupe_name": "Name similarity ≥ 90 %",
+        "dedupe_email": "Same email address",
+        "dedupe_orgnr": "Same org.nr (organizations)",
+        "dedupe_phone": "Same phone number"
+      },
+      "rulesLocked": "Changing the rules needs the right to configure the platform.",
+      "approval": "Second-admin approval for merges: <b>{state}</b> (setting)",
+      "scan": "Scan now",
+      "scanned": "Scan finished · {count, plural, one {# pair} other {# pairs}} waiting for review",
+      "kind": {
+        "person": "Person",
+        "organization": "Organization"
+      },
+      "why": {
+        "email": "same email",
+        "phone": "same phone number",
+        "orgnr": "same org.nr",
+        "name": "similar name"
+      },
+      "score": "{pct} % match",
+      "keep": "Keep",
+      "mergeInto": "Merge into it",
+      "f": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "organization": "Organization",
+        "orgnr": "Org.nr",
+        "city": "City"
+      },
+      "notDuplicate": "Not a duplicate",
+      "merge": "Merge — keep combined history",
+      "merged": "Merged · one record with the combined history",
+      "empty": "No duplicates waiting for review."
+    },
+    "import": {
+      "steps": {
+        "upload": "Upload",
+        "map": "Map fields",
+        "dupes": "Duplicates",
+        "result": "Result"
+      },
+      "uploadTitle": "Upload a spreadsheet — one record type per file",
+      "entity": {
+        "person": "People",
+        "organization": "Organizations",
+        "lead": "Leads"
+      },
+      "drop": "Drop .csv or click to choose · up to 50 000 rows and 1 MB",
+      "noXlsx": "XLSX is not supported yet — save the sheet as CSV",
+      "reading": "Reading the file …",
+      "rows": "{count, plural, one {{n} row} other {{n} rows}}",
+      "consentOff": "Require a consent source per row (setting «Consent source on import» is off)",
+      "consentOn": "A consent source is required per row (setting «Consent source on import» is on)",
+      "mapTitle": "Map columns to fields",
+      "mapHint": "Matched by column name — check and adjust",
+      "mapFor": "Field for the column {column}",
+      "skipColumn": "Skip column",
+      "field": {
+        "custom": "Custom · {label}",
+        "person": {
+          "name": "Person · name",
+          "email": "Person · email",
+          "phone": "Person · phone",
+          "title": "Person · role",
+          "source": "Person · source",
+          "city": "Person · city",
+          "fylke": "Person · fylke",
+          "linkedin": "Person · LinkedIn",
+          "org_name": "Organization · name",
+          "org_nr": "Organization · org.nr",
+          "consent_source": "Person · consent source",
+          "consent_basis": "Person · consent basis"
+        },
+        "organization": {
+          "name": "Organization · name",
+          "org_number": "Organization · org.nr",
+          "address": "Organization · address",
+          "postal_code": "Organization · postal code",
+          "city": "Organization · city",
+          "fylke": "Organization · fylke",
+          "industry": "Organization · industry",
+          "employees": "Organization · employees",
+          "website": "Organization · website",
+          "phone": "Organization · phone",
+          "email": "Organization · email",
+          "source": "Organization · source"
+        },
+        "lead": {
+          "title": "Lead · title",
+          "value": "Lead · value",
+          "source": "Lead · source",
+          "org_name": "Organization · name",
+          "org_nr": "Organization · org.nr",
+          "person_email": "Person · email"
+        }
+      },
+      "matches": "{count, plural, one {{n} row matches an existing record} other {{n} rows match existing records}}",
+      "noMatches": "No rows match existing records",
+      "leadsAlwaysNew": "Leads are always created as new records",
+      "mode": {
+        "merge": "Merge into existing",
+        "create": "Create new records",
+        "skip": "Skip matching rows"
+      },
+      "modeSub": {
+        "merge": "Fill empty fields, keep existing values",
+        "create": "Duplicates are flagged for review",
+        "skip": "Rows go to the skip file"
+      },
+      "doneTitle": "Import finished — every row accounted for",
+      "result": {
+        "created": "Created",
+        "merged": "Merged",
+        "skipped": "Skipped (skip file)",
+        "read": "Rows read"
+      },
+      "skipFile": "Download skip file ({count, plural, one {# row} other {# rows}} with reasons)",
+      "skipRow": "Row",
+      "skipReason": "Reason",
+      "reasons": {
+        "duplicate": "Matches an existing record",
+        "consent_source_missing": "No consent source",
+        "invalid": "A value is not valid",
+        "forbidden": "Not allowed",
+        "not_found": "Record not found"
+      },
+      "revert": "Revert this import",
+      "revertedState": "Import reverted",
+      "reverted": "Import reverted · {created} records removed, {merged} merges undone",
+      "revertedShort": "reverted",
+      "back": "← Back",
+      "continue": "Continue →",
+      "run": "Run import",
+      "again": "Start a new import",
+      "history": "Import history",
+      "hCreated": "{n} created",
+      "hMerged": "{n} merged",
+      "hSkipped": "{n} skipped",
+      "noHistory": "No imports yet."
+    },
+    "export": {
+      "title": "Export data",
+      "entity": {
+        "person": "People",
+        "organization": "Organizations",
+        "lead": "Leads",
+        "deal": "Deals",
+        "activity": "Activities",
+        "catalog_item": "Products"
+      },
+      "file": {
+        "person": "people",
+        "organization": "organizations",
+        "lead": "leads",
+        "deal": "deals",
+        "activity": "activities",
+        "catalog_item": "products"
+      },
+      "scope": {
+        "current": "Current list view",
+        "full": "Full data set"
+      },
+      "scopeDone": {
+        "current": "current list view",
+        "full": "full data set"
+      },
+      "note": "Contains exactly the rows and columns visible to you. Cells starting with = + − @ are neutralized. The export is written to the audit log.",
+      "noView": "This record type has no list on this screen, so the export holds the full data set you may see.",
+      "csv": "Export CSV",
+      "xlsx": "Export XLSX",
+      "noXlsx": "XLSX export is not supported yet — export CSV",
+      "noRight": "Exporting needs the export right.",
+      "done": "{entity} exported · {scope} · {count} rows · audited"
+    },
+    "restore": {
+      "title": "Deleted in the last 30 days",
+      "purge": "Purged automatically after 30 days",
+      "type": {
+        "person": "Person",
+        "organization": "Organization",
+        "lead": "Lead",
+        "deal": "Deal",
+        "activity": "Activity",
+        "catalog_item": "Product",
+        "ticket": "Ticket"
+      },
+      "source": {
+        "ui": "Web app",
+        "api": "API",
+        "import": "Import",
+        "workflow": "Automation",
+        "assistant": "Assistant",
+        "product": "Application",
+        "system": "System",
+        "merge": "Merge"
+      },
+      "restore": "Restore",
+      "done": "{name} restored with links intact",
+      "empty": "Nothing has been deleted in the last 30 days."
+    },
+    "drawer": {
+      "sync": "Not synced · Google Contacts and Microsoft 365 are not connected",
+      "type": "Type",
+      "marketing": "Marketing",
+      "source": "Source",
+      "owner": "Owner",
+      "notes": "Notes, mentions and comments",
+      "notePlaceholder": "Write a note — @Ingrid to notify",
+      "addNote": "Add note",
+      "noteSaved": "Note saved",
+      "noteMentioned": "Note saved · mentioned user notified",
+      "noteUndelivered": "Note saved · the mention could not be delivered yet",
+      "pinned": "Pinned",
+      "pin": "Pin",
+      "reply": "Reply",
+      "send": "Send",
+      "history": "History — deals, activities and changes you may see",
+      "noHistory": "Nothing has happened on this record yet.",
+      "dealStatus": {
+        "open": "open",
+        "won": "won",
+        "lost": "lost"
+      },
+      "done": "done",
+      "planned": "planned",
+      "minutes": "{n} min",
+      "change": {
+        "created": "Created",
+        "deleted": "Deleted",
+        "restored": "Restored",
+        "merged": "Merged with a duplicate",
+        "field": "{field} changed"
+      },
+      "field": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "organization_id": "Organization",
+        "title": "Role",
+        "contact_type": "Type",
+        "source": "Source",
+        "city": "City",
+        "fylke": "Fylke",
+        "linkedin": "LinkedIn",
+        "labels": "Labels",
+        "owner_id": "Owner",
+        "marketing_status": "Marketing status"
+      },
+      "contact": "contact",
+      "footer": "Survey respondents never become contacts. This person is a {type} — marketing status changes are logged with time and source."
+    },
+    "consent": {
+      "title": "Marketing status",
+      "status": "Status",
+      "source": "Source (e.g. web form)",
+      "basis": "Basis (e.g. signed up at the fair)",
+      "save": "Change status",
+      "saved": "Marketing status changed · logged with time and source",
+      "basisRequired": "A basis is required to subscribe someone (setting «Contact rule»).",
+      "none": "No changes recorded."
+    },
+    "form": {
+      "title": {
+        "new": {
+          "person": "New person",
+          "organization": "New organization",
+          "lead": "New lead"
+        },
+        "edit": {
+          "person": "Edit person",
+          "organization": "Edit organization",
+          "lead": "Edit lead"
+        }
+      },
+      "f": {
+        "person": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "title": "Role",
+          "source": "Source",
+          "city": "City",
+          "fylke": "Fylke",
+          "linkedin": "LinkedIn",
+          "contact_type": "Type"
+        },
+        "organization": {
+          "name": "Name",
+          "org_number": "Org.nr",
+          "address": "Address",
+          "postal_code": "Postal code",
+          "city": "City",
+          "fylke": "Fylke",
+          "industry": "Industry",
+          "website": "Website",
+          "phone": "Phone",
+          "email": "Email",
+          "source": "Source",
+          "employees": "Employees"
+        },
+        "lead": {
+          "title": "Title",
+          "source": "Source",
+          "value": "Value (NOK)",
+          "person_id": "Person"
+        },
+        "organization_id": "Organization",
+        "owner": "Owner"
+      },
+      "labels": "Labels",
+      "leadNeeds": "A lead needs a person or an organization.",
+      "invalid": "A value was refused. Check the fields and try again.",
+      "save": "Save",
+      "saved": "Saved",
+      "created": {
+        "person": "Person created",
+        "organization": "Organization created",
+        "lead": "Lead created"
+      },
+      "delete": "Delete",
+      "confirmDelete": "Delete this record? It can be restored for 30 days.",
+      "deleted": "Deleted · restorable for 30 days"
+    }
+  }
 }

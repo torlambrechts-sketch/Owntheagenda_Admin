@@ -17,11 +17,11 @@ export function useRun() {
   const flash = useToast()
   const te = useTranslations('common.errors')
   const [pending, start] = useTransition()
-  const run = <R extends Outcome>(action: () => Promise<R>, onOk?: (r: Extract<R, { ok: true }>) => string | void) =>
+  const run = <R extends Outcome>(action: () => Promise<R>, onOk?: (r: Extract<R, { ok: true }>) => string | void, onFail?: (r: Extract<R, { ok: false }>) => string | void) =>
     start(async () => {
       const r = await action()
       if (!r.ok) {
-        flash(te(r.code))
+        flash(onFail?.(r as Extract<R, { ok: false }>) || te(r.code))
         return
       }
       const msg = onOk?.(r as Extract<R, { ok: true }>)

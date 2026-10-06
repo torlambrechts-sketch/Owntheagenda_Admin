@@ -98,7 +98,7 @@ export async function setConsent(input: { person: string; status: string; source
 }
 
 /** A note; «@Ingrid» or «@Ingrid Solberg» mentions an active staff member, who is notified. */
-export async function saveNote(input: { entity: string; id: string; body: string; parent?: string | null }): Promise<Ok<{ mentioned: number; undelivered: boolean }> | Fail> {
+export async function saveNote(input: { entity: string; id: string; body: string; parent?: string | null }): Promise<Ok<{ mentioned: number }> | Fail> {
   const p = z.object({ entity, id, body: text(10000).min(1), parent: id.nullable().optional() }).safeParse(input)
   if (!p.success) return bad
   const staff = await rpc('staff_list', {}, z.array(Staff))
@@ -106,16 +106,8 @@ export async function saveNote(input: { entity: string; id: string; body: string
   const mentions = staff.ok
     ? staff.data.filter((s) => s.active && (body.includes(`@${s.name.toLowerCase()}`) || new RegExp(`@${s.name.split(' ')[0]!.toLowerCase()}(?![\\p{L}])`, 'u').test(body))).map((s) => s.id)
     : []
-  const args = { p_entity: p.data.entity, p_id: p.data.id, p_note: null, p_body: p.data.body, p_pinned: false, p_parent: p.data.parent ?? null }
-  const r = await rpc('note_save', { ...args, p_mentions: mentions }, z.unknown(), { quiet: mentions.length > 0 })
-  if (r.ok) return { ok: true, mentioned: mentions.length, undelivered: false }
-  // note_save's notification route («/contacts?person=…») fails app.notifications' route check, so a note
-  // with a mention is refused as a whole (requests/contacts.md R-1); the note is kept without the mention
-  if (r.code === 'failed' && mentions.length) {
-    const again = await rpc('note_save', { ...args, p_mentions: [] }, z.unknown())
-    return again.ok ? { ok: true, mentioned: 0, undelivered: true } : fail(again.code)
-  }
-  return fail(r.code)
+  const r = await rpc('note_save', { p_entity: p.data.entity, p_id: p.data.id, p_note: null, p_body: p.data.body, p_pinned: false, p_parent: p.data.parent ?? null, p_mentions: mentions }, z.unknown())
+  return r.ok ? { ok: true, mentioned: mentions.length } : fail(r.code)
 }
 
 export async function pinNote(input: { entity: string; id: string; note: string; pinned: boolean }): Promise<Ok | Fail> {

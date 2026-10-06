@@ -15,7 +15,10 @@
       "not_signed_in": "Your session has ended. Sign in again.",
       "fixed_setting": "This setting is fixed.",
       "failed": "Something went wrong. Try again.",
-      "approval_required": "A second administrator must approve this first."
+      "approval_required": "A second administrator must approve this first.",
+      "mailbox_not_connected": "No connected mailbox can send this. Reconnect a mailbox first.",
+      "not_connected": "The service this needs is not connected.",
+      "not_available": "This is not available yet."
     },
     "pending": {
       "title": "This screen is being built",

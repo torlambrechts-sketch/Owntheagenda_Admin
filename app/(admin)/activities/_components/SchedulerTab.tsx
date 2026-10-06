@@ -51,6 +51,10 @@ export function SchedulerTab({ ctx, scheduling }: { ctx: Ctx; scheduling: Schedu
   useEffect(() => setAvail(stored), [stored])
   const [title, setTitle] = useState('')
   const [duration, setDuration] = useState(30)
+  const [kind, setKind] = useState<'general' | 'proposed'>('general')
+  const [proposed, setProposed] = useState<string[]>([])
+  const [pDate, setPDate] = useState('')
+  const [pTime, setPTime] = useState('10:00')
   const link = links[selected] ?? links[0] ?? null
 
   const toggle = (wd: number, h: number) => {
@@ -65,19 +69,32 @@ export function SchedulerTab({ ctx, scheduling }: { ctx: Ctx; scheduling: Schedu
   }
   const create = () => {
     startTransition(async () => {
-      const r = await createBookingLink({ title, duration_min: duration })
-      if (!r.ok) { flash(tc(`errors.${r.code}`)); return }
+      const r = await createBookingLink({ title, duration_min: duration, kind, proposed_times: kind === 'proposed' ? proposed : [] })
+      if (!r.ok) { flash(r.detail === 'proposed_times' ? t('scheduler.proposedInvalid') : tc(`errors.${r.code}`)); return }
       setTitle('')
+      setProposed([])
       flash(t('toast.linkCreated'))
     })
   }
 
-  const slots = link && link.kind === 'general' ? slotsFor(link, avail, today, now, ctx.tz) : []
-  const slotLabel = (at: Date) => dates.slot(at, at.getTime() - now.getTime() > 6 * 86_400_000)
+  // a proposed-times link offers its stored times that are still ahead; a general one, the marked hours
+  const addTime = () => {
+    const day = parseYmd(pDate)
+    const [h, m] = pTime.split(':').map(Number)
+    if (!day || !Number.isFinite(h) || !Number.isFinite(m)) return
+    const at = fromZoned(day, h!, m!, ctx.tz)
+    if (at.getTime() <= now.getTime()) { flash(t('scheduler.proposedPast')); return }
+    const iso = at.toISOString()
+    if (!proposed.includes(iso)) setProposed([...proposed, iso].sort())
+  }
+  const slots = !link ? [] : link.kind === 'general'
+    ? slotsFor(link, avail, today, now, ctx.tz)
+    : link.proposed_times.map((x) => new Date(x)).filter((d) => d.getTime() > now.getTime())
+  const slotLabel = (at: Date) => dates.slot(at, link?.kind === 'proposed' || at.getTime() - now.getTime() > 6 * 86_400_000)
   const describe = (l: BookingLink) =>
     l.description ??
     [
-      l.kind === 'general' ? t('scheduler.anySlot', { weeks: Math.max(1, Math.round(l.horizon_days / 7)) }) : t('scheduler.proposed'),
+      l.kind === 'general' ? t('scheduler.anySlot', { weeks: Math.max(1, Math.round(l.horizon_days / 7)) }) : t('scheduler.specificTimes', { count: l.proposed_times.length }),
       l.video_provider ? PROVIDER[l.video_provider] : null,
       l.expires_at ? t('scheduler.expires', { date: dates.short(dates.dayOf(new Date(l.expires_at)).day) }) : null,
     ].filter(Boolean).join(' · ')
@@ -103,7 +120,36 @@ export function SchedulerTab({ ctx, scheduling }: { ctx: Ctx; scheduling: Schedu
         ))}
         <div className="flex flex-col gap-2 rounded-20 border border-line bg-surface px-[18px] py-4">
           <b className="text-14">{links.length ? t('scheduler.newLink') : t('scheduler.noLinks')}</b>
-          <span className="text-12 text-muted">{t('scheduler.newLinkHint')}</span>
+          <span className="text-12 text-muted">{kind === 'general' ? t('scheduler.newLinkHint') : t('scheduler.newProposedHint')}</span>
+          <div className="flex rounded-10 bg-tile p-[3px]">
+            {(['general', 'proposed'] as const).map((k) => (
+              <button key={k} type="button" aria-pressed={kind === k} onClick={() => setKind(k)} className={`flex-1 cursor-pointer rounded-7 border-none p-[7px] text-12.5 ${kind === k ? 'bg-surface font-bold' : 'bg-transparent font-medium'}`}>
+                {t(`scheduler.kind.${k}`)}
+              </button>
+            ))}
+          </div>
+          {kind === 'proposed' ? (
+            <>
+              {proposed.length ? (
+                <div className="grid grid-cols-2 gap-[6px] sm:grid-cols-3">
+                  {proposed.map((x) => (
+                    <span key={x} className="flex h-[38px] items-center justify-between gap-1 rounded-10 border border-line bg-surface pl-[10px] pr-[6px] text-12.5 font-medium">
+                      {dates.slot(new Date(x), true)}
+                      <button type="button" aria-label={t('scheduler.removeTime', { time: dates.slot(new Date(x), true) })} onClick={() => setProposed(proposed.filter((y) => y !== x))} className="cursor-pointer border-none bg-transparent p-0 text-13 text-muted">×</button>
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+              <div className="flex flex-wrap gap-2">
+                <input type="date" value={pDate} min={ctx.today} onChange={(e) => setPDate(e.target.value)} aria-label={t('modal.date')} className="h-9 rounded-9 border border-line bg-canvas px-2 text-12.5" />
+                <input type="time" value={pTime} onChange={(e) => setPTime(e.target.value)} aria-label={t('modal.time')} className="h-9 rounded-9 border border-line bg-canvas px-2 text-12.5" />
+                <button type="button" disabled={!pDate || proposed.length >= 10} onClick={addTime} className="h-9 cursor-pointer rounded-10 border border-line bg-transparent px-[15px] text-12.5 font-semibold disabled:cursor-default disabled:opacity-60">
+                  {t('scheduler.addTime')}
+                </button>
+                <span className="self-center text-11.5 text-muted">{t('scheduler.timesCount', { count: proposed.length })}</span>
+              </div>
+            </>
+          ) : null}
           <div className="flex flex-wrap gap-2">
             <input
               value={title}
@@ -116,7 +162,7 @@ export function SchedulerTab({ ctx, scheduling }: { ctx: Ctx; scheduling: Schedu
             <select value={duration} onChange={(e) => setDuration(Number(e.target.value))} aria-label={t('modal.duration')} className="h-9 rounded-9 border border-line bg-canvas text-12.5">
               {[15, 30, 45, 60].map((m) => <option key={m} value={m}>{t('calendar.minutes', { count: m })}</option>)}
             </select>
-            <button type="button" disabled={pending || !title.trim()} onClick={create} className="h-9 cursor-pointer rounded-10 border border-ink bg-primary px-[15px] text-12.5 font-bold disabled:cursor-default disabled:opacity-60">
+            <button type="button" disabled={pending || !title.trim() || (kind === 'proposed' && proposed.length === 0)} onClick={create} className="h-9 cursor-pointer rounded-10 border border-ink bg-primary px-[15px] text-12.5 font-bold disabled:cursor-default disabled:opacity-60">
               {t('scheduler.createLink')}
             </button>
           </div>
@@ -167,9 +213,7 @@ export function SchedulerTab({ ctx, scheduling }: { ctx: Ctx; scheduling: Schedu
                   </span>
                 </span>
               </div>
-              {link.kind === 'proposed' ? (
-                <div className="text-12.5 text-muted">{t('scheduler.proposedNotStored')}</div>
-              ) : slots.length ? (
+              {slots.length ? (
                 <div className="grid grid-cols-3 gap-[6px]">
                   {slots.map((s, i) => (
                     <button
@@ -184,7 +228,7 @@ export function SchedulerTab({ ctx, scheduling }: { ctx: Ctx; scheduling: Schedu
                   ))}
                 </div>
               ) : (
-                <div className="text-12.5 text-muted">{t('scheduler.noSlots')}</div>
+                <div className="text-12.5 text-muted">{link.kind === 'proposed' ? t('scheduler.noProposed') : t('scheduler.noSlots')}</div>
               )}
               <button type="button" disabled className="h-10 cursor-default rounded-11 border border-ink bg-primary text-13 font-bold opacity-60">
                 {t('scheduler.confirm')}
@@ -199,7 +243,7 @@ export function SchedulerTab({ ctx, scheduling }: { ctx: Ctx; scheduling: Schedu
         {scheduling.bookings.length === 0 ? <div className="py-[6px] text-12.5 text-muted">{t('scheduler.noBookings')}</div> : null}
         {scheduling.bookings.slice(0, 10).map((b, i) => (
           <div key={i} className="flex justify-between gap-3 border-b border-line py-[6px] text-12.5">
-            <span><b>{b.name ?? '—'}</b> · {b.link}</span>
+            <span><b>{b.name ?? '—'}</b> · {b.organization ?? b.link}</span>
             <span className="whitespace-nowrap text-muted">{dates.slot(new Date(b.starts_at), true)}</span>
           </div>
         ))}

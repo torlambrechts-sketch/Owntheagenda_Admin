@@ -42,7 +42,11 @@
       "linkCreated": "Bookinglenke opprettet",
       "saved": "Aktivitet lagret",
       "savedReminders": "Aktivitet lagret · påminnelser satt",
-      "nextPlanned": "Neste aktivitet planlagt: {what}"
+      "nextPlanned": "Neste aktivitet planlagt: {what}",
+      "partRefused": {
+        "guests": "Aktiviteten er lagret, men gjestene ble ikke endret: {reason}",
+        "reminders": "Aktiviteten er lagret, men påminnelsene ble ikke endret: {reason}"
+      }
     },
     "todo": {
       "tabs": {
@@ -91,7 +95,6 @@
         "proposed": "Foreslåtte tider"
       },
       "anySlot": "Enhver ledig tid {weeks, plural, one {neste uke} other {de neste # ukene}}",
-      "proposed": "Foreslåtte tider",
       "expires": "utløper {date}",
       "newLink": "Ny bookinglenke",
       "noLinks": "Ingen bookinglenker ennå",
@@ -103,13 +106,20 @@
       "availNotConnected": "Ingen kalender er koblet til, så opptatte tider leses ikke ennå · tidene kommer bare fra timene som er merket her",
       "availConnected": "Opptatte tider leses fra den synkroniserte kalenderen",
       "contactSees": "Det kontakten ser",
-      "proposedNotStored": "De konkrete tidene i en lenke med foreslåtte tider lagres ikke ennå, så ingen kan vises.",
       "noSlots": "Ingen ledige tider — merk timer under Tilgjengelighet.",
       "confirm": "Bekreft booking",
       "previewOnly": "Bare forhåndsvisning · den offentlige bookingsiden er ikke publisert ennå, så ingen kan booke gjennom den",
       "previewEmpty": "Opprett en bookinglenke for å se det kontakten ser.",
       "recent": "Nylige bookinger",
-      "noBookings": "Ingen bookinger ennå"
+      "noBookings": "Ingen bookinger ennå",
+      "specificTimes": "{count, plural, one {# konkret tid} other {# konkrete tider}}",
+      "newProposedHint": "En lenke med foreslåtte tider tilbyr bare tidene som legges til her, høyst ti. Den offentlige bookingsiden er ikke publisert ennå.",
+      "addTime": "Legg til tid",
+      "removeTime": "Fjern {time}",
+      "timesCount": "{count} av 10",
+      "proposedPast": "Velg en tid fram i tid",
+      "proposedInvalid": "Foreslåtte tider må ligge fram i tid, høyst ti",
+      "noProposed": "Alle foreslåtte tider er passert."
     },
     "reminders": {
       "title": "Påminnelser",
@@ -147,10 +157,10 @@
         "two_way": "Toveis"
       },
       "calendar": "Kalender",
-      "noCalendar": "Ikke koblet til",
       "types": "Aktivitetstyper som synkroniseres",
-      "notConnected": "Ikke koblet til · synk med Google og Microsoft 365 kommer med kalenderadapterne, så ingenting synkroniseres ennå",
-      "connected": "Private hendelser synkroniseres som private · sist synkronisert {when} · siste endring vinner"
+      "notConnected": "Ikke koblet til · valgene dine er lagret og gjelder når Google eller Microsoft 365 kobles til; ingenting synkroniseres ennå",
+      "connected": "Private hendelser synkroniseres som private · sist synkronisert {when} · siste endring vinner",
+      "chooseProvider": "Velg en leverandør først"
     },
     "modal": {
       "edit": "Rediger aktivitet",

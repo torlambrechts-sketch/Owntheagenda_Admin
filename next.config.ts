@@ -19,6 +19,8 @@ const csp = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // a build next to a running dev server writes elsewhere (NEXT_DIST_DIR=.next-build)
+  distDir: process.env.NEXT_DIST_DIR ?? '.next',
   devIndicators: false,
   reactStrictMode: true,
   typedRoutes: true,

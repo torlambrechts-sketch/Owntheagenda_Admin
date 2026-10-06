@@ -33,10 +33,11 @@ type Props = {
   onMove: (stage: string) => void
   onLost: () => void
   onNextStep: (subject: string) => void
+  onToLead: () => void
 }
 
 /** The deal drawer (Deals.dc.html deal): header with stage bar, summary, details, people, products, composer, focus, history. */
-export function DealDrawer({ bundle, base, rights, nf, onClose, onChanged, onMove, onLost, onNextStep }: Props) {
+export function DealDrawer({ bundle, base, rights, nf, onClose, onChanged, onMove, onLost, onNextStep, onToLead }: Props) {
   const t = useTranslations('deals')
   const td = useTranslations('deals.drawer')
   const te = useTranslations('common.errors')
@@ -69,6 +70,18 @@ export function DealDrawer({ bundle, base, rights, nf, onClose, onChanged, onMov
   useEffect(() => { if (editable) void fetchCatalog().then((r) => { if (r.ok) setCatalog(r.catalog) }) }, [editable])
 
   const history = useMemo(() => buildHistory(bundle, base, t, nf, fmtDay), [bundle, base, t, nf]) // eslint-disable-line react-hooks/exhaustive-deps
+  // the «why» panel: the active model's criteria for this pipeline, hits from the stored breakdown
+  const why = useMemo(() => {
+    const hits = bundle.scoreHits ?? []
+    const model = base.scoreModels.find((m) => m.pipeline_id === d.pipeline_id) ?? base.scoreModels.find((m) => m.pipeline_id === null)
+    const rows = model
+      ? model.criteria.map((c) => {
+          const hit = hits.find((h) => h.criterion === c.id)
+          return { id: c.id, label: c.label, points: hit?.points ?? model.points[c.group] ?? 0, hit: !!hit }
+        })
+      : hits.map((h) => ({ id: h.criterion, label: h.label, points: h.points, hit: true }))
+    return rows.map((r) => ({ ...r, c: r.hit ? (r.points > 0 ? 'text-ok-ink' : 'text-danger') : 'text-faint' }))
+  }, [bundle.scoreHits, base.scoreModels, d.pipeline_id])
   const shownHistory = history.filter((h) => hist === 'All' || h.k === hist)
   const stages = d.stages ?? []
   const idx = stages.findIndex((s) => s.id === d.stage_id)
@@ -79,6 +92,7 @@ export function DealDrawer({ bundle, base, rights, nf, onClose, onChanged, onMov
 
   // ---- header actions
   const more = async (a: string) => {
+    if (a === 'lead') { onToLead(); return }
     if (a === 'dup') { const r = await duplicateDeal(d.id); after(r, t('flash.duplicated')) }
     if (a === 'archive') { const r = await archiveDeals({ ids: [d.id], archived: true }); if (after(r, t('flash.archived'))) onClose() }
     if (a === 'unarchive') { const r = await archiveDeals({ ids: [d.id], archived: false }); after(r, t('flash.unarchived')) }
@@ -227,6 +241,7 @@ export function DealDrawer({ bundle, base, rights, nf, onClose, onChanged, onMov
                   <select aria-label={td('more.label')} value="" onChange={(e) => void more(e.target.value)} className="h-[34px] rounded-10 border border-line bg-surface text-12.5 text-ink">
                     <option value="">{td('more.label')}</option>
                     {rights.add ? <option value="dup">{td('more.dup')}</option> : null}
+                    {rights.add && !d.archived_at ? <option value="lead">{td('more.lead')}</option> : null}
                     {d.status !== 'open' ? <option value="reopen">{td('more.reopen')}</option> : null}
                     {d.archived_at ? <option value="unarchive">{td('more.unarchive')}</option> : <option value="archive">{td('more.archive')}</option>}
                     {rights.del ? <option value="delete">{td('more.delete')}</option> : null}
@@ -320,6 +335,17 @@ export function DealDrawer({ bundle, base, rights, nf, onClose, onChanged, onMov
                   )
                 })}
               </div>
+            </div>
+
+            <div className={`${card} flex flex-col gap-[7px]`}>
+              <span className={eyebrow}>{td('score.title', { score: d.score ?? '—' })}</span>
+              {why.map((w) => (
+                <div key={w.id} className="flex justify-between gap-2 text-12">
+                  <span className={w.c}>{w.hit ? '✓' : '○'} {w.label}</span>
+                  <b className={w.c}>{w.points > 0 ? `+${w.points}` : `−${Math.abs(w.points)}`}</b>
+                </div>
+              ))}
+              {why.length === 0 ? <div className="text-12 text-muted">{td('score.noModel')}</div> : null}
             </div>
 
             <div className={`${card} flex flex-col gap-[7px]`}>

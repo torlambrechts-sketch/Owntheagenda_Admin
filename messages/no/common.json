@@ -15,7 +15,10 @@
       "not_signed_in": "Økten er avsluttet. Logg inn igjen.",
       "fixed_setting": "Denne innstillingen er fast.",
       "failed": "Noe gikk galt. Prøv igjen.",
-      "approval_required": "En annen administrator må godkjenne dette først."
+      "approval_required": "En annen administrator må godkjenne dette først.",
+      "mailbox_not_connected": "Ingen tilkoblet innboks kan sende dette. Koble til en innboks først.",
+      "not_connected": "Tjenesten dette trenger er ikke koblet til.",
+      "not_available": "Dette er ikke tilgjengelig ennå."
     },
     "pending": {
       "title": "Denne skjermen bygges nå",

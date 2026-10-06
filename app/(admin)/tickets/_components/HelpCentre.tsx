@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
-import { formatNumber, type NumberFormat } from '@/lib/format'
+import { formatNumber, percent, type NumberFormat } from '@/lib/format'
 import { saveArticle } from '../actions'
 import { useLabel } from './lib'
 import { matchArticles } from './NewTicketModal'
@@ -39,7 +39,7 @@ export function HelpCentre({ help, now, nf, canConfigure, canAdd }: { help: Help
         <div className="flex min-w-[640px] items-baseline justify-between gap-3 border-b border-line px-[18px] py-[14px]">
           <span className="text-15 font-bold">{t('title')}</span>
           <span className="text-12 text-muted">
-            {t.rich('stats', { rate: '—', n: formatNumber(deflected, nf), b: (c) => <b className="text-ink">{c}</b> })}
+            {t.rich('stats', { rate: help.article_rate !== null ? percent(help.article_rate, nf) : '—', n: formatNumber(deflected, nf), b: (c) => <b className="text-ink">{c}</b> })}
           </span>
         </div>
         <div className={`grid min-w-[640px] gap-[10px] border-b border-line px-[18px] py-[9px] text-10.5 font-bold uppercase tracking-label text-muted ${cols}`}>

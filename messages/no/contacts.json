@@ -42,7 +42,7 @@
     "marketing": {
       "subscribed": "Abonnerer",
       "no_consent": "Ikke samtykke",
-      "pending": "Venter på dobbel bekreftelse",
+      "pending": "Venter på bekreftelse",
       "unsubscribed": "Avmeldt",
       "bounced": "Avvist"
     },
@@ -292,7 +292,7 @@
         "skipped": "Hoppet over (hoppfil)",
         "read": "Rader lest"
       },
-      "skipFile": "Last ned hoppfilen ({count, plural, one {# rad} other {# rader}} med årsak)",
+      "skipFile": "Last ned hoppfilen ({count, plural, one {{n} rad} other {{n} rader}} med årsak)",
       "skipRow": "Rad",
       "skipReason": "Årsak",
       "reasons": {
@@ -387,7 +387,6 @@
       "addNote": "Legg til notat",
       "noteSaved": "Notatet er lagret",
       "noteMentioned": "Notatet er lagret · omtalt bruker er varslet",
-      "noteUndelivered": "Notatet er lagret · omtalen kunne ikke leveres ennå",
       "pinned": "Festet",
       "pin": "Fest",
       "reply": "Svar",

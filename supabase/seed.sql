@@ -2462,6 +2462,9 @@ insert into app.score_criteria (model_id, grp, ord, label, condition) values ('1
 update app.event_cursors set last_event_id = coalesce((select max(id) from app.events), 0), updated_at = now();
 select app.scores_nightly();
 select app.feed_checks();
+select app.snapshot_pipeline();
+select app.snapshot_mrr_tenants();
+select app.health_nightly();
 
 commit;
 set session_replication_role = origin;

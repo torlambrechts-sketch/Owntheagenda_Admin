@@ -170,10 +170,23 @@ export type Deleted = z.infer<typeof Deleted>
 export const PersonHit = z.object({ id, name: z.string(), title: z.string().nullable().optional(), city: z.string().nullable().optional(), org_number: z.string().nullable().optional() })
 export type PersonHit = z.infer<typeof PersonHit>
 
+/** The scoring models (0022): the drawer's «why» panel lists the active deal model's criteria. */
+export const ScoreModel = z.object({
+  id,
+  entity: z.string(),
+  pipeline_id: id.nullable(),
+  state: z.string(),
+  points: z.record(z.string(), num),
+  criteria: z.array(z.object({ id, group: z.string(), label: z.string() })),
+})
+export type ScoreModel = z.infer<typeof ScoreModel>
+export const ScoreHit = z.object({ criterion: z.string(), group: z.string(), label: z.string(), points: num })
+export type ScoreHit = z.infer<typeof ScoreHit>
+
 // ---------------------------------------------------------------------------
 // what the screen needs before anything is chosen
 export async function loadDealsBase() {
-  const [pipelines, labels, fields, staff, lostReasons, views, activityTypes] = await Promise.all([
+  const [pipelines, labels, fields, staff, lostReasons, views, activityTypes, scoring] = await Promise.all([
     rpcOrThrow('pipelines_get', {}, z.array(Pipeline)),
     rpcOrThrow('labels_get', { p_entity: 'deal' }, z.array(Label)),
     rpcOrThrow('fields_get', { p_entity: 'deal' }, z.array(Field)),
@@ -181,12 +194,14 @@ export async function loadDealsBase() {
     rpcOrThrow('lost_reasons_get', {}, z.array(LostReason)),
     rpcOrThrow('views_get', { p_screen: 'deals' }, Views),
     rpcOrThrow('activity_types_get', {}, z.array(ActivityType)),
+    rpc('score_models_get', {}, z.object({ models: z.array(ScoreModel) })),
   ])
-  return { pipelines, labels, fields, staff: staff.filter((s) => s.active), lostReasons, views, activityTypes: activityTypes.filter((a) => a.active) }
+  return { pipelines, labels, fields, staff: staff.filter((s) => s.active), lostReasons, views, activityTypes: activityTypes.filter((a) => a.active),
+    scoreModels: scoring.ok ? scoring.data.models.filter((m) => m.entity === 'deal' && m.state === 'active') : [] }
 }
 export type DealsBase = Awaited<ReturnType<typeof loadDealsBase>>
 
-export type Filter = { f: string; op: string; v?: unknown }
+export type Filter = { f: string; op: string; v?: unknown } | { or: { f: string; op: string; v?: unknown }[][] }
 
 export const loadBoard = (pipeline: string, filters: Filter[], closed: boolean) =>
   rpc('deal_board', { p_pipeline: pipeline, p_query: { filters, closed } }, Board)
@@ -205,10 +220,12 @@ export const loadDeleted = () => rpc('deleted_get', {}, z.array(Deleted))
 export async function loadDeal(dealId: string) {
   const detail = await rpc('deal_detail', { p_id: dealId }, Detail)
   if (!detail.ok) return detail
-  const [history, notes, activities] = await Promise.all([
+  const [history, notes, activities, score] = await Promise.all([
     rpc('rec_history', { p_entity: 'deal', p_id: dealId, p_limit: 100 }, z.array(HistoryRow)),
     rpc('notes_list', { p_entity: 'deal', p_id: dealId }, z.array(Note)),
     rpc('activities_get', { p_query: { deal_id: dealId } }, Activities),
+    // the score's hits are stored on the deal (score_breakdown); deal_detail does not carry them
+    rpc('rec_get', { p_entity: 'deal', p_id: dealId }, z.object({ score_breakdown: z.array(ScoreHit).nullable() })),
   ])
   return {
     ok: true as const,
@@ -217,10 +234,11 @@ export async function loadDeal(dealId: string) {
       history: history.ok ? history.data : [],
       notes: notes.ok ? notes.data : [],
       activities: activities.ok ? activities.data.rows : [],
+      scoreHits: score.ok ? score.data.score_breakdown : null,
     },
   }
 }
-export type DealBundle = { detail: Detail; history: HistoryRow[]; notes: Note[]; activities: Activity[] }
+export type DealBundle = { detail: Detail; history: HistoryRow[]; notes: Note[]; activities: Activity[]; scoreHits: ScoreHit[] | null }
 
 export const searchRecords = (entity: 'person' | 'organization', q: string) =>
   rpc('rec_list', { p_entity: entity, p_query: { q, limit: 6, sort: { f: 'name', dir: 'asc' } } }, z.object({ rows: z.array(PersonHit) }))

@@ -60,6 +60,7 @@
         "limits": "Limits",
         "safeguards": "Technical safeguards",
         "meetings": "Meetings",
+        "ai": "AI",
         "platform_constant": "Platform constant"
       },
       "items": {
@@ -165,6 +166,13 @@
           "options": {
             "on_24h": "On with 24 hours’ notice",
             "custom": "Custom timing",
+            "off": "Off"
+          }
+        },
+        "ai_scoring": {
+          "name": "AI scoring of deals and leads",
+          "options": {
+            "on": "On",
             "off": "Off"
           }
         },
@@ -290,6 +298,7 @@
       "saved": "Field saved · {name}",
       "created": "Field added · {name}",
       "archived": "Field archived · {name}",
+      "keyTaken": "The key «{key}» still belongs to an archived field of this type. Give the field another label.",
       "allPipelines": "All pipelines",
       "pipelineOnly": "{name} only",
       "nobody": "Nobody",

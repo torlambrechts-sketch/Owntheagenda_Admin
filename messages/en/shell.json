@@ -57,7 +57,24 @@
         "security_new_device": { "title": "New device sign-in for {name}", "body": "{device}" },
         "deal_stage": { "title": "{record} moved to {stage}", "body": "You follow this deal · by {actor}" },
         "ticket_sla": { "title": "{record} is close to breaching first response", "body": "{priority} · {minutes} min left" },
-        "workflow_failed": { "title": "Workflow «{record}» failed {count} times", "body": "{reason}" }
+        "workflow_failed": { "title": "Workflow «{record}» failed {count} times", "body": "{reason}" },
+        "workflow": {
+          "failed": { "title": "Workflow «{workflow}» failed", "body": "{error}" },
+          "notice": { "title": "{workflow}", "body": "{message}" },
+          "loop_blocked": { "title": "Workflow «{workflow}» was paused by loop protection", "body": "It ran more often than the safeguard allows." },
+          "transferred_to": { "title": "Workflow «{workflow}» is now yours", "body": "You own it and receive its notices." },
+          "transferred_from": { "title": "Workflow «{workflow}» was handed over", "body": "Someone else owns it now." }
+        },
+        "assignment": {
+          "assigned": { "title": "A record was assigned to you", "body": "By «{workflow}»" }
+        },
+        "mail": {
+          "reauth": { "title": "A mailbox needs to be connected again", "body": "Sending from it is paused until it is reconnected." },
+          "failed": { "title": "An email could not be sent", "body": "«{subject}»" },
+          "received": { "title": "New email in your inbox", "body": "Open the inbox to read it." },
+          "opened": { "title": "Your email was opened", "body": "«{subject}»" },
+          "clicked": { "title": "A link in your email was clicked", "body": "«{subject}»" }
+        }
       }
     },
     "assistant": {

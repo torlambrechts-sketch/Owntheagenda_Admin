@@ -57,7 +57,24 @@
         "security_new_device": { "title": "Ny enhet logget inn for {name}", "body": "{device}" },
         "deal_stage": { "title": "{record} flyttet til {stage}", "body": "Du følger denne avtalen · av {actor}" },
         "ticket_sla": { "title": "{record} nærmer seg fristen for første svar", "body": "{priority} · {minutes} min igjen" },
-        "workflow_failed": { "title": "Arbeidsflyten «{record}» feilet {count} ganger", "body": "{reason}" }
+        "workflow_failed": { "title": "Arbeidsflyten «{record}» feilet {count} ganger", "body": "{reason}" },
+        "workflow": {
+          "failed": { "title": "Arbeidsflyten «{workflow}» feilet", "body": "{error}" },
+          "notice": { "title": "{workflow}", "body": "{message}" },
+          "loop_blocked": { "title": "Arbeidsflyten «{workflow}» ble stanset av løkkevernet", "body": "Den kjørte oftere enn sikkerhetsgrensen tillater." },
+          "transferred_to": { "title": "Arbeidsflyten «{workflow}» er nå din", "body": "Du eier den og får varslene fra den." },
+          "transferred_from": { "title": "Arbeidsflyten «{workflow}» er overført", "body": "Noen andre eier den nå." }
+        },
+        "assignment": {
+          "assigned": { "title": "En post ble tildelt deg", "body": "Av «{workflow}»" }
+        },
+        "mail": {
+          "reauth": { "title": "En innboks må kobles til på nytt", "body": "Sending fra den er stanset til den er koblet til igjen." },
+          "failed": { "title": "En e-post kunne ikke sendes", "body": "«{subject}»" },
+          "received": { "title": "Ny e-post i innboksen", "body": "Åpne innboksen for å lese den." },
+          "opened": { "title": "E-posten din ble åpnet", "body": "«{subject}»" },
+          "clicked": { "title": "En lenke i e-posten din ble klikket", "body": "«{subject}»" }
+        }
       }
     },
     "assistant": {

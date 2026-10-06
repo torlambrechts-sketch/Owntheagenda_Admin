@@ -10,12 +10,14 @@ import { canEditDeal, dateOnly, type Rights } from './shared'
 import { download, toCsv, toXlsx, type Cell } from './xlsx'
 import type { Status } from './DealsScreen'
 
-type Col = 'id' | 'title' | 'org' | 'value' | 'stage' | 'owner' | 'close' | 'source' | 'labels'
-const COLS: [Col, string][] = [['id', '80px'], ['title', 'minmax(200px,2fr)'], ['org', 'minmax(140px,1.2fr)'], ['value', '110px'], ['stage', '120px'], ['owner', '110px'], ['close', '70px'], ['source', '120px'], ['labels', '110px']]
-// the columns deal_list can sort by; organization, owner and labels have no sortable column yet
-const SORT_F: Partial<Record<Col, 'seq' | 'title' | 'value' | 'stage' | 'expected_close_date' | 'source'>> = { id: 'seq', title: 'title', value: 'value', stage: 'stage', close: 'expected_close_date', source: 'source' }
+type Col = 'id' | 'title' | 'org' | 'value' | 'stage' | 'owner' | 'close' | 'score' | 'source' | 'labels'
+const COLS: [Col, string][] = [['id', '80px'], ['title', 'minmax(200px,2fr)'], ['org', 'minmax(140px,1.2fr)'], ['value', '110px'], ['stage', '120px'], ['owner', '110px'], ['close', '70px'], ['score', '60px'], ['source', '120px'], ['labels', '110px']]
+// what deal_list sorts each column by (organization, owner and labels by name, nulls last — 0023)
+const SORT_F: Record<Col, 'seq' | 'title' | 'organization' | 'value' | 'stage' | 'owner' | 'expected_close_date' | 'score' | 'source' | 'labels'> = {
+  id: 'seq', title: 'title', org: 'organization', value: 'value', stage: 'stage', owner: 'owner', close: 'expected_close_date', score: 'score', source: 'source', labels: 'labels',
+}
 type Sort = { k: Col; dir: 'asc' | 'desc' }
-const DEFAULT_COLS: Record<Col, boolean> = { id: false, title: true, org: true, value: true, stage: true, owner: true, close: true, source: true, labels: true }
+const DEFAULT_COLS: Record<Col, boolean> = { id: false, title: true, org: true, value: true, stage: true, owner: true, close: true, score: true, source: true, labels: true }
 
 const readCols = (v: unknown): Record<Col, boolean> =>
   v && typeof v === 'object' ? { ...DEFAULT_COLS, ...Object.fromEntries(Object.entries(v).filter(([k, x]) => k in DEFAULT_COLS && typeof x === 'boolean')), title: true } : DEFAULT_COLS
@@ -50,7 +52,7 @@ export function ListView({ base, pipeline, filters, status, rights, nf, rev, ref
   const key = JSON.stringify([filters, status, sort])
   useEffect(() => {
     const n = ++seq.current
-    void fetchList({ status, filters, sort: sort.map((s) => ({ f: SORT_F[s.k]!, dir: s.dir })) }).then((r) => {
+    void fetchList({ status, filters, sort: sort.map((s) => ({ f: SORT_F[s.k], dir: s.dir })) }).then((r) => {
       if (n !== seq.current) return
       if (r.ok) setRows(r.list.rows)
       else flash(te(r.code))
@@ -86,6 +88,7 @@ export function ListView({ base, pipeline, filters, status, rights, nf, rev, ref
       case 'stage': return (stageName.get(d.stage_id) ?? '') + (d.status !== 'open' ? ' · ' + t(`status.${d.status}`).toLowerCase() : '')
       case 'owner': return (d.owner_id && staffBy.get(d.owner_id)) || d.owner?.name || '—'
       case 'close': return d.expected_close_date ? format.dateTime(dateOnly(d.expected_close_date), { day: 'numeric', month: 'short', timeZone: 'UTC' }) : '—'
+      case 'score': return d.score !== null ? String(d.score) : '—'
       case 'source': return d.source ?? '—'
       case 'labels': return d.labels.map((id) => labelBy.get(id)).filter(Boolean).join(', ') || '—'
     }
@@ -125,7 +128,7 @@ export function ListView({ base, pipeline, filters, status, rights, nf, rev, ref
 
   const table = (): Cell[][] => [
     shown.map(([k]) => t(`list.cols.${k}`)),
-    ...list.map((d) => shown.map(([k]) => (k === 'value' ? d.value : k === 'id' ? d.seq : text(d, k)))),
+    ...list.map((d) => shown.map(([k]) => (k === 'value' ? d.value : k === 'id' ? d.seq : k === 'score' && d.score !== null ? d.score : text(d, k)))),
   ]
   const exportAs = async (fmt: 'csv' | 'xlsx') => {
     const data = table()
@@ -195,7 +198,7 @@ export function ListView({ base, pipeline, filters, status, rights, nf, rev, ref
             {shown.map(([k]) => {
               const i = sort.findIndex((s) => s.k === k)
               const arrow = i >= 0 ? (sort[i]!.dir === 'asc' ? '↑' : '↓') + (sort.length > 1 ? String(i + 1) : '') : ''
-              return SORT_F[k] ? (
+              return (
                 <button
                   key={k}
                   type="button"
@@ -204,8 +207,6 @@ export function ListView({ base, pipeline, filters, status, rights, nf, rev, ref
                 >
                   {t(`list.cols.${k}`)} {arrow}
                 </button>
-              ) : (
-                <span key={k}>{t(`list.cols.${k}`)}</span>
               )
             })}
           </div>

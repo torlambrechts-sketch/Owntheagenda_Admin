@@ -2,6 +2,8 @@
 
 Changes the Deals screen needs and leaves out until they exist. Each names the function and the behaviour.
 
+**Status:** all three were added in 0023 and are wired on the screen (list sorts, OR groups and idle days, «Convert back to lead»); V-DEALS-10, V-DEALS-11 and V-DEALS-12 are gone (the score filter followed with 0022).
+
 ## R-DEALS-01 — `deal_list` sorts by organization, owner and labels
 The list’s Organization, Owner and Labels headers cannot sort: `deal_list` accepts only registered columns
 (sorting `organization_id` or `owner_id` would order by uuid; `owner_id` and `labels` are not registered and

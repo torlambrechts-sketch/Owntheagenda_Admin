@@ -4,12 +4,12 @@ import { useTranslations } from 'next-intl'
 import type { SavedView } from '@/lib/data/deals'
 import type { Cond, CondField, CondOp } from './shared'
 
-const FIELDS: CondField[] = ['value', 'source', 'label']
+const FIELDS: CondField[] = ['value', 'score', 'idle', 'source', 'label']
 const OPS: CondOp[] = ['is', 'gt', 'lt', 'contains']
 const select = 'h-8 rounded-9 border border-line bg-canvas text-12.5 text-ink'
 
 const isCond = (x: unknown): x is Cond =>
-  !!x && typeof x === 'object' && FIELDS.includes((x as Cond).field) && OPS.includes((x as Cond).op) && typeof (x as Cond).val === 'string'
+  !!x && typeof x === 'object' && FIELDS.includes((x as Cond).field) && OPS.includes((x as Cond).op) && typeof (x as Cond).val === 'string' && [undefined, 'and', 'or'].includes((x as Cond).join)
 
 /** The advanced filter popover (Deals.dc.html advOpen): AND conditions, saved filters. */
 export function AdvancedFilter({ open, setOpen, conds, setConds, saved, onSave }: {
@@ -41,7 +41,7 @@ export function AdvancedFilter({ open, setOpen, conds, setConds, saved, onSave }
           </div>
           {conds.map((c, i) => (
             <div key={i} className="flex items-center gap-[6px]">
-              <span className="w-11 text-11 font-bold uppercase text-muted">{i === 0 ? t('where') : t('and')}</span>
+              <span className="w-11 text-11 font-bold uppercase text-muted">{i === 0 ? t('where') : c.join === 'or' ? t('or') : t('and')}</span>
               <select aria-label={t('field')} value={c.field} onChange={(e) => set(i, { field: e.target.value as CondField })} className={`${select} flex-1`}>
                 {FIELDS.map((f) => <option key={f} value={f}>{t(`fields.${f}`)}</option>)}
               </select>
@@ -55,6 +55,9 @@ export function AdvancedFilter({ open, setOpen, conds, setConds, saved, onSave }
           <div className="flex gap-[6px]">
             <button type="button" onClick={() => setConds([...conds, { field: 'value', op: 'gt', val: '50000' }])} className="h-[30px] cursor-pointer rounded-9 border border-dashed border-line-strong bg-transparent px-[10px] text-12 font-semibold">
               {t('addAnd')}
+            </button>
+            <button type="button" onClick={() => setConds([...conds, { join: 'or', field: 'idle', op: 'gt', val: '10' }])} className="h-[30px] cursor-pointer rounded-9 border border-dashed border-line-strong bg-transparent px-[10px] text-12 font-semibold">
+              {t('addOr')}
             </button>
             <span className="flex-1" />
             <button type="button" disabled={!active} onClick={onSave} className="h-[30px] cursor-pointer rounded-9 border border-ink bg-primary px-3 text-12 font-bold disabled:cursor-default disabled:opacity-60">

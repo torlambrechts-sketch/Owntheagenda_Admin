@@ -6,9 +6,9 @@ import { useToast } from '@/components/ui/Toast'
 import { money, type NumberFormat } from '@/lib/format'
 import type { Board as BoardData, Card, Label, Pipeline } from '@/lib/data/deals'
 import { setPref } from '../actions'
-import { ACT, canEditDeal, cardTone, dateOnly, initials, VIZ, type Rights } from './shared'
+import { ACT, canEditDeal, cardTone, dateOnly, initials, scoreTone, VIZ, type Rights } from './shared'
 
-const CARD_FIELDS = ['organization', 'value', 'close'] as const
+const CARD_FIELDS = ['organization', 'value', 'close', 'score'] as const
 type CardField = (typeof CARD_FIELDS)[number]
 
 type Props = {
@@ -146,6 +146,7 @@ export function Board({ pipeline, board, labels, rights, nf, prefs, dragId, setD
                         {on('close') && c.expected_close_date ? (
                           <span className="text-muted">{format.dateTime(dateOnly(c.expected_close_date), { day: 'numeric', month: 'short', timeZone: 'UTC' })}</span>
                         ) : null}
+                        {on('score') && c.score !== null ? <span className={`rounded-6 px-[6px] py-px font-bold ${scoreTone(c.score)}`}>{c.score}</span> : null}
                       </span>
                     </div>
                     {c.rotting ? <span className="text-11 font-bold text-danger">{t('board.rotting', { days: c.idle_days })}</span> : null}

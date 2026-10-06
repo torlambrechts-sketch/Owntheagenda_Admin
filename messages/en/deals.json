@@ -50,7 +50,8 @@
       "field": {
         "organization": "Organization",
         "value": "Value",
-        "close": "Expected close date"
+        "close": "Expected close date",
+        "score": "Deal score"
       },
       "rots": "rots {days} d",
       "rotting": "Rotting · idle {days} days"
@@ -84,7 +85,8 @@
       "filterSaved": "Filter saved",
       "productAdded": "Product added to the catalog",
       "duplicated": "Duplicated with fields and products",
-      "lineChanged": "Product lines updated"
+      "lineChanged": "Product lines updated",
+      "toLead": "Converted back to a lead · history kept"
     },
     "filter": {
       "button": "Filter",
@@ -92,6 +94,8 @@
       "same": "Same result in pipeline, list and forecast",
       "where": "Where",
       "and": "And",
+      "or": "Or",
+      "addOr": "＋ OR group",
       "field": "Field",
       "op": "Operator",
       "value": "Value",
@@ -102,6 +106,8 @@
       "noneSaved": "No saved filters yet",
       "fields": {
         "value": "Value",
+        "score": "Score",
+        "idle": "Idle days",
         "source": "Source",
         "label": "Label"
       },
@@ -131,6 +137,7 @@
         "stage": "Stage",
         "owner": "Owner",
         "close": "Close",
+        "score": "Score",
         "source": "Source",
         "labels": "Labels"
       }
@@ -227,6 +234,12 @@
         "cta": "Save filter",
         "nameRequired": "Give the filter a name."
       },
+      "toLead": {
+        "title": "Convert back to lead?",
+        "text": "«{title}» becomes a lead with its person, organization, owner and value. Its notes and activities follow the lead, and the deal is archived.",
+        "cta": "Convert to lead",
+        "needsContact": "Link a person or an organization to the deal first — a lead needs one of them."
+      },
       "product": {
         "title": "New product",
         "text": "A name is enough; code, unit and billing are set in the catalog later. The price is in NOK.",
@@ -253,6 +266,7 @@
       "more": {
         "label": "More …",
         "dup": "Duplicate with products",
+        "lead": "Convert back to lead",
         "reopen": "Reopen",
         "unarchive": "Unarchive",
         "archive": "Archive",
@@ -273,6 +287,10 @@
         "status": "Status",
         "source": "Source",
         "lostReason": "Lost reason"
+      },
+      "score": {
+        "title": "Score {score} — why",
+        "noModel": "No active scoring model for this pipeline."
       },
       "details": {
         "title": "Details · custom fields",

@@ -1,10 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import type { Route } from 'next'
+import { useRouter } from 'next/navigation'
+import { recordHref } from '@/lib/records-href'
 import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import type { DealsBase, Pipeline, SavedView } from '@/lib/data/deals'
-import { createDeal, createProduct, moveDeal, saveActivity, saveView, setStatus, type MissingField } from '../actions'
+import { convertToLead, createDeal, createProduct, moveDeal, saveActivity, saveView, setStatus, type MissingField } from '../actions'
 import type { Cond, Modal } from './shared'
 
 const inputCls = 'h-10 rounded-10 border border-line bg-canvas px-3 text-13'
@@ -38,6 +41,7 @@ export function DealModal({ modal, setModal, base, pipeline, conds, onCreated, o
   const te = useTranslations('common.errors')
   const tc = useTranslations('common')
   const flash = useToast()
+  const router = useRouter()
   const [input, setInput] = useState('')
   const [price, setPrice] = useState('')
   const [reason, setReason] = useState<string | null>(null)
@@ -45,9 +49,10 @@ export function DealModal({ modal, setModal, base, pipeline, conds, onCreated, o
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const first = useRef<HTMLInputElement | HTMLSelectElement | null>(null)
+  const cta = useRef<HTMLButtonElement>(null)
   const close = () => setModal(null)
 
-  useEffect(() => { first.current?.focus() }, [modal.kind])
+  useEffect(() => { (first.current ?? cta.current)?.focus() }, [modal.kind])
 
   const supported = (f: MissingField) => ['text', 'large_text', 'numerical', 'monetary', 'date', 'single_option', 'multiple_options', 'phone', 'autocomplete'].includes(f.type)
 
@@ -63,6 +68,7 @@ export function DealModal({ modal, setModal, base, pipeline, conds, onCreated, o
       case 'next': return { title: t('next.title'), text: t('next.text', { subject: modal.subject }), ph: t('next.ph'), cta: t('next.cta') }
       case 'saveFilter': return { title: t('saveFilter.title'), text: t('saveFilter.text'), ph: t('saveFilter.ph'), cta: t('saveFilter.cta') }
       case 'product': return { title: t('product.title'), text: t('product.text'), ph: t('product.ph'), cta: t('product.cta') }
+      case 'toLead': return { title: t('toLead.title'), text: t('toLead.text', { title: modal.title }), ph: '', cta: t('toLead.cta') }
     }
   })()
 
@@ -119,6 +125,14 @@ export function DealModal({ modal, setModal, base, pipeline, conds, onCreated, o
           close()
           return
         }
+        case 'toLead': {
+          const r = await convertToLead(modal.id)
+          if (!r.ok) { setError(r.detail === 'person_or_organization' ? t('toLead.needsContact') : te(r.code)); return }
+          flash(tf('toLead'))
+          close()
+          router.push(recordHref('lead', r.leadId) as Route)
+          return
+        }
         case 'product': {
           if (!input.trim()) { setError(t('product.nameRequired')); return }
           const n = price.trim() ? Number(price.replace(/\s/g, '').replace(',', '.')) : null
@@ -164,7 +178,7 @@ export function DealModal({ modal, setModal, base, pipeline, conds, onCreated, o
             ))}
           </div>
         ) : null}
-        {modal.kind === 'required' ? (
+        {modal.kind === 'toLead' ? null : modal.kind === 'required' ? (
           modal.missing.map((f, i) =>
             !supported(f) ? (
               <div key={f.key} className="text-12.5 text-warn-ink">{t('required.unsupported', { field: f.label })}</div>
@@ -206,7 +220,7 @@ export function DealModal({ modal, setModal, base, pipeline, conds, onCreated, o
         {error ? <div role="alert" className="text-12.5 font-semibold text-danger">{error}</div> : null}
         <div className="flex justify-end gap-2">
           <button type="button" onClick={close} className="h-[38px] cursor-pointer rounded-11 border border-line bg-transparent px-[15px] text-13 font-semibold">{tc('cancel')}</button>
-          <button type="button" disabled={busy} onClick={() => void ok()} className="h-[38px] cursor-pointer rounded-11 border border-ink bg-primary px-[17px] text-13 font-bold disabled:cursor-default disabled:opacity-60">
+          <button ref={cta} type="button" disabled={busy} onClick={() => void ok()} className="h-[38px] cursor-pointer rounded-11 border border-ink bg-primary px-[17px] text-13 font-bold disabled:cursor-default disabled:opacity-60">
             {copy.cta}
           </button>
         </div>

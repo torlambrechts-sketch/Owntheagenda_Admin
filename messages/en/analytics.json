@@ -1,3 +1,411 @@
 {
-  "analytics": {}
+  "analytics": {
+    "tabs": {
+      "business": "Business KPIs",
+      "activation": "Activation funnel",
+      "retention": "Retention and churn",
+      "usage": "Product usage",
+      "web": "Web analytics",
+      "attribution": "Attribution",
+      "health": "Health score",
+      "defs": "Metric definitions"
+    },
+    "ranges": {
+      "30d": "30 d",
+      "90d": "90 d",
+      "12m": "12 m"
+    },
+    "rangeOwnPeriod": "This view has its own period: the range does not apply",
+    "allApplications": "All applications",
+    "noAccess": {
+      "title": "Analytics needs the right to see reports of others",
+      "body": "Your permission set does not include See reports of others on Global, so the platform's figures are not shown to you."
+    },
+    "excludedCurrency": "{count, plural, one {# subscription in another currency than NOK is} other {# subscriptions in other currencies than NOK are}} left out of the sums.",
+    "channels": {
+      "paid_search": "Paid search",
+      "paid_social": "Paid social",
+      "email": "E-mail",
+      "organic_search": "Organic search",
+      "social": "Social",
+      "partner": "Referral and partners",
+      "direct": "Direct"
+    },
+    "business": {
+      "eyebrow": "The first question",
+      "headline": {
+        "yes": "Yes — trials are turning into organizations that run surveys and act on them: {conv} convert, and {tiltak} of paying customers created a tiltak within 30 days of their first result.",
+        "partly": "Partly — {conv} of trials convert, and {tiltak} of paying customers created a tiltak within 30 days of their first result.",
+        "no": "Not yet — {conv} of trials convert, and {tiltak} of paying customers created a tiltak within 30 days of their first result.",
+        "noData": "Not known yet — no trial cohort in this period has finished and no paying customer has a first result, so the figures that answer it do not exist."
+      },
+      "kpi": {
+        "mrr": "MRR",
+        "arr": "ARR",
+        "arrSub": "Run rate",
+        "netNew": "Net new MRR",
+        "netNewSub": {
+          "30d": "This month",
+          "90d": "Last 3 months",
+          "12m": "Last 12 months"
+        },
+        "paying": "Paying orgs",
+        "payingSub": "one per account",
+        "trials": "Trials active",
+        "trialsEnding": "{count} ≤ 7 d",
+        "trialsSub": "expiring next 7 days",
+        "conversion": "Trial → paid",
+        "conversionSub": "{from} cohort",
+        "conversionSpan": "{from}–{to} cohorts",
+        "conversionNone": "no trial cohort has finished",
+        "logoChurn": "Logo churn",
+        "logoChurnSub": {
+          "30d": "lost in 30 days",
+          "90d": "lost in 90 days",
+          "12m": "lost in 12 months"
+        },
+        "revenueChurn": "Revenue churn",
+        "revenueChurnSub": "net of expansion: {net}",
+        "revenueChurnNoBase": "no MRR at the start",
+        "arpa": "ARPA",
+        "arpaSub": "per paying org",
+        "customers": "Customers",
+        "customersSub": "incl. trials and cancelled"
+      },
+      "nn": {
+        "title": "Net new MRR",
+        "sub": "new · expansion · contraction · churn",
+        "legend": {
+          "new": "New",
+          "expansion": "Expansion",
+          "contraction": "Contraction",
+          "churn": "Churn"
+        },
+        "tip": "{month} · new {new} · expansion {expansion} · contraction {contraction} · churn {churn}",
+        "noData": "{month} · no snapshot",
+        "empty": "No MRR movements yet — they are measured from the nightly snapshot of each subscription.",
+        "baseline": "Movements start with the first snapshot in {month}, which counts every paying subscription as new."
+      },
+      "byApp": {
+        "title": "MRR by application",
+        "sub": "12 months",
+        "empty": "No MRR on record in the last 12 months."
+      },
+      "bySource": {
+        "title": "Trial → paid by signup source",
+        "tip": "{converted} of {trials} trials converted",
+        "empty": "No trial started in this period."
+      },
+      "tiers": {
+        "title": "ARPA and price tiers",
+        "sub": "ARPA <b>{arpa}</b> · employee-count bands",
+        "empty": "No paying organization yet."
+      },
+      "dims": {
+        "title": "Customers by",
+        "industry": "Industry",
+        "fylke": "Fylke",
+        "size": "Size",
+        "note": "Industry from NACE in Brønnøysund · size from the employee list",
+        "noteSize": "Size counts paying organizations by employee-count band",
+        "unknown": "Not set",
+        "employees": "{band} employees",
+        "empty": "No customers yet."
+      }
+    },
+    "activation": {
+      "promise": {
+        "title": "Promise on the site",
+        "sub": "Median time from signup to first survey sent · target {target} min",
+        "subNoTarget": "Median time from signup to first survey sent"
+      },
+      "cards": {
+        "drop": "Biggest drop-off",
+        "dropValue": "Step {from} → {to}",
+        "dropSub": "{pct} reach «{prev}» but not «{next}»",
+        "dropNone": "no organization was lost between steps",
+        "activated": "Activated (step 5)",
+        "activatedSub": "of the {cohort} cohort · {delta} vs {earlier}",
+        "activatedSubNoDelta": "of the {cohort} cohort",
+        "paid": "Signup → paid",
+        "paidSub": "median for converted orgs"
+      },
+      "funnel": {
+        "title": "Activation funnel by signup cohort",
+        "cohort": "{month} cohort",
+        "legend": {
+          "bar": "Bar = organizations reaching the step",
+          "red": "Red = drop-off from the previous step",
+          "right": "Right = median time per step"
+        },
+        "empty": "No organization signed up in the {month} cohort."
+      },
+      "steps": {
+        "account_created": "Account created",
+        "employees_uploaded": "Employee list uploaded",
+        "survey_scheduled": "First survey scheduled",
+        "survey_sent": "First survey sent",
+        "result_unlocked": "Result unlocked",
+        "results_viewed": "Results viewed",
+        "first_tiltak": "First tiltak created",
+        "converted": "Converted to paid"
+      },
+      "dur": {
+        "min": "{n} min",
+        "h": "{n} h",
+        "days": "{n, plural, one {# day} other {# days}}"
+      }
+    },
+    "retention": {
+      "title": "Cohort retention — paying organizations",
+      "modes": {
+        "logos": "Logos",
+        "revenue": "Revenue"
+      },
+      "cohort": "Cohort",
+      "orgs": "Orgs",
+      "tip": "{cohort} cohort · month {k}",
+      "noSnapshot": "No snapshot for this month",
+      "note": "The nightly snapshot starts in {month}; earlier months have no figure.",
+      "noteNone": "The nightly snapshot has not run yet; the months have no figure.",
+      "empty": "No organization started paying in the last 12 months.",
+      "churn": {
+        "title": "Logo churn and revenue churn per month",
+        "logo": "Logo churn",
+        "revenue": "Revenue churn",
+        "tipLogo": "{month} · logo churn: {count, plural, one {# subscription} other {# subscriptions}}",
+        "tipRevenue": "{month} · revenue churn: {pct}",
+        "tipNone": "{month} · no MRR on record the month before",
+        "scale": "Each series is drawn to its own scale; hover a bar for its figure.",
+        "empty": "No churn recorded in the last 12 months."
+      },
+      "reasons": {
+        "title": "Churn reasons (last 6 months)",
+        "empty": "No churn in the last 6 months.",
+        "codes": {
+          "price": "Price for the band",
+          "no_value": "Did not get enough out of it",
+          "missing_feature": "Missing a feature",
+          "switched_competitor": "Moved to another provider",
+          "company_closed": "Organization closed or merged",
+          "payment_failure": "Payment failure, not recovered",
+          "other": "Other",
+          "unknown": "No reason recorded"
+        }
+      }
+    },
+    "usage": {
+      "rangeLong": {
+        "30d": "30 days",
+        "90d": "90 days",
+        "12m": "12 months"
+      },
+      "kpi": {
+        "surveys": "Surveys sent · {range}",
+        "surveysSub": "{main} main · {pulse} pulse",
+        "response": "Avg response rate",
+        "responseSub": "main {main} · pulse {pulse}",
+        "reminder": "Reminder effectiveness",
+        "reminderSub": "answers after first reminder",
+        "tiltak": "Tiltak created",
+        "tiltakSub": "{pct} with owner and deadline",
+        "tiltakSubNone": "as reported by the applications",
+        "closed": "Tiltak closed on time",
+        "closedSub": "of {count} closed"
+      },
+      "surveys": {
+        "title": "Surveys sent per month",
+        "main": "Main",
+        "pulse": "Pulse",
+        "tip": "{month} · {main} main · {pulse} pulse",
+        "empty": "No survey round reported in the last 12 months."
+      },
+      "roles": {
+        "title": "Logins by role ({range})",
+        "daglig_leder": "Daglig leder",
+        "avdelingsleder": "Avdelingsleder",
+        "verneombud": "Verneombud",
+        "empty": "No logins reported yet — Orgpuls sends logins per role once a day."
+      },
+      "features": {
+        "title": "Feature adoption per organization",
+        "empty": "Not reported by the applications yet."
+      },
+      "apps": {
+        "title": "Usage across applications",
+        "sub": "Each application reports its own core events through the API",
+        "none": "No core events reported yet",
+        "combined": "Choose this application in the switcher to see its figures"
+      },
+      "metrics": {
+        "tiltak_created": "tiltak created",
+        "tiltak_open": "tiltak open",
+        "tiltak_closed": "tiltak closed",
+        "tiltak_closed_on_time": "tiltak closed on time",
+        "tiltak_with_owner_deadline": "tiltak with owner and deadline",
+        "employees": "employees",
+        "groups": "groups"
+      }
+    },
+    "web": {
+      "banner": "In-house and cookieless · no cookie and no IP address is stored, only a hash of IP + user agent with a daily salt that is destroyed every night · visitors over a period are a sum of daily uniques · never loaded in the survey flow",
+      "kpi": {
+        "visitors": "Visitors",
+        "sessions": "Sessions",
+        "pages": "Pages / visit",
+        "bounce": "Bounce",
+        "signups": "Signups"
+      },
+      "empty": {
+        "title": "No visits recorded yet",
+        "body": "The tracker on {sites} has not sent a page view in this period."
+      },
+      "chart": {
+        "title": "Visitors · {sites}",
+        "visitors": "Visitors"
+      },
+      "funnel": {
+        "title": "Website funnel",
+        "visit": "Visit",
+        "kom_i_gang": "«Kom i gang» click",
+        "orgnr_entered": "Org.nr entered",
+        "account_created": "Account created"
+      },
+      "personas": {
+        "title": "Persona entry points — «Hvem er du?»",
+        "sub": "clicks",
+        "empty": "No persona click recorded in this period.",
+        "names": {
+          "daglig_leder": "Daglig leder",
+          "hr": "HR",
+          "avdelingsleder": "Avdelingsleder",
+          "verneombud": "Verneombud"
+        }
+      },
+      "sources": {
+        "title": "Sources",
+        "cols": {
+          "source": "Source",
+          "visits": "Visits",
+          "bounce": "Bounce",
+          "signups": "Signups",
+          "conv": "Conv."
+        }
+      },
+      "pages": {
+        "title": "Top landing pages and content"
+      },
+      "campaigns": {
+        "title": "Campaigns — spend to paid customers",
+        "sub": "Spend entered per channel",
+        "cols": {
+          "campaign": "Campaign",
+          "spend": "Spend",
+          "visits": "Visits",
+          "signups": "Signups",
+          "paid": "Paid",
+          "cpp": "Cost / paid"
+        },
+        "noChannel": "No channel",
+        "empty": "No spend entered for this period.",
+        "prompt": "Enter what a campaign cost below to see cost per paid customer and CAC.",
+        "promptNoRight": "Someone with the right to see campaign reports can enter it.",
+        "amountLabel": "Spend for {campaign}, {month}",
+        "saved": "Spend saved",
+        "removed": "Spend removed",
+        "add": {
+          "campaign": "Campaign",
+          "channel": "Channel",
+          "month": "Month",
+          "amount": "Spend (kr)",
+          "submit": "＋ Spend"
+        }
+      },
+      "search": {
+        "title": "Search Console",
+        "sub": "Imported nightly",
+        "cols": {
+          "query": "Query",
+          "impr": "Impr.",
+          "clicks": "Clicks",
+          "pos": "Pos."
+        },
+        "empty": "No query imported for this period.",
+        "notConnected": {
+          "tag": "Not connected",
+          "title": "Search Console is not connected",
+          "body": "No queries are imported, so none are shown. Once it is connected, impressions and clicks per query arrive every night."
+        }
+      }
+    },
+    "attribution": {
+      "touch": {
+        "first": "First touch",
+        "last": "Last touch"
+      },
+      "note": "Stored on the organization at signup · UTM source, medium, campaign and referrer",
+      "cols": {
+        "channel": "Channel",
+        "signups": "Signups",
+        "activated": "Activated",
+        "paid": "Paid",
+        "mrr": "MRR won",
+        "spend": "Spend",
+        "cac": "CAC"
+      },
+      "empty": "No signups in this period.",
+      "noLastTouch": {
+        "title": "No last-touch attribution yet",
+        "body": "Orgpuls sends the first touch at signup. Last touch appears here once it sends both."
+      },
+      "noSpend": "No marketing spend is entered for this period, so there is no CAC.",
+      "enterSpend": "Enter spend under Web analytics →"
+    },
+    "health": {
+      "dist": {
+        "title": "Health score distribution",
+        "tip": "{count} scored {from}–{to}",
+        "empty": "No health scores yet — they are computed every night."
+      },
+      "built": {
+        "title": "How the score is built",
+        "model": "Model v{version}",
+        "edit": "Edit",
+        "save": "Save weights",
+        "cancel": "Cancel",
+        "saved": "Weights saved · scores recomputed",
+        "hint": "Weights are relative: the score scales them to 100 % and leaves out a signal the application has not sent."
+      },
+      "signals": {
+        "admin_login": "Last admin login (recency)",
+        "survey_cadence": "Survey cadence vs årshjul",
+        "response_trend": "Response rate trend",
+        "tiltak_activity": "Tiltak activity",
+        "payment": "Payment status"
+      },
+      "risk": {
+        "title": "At risk before renewal",
+        "sub": "score < 40 · paying · renews within {days} d",
+        "renews": "Renews in {count} d",
+        "factor": "{signal} −{points}",
+        "empty": "No paying organization below 40 renews within {days} days."
+      }
+    },
+    "defs": {
+      "title": "Metric definitions",
+      "sub": "Defined once as SQL views, versioned in git · reports and CRM read the same views",
+      "version": "{migration} · v{version}",
+      "tip": "{view} ({version}): {text}",
+      "empty": "No metric definitions found.",
+      "rows": {
+        "mrr": "Sum of active subscriptions per month from the billing mirror (billing.changed), excluding complimentary and trial. Annual plans divided by 12.",
+        "net_new_mrr": "New and reactivated + expansion − contraction − churn, by comparing each subscription’s MRR with its last snapshot before the month.",
+        "trial_conversion": "Share of a trial cohort confirmed as paying within 45 days of the trial’s start.",
+        "activated": "Organizations with at least one group reaching the organization’s own answer threshold (result unlocked).",
+        "logo_churn": "Paying subscriptions that drop to no MRR, counted in the month it happens.",
+        "revenue_churn": "MRR lost to churn and contraction per month.",
+        "health": "Weighted score 0–100 from five signals; the latest score per application, recomputed nightly and when the model changes."
+      }
+    }
+  }
 }

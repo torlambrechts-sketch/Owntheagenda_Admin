@@ -1,0 +1,38 @@
+name: Deploy database
+
+# Applies supabase/migrations to the hosted project whenever main changes them. The connection string lives only
+# in the repository secret SUPABASE_DB_URL (Supabase › Connect › Session pooler URI, with the database password).
+# The hosted project got 0001–0005 through the Supabase MCP, which records its own version numbers; the repair step
+# marks those five as applied under the file versions so db push starts at 0006. Both steps are idempotent.
+
+on:
+  push:
+    branches: [main]
+    paths: ['supabase/migrations/**']
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-db
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Secret present
+        run: test -n "$SUPABASE_DB_URL" || { echo "::error::Add the repository secret SUPABASE_DB_URL"; exit 1; }
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Mark the migrations applied through the MCP
+        run: |
+          # the MCP recorded 0001–0005 under timestamps; record them under the file versions instead
+          supabase migration repair --db-url "$SUPABASE_DB_URL" --status reverted 20261005095329 20261005100205 20261006105121 20261006105201 20261006105239
+          supabase migration repair --db-url "$SUPABASE_DB_URL" --status applied 0001 0002 0003 0004 0005
+      - name: Pending migrations
+        run: supabase migration list --db-url "$SUPABASE_DB_URL"
+      - name: Apply
+        run: supabase db push --db-url "$SUPABASE_DB_URL" --include-all

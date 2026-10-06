@@ -27,13 +27,16 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
 
   // the daily series over the range, a day without sessions drawn at zero
   const days = RANGE_DAYS[range]
-  const daily = new Map(d.daily.map((x) => [x.day.slice(0, 10), x.visitors]))
-  const series = Array.from({ length: days }, (_, i) => {
-    const day = new Date(now.getTime() - (days - 1 - i) * 86_400_000).toISOString().slice(0, 10)
-    return daily.get(day) ?? 0
-  })
+  const daily = new Map(d.daily.map((x) => [x.day.slice(0, 10), x]))
+  const dayKeys = Array.from({ length: days }, (_, i) => new Date(now.getTime() - (days - 1 - i) * 86_400_000).toISOString().slice(0, 10))
+  const series = dayKeys.map((k) => daily.get(k)?.visitors ?? 0)
   const vmax = Math.max(1, ...series)
-  const pts = series.map((v, i) => `${((i * 600) / (days - 1)).toFixed(1)},${(156 - (v / vmax) * 146).toFixed(1)}`).join(' ')
+  const xy = (i: number, v: number) => `${((i * 600) / (days - 1)).toFixed(1)},${(156 - Math.min(1, v / vmax) * 146).toFixed(1)}`
+  const pts = series.map((v, i) => xy(i, v)).join(' ')
+  // signups × 20, drawn only on the days the read returns (a day with sessions)
+  const hasSignups = d.daily.some((x) => typeof x.signups === 'number')
+  const sign = dayKeys.flatMap((k, i) => { const x = daily.get(k); return typeof x?.signups === 'number' ? [xy(i, x.signups * 20)] : [] }).join(' ')
+  const posTone = (p: number) => (p <= 3 ? 'text-link' : p <= 6 ? 'text-warn-ink' : 'text-danger')
 
   const ev = (name: string) => d.events.filter((e) => e.name === name).reduce((a, e) => a + e.count, 0)
   const funnel = [
@@ -64,15 +67,17 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
 
           <div className={cardChart}>
             <div className="mb-[10px] flex items-baseline justify-between gap-3">
-              <span className={title}>{t('web.chart.title', { sites })}</span>
+              <span className={title}>{hasSignups ? t('web.chart.titleSignups', { sites }) : t('web.chart.title', { sites })}</span>
               <span className={sub}>{t(`usage.rangeLong.${range}`)}</span>
             </div>
             <svg viewBox="0 0 600 160" preserveAspectRatio="none" className="block h-[160px] w-full" role="img" aria-label={t('web.chart.visitors')}>
               <polygon points={`0,156 ${pts} 600,156`} fill="#E4EEEC" />
               <polyline points={pts} fill="none" stroke="#9DB8B3" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+              {hasSignups ? <polyline points={sign} fill="none" stroke="#2F5D2A" strokeWidth="2" strokeDasharray="5 4" vectorEffect="non-scaling-stroke" /> : null}
             </svg>
             <div className="mt-2 flex gap-[14px] text-11.5 text-muted">
               <span className="flex items-center gap-[6px]"><span className="h-[3px] w-[14px] bg-teal-mid" />{t('web.chart.visitors')}</span>
+              {hasSignups ? <span className="flex items-center gap-[6px]"><span className="h-[3px] w-[14px] bg-link" />{t('web.chart.signups')}</span> : null}
             </div>
           </div>
 
@@ -116,7 +121,10 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
               </div>
               {d.channels.map((s) => (
                 <div key={s.channel} className={`grid gap-[10px] border-b border-line px-[18px] py-[9px] min-w-[420px] text-13 tabular-nums ${SRC_COLS}`}>
-                  <b>{channel(s.channel)}</b><span>{formatNumber(s.sessions, nf)}</span><span className="text-muted">—</span><span>—</span><b>—</b>
+                  <b>{channel(s.channel)}</b><span>{formatNumber(s.sessions, nf)}</span>
+                  <span className="text-muted">{s.bounce != null ? percent(s.bounce, nf) : '—'}</span>
+                  <span>{s.signups != null ? formatNumber(s.signups, nf) : '—'}</span>
+                  <b>{s.signups != null ? pct(share(s.signups, s.sessions)) : '—'}</b>
                 </div>
               ))}
             </div>
@@ -142,7 +150,7 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
           <div className="flex flex-wrap justify-between gap-2 border-b border-line px-[18px] py-[14px]">
             <span className={title}>{t('web.campaigns.title')}</span><span className={sub}>{t('web.campaigns.sub')}</span>
           </div>
-          <Campaigns rows={spend} canEdit={canSpend} nf={nf} thisMonth={thisMonth} monthLabel={monthLabel} />
+          <Campaigns rows={spend} figures={d.campaigns ?? []} canEdit={canSpend} nf={nf} thisMonth={thisMonth} monthLabel={monthLabel} />
         </div>
         <div className={cardTable}>
           <div className="flex flex-wrap justify-between gap-2 border-b border-line px-[18px] py-[14px]">
@@ -156,7 +164,8 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
               </div>
               {d.search.map((s) => (
                 <div key={s.query} className={`grid gap-[10px] border-b border-line px-[18px] py-[9px] text-13 tabular-nums ${SC_COLS}`}>
-                  <span>{s.query}</span><span>{formatNumber(s.impressions, nf)}</span><span>{formatNumber(s.clicks, nf)}</span><b>—</b>
+                  <span>{s.query}</span><span>{formatNumber(s.impressions, nf)}</span><span>{formatNumber(s.clicks, nf)}</span>
+                  {s.position != null ? <b className={posTone(s.position)}>{formatNumber(s.position, nf, 1)}</b> : <b>—</b>}
                 </div>
               ))}
               {d.search.length === 0 ? <div className="px-[18px] py-4 text-12.5 text-muted">{t('web.search.empty')}</div> : null}

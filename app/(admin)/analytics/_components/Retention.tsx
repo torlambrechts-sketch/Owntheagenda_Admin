@@ -1,7 +1,8 @@
 import { getFormatter, getTranslations } from 'next-intl/server'
-import type { Business, Retention as RetentionData } from '@/lib/data/analytics'
-import { addMonths, firstSnapshotMonth, monthsEnding, revenueChurnByMonth } from '@/lib/data/analytics-calc'
+import type { Business, Churns, Retention as RetentionData } from '@/lib/data/analytics'
+import { addMonths, monthsEnding, revenueChurnByMonth, share, snapshotMonth } from '@/lib/data/analytics-calc'
 import { formatNumber, percent, type NumberFormat } from '@/lib/format'
+import { ChurnList } from './ChurnList'
 import { GoButton } from './nav'
 import { Empty, Swatch, cardChart, softPill, title } from './kit'
 
@@ -15,23 +16,29 @@ const GRID = '[grid-template-columns:90px_50px_repeat(12,minmax(0,1fr))]'
  * nightly tenant snapshot, churn per month and the coded churn reasons. A month the snapshot does not reach
  * is blank, never a zero.
  */
-export async function Retention({ d, biz, nf, now }: { d: RetentionData; biz: Business | null; nf: NumberFormat; now: Date }) {
+export async function Retention({ d, biz, churns, canEdit, products, nf, now }: {
+  d: RetentionData; biz: Business | null; churns: Churns | null; canEdit: boolean; products: Record<string, string>; nf: NumberFormat; now: Date
+}) {
   const t = await getTranslations('analytics.retention')
   const format = await getFormatter()
   const date = (m: string) => new Date(`${m}-15T12:00:00Z`)
   const mon = (m: string) => format.dateTime(date(m), { month: 'short' })
   const monYear = (m: string) => format.dateTime(date(m), { month: 'short', year: '2-digit' })
-  const first = biz ? firstSnapshotMonth(biz.movements) : null
+  const first = snapshotMonth(d.first_snapshot ?? biz?.first_snapshot)
   const blanks = d.cohorts.some((c) => first === null || c.cohort < first)
 
-  // churn per month: logos from the churn ledger, revenue from the movements over the MRR the month before
+  // churn per month: logos ÷ paying subscriptions at the month's start, revenue from the movements over the MRR the month before
   const months = monthsEnding(now, 12)
-  const logos = new Map(d.churn_by_month.map((x) => [x.month, x.logos]))
+  const byMonth = new Map(d.churn_by_month.map((x) => [x.month, x]))
+  const logos = new Map(months.map((m) => {
+    const x = byMonth.get(m)
+    return [m, x ? share(x.logos, x.paying_start) : first !== null && m >= first ? 0 : null]
+  }))
   const mrrByMonth = new Map<string, number>()
   for (const r of biz?.mrr_by_product ?? []) mrrByMonth.set(r.month, (mrrByMonth.get(r.month) ?? 0) + (r.mrr ?? 0))
-  const rev = biz ? revenueChurnByMonth(biz.movements, mrrByMonth, months) : new Map<string, number | null>()
-  const lmax = Math.max(0, ...months.map((m) => logos.get(m) ?? 0))
-  const rmax = Math.max(0, ...months.map((m) => rev.get(m) ?? 0))
+  const rev = biz ? revenueChurnByMonth(biz.movements, mrrByMonth, months, first) : new Map<string, number | null>()
+  // both series are percentages, drawn on one scale
+  const cmax = Math.max(0, ...months.map((m) => Math.max(logos.get(m) ?? 0, rev.get(m) ?? 0)))
   const rmaxReasons = Math.max(1, ...d.reasons.map((r) => r.count))
 
   return (
@@ -82,16 +89,16 @@ export async function Retention({ d, biz, nf, now }: { d: RetentionData; biz: Bu
       <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))]">
         <div className={cardChart}>
           <div className={`${title} mb-3`}>{t('churn.title')}</div>
-          {lmax > 0 || rmax > 0 ? (
+          {cmax > 0 ? (
             <>
               <div className="flex h-[130px] items-end gap-2">
                 {months.map((m) => {
-                  const l = logos.get(m) ?? 0
+                  const l = logos.get(m) ?? null
                   const r = rev.get(m) ?? null
                   return (
                     <div key={m} className="flex h-full flex-1 items-end gap-[2px]">
-                      <div title={t('churn.tipLogo', { month: mon(m), count: l })} className="flex-1 rounded-t-4 bg-coral-light" style={{ height: `${lmax ? (l / lmax) * 100 : 0}%` }} />
-                      <div title={r === null ? t('churn.tipNone', { month: mon(m) }) : t('churn.tipRevenue', { month: mon(m), pct: percent(r, nf) })} className="flex-1 rounded-t-4 bg-alert" style={{ height: `${rmax && r !== null ? (r / rmax) * 100 : 0}%` }} />
+                      <div title={l === null ? t('churn.tipNone', { month: mon(m) }) : t('churn.tipLogo', { month: mon(m), pct: percent(l, nf), count: byMonth.get(m)?.logos ?? 0 })} className="flex-1 rounded-t-4 bg-coral-light" style={{ height: `${l !== null ? (l / cmax) * 100 : 0}%` }} />
+                      <div title={r === null ? t('churn.tipNone', { month: mon(m) }) : t('churn.tipRevenue', { month: mon(m), pct: percent(r, nf) })} className="flex-1 rounded-t-4 bg-alert" style={{ height: `${r !== null ? (r / cmax) * 100 : 0}%` }} />
                     </div>
                   )
                 })}
@@ -101,7 +108,6 @@ export async function Retention({ d, biz, nf, now }: { d: RetentionData; biz: Bu
                 <span className="flex items-center gap-[6px]"><Swatch color="#EC9B77" />{t('churn.logo')}</span>
                 <span className="flex items-center gap-[6px]"><Swatch color="#D4633A" />{t('churn.revenue')}</span>
               </div>
-              <div className="mt-[6px] text-11 text-faint">{t('churn.scale')}</div>
             </>
           ) : <Empty>{t('churn.empty')}</Empty>}
         </div>
@@ -117,6 +123,8 @@ export async function Retention({ d, biz, nf, now }: { d: RetentionData; biz: Bu
           )) : <Empty>{t('reasons.empty')}</Empty>}
         </div>
       </div>
+
+      {churns ? <ChurnList churns={churns} canEdit={canEdit} products={products} nf={nf} /> : null}
     </div>
   )
 }

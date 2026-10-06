@@ -42,3 +42,23 @@ export async function saveHealthModel(input: z.input<typeof Weights>): Promise<R
   revalidatePath('/analytics')
   return { ok: true }
 }
+
+const ChurnReason = z.object({
+  product: z.string().regex(/^[a-z][a-z0-9_]{1,40}$/),
+  tenant: z.string().min(1).max(200),
+  // the churn's timestamp exactly as analytics_churns returned it (part of the churn's key)
+  churnedAt: z.string().min(10).max(40),
+  code: z.string().regex(/^[a-z_]{2,40}$/),
+})
+
+/** The coded reason of a churn (analytics_set_churn_reason; needs Global › Edit others). */
+export async function setChurnReason(input: z.input<typeof ChurnReason>): Promise<Result> {
+  const p = ChurnReason.safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('analytics_set_churn_reason', {
+    p_product: p.data.product, p_tenant: p.data.tenant, p_churned_at: p.data.churnedAt, p_code: p.data.code,
+  }, z.object({ ok: z.literal(true) }))
+  if (!r.ok) return { ok: false, code: r.code, detail: r.detail }
+  revalidatePath('/analytics')
+  return { ok: true }
+}

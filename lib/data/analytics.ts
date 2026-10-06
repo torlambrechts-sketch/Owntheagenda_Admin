@@ -29,10 +29,15 @@ export const Business = z.object({
   bands: z.array(z.object({ band: z.string(), accounts: n, mrr: nn })),
   by_industry: z.array(KeyCount),
   by_fylke: z.array(KeyCount),
+  // customers by the price list's employee bands; '' = employees unknown or outside every band (0034)
+  by_size: z.array(KeyCount).optional(),
   activated_after_result: z.object({ paying: n, tiltak_30d: n }).nullable(),
-  churn: z.object({ logos: n, mrr_lost: n }).nullable(),
-  // requested (requests/analytics.md R-1): rows in another currency left out of the sums
+  // paying_start: paying subscriptions on the day mrr_prev is read (0034)
+  churn: z.object({ logos: n, mrr_lost: n, paying_start: nn.optional() }).nullable(),
+  // paying subscriptions in another currency than NOK, left out of the sums (0034)
   excluded_currency: n.optional(),
+  // the earliest nightly tenant snapshot in scope; movements are measured from it (0033/0034)
+  first_snapshot: z.string().nullable().optional(),
 })
 export type Business = z.infer<typeof Business>
 
@@ -40,6 +45,9 @@ export const Activation = z.object({
   cohort: month,
   cohorts: z.array(month).nullable(),
   target_min: nn,
+  // medians from account created (0034)
+  first_send_median_min: nn.optional(),
+  paid_median_min: nn.optional(),
   steps: z.array(z.object({ key: z.string(), count: n, median_min: nn })),
 })
 export type Activation = z.infer<typeof Activation>
@@ -47,10 +55,21 @@ export type Activation = z.infer<typeof Activation>
 export const Retention = z.object({
   mode: z.enum(['logos', 'revenue']),
   cohorts: z.array(z.object({ cohort: month, size: n, cells: z.array(nn).nullable() })),
-  churn_by_month: z.array(z.object({ month, logos: n })),
+  churn_by_month: z.array(z.object({ month, logos: n, mrr_lost: nn.optional(), paying_start: nn.optional() })),
   reasons: z.array(z.object({ code: z.string(), count: n })),
+  first_snapshot: z.string().nullable().optional(),
 })
 export type Retention = z.infer<typeof Retention>
+
+export const Churns = z.object({
+  churns: z.array(z.object({
+    product: z.string(), tenant_id: z.string(), organization_id: z.string().uuid().nullable(), organization: z.string().nullable(),
+    // passed back to analytics_set_churn_reason exactly as read
+    churned_at: z.string(), mrr_lost: n, currency: z.string().nullable(), payment_failure: z.boolean(), reason: z.string().nullable(),
+  })),
+  reasons: z.array(z.string()),
+})
+export type Churns = z.infer<typeof Churns>
 
 export const Usage = z.object({
   rounds: z.object({ main: n, pulse: n }),
@@ -59,6 +78,8 @@ export const Usage = z.object({
   rounds_by_month: z.array(z.object({ month, main: n, pulse: n })),
   logins: z.record(z.string(), n),
   counts: z.record(z.string(), n),
+  // change of each count over the range; null while a tenant has no count from the range's start (0034)
+  counts_delta: z.record(z.string(), nn).optional(),
   // requested (R-5): the counts per application, for «Usage across applications» under All applications
   counts_by_product: z.record(z.string(), z.record(z.string(), n)).optional(),
 })
@@ -72,16 +93,18 @@ export const Web = z.object({
   pageviews: n,
   bounces: n,
   signups: n,
-  daily: z.array(z.object({ day: z.string(), visitors: n, sessions: n })),
-  channels: z.array(z.object({ channel: z.string(), sessions: n })),
+  daily: z.array(z.object({ day: z.string(), visitors: n, sessions: n, signups: n.optional() })),
+  channels: z.array(z.object({ channel: z.string(), sessions: n, bounce: nn.optional(), signups: n.optional() })),
+  // per utm_campaign; sessions null while nothing was tracked in the period (0034)
+  campaigns: z.array(z.object({ campaign: z.string(), sessions: nn, signups: n, paid: n })).optional(),
   landing: z.array(z.object({ path: z.string().nullable(), sessions: n, bounce: nn })),
   events: z.array(z.object({ name: z.string(), value: z.string().nullable(), count: n })),
   companies: n,
-  search: z.array(z.object({ query: z.string(), impressions: n, clicks: n })),
+  search: z.array(z.object({ query: z.string(), impressions: n, clicks: n, position: nn.optional() })),
 })
 export type Web = z.infer<typeof Web>
 
-export const Spend = z.object({ campaign: z.string(), month, channel: z.string().nullable(), amount: n })
+export const Spend = z.object({ campaign: z.string(), month, channel: z.string().nullable(), amount: n, currency: z.string().optional() })
 export type Spend = z.infer<typeof Spend>
 
 export const Attribution = z.object({
@@ -89,6 +112,7 @@ export const Attribution = z.object({
   has_last_touch: z.boolean(),
   channels: z.array(z.object({ channel: z.string(), signups: n, activated: n, paid: n, mrr: n, spend: nn })),
   spend: z.array(Spend),
+  excluded_currency: n.optional(),
 })
 export type Attribution = z.infer<typeof Attribution>
 
@@ -123,5 +147,7 @@ export const loadUsage = (product: string, range: RangeKey) =>
 export const loadWeb = (range: RangeKey) => rpc('analytics_web', { p_site: null, p_days: RANGE_DAYS[range] }, Web)
 export const loadAttribution = (touch: 'first' | 'last', range: RangeKey) =>
   rpc('analytics_attribution', { p_touch: touch, p_days: RANGE_DAYS[range] }, Attribution)
+export const loadChurns = (product: string, range: RangeKey) =>
+  rpc('analytics_churns', { p_product: scope(product), p_days: RANGE_DAYS[range] }, Churns)
 export const loadHealth = (product: string) => rpc('analytics_health', { p_product: scope(product) }, Health)
 export const loadMetricDefs = () => rpc('analytics_metric_definitions', {}, z.array(MetricDef))

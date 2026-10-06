@@ -43,8 +43,7 @@ export async function Activation({ d, earlier, nf }: { d: ActivationData; earlie
         ? t('cards.activatedSub', { cohort: mon(d.cohort), delta: signedNum(Math.round(activated - before), nf), earlier: mon(earlier.cohort) })
         : t('cards.activatedSubNoDelta', { cohort: mon(d.cohort) }),
     },
-    // the median from signup to paid is not returned (requests/analytics.md R-3)
-    { n: t('cards.paid'), v: '—', s: t('cards.paidSub') },
+    { n: t('cards.paid'), v: dur(d.paid_median_min ?? null), s: t('cards.paidSub') },
   ]
 
   return (
@@ -52,8 +51,7 @@ export async function Activation({ d, earlier, nf }: { d: ActivationData; earlie
       <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))]">
         <div className="rounded-20 bg-ink px-[22px] py-5 text-canvas">
           <div className="text-11 font-bold uppercase tracking-eyebrow text-amber-bg">{t('promise.title')}</div>
-          {/* the median from account created to first survey sent is not returned (requests/analytics.md R-3) */}
-          <div className="mt-[10px] font-serif text-40 font-semibold leading-none">—</div>
+          <div className="mt-[10px] font-serif text-40 font-semibold leading-none">{dur(d.first_send_median_min ?? null)}</div>
           <div className="mt-[6px] text-13">{d.target_min !== null ? t('promise.sub', { target: d.target_min }) : t('promise.subNoTarget')}</div>
         </div>
         {cards.map((k) => (

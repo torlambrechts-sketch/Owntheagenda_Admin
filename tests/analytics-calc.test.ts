@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  addMonths, biggestDrop, duration, firstSnapshotMonth, monthsEnding, movementsInRange, pctChange, revenueChurnByMonth, share,
+  addMonths, biggestDrop, duration, snapshotMonth, monthsEnding, movementsInRange, pctChange, revenueChurnByMonth, share,
   trialCohortSpan, verdict, weightShares, SIGNALS,
 } from '@/lib/data/analytics-calc'
 
@@ -19,10 +19,13 @@ describe('analytics arithmetic', () => {
 
   it('sums the movements of the months the range covers', () => {
     const rows = [mv('2026-10', { new: 100, churn: -20 }), mv('2026-09', { expansion: 50 }), mv('2026-01', { new: 999 })]
-    expect(movementsInRange(rows, now, '30d')).toMatchObject({ net: 80, months: 1 })
-    expect(movementsInRange(rows, now, '90d')).toMatchObject({ net: 130, expansion: 50, months: 2 })
-    expect(movementsInRange(rows, now, '12m').net).toBe(1129)
-    expect(firstSnapshotMonth(rows)).toBe('2026-01')
+    expect(movementsInRange(rows, now, '30d', '2026-01')).toMatchObject({ net: 80, months: 1 })
+    expect(movementsInRange(rows, now, '90d', '2026-01')).toMatchObject({ net: 130, expansion: 50, months: 3 })
+    expect(movementsInRange(rows, now, '12m', '2026-01').net).toBe(1129)
+    // months before the first snapshot are not known, and nothing is known before it has run
+    expect(movementsInRange(rows, now, '90d', '2026-10')).toMatchObject({ net: 80, months: 1 })
+    expect(movementsInRange(rows, now, '30d', null).months).toBe(0)
+    expect(snapshotMonth('2026-10-06')).toBe('2026-10')
   })
 
   it('labels the trial cohorts analytics_business counts', () => {
@@ -64,7 +67,7 @@ describe('analytics arithmetic', () => {
   it('knows nothing about revenue churn before the first snapshot', () => {
     const rows = [mv('2026-09', { churn: -10 })]
     const mrr = new Map([['2026-08', 100], ['2026-09', 90], ['2026-07', 100]])
-    const r = revenueChurnByMonth(rows, mrr, ['2026-08', '2026-09', '2026-10'])
+    const r = revenueChurnByMonth(rows, mrr, ['2026-08', '2026-09', '2026-10'], '2026-09')
     expect(r.get('2026-08')).toBeNull()
     expect(r.get('2026-09')).toBe(10)
     expect(r.get('2026-10')).toBe(0)

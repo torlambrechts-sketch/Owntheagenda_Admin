@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useRef, useTransition } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { formatNumber } from '@/lib/format'
 
-export const TABS = ['list', 'builder', 'templates', 'monitor', 'assign', 'sequences'] as const
-export type Tab = (typeof TABS)[number]
+export { TABS, type Tab } from '@/lib/data/automation-shared'
 
 /** Change the address (tab, workflow, sequence): the page reads it on the server. */
 export function useGo() {
@@ -52,7 +52,7 @@ export function useWords() {
     const op = String(f.op ?? 'eq')
     const v = f.v
     if (field.startsWith('email.')) return t(`mailTest.${field.slice(6)}`, { days: Number(v ?? 7) })
-    const val = (x: unknown) => (typeof x === 'string' && labels.has(x) ? labels.get(x)! : Array.isArray(x) ? x.map((y) => (typeof y === 'string' && labels.get(y)) || String(y)).join(', ') : String(x ?? ''))
+    const val = (x: unknown) => (typeof x === 'number' ? formatNumber(x) : typeof x === 'string' && labels.has(x) ? labels.get(x)! : Array.isArray(x) ? x.map((y) => (typeof y === 'string' && labels.get(y)) || String(y)).join(', ') : String(x ?? ''))
     const name = (f.rel ? `${pick('fields', String(f.rel).replace(/_id$/, ''))} · ` : '') + pick('fields', field)
     if (op === 'empty' || op === 'notempty') return `${name} ${t(`ops.${op}`)}`
     if (OPS[op]) return `${name} ${OPS[op]} ${val(v)}`

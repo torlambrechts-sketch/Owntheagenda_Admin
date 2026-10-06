@@ -150,7 +150,7 @@ export function AssignTab({ rules, labels, history, people, teams, canEdit }: {
           </label>
           <div aria-live="polite" className="rounded-14 bg-ok-bg px-[14px] py-3 text-12.5 text-ok-ink">
             {testFailed ? t('test.failed') : result ? (
-              <><b>{result.rule_id ? t('result.matches', { rule: result.rule ?? '' }) : t('result.noRule')}</b><br />{who(result)}</>
+              <><b>{result.rule_id ? t('result.matches', { rule: result.rule ?? '' }) : t('result.noRule')}</b><br /><br />{who(result)}</>
             ) : <span>&nbsp;</span>}
           </div>
         </div>

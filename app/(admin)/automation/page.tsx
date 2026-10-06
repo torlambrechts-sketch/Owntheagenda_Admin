@@ -4,7 +4,7 @@ import {
   loadBase, loadEmailTemplates, loadHistory, loadMonitor, loadOrgLabels, loadPickers, loadRuns, loadSequence, loadTemplates, loadViews,
   loadWorkflow, loadWorkflows,
 } from '@/lib/data/automation'
-import { TABS } from './_components/shared'
+import { TABS } from '@/lib/data/automation-shared'
 import { AutomationFrame } from './_components/AutomationFrame'
 import { WorkflowsTab } from './_components/WorkflowsTab'
 import { BuilderTab } from './_components/BuilderTab'

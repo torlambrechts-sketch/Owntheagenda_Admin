@@ -207,7 +207,8 @@ export function BuilderTab({ wf, base, pickers, me, rights }: { wf: WorkflowDeta
           {graph.steps.map((s, i) => (
             <Fragment key={s.key}>
               <div className="flex w-full flex-col items-center">{s.kind === 'if_else' ? branch(s, i, []) : node(s)}</div>
-              {plus({ list: [], index: i + 1 })}
+              {/* the design draws no connector after the last step; the palette adds after the selected one */}
+              {i < graph.steps.length - 1 ? plus({ list: [], index: i + 1 }) : null}
             </Fragment>
           ))}
         </div>

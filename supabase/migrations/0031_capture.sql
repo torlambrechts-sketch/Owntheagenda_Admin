@@ -31,6 +31,10 @@
 -- sessions (Q23). worker_web_ingest drops survey hosts (survey_flow_block) and emits visitor.identified once per
 -- CRM organization per day.
 --
+-- Shared paths. app.ticket_intake (0012) now goes through app.ticket_from_capture, which forms use too, and the
+-- products' contact.submitted also gets its lead (D-20). app.product_event_out (0021) no longer copies a contact
+-- request's subject or message into the platform event's data.
+--
 -- Privacy (§10). No IP anywhere; tokens only as SHA-256; no answer, chat text or consent wording in app.log
 -- detail or event payloads — ids and counts only. The column names avoid «answers» (structure suite, D-34):
 -- form_submissions.field_values and chat_conversations.collected hold a capture's values.

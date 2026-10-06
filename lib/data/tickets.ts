@@ -1,7 +1,6 @@
 import 'server-only'
 import { z } from 'zod'
 import { rpc, rpcOrThrow } from '@/lib/rpc'
-import type { Shell } from '@/lib/shell'
 import { IMPACTS, LINK_KINDS, PRIORITIES, SORTS, TICKET_STATUSES, TICKET_TYPES, URGENCIES, VIEWS } from './tickets-shared'
 
 export { IMPACTS, LINK_KINDS, PRIORITIES, SORTS, TICKET_STATUSES, TICKET_TYPES, URGENCIES, VIEWS }
@@ -103,6 +102,8 @@ export const Help = z.object({
     version: num, problem_id: id.nullable(), updated_at: z.string(), published_at: z.string().nullable(), views: num, deflected: num,
   })),
   gaps: z.array(z.object({ topic: z.string(), count: num })),
+  /** share of the last 30 days' tickets with an article link, in percent; null without tickets */
+  article_rate: num.nullable(),
 })
 export type Help = z.infer<typeof Help>
 
@@ -156,5 +157,3 @@ export async function loadSuperAdmins(): Promise<{ id: string; name: string }[]>
   return s.data.filter((x) => x.active && admin.has(x.permission_set_id)).map((x) => ({ id: x.id, name: x.name }))
 }
 
-/** May the staff member do this in the tickets scope? (Mirrors app.can; the database decides.) */
-export const canTickets = (shell: Shell, action: string) => shell.me.permission_kind === 'admin' || shell.me.rights.includes(`tickets:${action}`)

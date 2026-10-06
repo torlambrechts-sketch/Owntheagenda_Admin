@@ -140,6 +140,8 @@ export async function extendTrial(input: { ticketId: string }): Promise<Result<{
   const result = z.object({ ok: z.boolean().optional(), error: z.string().optional() }).catch({}).parse(reply.result ?? {})
   const ok = reply.ok && result.ok !== false
   const log = await rpc('customer_action_log', { p_org: t.organization_id, p_action: 'billing.extend_trial', p_reason: t.ref, p_ok: ok }, z.object({ ok: z.boolean() }))
+  // the thread line (kind admin_action, body «action:ok|failed»); the database accepts it only after the audit row above
+  if (log.ok) await rpc('ticket_action_note', { p_id: t.id, p_action: 'billing.extend_trial', p_ok: ok }, z.object({ id: uuid }))
   done()
   if (!ok) return { ok: true, error: (reply.error ?? result.error ?? 'failed').slice(0, 40) }
   if (!log.ok) return { ok: false, code: log.code }

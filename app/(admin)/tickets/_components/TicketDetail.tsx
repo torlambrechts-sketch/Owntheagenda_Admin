@@ -34,11 +34,17 @@ const ctrlSelect = 'border-0 bg-transparent text-12.5 font-bold text-ink'
 const smallBtn = 'h-7 cursor-pointer rounded-9 border border-line bg-transparent px-[10px] text-11.5 font-semibold disabled:cursor-default disabled:opacity-60'
 const mono = 'font-[ui-monospace,Menlo,monospace]'
 
+/** A refusal as a message: the queue guard (forbidden, detail «queue») has its own words. */
+function useRefusal() {
+  const t = useTranslations('tickets.detail')
+  const tc = useTranslations('common')
+  return (r: { code: string; detail?: string | null }) => (r.code === 'forbidden' && r.detail === 'queue' ? t('queueForbidden') : tc(`errors.${r.code}`))
+}
+
 /** The open ticket: header with controls, impact × urgency, SLA bars, the thread and composer, and the side column. */
 export function TicketDetailPanel(p: DetailProps) {
   const { ticket: tk, config, me } = p
   const t = useTranslations('tickets')
-  const tc = useTranslations('common')
   const format = useFormatter()
   const flash = useToast()
   const dur = useDur()
@@ -50,13 +56,13 @@ export function TicketDetailPanel(p: DetailProps) {
   if (tk.version > version.current) version.current = tk.version
   const [vals, setVals] = useState({ type: tk.type, status: tk.status, queue_key: tk.queue_key, assignee_id: tk.assignee_id ?? '', impact: tk.impact, urgency: tk.urgency })
 
-  const fail = (code: string) => flash(tc(`errors.${code}`))
+  const refusal = useRefusal()
 
   async function save(values: Parameters<typeof saveTicket>[0]['values'], ok?: string) {
     const r = await saveTicket({ id: tk.id, version: version.current, values })
     if (!r.ok) {
       setVals({ type: tk.type, status: tk.status, queue_key: tk.queue_key, assignee_id: tk.assignee_id ?? '', impact: tk.impact, urgency: tk.urgency })
-      fail(r.code)
+      flash(refusal(r))
       return false
     }
     version.current = r.version
@@ -205,6 +211,15 @@ function Thread({ ticket: tk, now }: { ticket: TicketDetail; now: Date }) {
     if (min < 60 * 24 * 7) return t('thread.hoursAgo', { h: Math.floor(min / 60) })
     return format.dateTime(d, { day: 'numeric', month: 'short', year: 'numeric' })
   }
+  // an executed action is stored as «<action>:<ok|failed>» (ticket_action_note); its sentence comes from messages
+  const actionLine = (body: string, author: string | null) => {
+    const a = /^([a-z_]+)\.([a-z_]+):(ok|failed)$/.exec(body)
+    if (!a) return body
+    const key = `thread.actions.${a[1]}_${a[2]}`
+    const params = { action: t.has(key) ? t(key) : `${a[1]}.${a[2]}`, name: author ?? '—', ref: tk.ref, org: tk.organization?.name ?? '' }
+    const ok = a[3] === 'ok'
+    return tk.organization ? t(ok ? 'thread.actionOk' : 'thread.actionFailed', params) : t(ok ? 'thread.actionOkNoOrg' : 'thread.actionFailedNoOrg', params)
+  }
   return (
     <>
       {tk.messages.map((m) => {
@@ -222,7 +237,7 @@ function Thread({ ticket: tk, now }: { ticket: TicketDetail; now: Date }) {
                 <span><b className="text-ink">{who}</b> · {cust ? t('thread.customer', { channel: t(`channels.${tk.channel}`).toLowerCase() }) : t(`thread.${m.kind}`)}</span>
                 <span className="whitespace-nowrap">{when(m.created_at)}</span>
               </div>
-              <div className="whitespace-pre-wrap text-13 leading-[1.6]">{m.body}</div>
+              <div className="whitespace-pre-wrap text-13 leading-[1.6]">{m.kind === 'admin_action' ? actionLine(m.body, m.author) : m.body}</div>
               {m.kind === 'reply' && m.delivery_status && m.delivery_status !== 'sent' ? (
                 <div className={`mt-2 text-11.5 ${m.delivery_status === 'failed' ? 'text-danger' : 'text-faint'}`}>
                   {t(m.delivery_status === 'not_configured' ? 'thread.notConfigured' : m.delivery_status === 'queued' ? 'thread.queued' : 'thread.failed')}
@@ -238,8 +253,8 @@ function Thread({ ticket: tk, now }: { ticket: TicketDetail; now: Date }) {
 
 function Composer({ ticket: tk, macros, me, config, canWrite }: DetailProps) {
   const t = useTranslations('tickets.composer')
-  const tc = useTranslations('common')
   const flash = useToast()
+  const refusal = useRefusal()
   const [mode, setMode] = useState<'reply' | 'note'>('reply')
   const [draft, setDraft] = useState('')
   const [macroId, setMacroId] = useState<string | null>(null)
@@ -267,7 +282,7 @@ function Composer({ ticket: tk, macros, me, config, canWrite }: DetailProps) {
     const ids = note ? mentions.filter((m) => draft.includes(`@${m.name}`)).map((m) => m.id) : []
     const r = await sendMessage({ id: tk.id, kind: mode, body: draft, after: after === 'keep' ? null : after, macroId, mentions: ids })
     setBusy(false)
-    if (!r.ok) { flash(tc(`errors.${r.code}`)); return }
+    if (!r.ok) { flash(refusal(r)); return }
     setDraft('')
     setMacroId(null)
     setMentions([])
@@ -365,6 +380,7 @@ function Side({ ticket: tk, problems, canEdit, canAct, at: now }: DetailProps & 
   const t = useTranslations('tickets')
   const tc = useTranslations('common')
   const flash = useToast()
+  const refusal = useRefusal()
   const [problemPick, setProblemPick] = useState(false)
   const [linkForm, setLinkForm] = useState(false)
   const [kind, setKind] = useState<(typeof LINK_KINDS)[number]>('survey')
@@ -395,14 +411,14 @@ function Side({ ticket: tk, problems, canEdit, canAct, at: now }: DetailProps & 
   async function setProblem(id: string) {
     setProblemPick(false)
     const r = await saveTicket({ id: tk.id, version: tk.version, values: { problem_id: id || null } })
-    if (!r.ok) { flash(tc(`errors.${r.code}`)); return }
+    if (!r.ok) { flash(refusal(r)); return }
     flash(id ? t('side.linked', { ref: problems.find((x) => x.id === id)?.ref ?? '' }) : t('side.unlinked'))
   }
   async function link(on: boolean, k: (typeof LINK_KINDS)[number], r: string, label: string | null) {
     setBusy(true)
     const res = await linkTicket({ id: tk.id, kind: k, ref: r, label, on })
     setBusy(false)
-    if (!res.ok) { flash(tc(`errors.${res.code}`)); return }
+    if (!res.ok) { flash(refusal(res)); return }
     if (on) { setRef(''); setLbl(''); setLinkForm(false) }
     flash(t(on ? 'side.linkAdded' : 'side.linkRemoved'))
   }
@@ -410,7 +426,7 @@ function Side({ ticket: tk, problems, canEdit, canAct, at: now }: DetailProps & 
     setBusy(true)
     const r = await extendTrial({ ticketId: tk.id })
     setBusy(false)
-    if (!r.ok) { flash(tc(`errors.${r.code}`)); return }
+    if (!r.ok) { flash(refusal(r)); return }
     flash(r.error ? t('side.sr.extendFailed', { error: r.error }) : t('side.sr.extended'))
   }
 

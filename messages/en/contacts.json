@@ -26,7 +26,7 @@
     "on": "on",
     "off": "off",
     "errors": {
-      "too_large": "The file is larger than 1 MB. Split it into smaller files.",
+      "too_large": "The file is larger than 7.9 MB. Split it into smaller files.",
       "empty_file": "The file has no rows under its header.",
       "too_many_rows": "The file has more than 50 000 rows.",
       "xlsx": "XLSX is not supported yet. Save the sheet as CSV and upload that."
@@ -223,7 +223,7 @@
         "organization": "Organizations",
         "lead": "Leads"
       },
-      "drop": "Drop .csv or click to choose · up to 50 000 rows and 1 MB",
+      "drop": "Drop .csv or click to choose · up to 50 000 rows and 7.9 MB",
       "noXlsx": "XLSX is not supported yet — save the sheet as CSV",
       "reading": "Reading the file …",
       "rows": "{count, plural, one {{n} row} other {{n} rows}}",

@@ -30,7 +30,7 @@ export function Header({ shell, route, popover, setPopover, assist, toggleAssist
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-surface">
-      <div className="flex min-h-[56px] items-center gap-[14px] px-4 py-2 md:px-[26px]">
+      <div className="flex min-h-[56px] items-center gap-[14px] px-4 py-2 max-md:gap-[10px] md:px-[26px]">
         <button
           type="button"
           onClick={openMenu}

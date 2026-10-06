@@ -1,5 +1,6 @@
 {
   "overview": {
+    "noAccess": { "title": "Oversikten krever tilgang til hele plattformen", "body": "Rettighetssettet ditt gir ikke «Se poster» for Global. Bruk menyen for å åpne skjermene du jobber i." },
     "allApplications": "Alle applikasjoner",
     "openAnalytics": "Åpne analyse →",
     "newRecord": "＋ Ny post",

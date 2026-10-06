@@ -26,7 +26,7 @@
     "on": "på",
     "off": "av",
     "errors": {
-      "too_large": "Filen er større enn 1 MB. Del den opp i mindre filer.",
+      "too_large": "Filen er større enn 7,9 MB. Del den opp i mindre filer.",
       "empty_file": "Filen har ingen rader under overskriftsraden.",
       "too_many_rows": "Filen har mer enn 50 000 rader.",
       "xlsx": "XLSX støttes ikke ennå. Lagre arket som CSV og last opp det."
@@ -223,7 +223,7 @@
         "organization": "Organisasjoner",
         "lead": "Leads"
       },
-      "drop": "Slipp en .csv-fil eller klikk for å velge · opptil 50 000 rader og 1 MB",
+      "drop": "Slipp en .csv-fil eller klikk for å velge · opptil 50 000 rader og 7,9 MB",
       "noXlsx": "XLSX støttes ikke ennå — lagre arket som CSV",
       "reading": "Leser filen …",
       "rows": "{count, plural, one {{n} rad} other {{n} rader}}",

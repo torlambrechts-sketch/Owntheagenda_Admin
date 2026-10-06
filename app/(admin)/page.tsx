@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { getFormatter, getNow, getTranslations } from 'next-intl/server'
-import { getShell } from '@/lib/shell'
+import { can, getShell } from '@/lib/shell'
 import { loadOverview } from '@/lib/data/overview'
 import { formatNumber, money, percent, thousands } from '@/lib/format'
 import { ui } from '@/components/ui/styles'
@@ -14,9 +14,20 @@ const VIZ = ['#F6D9C6', '#DCEBD3', '#CFE0F5', '#F3E2C9', '#E7DAF2']
 /** Overview (Sentral Admin.dc.html, r.home): only what the database holds; a block without a source is left out. */
 export default async function OverviewPage() {
   const shell = await getShell()
+  const t = await getTranslations('overview')
+  // the platform's figures need «See records» on Global; without it the home says so instead of failing
+  if (!can(shell, 'global', 'see')) {
+    return (
+      <div className="flex max-w-[1480px] flex-col gap-[18px] px-4 pb-12 pt-[26px] md:px-7">
+        <div className={`${ui.card} p-[26px]`}>
+          <h1 className="m-0 font-serif text-22 font-semibold">{t('noAccess.title')}</h1>
+          <p className="m-0 mt-2 text-13 text-muted">{t('noAccess.body')}</p>
+        </div>
+      </div>
+    )
+  }
   const product = (await cookies()).get('product')?.value ?? 'all'
   const o = await loadOverview(product)
-  const t = await getTranslations('overview')
   const format = await getFormatter()
   const now = await getNow()
   const nf = shell.me.number_format

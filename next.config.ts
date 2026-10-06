@@ -22,6 +22,8 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   reactStrictMode: true,
   typedRoutes: true,
+  // CSV imports travel through a server action (Contacts › Import); the screen refuses files over 7.9 MB
+  experimental: { serverActions: { bodySizeLimit: '8mb' } },
   async headers() {
     return [
       {

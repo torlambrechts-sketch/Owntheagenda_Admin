@@ -17,7 +17,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <Ctx.Provider value={flash}>
       {children}
       {msg ? (
-        <div role="status" className="fixed bottom-[26px] left-1/2 z-[95] -translate-x-1/2 rounded-14 bg-ink px-[18px] py-3 text-13 font-semibold text-canvas">
+        <div role="status" className="fixed bottom-[26px] left-1/2 z-[95] -translate-x-1/2 rounded-14 bg-ink px-[18px] py-3 text-13 font-semibold text-canvas shadow-pop">
           {msg}
         </div>
       ) : null}

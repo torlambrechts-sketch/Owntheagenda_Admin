@@ -9,8 +9,8 @@ export const IMPORT_ENTITIES: ImportEntity[] = ['person', 'organization', 'lead'
 
 /** The most a file may hold, the same as import_run's limit. */
 export const MAX_ROWS = 50_000
-/** A server action's request body is limited to 1 MB by Next.js; the file travels inside it. */
-export const MAX_BYTES = 950_000
+/** The file travels inside a server action, whose body next.config.ts limits to 8 MB. */
+export const MAX_BYTES = 7_900_000
 
 export type ParsedCsv = { headers: string[]; rows: string[][] }
 

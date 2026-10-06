@@ -76,7 +76,12 @@ for (const [i, p] of D.products.entries()) {
 const orgLabels = [...new Set([...D.orgs.flatMap((o) => o.labels), 'Champion', 'Renewal Q4', 'Expansion', 'Pilot', 'Reference customer', 'Needs onboarding'])]
 for (const [i, n] of orgLabels.entries()) sql(`insert into app.labels (id, entity, name, bg, ink, ord) values (${q(uid('label-org', n))}, 'organization', ${q(n)}, '#F2EAD6', '#5F5849', ${i * 10});`)
 const personLabels = [...new Set(D.people.flatMap((p) => p.labels))]
-for (const [i, n] of personLabels.entries()) sql(`insert into app.labels (id, entity, name, bg, ink, ord) values (${q(uid('label-person', n))}, 'person', ${q(n)}, '#F2EAD6', '#5F5849', ${i * 10});`)
+// the person labels' colours are the design's (Contacts.dc.html, lab); a label it does not colour stays neutral
+const personLabelInk = { 'Decision maker': ['#E7DAF2', '#3E2A5C'], Champion: ['#CFE7E4', '#20431C'], 'Billing contact': ['#FBEBBE', '#5C4600'], Newsletter: ['#CFE0F5', '#1F3A5C'], VIP: ['#F0B9A0', '#6B240C'] }
+for (const [i, n] of personLabels.entries()) {
+  const [bg, ink] = personLabelInk[n] ?? ['#F2EAD6', '#5F5849']
+  sql(`insert into app.labels (id, entity, name, bg, ink, ord) values (${q(uid('label-person', n))}, 'person', ${q(n)}, ${q(bg)}, ${q(ink)}, ${i * 10});`)
+}
 
 // ---- customers: an account per organization, a tenant per product it uses, the subscription
 for (const o of D.orgs) {

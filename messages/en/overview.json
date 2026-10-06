@@ -1,5 +1,6 @@
 {
   "overview": {
+    "noAccess": { "title": "The overview needs access to the whole platform", "body": "Your permission set does not include See records on Global. Use the menu to open the screens you work in." },
     "allApplications": "All applications",
     "openAnalytics": "Open analytics →",
     "newRecord": "＋ New record",

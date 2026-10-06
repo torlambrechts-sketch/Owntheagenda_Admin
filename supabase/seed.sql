@@ -149,9 +149,9 @@ insert into app.labels (id, entity, name, bg, ink, ord) values ('09363a43-05c1-4
 insert into app.labels (id, entity, name, bg, ink, ord) values ('a71d43d3-977a-468f-a4c3-1269c4d01825', 'organization', 'Renewal Q4', '#F2EAD6', '#5F5849', 60);
 insert into app.labels (id, entity, name, bg, ink, ord) values ('2a317b98-fe5d-402f-add9-96a3fbba2228', 'organization', 'Reference customer', '#F2EAD6', '#5F5849', 70);
 insert into app.labels (id, entity, name, bg, ink, ord) values ('f9c4a923-ce29-44dd-ae53-e44949185d56', 'organization', 'Needs onboarding', '#F2EAD6', '#5F5849', 80);
-insert into app.labels (id, entity, name, bg, ink, ord) values ('fa463ada-71c5-4365-afa7-6b631e6bac9d', 'person', 'Billing contact', '#F2EAD6', '#5F5849', 0);
-insert into app.labels (id, entity, name, bg, ink, ord) values ('22445648-f50a-48af-aa73-60beff3a16a3', 'person', 'Champion', '#F2EAD6', '#5F5849', 10);
-insert into app.labels (id, entity, name, bg, ink, ord) values ('e08f1d0b-4734-49c7-a48c-9e403a62be26', 'person', 'Decision maker', '#F2EAD6', '#5F5849', 20);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('fa463ada-71c5-4365-afa7-6b631e6bac9d', 'person', 'Billing contact', '#FBEBBE', '#5C4600', 0);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('22445648-f50a-48af-aa73-60beff3a16a3', 'person', 'Champion', '#CFE7E4', '#20431C', 10);
+insert into app.labels (id, entity, name, bg, ink, ord) values ('e08f1d0b-4734-49c7-a48c-9e403a62be26', 'person', 'Decision maker', '#E7DAF2', '#3E2A5C', 20);
 insert into app.accounts (id, name, org_number, created_at) values ('4b24a501-5544-411f-afe2-e5ab241da3f8', 'Lumio AS', '987467565', now() - interval '78 days');
 insert into app.account_products (product, tenant_id, account_id, status, details, attribution, created_at)
   values ('orgpuls', 'orgpuls-o1', '4b24a501-5544-411f-afe2-e5ab241da3f8', 'active', jsonb_build_object('employees', 48, 'band', '26–100'), jsonb_build_object('source', 'Partner'), now() - interval '78 days');

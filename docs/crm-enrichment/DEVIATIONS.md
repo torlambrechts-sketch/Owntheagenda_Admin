@@ -566,7 +566,7 @@ Deliverability). The schema's own departures are V-P6C-* in `deviations/campaign
 
 Where the Projects screen (`app/(admin)/projects`) departs from `design-reference/sentral/project/Projects.dc.html`, and why.
 Data spec: `docs/crm-enrichment/specs/projects-meetings.md` §1; schema contract: `deviations/projects-schema.md` (V-P6P-*).
-Database needs are in `requests/projects.md`. The lead folds these rows into `DEVIATIONS.md`.
+Database needs are in `requests/projects.md`.
 
 | ID | Where | Design | Built | Reason |
 |---|---|---|---|---|

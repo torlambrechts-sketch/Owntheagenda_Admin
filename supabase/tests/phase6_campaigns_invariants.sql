@@ -574,8 +574,13 @@ select pg_temp.check((select (d -> 'rates' ->> 'sent')::int >= 4 and (d -> 'warm
                  and (select d -> 'rates' = 'null'::jsonb from jsonb_array_elements((select g -> 'rows' from t_dg)) d where d ->> 'domain' = 'varsler.p6c.example.no'),
                      'rates for domains this platform sends through; none for a domain another system sends from (Q6)');
 select pg_temp.check(exists (select 1 from jsonb_array_elements(public.deliverability_recommendations()) r where r ->> 'kind' = 'dns_missing' and r ->> 'domain' = 'varsler.p6c.example.no')
-                 and exists (select 1 from jsonb_array_elements(public.deliverability_recommendations()) r where r ->> 'kind' = 'identity' and (r ->> 'ok')::boolean),
-                     'recommendations are computed: missing DNS records, and the sender identity check');
+                 and exists (select 1 from jsonb_array_elements(public.deliverability_recommendations()) r where r ->> 'kind' = 'identity'
+                             -- ok exactly when every marketing domain sent from here has a postal address (the seed has one without)
+                             and (r ->> 'ok')::boolean = not exists (select 1 from app.sender_domains x where x.deleted_at is null and x.stream = 'marketing'
+                                                                     and x.sends_here and x.postal_address is null)
+                             and (r -> 'domains_missing_address') = coalesce((select jsonb_agg(x.domain order by x.domain) from app.sender_domains x
+                                  where x.deleted_at is null and x.stream = 'marketing' and x.sends_here and x.postal_address is null), '[]'::jsonb)),
+                     'recommendations are computed: missing DNS records, and the sender identity check names the domains without a postal address');
 select pg_temp.check((public.sender_domain_recheck() ->> 'queued')::int >= 2, 'Re-check DNS queues a check per domain');
 select public.sender_domain_delete((select id from app.sender_domains where domain = 'varsler.p6c.example.no'));
 select pg_temp.check(not exists (select 1 from jsonb_array_elements(public.sender_domains_get() -> 'rows') d where d ->> 'domain' = 'varsler.p6c.example.no'),

@@ -135,7 +135,7 @@ export function LeadsTab({ data, rights, me, now, openForm }: TabProps) {
         {lead ? (
           <div className="flex flex-col gap-[10px] rounded-20 border border-line bg-surface px-5 py-[18px] md:sticky md:top-20">
             <div className="flex justify-between gap-2 text-11.5 text-muted">
-              <span>{[lead.source, format.relativeTime(new Date(lead.created_at), nowD)].filter(Boolean).join(' · ')}</span>
+              <span>{[lead.seq != null ? `L-${lead.seq}` : null, lead.source, format.relativeTime(new Date(lead.created_at), nowD)].filter(Boolean).join(' · ')}</span>
               {canEditLead ? <button type="button" onClick={() => openForm({ entity: 'lead', id: lead.id, lead })} className="cursor-pointer border-none bg-transparent p-0 text-12 font-semibold text-link">{t('edit')}</button> : null}
             </div>
             <b className="font-serif text-20 leading-[1.2]">{lead.title}</b>

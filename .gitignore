@@ -9,3 +9,5 @@ supabase/.temp/
 .vercel
 .cache/
 screens/
+/.next-*/
+.dev-*.log

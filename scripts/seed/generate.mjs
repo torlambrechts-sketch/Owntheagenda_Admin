@@ -456,6 +456,7 @@ for (const [key, name, entity, pl, state] of models) {
 }
 
 (await import('./phase5-capture.mjs')).seedCapture({ sql, q, uid }) // lead capture fixtures (Phase 5)
+;(await import('./phase5-documents.mjs')).seedDocuments({ sql, q, uid, ago })
 
 // the seed is history: the event subscribers start after it
 sql(`update app.event_cursors set last_event_id = coalesce((select max(id) from app.events), 0), updated_at = now();`)

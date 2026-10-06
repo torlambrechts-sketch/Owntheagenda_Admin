@@ -2597,6 +2597,433 @@ insert into app.campaigns (id, name, type, status, design, subject_a, sender_dom
   'newsletter', 'email', 'trial-nurture-day-2', true, false, 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea', 'all', 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea', 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea', now() - interval '9 days', now() - interval '9 days');
 insert into app.changelog (entity, record_id, field, actor_id, source) values ('campaign', 'c5d7c291-0ce6-4d8b-aa5f-347788b5df55', '*created', 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea', 'ui');
 insert into app.changelog (entity, record_id, field, actor_id, source) values ('campaign', '2a931150-41a3-4950-ac9b-f4bf6ef36dd1', '*created', 'adfc9826-36a2-48d9-a57b-4c8d27ccc7ea', 'ui');
+insert into app.project_boards (id, name, ord, created_by, created_at) values ('bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'Customer onboarding', 10, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('da03a82a-c4db-49c0-aac4-c8562921741b', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'Kickoff', 10, '#F6D9C6', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'Setup', 20, '#DCEBD3', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('436f93bc-10b5-48a8-af4d-8382670bfd6d', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'First survey', 30, '#CFE0F5', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('ce44d450-5b79-4c49-aeab-21b03a9160c9', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'Handover', 40, '#E7DAF2', (now() - interval '60 days'));
+insert into app.project_boards (id, name, ord, created_by, created_at) values ('97c1b032-0314-446a-a583-6d8a8f9c7586', 'Implementation — public sector', 20, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('063c3f8c-f4d7-4167-ae68-a587b441cc89', '97c1b032-0314-446a-a583-6d8a8f9c7586', 'Kickoff', 10, '#F6D9C6', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('4af5b639-f682-4b24-a11d-0249ecdb727b', '97c1b032-0314-446a-a583-6d8a8f9c7586', 'Setup', 20, '#DCEBD3', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('72deff66-d789-45d5-a580-caa7b9a0017d', '97c1b032-0314-446a-a583-6d8a8f9c7586', 'First survey', 30, '#CFE0F5', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('81e8b1bc-e922-4067-a94a-f6041b2b5077', '97c1b032-0314-446a-a583-6d8a8f9c7586', 'Handover', 40, '#E7DAF2', (now() - interval '60 days'));
+insert into app.project_boards (id, name, ord, created_by, created_at) values ('68b22f37-ec3f-4ad2-adcf-a607e484b458', 'Training delivery', 30, '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('b4d0d4ae-a24e-4125-a66b-c9f8192f7141', '68b22f37-ec3f-4ad2-adcf-a607e484b458', 'Kickoff', 10, '#F6D9C6', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('effa96f3-8622-4893-a571-69946a093a99', '68b22f37-ec3f-4ad2-adcf-a607e484b458', 'Setup', 20, '#DCEBD3', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('ab2894d0-e73c-4934-a1c5-d5dd84207b06', '68b22f37-ec3f-4ad2-adcf-a607e484b458', 'First survey', 30, '#CFE0F5', (now() - interval '60 days'));
+insert into app.project_phases (id, board_id, name, ord, color, created_at) values ('6c340d7c-d37e-45c7-a12c-4174b9c234e5', '68b22f37-ec3f-4ad2-adcf-a607e484b458', 'Handover', 40, '#E7DAF2', (now() - interval '60 days'));
+insert into app.project_templates (id, name, organized_by, board_id, created_by, updated_by, created_at, updated_at) values ('dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'Customer onboarding — Orgpuls', 'phases', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (now() - interval '45 days'), (now() - interval '12 days'));
+insert into app.project_template_groups (id, template_id, name, ord, phase_id) values ('270c63fc-e1ad-43e5-aefd-186745d47d83', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'Kickoff', 10, 'da03a82a-c4db-49c0-aac4-c8562921741b');
+insert into app.project_template_groups (id, template_id, name, ord, phase_id) values ('571a93a3-95d0-4ee0-a88e-5f57fc3a12a4', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'Setup', 20, 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb');
+insert into app.project_template_groups (id, template_id, name, ord, phase_id) values ('7029e683-076b-4959-a1ad-ff22a96d42ee', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'First survey', 30, '436f93bc-10b5-48a8-af4d-8382670bfd6d');
+insert into app.project_template_groups (id, template_id, name, ord, phase_id) values ('fcdcde1c-7e77-42d4-adca-5c55de3a978b', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'Handover', 40, 'ce44d450-5b79-4c49-aeab-21b03a9160c9');
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('ef937399-257c-44b3-a624-d4187324a827', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312',
+  '270c63fc-e1ad-43e5-aefd-186745d47d83', 'task', 'Kickoff meeting', 0, 2, 'owner', 10);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('73bb0eda-c092-4832-a7e2-a276dc713953', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312',
+  '270c63fc-e1ad-43e5-aefd-186745d47d83', 'task', 'Upload employee list', 3, 10, 'unassigned', 20);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('d9150ad5-b963-42aa-a270-37371b7783b8', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312',
+  '270c63fc-e1ad-43e5-aefd-186745d47d83', 'milestone', 'Employee list ready', null, 11, 'unassigned', 30);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('293dea2a-a53f-4fa8-a836-90c1449117c8', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312',
+  '571a93a3-95d0-4ee0-a88e-5f57fc3a12a4', 'task', 'Configure departments', 12, 21, 'unassigned', 40);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('bbddd6bb-07a8-47e8-a778-3618263389f0', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312',
+  '571a93a3-95d0-4ee0-a88e-5f57fc3a12a4', 'task', 'Invite HR and leaders', 20, 27, 'unassigned', 50);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('f982579b-b1f9-49af-a3f0-001868fdde18', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312',
+  '7029e683-076b-4959-a1ad-ff22a96d42ee', 'task', 'Schedule baseline', 30, 35, 'unassigned', 60);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('f0e13e23-033c-4fd7-a3c5-ecc2c9f77b9e', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312',
+  '7029e683-076b-4959-a1ad-ff22a96d42ee', 'milestone', 'Baseline sent', null, 37, 'unassigned', 70);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('2458af1e-81a6-4c46-a0f6-6339d7961645', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312',
+  '7029e683-076b-4959-a1ad-ff22a96d42ee', 'task', 'Result review with HR', 52, 59, 'unassigned', 80);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('15d54706-8b57-486d-a390-e0d4542c08e3', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312',
+  'fcdcde1c-7e77-42d4-adca-5c55de3a978b', 'milestone', 'Handover to CSM', null, 72, 'unassigned', 90);
+insert into app.project_template_dependencies (template_id, predecessor_id, successor_id) values ('dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', '73bb0eda-c092-4832-a7e2-a276dc713953', 'd9150ad5-b963-42aa-a270-37371b7783b8');
+insert into app.project_template_dependencies (template_id, predecessor_id, successor_id) values ('dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'd9150ad5-b963-42aa-a270-37371b7783b8', '293dea2a-a53f-4fa8-a836-90c1449117c8');
+insert into app.project_template_dependencies (template_id, predecessor_id, successor_id) values ('dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'f982579b-b1f9-49af-a3f0-001868fdde18', 'f0e13e23-033c-4fd7-a3c5-ecc2c9f77b9e');
+insert into app.project_templates (id, name, organized_by, board_id, created_by, updated_by, created_at, updated_at) values ('dfea4592-35a1-421b-aca4-6e520ce05ada', 'Skiftly rollout', 'phases', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (now() - interval '45 days'), (now() - interval '12 days'));
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('2a2de0bf-924d-435c-a10f-f0f4c2a59559', 'dfea4592-35a1-421b-aca4-6e520ce05ada',
+  null, 'task', 'Import shifts', 0, 0, 'unassigned', 10);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('2649f692-9e5f-41f6-a313-64ff611c5448', 'dfea4592-35a1-421b-aca4-6e520ce05ada',
+  null, 'task', 'Train shift leads', 5, 5, 'unassigned', 20);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('2f41ca67-1d63-41ab-a716-b716dac1239d', 'dfea4592-35a1-421b-aca4-6e520ce05ada',
+  null, 'milestone', 'First live week', null, 14, 'unassigned', 30);
+insert into app.project_template_dependencies (template_id, predecessor_id, successor_id) values ('dfea4592-35a1-421b-aca4-6e520ce05ada', '2a2de0bf-924d-435c-a10f-f0f4c2a59559', '2649f692-9e5f-41f6-a313-64ff611c5448');
+insert into app.project_template_dependencies (template_id, predecessor_id, successor_id) values ('dfea4592-35a1-421b-aca4-6e520ce05ada', '2649f692-9e5f-41f6-a313-64ff611c5448', '2f41ca67-1d63-41ab-a716-b716dac1239d');
+insert into app.project_templates (id, name, organized_by, board_id, created_by, updated_by, created_at, updated_at) values ('f4e6efaa-ddd3-466a-a256-1db86ab8bd7a', 'Municipality pilot', 'groups', '97c1b032-0314-446a-a583-6d8a8f9c7586', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (now() - interval '45 days'), (now() - interval '12 days'));
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('1bd0e7a6-c569-4b1e-a47f-d6b79d39c809', 'f4e6efaa-ddd3-466a-a256-1db86ab8bd7a',
+  null, 'task', 'Agree scope with HR', 0, 0, 'unassigned', 10);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('90becc19-7f97-4b51-ac9d-253859829c3f', 'f4e6efaa-ddd3-466a-a256-1db86ab8bd7a',
+  null, 'task', 'Verneombud briefing', 10, 10, 'unassigned', 20);
+insert into app.project_template_items (id, template_id, group_id, kind, name, start_offset_days, due_offset_days, assignee, ord) values ('1ffd09bf-d434-4b93-a1da-29eca9dc316c', 'f4e6efaa-ddd3-466a-a256-1db86ab8bd7a',
+  null, 'milestone', 'Pilot report', null, 45, 'unassigned', 30);
+insert into app.projects (id, name, board_id, phase_id, phase_entered_at, health, health_set_at, health_set_by, health_source, starts_on, ends_on, person_id, organization_id,
+  template_id, created_source, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  values ('663d8b98-d3bb-4b8f-a563-117af4d88163', 'Lumio AS — Skiftly onboarding', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '6 days'), 'at_risk', (now() - interval '2 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'manual',
+  ((now() at time zone 'Europe/Oslo')::date + -6), ((now() at time zone 'Europe/Oslo')::date + 68), '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'deal',
+  '32993233-d440-48e0-ac00-c6c903c0fb80', 'group', '32993233-d440-48e0-ac00-c6c903c0fb80', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '6 days'), (now() - interval '2 days'));
+insert into app.project_deals (project_id, deal_id, is_primary, linked_by, linked_at) values ('663d8b98-d3bb-4b8f-a563-117af4d88163', 'e881fda1-c2f4-4d97-a646-535096f3fd6b', true, '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '6 days'));
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, moved_by, source) values ('663d8b98-d3bb-4b8f-a563-117af4d88163', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '6 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('c928cae7-a5c0-4c63-ae8f-4bc564f2fb5e', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'Kickoff', 10, 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '6 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('591b66a8-0eb3-4cea-a896-56b6ae7f9174', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'Setup', 20, 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '6 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('a78f68b7-8181-4868-a310-087d13cc8c1a', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'First survey', 30, '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '6 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('3ef58757-143b-4ce0-a161-b9fd32f81993', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'Handover', 40, 'ce44d450-5b79-4c49-aeab-21b03a9160c9', (now() - interval '6 days'));
+insert into app.projects (id, name, board_id, phase_id, phase_entered_at, health, health_set_at, health_set_by, health_source, starts_on, ends_on, person_id, organization_id,
+  template_id, created_source, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  values ('175a6e1e-b06d-43f6-aaf8-1bb728880367', 'Fjellheim skole — full platform', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '5 days'), 'on_track', (now() - interval '2 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'manual',
+  ((now() at time zone 'Europe/Oslo')::date + -14), ((now() at time zone 'Europe/Oslo')::date + 60), 'b6a51c65-69e8-4b7d-a3dc-38bc4441500a', 'c08bd479-9ca7-4884-ac80-5fc865ab689f', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'deal',
+  '32993233-d440-48e0-ac00-c6c903c0fb80', 'all', '32993233-d440-48e0-ac00-c6c903c0fb80', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '14 days'), (now() - interval '2 days'));
+insert into app.project_deals (project_id, deal_id, is_primary, linked_by, linked_at) values ('175a6e1e-b06d-43f6-aaf8-1bb728880367', '7bf729a0-1d77-4b7f-a5de-f94960a4516d', true, '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '14 days'));
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, left_at, moved_by, source) values ('175a6e1e-b06d-43f6-aaf8-1bb728880367', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '14 days'), (now() - interval '5 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, moved_by, source) values ('175a6e1e-b06d-43f6-aaf8-1bb728880367', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '5 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('42ad1dd4-14b8-41fa-ada4-d9e126a19ab3', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'Kickoff', 10, 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '14 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('214857ed-9d01-4d13-a3fd-d9bd163ccd40', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'Setup', 20, 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '14 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('f2c161d9-5903-4538-aaa9-fa5854b43a5e', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'First survey', 30, '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '14 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('5dc6b705-b7bc-4e14-aba7-55cfa61f75e3', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'Handover', 40, 'ce44d450-5b79-4c49-aeab-21b03a9160c9', (now() - interval '14 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('b6591a1d-93b3-4b10-a3b4-669159bc60e5', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'task', '42ad1dd4-14b8-41fa-ada4-d9e126a19ab3', 'Kickoff meeting', '32993233-d440-48e0-ac00-c6c903c0fb80', ((now() at time zone 'Europe/Oslo')::date + -14), ((now() at time zone 'Europe/Oslo')::date + -12),
+  true, (((now() at time zone 'Europe/Oslo')::date + -12))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 10, 'template',
+  'ef937399-257c-44b3-a624-d4187324a827', (now() - interval '14 days'), (now() - interval '14 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('7f0c0b6d-43cf-4f2d-aad7-f9e5afa3f96d', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'task', '42ad1dd4-14b8-41fa-ada4-d9e126a19ab3', 'Upload employee list', null, ((now() at time zone 'Europe/Oslo')::date + -11), ((now() at time zone 'Europe/Oslo')::date + -4),
+  true, (((now() at time zone 'Europe/Oslo')::date + -4))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 20, 'template',
+  '73bb0eda-c092-4832-a7e2-a276dc713953', (now() - interval '14 days'), (now() - interval '14 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('cbdd2b98-e742-4db5-af68-ff3c2d6375ba', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'milestone', '42ad1dd4-14b8-41fa-ada4-d9e126a19ab3', 'Employee list ready', null, null, ((now() at time zone 'Europe/Oslo')::date + -3),
+  true, (((now() at time zone 'Europe/Oslo')::date + -3))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 30, 'template',
+  'd9150ad5-b963-42aa-a270-37371b7783b8', (now() - interval '14 days'), (now() - interval '14 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('fcb7cc18-cbc5-4b0d-a270-fe37c239eb50', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'task', '214857ed-9d01-4d13-a3fd-d9bd163ccd40', 'Configure departments', null, ((now() at time zone 'Europe/Oslo')::date + -2), ((now() at time zone 'Europe/Oslo')::date + 7),
+  true, (((now() at time zone 'Europe/Oslo')::date + 0))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 40, 'template',
+  '293dea2a-a53f-4fa8-a836-90c1449117c8', (now() - interval '14 days'), (now() - interval '14 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('7f92373d-d8ad-43fc-a692-92d75a985c30', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'task', '214857ed-9d01-4d13-a3fd-d9bd163ccd40', 'Invite HR and leaders', null, ((now() at time zone 'Europe/Oslo')::date + 6), ((now() at time zone 'Europe/Oslo')::date + 13),
+  true, (((now() at time zone 'Europe/Oslo')::date + 0))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 50, 'template',
+  'bbddd6bb-07a8-47e8-a778-3618263389f0', (now() - interval '14 days'), (now() - interval '14 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('4f018bc9-72b1-4fae-a5af-f3c64c73f701', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'task', 'f2c161d9-5903-4538-aaa9-fa5854b43a5e', 'Schedule baseline', null, ((now() at time zone 'Europe/Oslo')::date + 16), ((now() at time zone 'Europe/Oslo')::date + 21),
+  false, null, null, 60, 'template',
+  'f982579b-b1f9-49af-a3f0-001868fdde18', (now() - interval '14 days'), (now() - interval '14 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('c15d97ac-d6f2-45fb-ac1e-a2ae82bbf614', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'milestone', 'f2c161d9-5903-4538-aaa9-fa5854b43a5e', 'Baseline sent', null, null, ((now() at time zone 'Europe/Oslo')::date + 23),
+  false, null, null, 70, 'template',
+  'f0e13e23-033c-4fd7-a3c5-ecc2c9f77b9e', (now() - interval '14 days'), (now() - interval '14 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('330cdd05-2257-4d9e-ab24-b33d2877a249', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'task', 'f2c161d9-5903-4538-aaa9-fa5854b43a5e', 'Result review with HR', null, ((now() at time zone 'Europe/Oslo')::date + 38), ((now() at time zone 'Europe/Oslo')::date + 45),
+  false, null, null, 80, 'template',
+  '2458af1e-81a6-4c46-a0f6-6339d7961645', (now() - interval '14 days'), (now() - interval '14 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('7975eeb1-8126-4633-afe9-29e65eb29671', '175a6e1e-b06d-43f6-aaf8-1bb728880367', 'milestone', '5dc6b705-b7bc-4e14-aba7-55cfa61f75e3', 'Handover to CSM', null, null, ((now() at time zone 'Europe/Oslo')::date + 58),
+  false, null, null, 90, 'template',
+  '15d54706-8b57-486d-a390-e0d4542c08e3', (now() - interval '14 days'), (now() - interval '14 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('7f0c0b6d-43cf-4f2d-aad7-f9e5afa3f96d', 'cbdd2b98-e742-4db5-af68-ff3c2d6375ba', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '14 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('cbdd2b98-e742-4db5-af68-ff3c2d6375ba', 'fcb7cc18-cbc5-4b0d-a270-fe37c239eb50', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '14 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('4f018bc9-72b1-4fae-a5af-f3c64c73f701', 'c15d97ac-d6f2-45fb-ac1e-a2ae82bbf614', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '14 days'));
+insert into app.projects (id, name, board_id, phase_id, phase_entered_at, health, health_set_at, health_set_by, health_source, starts_on, ends_on, person_id, organization_id,
+  template_id, created_source, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  values ('61bc1137-9d89-40f9-aec3-fc2776daf858', 'Solstrand Helse — Avvikspunkt', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '3 days'), 'on_track', (now() - interval '2 days'), 'e53792ad-5466-4510-a48c-6321c729dace', 'manual',
+  ((now() at time zone 'Europe/Oslo')::date + -11), ((now() at time zone 'Europe/Oslo')::date + 63), 'fdda4fe8-b00b-4b72-a858-beea3922741e', 'd8e6d1a5-820f-4952-a9dc-6c367c76c647', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'ui',
+  'e53792ad-5466-4510-a48c-6321c729dace', 'all', 'e53792ad-5466-4510-a48c-6321c729dace', 'e53792ad-5466-4510-a48c-6321c729dace', (now() - interval '11 days'), (now() - interval '2 days'));
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, left_at, moved_by, source) values ('61bc1137-9d89-40f9-aec3-fc2776daf858', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '11 days'), (now() - interval '3 days'), 'e53792ad-5466-4510-a48c-6321c729dace', 'ui');
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, moved_by, source) values ('61bc1137-9d89-40f9-aec3-fc2776daf858', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '3 days'), 'e53792ad-5466-4510-a48c-6321c729dace', 'ui');
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('171acd63-344e-4ca0-a8e9-23fa04d2da23', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'Kickoff', 10, 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '11 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('3944c969-c6fb-4679-a77d-bf088d0cc5a4', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'Setup', 20, 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '11 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('23881ec8-16d6-4e9d-aa9d-62efa3fa5e0a', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'First survey', 30, '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '11 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('93bbd851-3a33-4fd1-a3ce-6e9b1c741347', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'Handover', 40, 'ce44d450-5b79-4c49-aeab-21b03a9160c9', (now() - interval '11 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('d4316e7c-6e6a-4701-afda-3b416798b374', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'task', '171acd63-344e-4ca0-a8e9-23fa04d2da23', 'Kickoff meeting', 'e53792ad-5466-4510-a48c-6321c729dace', ((now() at time zone 'Europe/Oslo')::date + -11), ((now() at time zone 'Europe/Oslo')::date + -9),
+  true, (((now() at time zone 'Europe/Oslo')::date + -9))::timestamptz + interval '15 hours', 'e53792ad-5466-4510-a48c-6321c729dace', 10, 'template',
+  'ef937399-257c-44b3-a624-d4187324a827', (now() - interval '11 days'), (now() - interval '11 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('3b13af05-a92e-4aea-aeda-0ea6887d0312', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'task', '171acd63-344e-4ca0-a8e9-23fa04d2da23', 'Upload employee list', null, ((now() at time zone 'Europe/Oslo')::date + -8), ((now() at time zone 'Europe/Oslo')::date + -1),
+  true, (((now() at time zone 'Europe/Oslo')::date + -1))::timestamptz + interval '15 hours', 'e53792ad-5466-4510-a48c-6321c729dace', 20, 'template',
+  '73bb0eda-c092-4832-a7e2-a276dc713953', (now() - interval '11 days'), (now() - interval '11 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('682bc7ec-551a-482c-a370-a9e7c6ae2c77', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'milestone', '171acd63-344e-4ca0-a8e9-23fa04d2da23', 'Employee list ready', null, null, ((now() at time zone 'Europe/Oslo')::date + 0),
+  true, (((now() at time zone 'Europe/Oslo')::date + 0))::timestamptz + interval '15 hours', 'e53792ad-5466-4510-a48c-6321c729dace', 30, 'template',
+  'd9150ad5-b963-42aa-a270-37371b7783b8', (now() - interval '11 days'), (now() - interval '11 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('856073bc-1fa2-4f17-a934-bfac38bea784', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'task', '3944c969-c6fb-4679-a77d-bf088d0cc5a4', 'Configure departments', null, ((now() at time zone 'Europe/Oslo')::date + 1), ((now() at time zone 'Europe/Oslo')::date + 10),
+  true, (((now() at time zone 'Europe/Oslo')::date + 0))::timestamptz + interval '15 hours', 'e53792ad-5466-4510-a48c-6321c729dace', 40, 'template',
+  '293dea2a-a53f-4fa8-a836-90c1449117c8', (now() - interval '11 days'), (now() - interval '11 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('3bb3b0d7-4ecf-4d99-aadc-1804f860ece4', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'task', '3944c969-c6fb-4679-a77d-bf088d0cc5a4', 'Invite HR and leaders', null, ((now() at time zone 'Europe/Oslo')::date + 9), ((now() at time zone 'Europe/Oslo')::date + 16),
+  true, (((now() at time zone 'Europe/Oslo')::date + 0))::timestamptz + interval '15 hours', 'e53792ad-5466-4510-a48c-6321c729dace', 50, 'template',
+  'bbddd6bb-07a8-47e8-a778-3618263389f0', (now() - interval '11 days'), (now() - interval '11 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('b298835e-bdd5-43aa-a6ec-5ede73e252d7', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'task', '23881ec8-16d6-4e9d-aa9d-62efa3fa5e0a', 'Schedule baseline', null, ((now() at time zone 'Europe/Oslo')::date + 19), ((now() at time zone 'Europe/Oslo')::date + 24),
+  true, (((now() at time zone 'Europe/Oslo')::date + 0))::timestamptz + interval '15 hours', 'e53792ad-5466-4510-a48c-6321c729dace', 60, 'template',
+  'f982579b-b1f9-49af-a3f0-001868fdde18', (now() - interval '11 days'), (now() - interval '11 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('44bf79b4-2aea-4887-a9fd-c0f68ca6c1fa', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'milestone', '23881ec8-16d6-4e9d-aa9d-62efa3fa5e0a', 'Baseline sent', null, null, ((now() at time zone 'Europe/Oslo')::date + 26),
+  false, null, null, 70, 'template',
+  'f0e13e23-033c-4fd7-a3c5-ecc2c9f77b9e', (now() - interval '11 days'), (now() - interval '11 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('6642923d-307f-4499-ae8b-c105731c1c31', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'task', '23881ec8-16d6-4e9d-aa9d-62efa3fa5e0a', 'Result review with HR', null, ((now() at time zone 'Europe/Oslo')::date + 41), ((now() at time zone 'Europe/Oslo')::date + 48),
+  false, null, null, 80, 'template',
+  '2458af1e-81a6-4c46-a0f6-6339d7961645', (now() - interval '11 days'), (now() - interval '11 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('69d084f0-50d6-463a-a641-8192e0edb632', '61bc1137-9d89-40f9-aec3-fc2776daf858', 'milestone', '93bbd851-3a33-4fd1-a3ce-6e9b1c741347', 'Handover to CSM', null, null, ((now() at time zone 'Europe/Oslo')::date + 61),
+  false, null, null, 90, 'template',
+  '15d54706-8b57-486d-a390-e0d4542c08e3', (now() - interval '11 days'), (now() - interval '11 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('3b13af05-a92e-4aea-aeda-0ea6887d0312', '682bc7ec-551a-482c-a370-a9e7c6ae2c77', 'e53792ad-5466-4510-a48c-6321c729dace', (now() - interval '11 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('682bc7ec-551a-482c-a370-a9e7c6ae2c77', '856073bc-1fa2-4f17-a934-bfac38bea784', 'e53792ad-5466-4510-a48c-6321c729dace', (now() - interval '11 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('b298835e-bdd5-43aa-a6ec-5ede73e252d7', '44bf79b4-2aea-4887-a9fd-c0f68ca6c1fa', 'e53792ad-5466-4510-a48c-6321c729dace', (now() - interval '11 days'));
+insert into app.projects (id, name, board_id, phase_id, phase_entered_at, health, health_set_at, health_set_by, health_source, starts_on, ends_on, person_id, organization_id,
+  template_id, created_source, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  values ('99e111d0-b09a-4a8a-a033-a0411e4d9551', 'Elvebakken kommune — pilot', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '4 days'), 'off_track', (now() - interval '2 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'manual',
+  ((now() at time zone 'Europe/Oslo')::date + -30), ((now() at time zone 'Europe/Oslo')::date + 44), '4fe0d13d-17df-48f8-a617-baaa37e2e0a4', '4e8d8728-68d8-4be4-abf8-c65654b80ac6', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'ui',
+  '32993233-d440-48e0-ac00-c6c903c0fb80', 'all', '32993233-d440-48e0-ac00-c6c903c0fb80', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '30 days'), (now() - interval '2 days'));
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, left_at, moved_by, source) values ('99e111d0-b09a-4a8a-a033-a0411e4d9551', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '30 days'), (now() - interval '20 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, left_at, moved_by, source) values ('99e111d0-b09a-4a8a-a033-a0411e4d9551', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '20 days'), (now() - interval '4 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, moved_by, source) values ('99e111d0-b09a-4a8a-a033-a0411e4d9551', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '4 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('cf441752-9046-4189-a9c5-e5ac819c4c83', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'Kickoff', 10, 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '30 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('47f6ef3c-1382-4e57-adc8-cfddccec1ee4', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'Setup', 20, 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '30 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('395c0910-8110-4377-a22b-a60f852b48c7', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'First survey', 30, '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '30 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('dd205b6a-2e89-4a83-a295-82c14fed8e6d', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'Handover', 40, 'ce44d450-5b79-4c49-aeab-21b03a9160c9', (now() - interval '30 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('077731ae-3f5b-448f-a480-3f5ae48aea56', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'task', 'cf441752-9046-4189-a9c5-e5ac819c4c83', 'Kickoff meeting', '32993233-d440-48e0-ac00-c6c903c0fb80', ((now() at time zone 'Europe/Oslo')::date + -30), ((now() at time zone 'Europe/Oslo')::date + -28),
+  true, (((now() at time zone 'Europe/Oslo')::date + -28))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 10, 'template',
+  'ef937399-257c-44b3-a624-d4187324a827', (now() - interval '30 days'), (now() - interval '30 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('5669f908-7829-481e-aa7c-6853ec1adc2d', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'task', 'cf441752-9046-4189-a9c5-e5ac819c4c83', 'Upload employee list', null, ((now() at time zone 'Europe/Oslo')::date + -27), ((now() at time zone 'Europe/Oslo')::date + -20),
+  true, (((now() at time zone 'Europe/Oslo')::date + -20))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 20, 'template',
+  '73bb0eda-c092-4832-a7e2-a276dc713953', (now() - interval '30 days'), (now() - interval '30 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('511ee946-a8e4-450a-ab0b-2f5993f89775', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'milestone', 'cf441752-9046-4189-a9c5-e5ac819c4c83', 'Employee list ready', null, null, ((now() at time zone 'Europe/Oslo')::date + -19),
+  true, (((now() at time zone 'Europe/Oslo')::date + -19))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 30, 'template',
+  'd9150ad5-b963-42aa-a270-37371b7783b8', (now() - interval '30 days'), (now() - interval '30 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('66a77a96-28c2-4e28-a651-a9d96f1e55e8', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'task', '47f6ef3c-1382-4e57-adc8-cfddccec1ee4', 'Configure departments', null, ((now() at time zone 'Europe/Oslo')::date + -18), ((now() at time zone 'Europe/Oslo')::date + -9),
+  false, null, null, 40, 'template',
+  '293dea2a-a53f-4fa8-a836-90c1449117c8', (now() - interval '30 days'), (now() - interval '30 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('8e43b1f5-303d-43a6-aee7-d03b6b038b77', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'task', '47f6ef3c-1382-4e57-adc8-cfddccec1ee4', 'Invite HR and leaders', null, ((now() at time zone 'Europe/Oslo')::date + -10), ((now() at time zone 'Europe/Oslo')::date + -3),
+  false, null, null, 50, 'template',
+  'bbddd6bb-07a8-47e8-a778-3618263389f0', (now() - interval '30 days'), (now() - interval '30 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('28a42013-728b-4175-af38-fda6ba6ce99d', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'task', '395c0910-8110-4377-a22b-a60f852b48c7', 'Schedule baseline', null, ((now() at time zone 'Europe/Oslo')::date + 0), ((now() at time zone 'Europe/Oslo')::date + 5),
+  false, null, null, 60, 'template',
+  'f982579b-b1f9-49af-a3f0-001868fdde18', (now() - interval '30 days'), (now() - interval '30 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('ae342b3b-bfc7-427f-a12b-b5920a08887b', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'milestone', '395c0910-8110-4377-a22b-a60f852b48c7', 'Baseline sent', null, null, ((now() at time zone 'Europe/Oslo')::date + 7),
+  false, null, null, 70, 'template',
+  'f0e13e23-033c-4fd7-a3c5-ecc2c9f77b9e', (now() - interval '30 days'), (now() - interval '30 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('6038087f-6e6e-4f66-ada1-d18ee3e1e23c', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'task', '395c0910-8110-4377-a22b-a60f852b48c7', 'Result review with HR', null, ((now() at time zone 'Europe/Oslo')::date + 22), ((now() at time zone 'Europe/Oslo')::date + 29),
+  false, null, null, 80, 'template',
+  '2458af1e-81a6-4c46-a0f6-6339d7961645', (now() - interval '30 days'), (now() - interval '30 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('43112d12-2731-4f40-a8be-883a167172ed', '99e111d0-b09a-4a8a-a033-a0411e4d9551', 'milestone', 'dd205b6a-2e89-4a83-a295-82c14fed8e6d', 'Handover to CSM', null, null, ((now() at time zone 'Europe/Oslo')::date + 42),
+  false, null, null, 90, 'template',
+  '15d54706-8b57-486d-a390-e0d4542c08e3', (now() - interval '30 days'), (now() - interval '30 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('5669f908-7829-481e-aa7c-6853ec1adc2d', '511ee946-a8e4-450a-ab0b-2f5993f89775', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '30 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('511ee946-a8e4-450a-ab0b-2f5993f89775', '66a77a96-28c2-4e28-a651-a9d96f1e55e8', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '30 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('28a42013-728b-4175-af38-fda6ba6ce99d', 'ae342b3b-bfc7-427f-a12b-b5920a08887b', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '30 days'));
+insert into app.projects (id, name, board_id, phase_id, phase_entered_at, health, health_set_at, health_set_by, health_source, starts_on, ends_on, person_id, organization_id,
+  template_id, created_source, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  values ('f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'Bergheim Bygg — group rollout', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '20 days'), 'on_hold', (now() - interval '2 days'), 'e53792ad-5466-4510-a48c-6321c729dace', 'manual',
+  ((now() at time zone 'Europe/Oslo')::date + -20), ((now() at time zone 'Europe/Oslo')::date + 54), '676c57fd-45bc-42aa-ac4e-e2f519d515fb', '41ef39ab-5ed7-45cf-a2c0-2ba6d1a8b355', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'ui',
+  'e53792ad-5466-4510-a48c-6321c729dace', 'all', 'e53792ad-5466-4510-a48c-6321c729dace', 'e53792ad-5466-4510-a48c-6321c729dace', (now() - interval '20 days'), (now() - interval '2 days'));
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, moved_by, source) values ('f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '20 days'), 'e53792ad-5466-4510-a48c-6321c729dace', 'ui');
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('5534dd14-2656-4f99-a7cd-c2b29b9fde01', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'Kickoff', 10, 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '20 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('c9d7e6dc-f56e-4007-a4f4-128418b98691', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'Setup', 20, 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '20 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('c47ea31b-351b-4024-a410-b181554a011c', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'First survey', 30, '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '20 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('97f3c41c-c90e-4047-ac8d-cfa91cb2f7ce', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'Handover', 40, 'ce44d450-5b79-4c49-aeab-21b03a9160c9', (now() - interval '20 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('ee06526a-3750-4958-a102-bda57fa4b285', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'task', '5534dd14-2656-4f99-a7cd-c2b29b9fde01', 'Kickoff meeting', 'e53792ad-5466-4510-a48c-6321c729dace', ((now() at time zone 'Europe/Oslo')::date + -20), ((now() at time zone 'Europe/Oslo')::date + -18),
+  false, null, null, 10, 'template',
+  'ef937399-257c-44b3-a624-d4187324a827', (now() - interval '20 days'), (now() - interval '20 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('6e050693-8bdd-49fb-aabe-405139ff160e', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'task', '5534dd14-2656-4f99-a7cd-c2b29b9fde01', 'Upload employee list', null, ((now() at time zone 'Europe/Oslo')::date + -17), ((now() at time zone 'Europe/Oslo')::date + -10),
+  false, null, null, 20, 'template',
+  '73bb0eda-c092-4832-a7e2-a276dc713953', (now() - interval '20 days'), (now() - interval '20 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('654fe73f-08f8-4e28-adb4-1cf653e1cb85', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'milestone', '5534dd14-2656-4f99-a7cd-c2b29b9fde01', 'Employee list ready', null, null, ((now() at time zone 'Europe/Oslo')::date + -9),
+  false, null, null, 30, 'template',
+  'd9150ad5-b963-42aa-a270-37371b7783b8', (now() - interval '20 days'), (now() - interval '20 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('ede474c1-f8af-4160-ad6c-607ddd433fc8', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'task', 'c9d7e6dc-f56e-4007-a4f4-128418b98691', 'Configure departments', null, ((now() at time zone 'Europe/Oslo')::date + -8), ((now() at time zone 'Europe/Oslo')::date + 1),
+  false, null, null, 40, 'template',
+  '293dea2a-a53f-4fa8-a836-90c1449117c8', (now() - interval '20 days'), (now() - interval '20 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('d7e263f6-3dae-4c17-a8ad-1ad4a34f6d94', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'task', 'c9d7e6dc-f56e-4007-a4f4-128418b98691', 'Invite HR and leaders', null, ((now() at time zone 'Europe/Oslo')::date + 0), ((now() at time zone 'Europe/Oslo')::date + 7),
+  false, null, null, 50, 'template',
+  'bbddd6bb-07a8-47e8-a778-3618263389f0', (now() - interval '20 days'), (now() - interval '20 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('56260e86-1f8a-4720-abff-e28303d60586', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'task', 'c47ea31b-351b-4024-a410-b181554a011c', 'Schedule baseline', null, ((now() at time zone 'Europe/Oslo')::date + 10), ((now() at time zone 'Europe/Oslo')::date + 15),
+  false, null, null, 60, 'template',
+  'f982579b-b1f9-49af-a3f0-001868fdde18', (now() - interval '20 days'), (now() - interval '20 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('a56b28fc-b71c-48ef-a171-da6707552fd4', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'milestone', 'c47ea31b-351b-4024-a410-b181554a011c', 'Baseline sent', null, null, ((now() at time zone 'Europe/Oslo')::date + 17),
+  false, null, null, 70, 'template',
+  'f0e13e23-033c-4fd7-a3c5-ecc2c9f77b9e', (now() - interval '20 days'), (now() - interval '20 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('d34fbb13-bbf1-4992-a8f7-6a7a7189e095', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'task', 'c47ea31b-351b-4024-a410-b181554a011c', 'Result review with HR', null, ((now() at time zone 'Europe/Oslo')::date + 32), ((now() at time zone 'Europe/Oslo')::date + 39),
+  false, null, null, 80, 'template',
+  '2458af1e-81a6-4c46-a0f6-6339d7961645', (now() - interval '20 days'), (now() - interval '20 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('7fd14a28-4db8-471a-a981-fdabb2e641e7', 'f8dc8d54-6b9a-4415-ad76-a0c4e8c6bdb5', 'milestone', '97f3c41c-c90e-4047-ac8d-cfa91cb2f7ce', 'Handover to CSM', null, null, ((now() at time zone 'Europe/Oslo')::date + 52),
+  false, null, null, 90, 'template',
+  '15d54706-8b57-486d-a390-e0d4542c08e3', (now() - interval '20 days'), (now() - interval '20 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('6e050693-8bdd-49fb-aabe-405139ff160e', '654fe73f-08f8-4e28-adb4-1cf653e1cb85', 'e53792ad-5466-4510-a48c-6321c729dace', (now() - interval '20 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('654fe73f-08f8-4e28-adb4-1cf653e1cb85', 'ede474c1-f8af-4160-ad6c-607ddd433fc8', 'e53792ad-5466-4510-a48c-6321c729dace', (now() - interval '20 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('56260e86-1f8a-4720-abff-e28303d60586', 'a56b28fc-b71c-48ef-a171-da6707552fd4', 'e53792ad-5466-4510-a48c-6321c729dace', (now() - interval '20 days'));
+insert into app.projects (id, name, board_id, phase_id, phase_entered_at, health, health_set_at, health_set_by, health_source, starts_on, ends_on, person_id, organization_id,
+  template_id, created_source, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  values ('26819919-bc8b-4e7f-a8fd-afe806217077', 'Mørkved IT — upgrade', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'ce44d450-5b79-4c49-aeab-21b03a9160c9', (now() - interval '2 days'), 'on_track', (now() - interval '2 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'manual',
+  ((now() at time zone 'Europe/Oslo')::date + -49), ((now() at time zone 'Europe/Oslo')::date + 25), null, '2a8591b9-1d16-4630-ad88-4e36a1447e21', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'ui',
+  '32993233-d440-48e0-ac00-c6c903c0fb80', 'all', '32993233-d440-48e0-ac00-c6c903c0fb80', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '49 days'), (now() - interval '2 days'));
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, left_at, moved_by, source) values ('26819919-bc8b-4e7f-a8fd-afe806217077', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '49 days'), (now() - interval '40 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, left_at, moved_by, source) values ('26819919-bc8b-4e7f-a8fd-afe806217077', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '40 days'), (now() - interval '23 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, left_at, moved_by, source) values ('26819919-bc8b-4e7f-a8fd-afe806217077', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '23 days'), (now() - interval '2 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, moved_by, source) values ('26819919-bc8b-4e7f-a8fd-afe806217077', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'ce44d450-5b79-4c49-aeab-21b03a9160c9', (now() - interval '2 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('309a8d7d-07d6-45cf-a6ed-2373ad4a1e1e', '26819919-bc8b-4e7f-a8fd-afe806217077', 'Kickoff', 10, 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '49 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('af0f43ec-24d5-44fd-a4d8-5c6dca89ca9f', '26819919-bc8b-4e7f-a8fd-afe806217077', 'Setup', 20, 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '49 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('9df2b26d-f5d8-4c7e-aa75-5416472efeae', '26819919-bc8b-4e7f-a8fd-afe806217077', 'First survey', 30, '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '49 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('bb45756c-b500-457a-a705-9229785f6a0f', '26819919-bc8b-4e7f-a8fd-afe806217077', 'Handover', 40, 'ce44d450-5b79-4c49-aeab-21b03a9160c9', (now() - interval '49 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('4df92147-0164-4f2b-a46d-181f6a00f6c1', '26819919-bc8b-4e7f-a8fd-afe806217077', 'task', '309a8d7d-07d6-45cf-a6ed-2373ad4a1e1e', 'Kickoff meeting', '32993233-d440-48e0-ac00-c6c903c0fb80', ((now() at time zone 'Europe/Oslo')::date + -49), ((now() at time zone 'Europe/Oslo')::date + -47),
+  true, (((now() at time zone 'Europe/Oslo')::date + -47))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 10, 'template',
+  'ef937399-257c-44b3-a624-d4187324a827', (now() - interval '49 days'), (now() - interval '49 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('0f8d4ad8-7860-4bda-ade3-1ac9fa71d8f0', '26819919-bc8b-4e7f-a8fd-afe806217077', 'task', '309a8d7d-07d6-45cf-a6ed-2373ad4a1e1e', 'Upload employee list', null, ((now() at time zone 'Europe/Oslo')::date + -46), ((now() at time zone 'Europe/Oslo')::date + -39),
+  true, (((now() at time zone 'Europe/Oslo')::date + -39))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 20, 'template',
+  '73bb0eda-c092-4832-a7e2-a276dc713953', (now() - interval '49 days'), (now() - interval '49 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('58b88f9a-bc7e-4b46-aba0-34aa77b9c8d3', '26819919-bc8b-4e7f-a8fd-afe806217077', 'milestone', '309a8d7d-07d6-45cf-a6ed-2373ad4a1e1e', 'Employee list ready', null, null, ((now() at time zone 'Europe/Oslo')::date + -38),
+  true, (((now() at time zone 'Europe/Oslo')::date + -38))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 30, 'template',
+  'd9150ad5-b963-42aa-a270-37371b7783b8', (now() - interval '49 days'), (now() - interval '49 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('a183fd01-dc5d-4586-aef1-81cdf11d23b9', '26819919-bc8b-4e7f-a8fd-afe806217077', 'task', 'af0f43ec-24d5-44fd-a4d8-5c6dca89ca9f', 'Configure departments', null, ((now() at time zone 'Europe/Oslo')::date + -37), ((now() at time zone 'Europe/Oslo')::date + -28),
+  true, (((now() at time zone 'Europe/Oslo')::date + -28))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 40, 'template',
+  '293dea2a-a53f-4fa8-a836-90c1449117c8', (now() - interval '49 days'), (now() - interval '49 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('1aaae95e-bb8c-4cc2-af46-101b43c12728', '26819919-bc8b-4e7f-a8fd-afe806217077', 'task', 'af0f43ec-24d5-44fd-a4d8-5c6dca89ca9f', 'Invite HR and leaders', null, ((now() at time zone 'Europe/Oslo')::date + -29), ((now() at time zone 'Europe/Oslo')::date + -22),
+  true, (((now() at time zone 'Europe/Oslo')::date + -22))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 50, 'template',
+  'bbddd6bb-07a8-47e8-a778-3618263389f0', (now() - interval '49 days'), (now() - interval '49 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('f13d82b0-5ec7-44a2-a90f-01b6f22ac5e3', '26819919-bc8b-4e7f-a8fd-afe806217077', 'task', '9df2b26d-f5d8-4c7e-aa75-5416472efeae', 'Schedule baseline', null, ((now() at time zone 'Europe/Oslo')::date + -19), ((now() at time zone 'Europe/Oslo')::date + -14),
+  true, (((now() at time zone 'Europe/Oslo')::date + -14))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 60, 'template',
+  'f982579b-b1f9-49af-a3f0-001868fdde18', (now() - interval '49 days'), (now() - interval '49 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('c69755e4-c51b-4850-a95b-2242c4bd173d', '26819919-bc8b-4e7f-a8fd-afe806217077', 'milestone', '9df2b26d-f5d8-4c7e-aa75-5416472efeae', 'Baseline sent', null, null, ((now() at time zone 'Europe/Oslo')::date + -12),
+  true, (((now() at time zone 'Europe/Oslo')::date + -12))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 70, 'template',
+  'f0e13e23-033c-4fd7-a3c5-ecc2c9f77b9e', (now() - interval '49 days'), (now() - interval '49 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('b015d6cb-d80d-4832-add5-3dca67d1df79', '26819919-bc8b-4e7f-a8fd-afe806217077', 'task', '9df2b26d-f5d8-4c7e-aa75-5416472efeae', 'Result review with HR', null, ((now() at time zone 'Europe/Oslo')::date + 3), ((now() at time zone 'Europe/Oslo')::date + 10),
+  true, (((now() at time zone 'Europe/Oslo')::date + 0))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 80, 'template',
+  '2458af1e-81a6-4c46-a0f6-6339d7961645', (now() - interval '49 days'), (now() - interval '49 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('25f527ed-44c5-43f2-ad51-e30caab2aa55', '26819919-bc8b-4e7f-a8fd-afe806217077', 'milestone', 'bb45756c-b500-457a-a705-9229785f6a0f', 'Handover to CSM', null, null, ((now() at time zone 'Europe/Oslo')::date + 23),
+  false, null, null, 90, 'template',
+  '15d54706-8b57-486d-a390-e0d4542c08e3', (now() - interval '49 days'), (now() - interval '49 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('0f8d4ad8-7860-4bda-ade3-1ac9fa71d8f0', '58b88f9a-bc7e-4b46-aba0-34aa77b9c8d3', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '49 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('58b88f9a-bc7e-4b46-aba0-34aa77b9c8d3', 'a183fd01-dc5d-4586-aef1-81cdf11d23b9', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '49 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('f13d82b0-5ec7-44a2-a90f-01b6f22ac5e3', 'c69755e4-c51b-4850-a95b-2242c4bd173d', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '49 days'));
+insert into app.projects (id, name, board_id, phase_id, phase_entered_at, health, health_set_at, health_set_by, health_source, starts_on, ends_on, person_id, organization_id,
+  template_id, created_source, owner_id, visibility, created_by, updated_by, created_at, updated_at)
+  values ('3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'Tveit Omsorg — verneombud training', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '6 days'), 'at_risk', (now() - interval '2 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'manual',
+  ((now() at time zone 'Europe/Oslo')::date + -32), ((now() at time zone 'Europe/Oslo')::date + 42), '9fccfb54-8736-40c7-ae6c-cb44ae85c623', '76ce311b-ca87-4f8b-ae29-18344febfe78', 'dfb5c4d1-ab28-43e5-ad2b-6e90a9073312', 'ui',
+  '32993233-d440-48e0-ac00-c6c903c0fb80', 'all', '32993233-d440-48e0-ac00-c6c903c0fb80', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '32 days'), (now() - interval '2 days'));
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, left_at, moved_by, source) values ('3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '32 days'), (now() - interval '21 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, left_at, moved_by, source) values ('3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '21 days'), (now() - interval '6 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_phase_history (project_id, board_id, phase_id, entered_at, moved_by, source) values ('3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'bb980bf1-ca90-4315-adc9-42542ef4ad6d', '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '6 days'), '32993233-d440-48e0-ac00-c6c903c0fb80', 'ui');
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('007ac625-de9f-4488-a94e-f33a5e744f6e', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'Kickoff', 10, 'da03a82a-c4db-49c0-aac4-c8562921741b', (now() - interval '32 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('54d80804-892a-4e50-ab73-bbfb30446604', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'Setup', 20, 'ea826064-24ae-4fa1-abfd-0e71ddf2b2fb', (now() - interval '32 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('09ad0abe-5ff4-4176-a7de-2491f1e63cb3', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'First survey', 30, '436f93bc-10b5-48a8-af4d-8382670bfd6d', (now() - interval '32 days'));
+insert into app.project_groups (id, project_id, name, ord, phase_id, created_at) values ('ea157a0e-62da-49fa-aa77-e3aac165ff7d', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'Handover', 40, 'ce44d450-5b79-4c49-aeab-21b03a9160c9', (now() - interval '32 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('ced1b2d7-054b-472c-a036-784c5a763134', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'task', '007ac625-de9f-4488-a94e-f33a5e744f6e', 'Kickoff meeting', '32993233-d440-48e0-ac00-c6c903c0fb80', ((now() at time zone 'Europe/Oslo')::date + -32), ((now() at time zone 'Europe/Oslo')::date + -30),
+  true, (((now() at time zone 'Europe/Oslo')::date + -30))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 10, 'template',
+  'ef937399-257c-44b3-a624-d4187324a827', (now() - interval '32 days'), (now() - interval '32 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('5878a893-a753-4b7d-a72c-47b0ab73f698', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'task', '007ac625-de9f-4488-a94e-f33a5e744f6e', 'Upload employee list', null, ((now() at time zone 'Europe/Oslo')::date + -29), ((now() at time zone 'Europe/Oslo')::date + -22),
+  true, (((now() at time zone 'Europe/Oslo')::date + -22))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 20, 'template',
+  '73bb0eda-c092-4832-a7e2-a276dc713953', (now() - interval '32 days'), (now() - interval '32 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('710e82e6-bfb9-4560-ae1c-c37bf5406dc5', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'milestone', '007ac625-de9f-4488-a94e-f33a5e744f6e', 'Employee list ready', null, null, ((now() at time zone 'Europe/Oslo')::date + -21),
+  true, (((now() at time zone 'Europe/Oslo')::date + -21))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 30, 'template',
+  'd9150ad5-b963-42aa-a270-37371b7783b8', (now() - interval '32 days'), (now() - interval '32 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('59a6538a-7224-45e1-a80d-0f99701fe62e', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'task', '54d80804-892a-4e50-ab73-bbfb30446604', 'Configure departments', null, ((now() at time zone 'Europe/Oslo')::date + -20), ((now() at time zone 'Europe/Oslo')::date + -11),
+  true, (((now() at time zone 'Europe/Oslo')::date + -11))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 40, 'template',
+  '293dea2a-a53f-4fa8-a836-90c1449117c8', (now() - interval '32 days'), (now() - interval '32 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('ccd20e26-4032-4b69-a8b5-5c3801c62ec2', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'task', '54d80804-892a-4e50-ab73-bbfb30446604', 'Invite HR and leaders', null, ((now() at time zone 'Europe/Oslo')::date + -12), ((now() at time zone 'Europe/Oslo')::date + -5),
+  true, (((now() at time zone 'Europe/Oslo')::date + -5))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 50, 'template',
+  'bbddd6bb-07a8-47e8-a778-3618263389f0', (now() - interval '32 days'), (now() - interval '32 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('8deb7d19-6d62-4812-aa2c-382798cc0782', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'task', '09ad0abe-5ff4-4176-a7de-2491f1e63cb3', 'Schedule baseline', null, ((now() at time zone 'Europe/Oslo')::date + -2), ((now() at time zone 'Europe/Oslo')::date + 3),
+  false, null, null, 60, 'template',
+  'f982579b-b1f9-49af-a3f0-001868fdde18', (now() - interval '32 days'), (now() - interval '32 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('b56d22aa-f502-423b-aad6-518c25ce681b', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'milestone', '09ad0abe-5ff4-4176-a7de-2491f1e63cb3', 'Baseline sent', null, null, ((now() at time zone 'Europe/Oslo')::date + 5),
+  false, null, null, 70, 'template',
+  'f0e13e23-033c-4fd7-a3c5-ecc2c9f77b9e', (now() - interval '32 days'), (now() - interval '32 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('a60ec9cf-fe1c-4a6f-a582-14105185f2ed', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'task', '09ad0abe-5ff4-4176-a7de-2491f1e63cb3', 'Result review with HR', null, ((now() at time zone 'Europe/Oslo')::date + 20), ((now() at time zone 'Europe/Oslo')::date + 27),
+  false, null, null, 80, 'template',
+  '2458af1e-81a6-4c46-a0f6-6339d7961645', (now() - interval '32 days'), (now() - interval '32 days'));
+insert into app.project_items (id, project_id, kind, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('6cf6e41b-4b59-457a-aafb-05c0786d5653', '3a1f12d1-f1dd-4883-a59b-943f8124b3c2', 'milestone', 'ea157a0e-62da-49fa-aa77-e3aac165ff7d', 'Handover to CSM', null, null, ((now() at time zone 'Europe/Oslo')::date + 40),
+  false, null, null, 90, 'template',
+  '15d54706-8b57-486d-a390-e0d4542c08e3', (now() - interval '32 days'), (now() - interval '32 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('5878a893-a753-4b7d-a72c-47b0ab73f698', '710e82e6-bfb9-4560-ae1c-c37bf5406dc5', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '32 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('710e82e6-bfb9-4560-ae1c-c37bf5406dc5', '59a6538a-7224-45e1-a80d-0f99701fe62e', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '32 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('8deb7d19-6d62-4812-aa2c-382798cc0782', 'b56d22aa-f502-423b-aad6-518c25ce681b', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '32 days'));
+insert into app.project_items (id, project_id, kind, parent_id, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('59c47d14-14fa-4ac2-ad96-df130e39ed56', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'task', null, 'c928cae7-a5c0-4c63-ae8f-4bc564f2fb5e', 'Kickoff meeting', '32993233-d440-48e0-ac00-c6c903c0fb80',
+  ((now() at time zone 'Europe/Oslo')::date + -6), ((now() at time zone 'Europe/Oslo')::date + -5), true, (((now() at time zone 'Europe/Oslo')::date + -5))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 10,
+  'template', 'ef937399-257c-44b3-a624-d4187324a827', (now() - interval '6 days'), (now() - interval '6 days'));
+insert into app.project_items (id, project_id, kind, parent_id, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('7ffada8d-18ed-4c94-a2ce-c9bf99eaaf7b', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'task', '59c47d14-14fa-4ac2-ad96-df130e39ed56', 'c928cae7-a5c0-4c63-ae8f-4bc564f2fb5e', 'Agree survey dates', '32993233-d440-48e0-ac00-c6c903c0fb80',
+  null, ((now() at time zone 'Europe/Oslo')::date + -5), true, (((now() at time zone 'Europe/Oslo')::date + -5))::timestamptz + interval '15 hours', '32993233-d440-48e0-ac00-c6c903c0fb80', 15,
+  'ui', null, (now() - interval '6 days'), (now() - interval '6 days'));
+insert into app.project_items (id, project_id, kind, parent_id, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('08a7c30b-7cf5-44aa-a956-52a63c323c3b', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'task', null, 'c928cae7-a5c0-4c63-ae8f-4bc564f2fb5e', 'Upload employee list', null,
+  ((now() at time zone 'Europe/Oslo')::date + -5), ((now() at time zone 'Europe/Oslo')::date + -4), false, null, null, 20,
+  'template', '73bb0eda-c092-4832-a7e2-a276dc713953', (now() - interval '6 days'), (now() - interval '6 days'));
+insert into app.project_items (id, project_id, kind, parent_id, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('6e64e6ca-ecf6-4301-a9f7-20a1858f4b10', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'milestone', null, 'c928cae7-a5c0-4c63-ae8f-4bc564f2fb5e', 'Employee list ready', null,
+  null, ((now() at time zone 'Europe/Oslo')::date + 10), false, null, null, 30,
+  'template', 'd9150ad5-b963-42aa-a270-37371b7783b8', (now() - interval '6 days'), (now() - interval '6 days'));
+insert into app.project_items (id, project_id, kind, parent_id, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('41c413b2-0183-4a02-a5b8-43ce18941c45', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'task', null, '591b66a8-0eb3-4cea-a896-56b6ae7f9174', 'Configure departments', '32993233-d440-48e0-ac00-c6c903c0fb80',
+  ((now() at time zone 'Europe/Oslo')::date + 11), ((now() at time zone 'Europe/Oslo')::date + 16), false, null, null, 40,
+  'template', '293dea2a-a53f-4fa8-a836-90c1449117c8', (now() - interval '6 days'), (now() - interval '6 days'));
+insert into app.project_items (id, project_id, kind, parent_id, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('7f4181c1-c444-4f37-a329-442e592a22c2', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'task', null, '591b66a8-0eb3-4cea-a896-56b6ae7f9174', 'Invite HR and leaders', null,
+  ((now() at time zone 'Europe/Oslo')::date + 14), ((now() at time zone 'Europe/Oslo')::date + 21), false, null, null, 50,
+  'template', 'bbddd6bb-07a8-47e8-a778-3618263389f0', (now() - interval '6 days'), (now() - interval '6 days'));
+insert into app.project_items (id, project_id, kind, parent_id, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('8d08fd78-67a8-4290-aef6-6327989ec6fb', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'task', null, 'a78f68b7-8181-4868-a310-087d13cc8c1a', 'Schedule baseline', null,
+  ((now() at time zone 'Europe/Oslo')::date + 24), ((now() at time zone 'Europe/Oslo')::date + 29), false, null, null, 70,
+  'template', 'f982579b-b1f9-49af-a3f0-001868fdde18', (now() - interval '6 days'), (now() - interval '6 days'));
+insert into app.project_items (id, project_id, kind, parent_id, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('60f97229-c448-4159-adb7-a905bcaef3f5', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'milestone', null, 'a78f68b7-8181-4868-a310-087d13cc8c1a', 'Baseline sent', null,
+  null, ((now() at time zone 'Europe/Oslo')::date + 31), false, null, null, 80,
+  'template', 'f0e13e23-033c-4fd7-a3c5-ecc2c9f77b9e', (now() - interval '6 days'), (now() - interval '6 days'));
+insert into app.project_items (id, project_id, kind, parent_id, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('6913bea3-3311-46df-a854-ba10e83f5eaa', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'task', null, 'a78f68b7-8181-4868-a310-087d13cc8c1a', 'Result review with HR', null,
+  ((now() at time zone 'Europe/Oslo')::date + 46), ((now() at time zone 'Europe/Oslo')::date + 53), false, null, null, 90,
+  'template', '2458af1e-81a6-4c46-a0f6-6339d7961645', (now() - interval '6 days'), (now() - interval '6 days'));
+insert into app.project_items (id, project_id, kind, parent_id, group_id, name, owner_id, starts_on, due_on, done, done_at, done_by, ord, source, template_item_id, created_at, updated_at)
+  values ('48195772-4c8a-408e-abbf-20f750159ddb', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'milestone', null, '3ef58757-143b-4ce0-a161-b9fd32f81993', 'Handover to CSM', null,
+  null, ((now() at time zone 'Europe/Oslo')::date + 66), false, null, null, 100,
+  'template', '15d54706-8b57-486d-a390-e0d4542c08e3', (now() - interval '6 days'), (now() - interval '6 days'));
+insert into app.project_item_assignees (item_id, person_id) values ('08a7c30b-7cf5-44aa-a956-52a63c323c3b', '0b29480e-c6f6-44ca-aca1-efb63d0ffac5');
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('08a7c30b-7cf5-44aa-a956-52a63c323c3b', '6e64e6ca-ecf6-4301-a9f7-20a1858f4b10', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '6 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('6e64e6ca-ecf6-4301-a9f7-20a1858f4b10', '41c413b2-0183-4a02-a5b8-43ce18941c45', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '6 days'));
+insert into app.project_item_dependencies (predecessor_id, successor_id, created_by, created_at) values ('8d08fd78-67a8-4290-aef6-6327989ec6fb', '60f97229-c448-4159-adb7-a905bcaef3f5', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '6 days'));
+insert into app.activities (id, type_id, subject, starts_at, duration_min, owner_id, visibility, project_id, deal_id, organization_id, person_id, created_by, updated_by, created_at, updated_at)
+  values ('61bf7fc2-b71a-43bf-a9bb-3092343a0b8c', (select id from app.activity_types where key = 'call'), 'Training call with shift leads',
+  (((now() at time zone 'Europe/Oslo')::date + ((11 - extract(isodow from now() at time zone 'Europe/Oslo')::int) % 7)) + time '10:00') at time zone 'Europe/Oslo',
+  60, 'e53792ad-5466-4510-a48c-6321c729dace', 'group', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'e881fda1-c2f4-4d97-a646-535096f3fd6b', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9', '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', '32993233-d440-48e0-ac00-c6c903c0fb80', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '4 days'), (now() - interval '4 days'));
+insert into app.project_items (id, project_id, kind, group_id, activity_id, ord, source, created_at, updated_at) values ('b2e9b5e2-c269-469a-ade8-7d365eb9e1f8', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'activity', '591b66a8-0eb3-4cea-a896-56b6ae7f9174', '61bf7fc2-b71a-43bf-a9bb-3092343a0b8c', 60, 'ui', (now() - interval '4 days'), (now() - interval '4 days'));
+insert into app.followers (entity, record_id, staff_id, created_at) values ('project', '663d8b98-d3bb-4b8f-a563-117af4d88163', '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '5 days'));
+insert into app.followers (entity, record_id, staff_id, created_at) values ('project', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'e53792ad-5466-4510-a48c-6321c729dace', (now() - interval '5 days'));
+insert into app.notes (id, entity, record_id, body, mentions, author_id, created_at, updated_at) values ('b825c7c4-b404-4eb2-a97f-4b94da24326f', 'project', '663d8b98-d3bb-4b8f-a563-117af4d88163',
+  '@Magnus kan du ta opplæringen av skiftlederne torsdag?', array['e53792ad-5466-4510-a48c-6321c729dace']::uuid[], '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '4 days'), (now() - interval '4 days'));
+insert into app.email_links (thread_id, entity, record_id, linked_by, staff_id) select t.id, 'project', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'manual', '32993233-d440-48e0-ac00-c6c903c0fb80'
+  from app.email_threads t where t.subject = 'Re: Forslag — Skiftly for lageret';
 update app.event_cursors set last_event_id = coalesce((select max(id) from app.events), 0), updated_at = now();
 select app.scores_nightly();
 select app.feed_checks();

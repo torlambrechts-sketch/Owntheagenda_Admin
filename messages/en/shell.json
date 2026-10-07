@@ -318,6 +318,124 @@
             "title": "A guest opted out of recording {record}",
             "body": "The meeting will not be recorded."
           }
+        },
+        "security": {
+          "new_device": {
+            "title": "Sign-in from a new device",
+            "body": "Open Security to see who and where."
+          },
+          "new_location": {
+            "title": "Sign-in from a new location",
+            "body": "Open Security to see who and where."
+          },
+          "failed_logins": {
+            "title": "Repeated failed sign-ins",
+            "body": "An account had several failed attempts in a short time."
+          },
+          "account_locked": {
+            "title": "An account was locked",
+            "body": "It stays locked until it is unlocked or the lock expires."
+          },
+          "user_invited": {
+            "title": "A staff member was invited",
+            "body": "Check that the invitation was expected."
+          },
+          "password_reset": {
+            "title": "A password was reset",
+            "body": "Check that the reset was expected."
+          },
+          "large_export": {
+            "title": "A large export was made",
+            "body": "Open the audit log for the details."
+          },
+          "large_delete": {
+            "title": "Many records were deleted",
+            "body": "Open the audit log for the details."
+          },
+          "session_revoked": {
+            "title": "A session was ended",
+            "body": "A session was revoked from Security."
+          },
+          "mfa_reset": {
+            "title": "Two-factor was reset for a staff member",
+            "body": "They must set it up again at their next sign-in."
+          },
+          "ip_blocked": {
+            "title": "A sign-in was blocked by the IP allowlist",
+            "body": "The address is not on the allowlist."
+          },
+          "time_blocked": {
+            "title": "A sign-in was blocked outside sign-in hours",
+            "body": "It happened outside the allowed hours."
+          },
+          "api_token_old": {
+            "title": "An API token is old",
+            "body": "Rotate it or revoke it under Platform › API."
+          },
+          "webhook_banned": {
+            "title": "A webhook was paused after repeated failures",
+            "body": "Its target kept failing; check it under Platform › API."
+          },
+          "incident_logged": {
+            "title": "A security incident was logged",
+            "body": "Open Security › Privacy to follow it up."
+          },
+          "admin_login": {
+            "title": "An administrator signed in",
+            "body": "An account with full rights started a session."
+          },
+          "digest": {
+            "title": "Security digest: {count, plural, one {# event} other {# events}}",
+            "body": "Events from {day} gathered in one notice."
+          },
+          "mfa_reset_by_owner": {
+            "title": "Your two-factor was reset",
+            "body": "Set it up again the next time you sign in."
+          },
+          "mfa_reminder": {
+            "title": "Please set up two-factor sign-in",
+            "body": "An administrator asked you to turn it on."
+          },
+          "access_review_due": {
+            "title": "An access review is due",
+            "body": "Due {due_on}. Open Security to review who has which rights."
+          },
+          "erasure_approval": {
+            "title": "An erasure request waits for approval",
+            "body": "A second person must approve it before it runs."
+          },
+          "incident_deadline": {
+            "title": "An incident deadline is near",
+            "body": "{hours} hours remain to notify the authority."
+          }
+        },
+        "job": {
+          "failed": {
+            "title": "A scheduled job failed",
+            "body": "{job} · open Platform › Job monitor."
+          }
+        },
+        "webhook": {
+          "banned": {
+            "title": "A webhook to {host} was paused",
+            "body": "{event} · repeated failures; deliveries resume when you turn it on again."
+          },
+          "deleted": {
+            "title": "A webhook to {host} was removed",
+            "body": "{event} · it failed for three days without one success."
+          }
+        },
+        "api": {
+          "budget_warning": {
+            "title": "API usage is at {percent} % of the budget",
+            "body": "The monthly budget is {budget} calls."
+          }
+        },
+        "capture": {
+          "transcript_ready": {
+            "title": "Your voice note is transcribed",
+            "body": "Open the record to read it."
+          }
         }
       }
     },

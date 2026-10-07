@@ -1,5 +1,12 @@
 # Requests: Platform (Phase 8 screen build)
 
+## Status
+
+| Request | Status |
+|---|---|
+| R-01 | Done: the `job.*`, `webhook.*`, `api.*`, `security.*` and `capture.*` texts are in `shell.json`; the bell knows kind `assignment` (`lib/notification-kinds.ts`) |
+| R-02..R-06 | Open: an API scopes read, an open-problems list, product-command recording (edge), the Orgpuls reply contracts (D-40), webhook secret rotation |
+
 What the Platform screens need beyond `0044_platform.sql`. None of it blocks the screens: each item is left out or shown in
 its honest state until the change exists (`deviations/platform.md`).
 

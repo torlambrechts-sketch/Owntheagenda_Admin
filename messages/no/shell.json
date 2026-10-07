@@ -318,6 +318,124 @@
             "title": "En gjest har reservert seg mot opptak av {record}",
             "body": "Møtet blir ikke tatt opp."
           }
+        },
+        "security": {
+          "new_device": {
+            "title": "Innlogging fra en ny enhet",
+            "body": "Åpne Sikkerhet for å se hvem og hvor."
+          },
+          "new_location": {
+            "title": "Innlogging fra et nytt sted",
+            "body": "Åpne Sikkerhet for å se hvem og hvor."
+          },
+          "failed_logins": {
+            "title": "Gjentatte mislykkede innlogginger",
+            "body": "En konto hadde flere mislykkede forsøk på kort tid."
+          },
+          "account_locked": {
+            "title": "En konto ble låst",
+            "body": "Den er låst til den låses opp eller låsen utløper."
+          },
+          "user_invited": {
+            "title": "En ansatt ble invitert",
+            "body": "Sjekk at invitasjonen var ventet."
+          },
+          "password_reset": {
+            "title": "Et passord ble tilbakestilt",
+            "body": "Sjekk at tilbakestillingen var ventet."
+          },
+          "large_export": {
+            "title": "En stor eksport ble gjort",
+            "body": "Åpne revisjonsloggen for detaljer."
+          },
+          "large_delete": {
+            "title": "Mange poster ble slettet",
+            "body": "Åpne revisjonsloggen for detaljer."
+          },
+          "session_revoked": {
+            "title": "En økt ble avsluttet",
+            "body": "En økt ble tilbakekalt fra Sikkerhet."
+          },
+          "mfa_reset": {
+            "title": "Totrinnsinnlogging ble tilbakestilt for en ansatt",
+            "body": "De må sette den opp igjen ved neste innlogging."
+          },
+          "ip_blocked": {
+            "title": "En innlogging ble stoppet av IP-listen",
+            "body": "Adressen står ikke på listen over tillatte adresser."
+          },
+          "time_blocked": {
+            "title": "En innlogging ble stoppet utenfor innloggingstidene",
+            "body": "Den skjedde utenfor de tillatte tidene."
+          },
+          "api_token_old": {
+            "title": "En API-nøkkel er gammel",
+            "body": "Bytt den ut eller trekk den tilbake under Plattform › API."
+          },
+          "webhook_banned": {
+            "title": "En webhook ble satt på pause etter gjentatte feil",
+            "body": "Målet feilet gang på gang; sjekk det under Plattform › API."
+          },
+          "incident_logged": {
+            "title": "En sikkerhetshendelse ble registrert",
+            "body": "Åpne Sikkerhet › Personvern for å følge den opp."
+          },
+          "admin_login": {
+            "title": "En administrator logget inn",
+            "body": "En konto med alle rettigheter startet en økt."
+          },
+          "digest": {
+            "title": "Sikkerhetsoversikt: {count, plural, one {# hendelse} other {# hendelser}}",
+            "body": "Hendelser fra {day} samlet i ett varsel."
+          },
+          "mfa_reset_by_owner": {
+            "title": "Totrinnsinnloggingen din ble tilbakestilt",
+            "body": "Sett den opp igjen neste gang du logger inn."
+          },
+          "mfa_reminder": {
+            "title": "Sett opp totrinnsinnlogging",
+            "body": "En administrator har bedt deg slå den på."
+          },
+          "access_review_due": {
+            "title": "En tilgangsgjennomgang forfaller",
+            "body": "Frist {due_on}. Åpne Sikkerhet for å gå gjennom hvem som har hvilke rettigheter."
+          },
+          "erasure_approval": {
+            "title": "En sletteforespørsel venter på godkjenning",
+            "body": "En person til må godkjenne den før den kjøres."
+          },
+          "incident_deadline": {
+            "title": "Fristen for en hendelse nærmer seg",
+            "body": "{hours} timer igjen til tilsynet må varsles."
+          }
+        },
+        "job": {
+          "failed": {
+            "title": "En planlagt jobb feilet",
+            "body": "{job} · åpne Plattform › Jobbovervåking."
+          }
+        },
+        "webhook": {
+          "banned": {
+            "title": "En webhook til {host} ble satt på pause",
+            "body": "{event} · gjentatte feil; leveringen fortsetter når du slår den på igjen."
+          },
+          "deleted": {
+            "title": "En webhook til {host} ble fjernet",
+            "body": "{event} · den feilet i tre dager uten ett vellykket forsøk."
+          }
+        },
+        "api": {
+          "budget_warning": {
+            "title": "API-bruken er på {percent} % av budsjettet",
+            "body": "Månedsbudsjettet er {budget} kall."
+          }
+        },
+        "capture": {
+          "transcript_ready": {
+            "title": "Talenotatet ditt er transkribert",
+            "body": "Åpne posten for å lese det."
+          }
         }
       }
     },

@@ -75,7 +75,7 @@ export function MeetingPanel({ bundle, capabilities, loading, onChanged, me, pro
       </div>
 
       {tab === 'brief' ? <BriefTab key={bundle.brief?.generated_at ?? 'none'} detail={d} brief={bundle.brief} onChanged={onChanged} me={me} products={products} /> : null}
-      {tab === 'transcript' ? <TranscriptTab key={d.transcript?.id ?? 'none'} bundle={bundle} capabilities={capabilities} onChanged={onChanged} me={me} /> : null}
+      {tab === 'transcript' ? <TranscriptTab key={d.transcript ? `${d.transcript.id}:${d.transcript.state}` : 'none'} bundle={bundle} capabilities={capabilities} onChanged={onChanged} me={me} /> : null}
       {tab === 'suggest' ? <SuggestionsTab detail={d} rows={bundle.suggestions} labels={bundle.labels} onChanged={onChanged} me={me} /> : null}
 
       <ConsentCard detail={d} capabilities={capabilities} onChanged={onChanged} me={me} />

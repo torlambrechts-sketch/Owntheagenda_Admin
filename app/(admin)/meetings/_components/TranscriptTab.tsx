@@ -8,7 +8,7 @@ import { useToast } from '@/components/ui/Toast'
 import { recordHref } from '@/lib/records-href'
 import type { Capabilities, MeetingBundle, Segment, Speaker } from '@/lib/data/meetings'
 import { clock, minutes } from '@/lib/data/meetings-shared'
-import { fetchTranscriptPage, mapSpeaker, planNextStep, regenerateRecap, retryTranscript, saveRecapNote } from '../actions'
+import { fetchTranscriptPage, mapSpeaker, planNextStep, readTranscriptNow, regenerateRecap, retryTranscript, saveRecapNote } from '../actions'
 import { Modal, btn32, btnCancel, btnConfirm, card18, eyebrowAmber, field, fieldInput, quiet, useFail, type Me } from './kit'
 
 type Props = { bundle: MeetingBundle; capabilities: Capabilities; onChanged: () => Promise<void>; me: Me }
@@ -17,6 +17,7 @@ type Props = { bundle: MeetingBundle; capabilities: Capabilities; onChanged: () 
 export function TranscriptTab({ bundle, capabilities, onChanged, me }: Props) {
   const t = useTranslations('meetings.transcript')
   const fail = useFail()
+  const flash = useToast()
   const d = bundle.detail
   const tr = d.transcript
   const [segments, setSegments] = useState<Segment[]>(bundle.transcript?.segments ?? [])
@@ -24,6 +25,8 @@ export function TranscriptTab({ bundle, capabilities, onChanged, me }: Props) {
   const [busy, setBusy] = useState(false)
   const box = useRef<HTMLDivElement>(null)
   const speakers = new Map((bundle.transcript?.speakers ?? []).map((s) => [s.label, s]))
+  // a .txt or .docx without timings is stored at 0 with no end (the schema needs a start): no clock is shown for it
+  const untimed = segments.length > 0 && segments.every((s) => s.start_ms === 0 && s.end_ms === null)
 
   const more = async () => {
     if (next === null) return
@@ -40,6 +43,16 @@ export function TranscriptTab({ bundle, capabilities, onChanged, me }: Props) {
     const r = await retryTranscript(tr.id)
     setBusy(false)
     if (!r.ok) { fail(r); return }
+    await onChanged()
+  }
+  // an uploaded file still waiting (the reader could not be reached when it landed): ask jobs-run again (0054)
+  const readNow = async () => {
+    if (!tr) return
+    setBusy(true)
+    const r = await readTranscriptNow(tr.id)
+    setBusy(false)
+    if (!r.ok) { fail(r); return }
+    if (r.job.state === 'pending') flash(r.job.reason === 'busy' ? t('readBusy') : t('readStillPending'))
     await onChanged()
   }
   const jump = (seq: number | null) => {
@@ -76,9 +89,14 @@ export function TranscriptTab({ bundle, capabilities, onChanged, me }: Props) {
         </div>
         {tr.source === 'upload' && tr.file_name ? <span className="text-11.5 text-faint">{t('uploaded', { file: tr.file_name })}</span> : null}
         {tr.state === 'processing' ? <span className={quiet}>{tr.source === 'upload' ? t('processingUpload') : t('processing')}</span> : null}
+        {tr.state === 'processing' && tr.source === 'upload' && d.can_edit ? (
+          <button type="button" disabled={busy} onClick={() => void readNow()} className={btn32}>{t('readNow')}</button>
+        ) : null}
         {tr.state === 'failed' ? (
           <div className="flex flex-col gap-2">
-            <span className="text-12.5 leading-[1.5] text-danger">{t('failed', { code: tr.error_code ?? '—' })}</span>
+            <span className="text-12.5 leading-[1.5] text-danger">
+              {tr.source === 'upload' && tr.error_code && t.has(`uploadReason.${tr.error_code}`) ? t(`uploadReason.${tr.error_code}`) : t('failed', { code: tr.error_code ?? '—' })}
+            </span>
             {tr.source === 'upload' ? <span className={quiet}>{t('failedUpload')}</span> : (
               <>
                 <button type="button" disabled={busy || !d.can_edit || capabilities.transcription !== 'connected'} onClick={() => void retry()} className={btn32}>{t('retry')}</button>
@@ -92,7 +110,7 @@ export function TranscriptTab({ bundle, capabilities, onChanged, me }: Props) {
           const who = sp?.name ?? (sp?.email ? d.attendee_list.find((a) => a.email.toLowerCase() === sp.email)?.name : null) ?? s.label ?? t('unknownSpeaker')
           return (
             <div key={s.seq} data-seq={s.seq} className="grid gap-[10px] rounded-6 text-12.5 transition-colors [grid-template-columns:48px_minmax(0,1fr)]">
-              <span className="pt-[2px] font-mono text-11 text-faint">{clock(s.start_ms)}</span>
+              <span className="pt-[2px] font-mono text-11 text-faint">{untimed ? '' : clock(s.start_ms)}</span>
               <span className="leading-[1.55]">
                 <b style={{ color: sp?.kind === 'staff' ? '#191510' : '#2F5D2A' }}>{who}:</b>{' '}
                 {s.redacted ? <i className="text-faint">{t('redacted')}</i> : s.text}

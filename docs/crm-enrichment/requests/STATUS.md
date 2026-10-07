@@ -66,4 +66,13 @@ without the tickets scope, the toast's shadow, and the Overview failing for staf
 | Meetings R-MEETINGS-03 | Organisation name on health and applications facts | Done in 0050 · screen done (brief) |
 | Meetings R-MEETINGS-04 | Currency on value suggestions | Done in 0050 · screen done (suggestions) |
 | Meetings R-MEETINGS-05 | `speakers[].email` | Done in 0050 · screen done (speakers) |
-| Meetings R-MEETINGS-06 | meeting-files bucket and signer | Open: storage and an edge function |
+| Meetings R-MEETINGS-06 | meeting-files bucket, signer and upload reader | Done in 0052 + `storage-sign` and 0054 + `jobs-run` · screen done; the functions are not deployed |
+
+## Jobs (0054)
+
+«0054» is `supabase/migrations/0054_jobs.sql`, proved by `supabase/tests/storage_invariants.sql`; the runner is `supabase/functions/jobs-run`.
+
+| Request | What | Status |
+|---|---|---|
+| Meetings R-MEETINGS-06 | Transcript upload reader (.vtt, .srt, .txt, .docx) | Done in 0054 + `jobs-run` · screen done (toast, «Read now», reasons); not deployed |
+| Security R-SECURITY-03 | Privacy package worker | Done in 0054 + `jobs-run` · screen done («Export ready», «Write package now»); not deployed |

@@ -5,7 +5,7 @@ import { useFormatter, useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import type { FindResult, Incident, PreviewResult, PrivacyJob, PrivacyRequest, RetentionRule, Subprocessor } from '@/lib/data/security'
 import { foundIn, intervalUnit } from '@/lib/data/security-shared'
-import { incidentSave, privacyApprove, privacyDownload, privacyErase, privacyExport, privacyFind, privacyPreview, subprocessorSave } from '../actions'
+import { incidentSave, privacyApprove, privacyBuild, privacyDownload, privacyErase, privacyExport, privacyFind, privacyPreview, subprocessorSave } from '../actions'
 import { Modal, dialogCancel, dialogDanger, dialogInput, sx, useErrorText, useGuarded, useWhen } from './kit'
 
 type Person = FindResult['people'][number]
@@ -121,7 +121,7 @@ function Finder({ requests }: { requests: PrivacyRequest[] | null }) {
               onRequest={setRequest}
               onExport={async () => {
                 const r = await run((reason) => privacyExport({ subject: { people: [picked.person.id] }, request, reason }))
-                if (r.ok) { flash(t('exported')); setRequest(null) }
+                if (r.ok) { flash(r.job.state === 'done' ? t('exportedReady') : r.job.state === 'failed' ? t('exportedFailed') : t('exported')); setRequest(null) }
               }}
               onErase={() => setErase(true)}
             />
@@ -281,6 +281,19 @@ function Jobs({ jobs, now, meName, storage }: { jobs: PrivacyJob[]; now: string;
               {j.approved_by ? ` · ${t('approvedBy', { name: j.approved_by })}` : ''}
               {j.error ? ` · ${t('failedJob')}` : ''}
             </span>
+            {j.kind === 'export' && (j.state === 'approved' || j.state === 'running') && (j.created_by === meName || j.approved_by === meName) ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" className={sx.btn} disabled={busy || fetching === j.id} onClick={async () => {
+                  setFetching(j.id)
+                  try {
+                    const r = await run(() => privacyBuild({ job: j.id }))
+                    if (r.ok) flash(r.job.state === 'done' ? t('written') : r.job.state === 'failed' ? t('writeFailed') : r.job.reason === 'busy' ? t('writeBusy') : t('writePending'))
+                  } finally {
+                    setFetching(null)
+                  }
+                }}>{t('writeNow')}</button>
+              </div>
+            ) : null}
             {j.kind === 'export' && j.state === 'done' && storage && live(j) ? (
               <div className="flex flex-wrap items-center gap-2">
                 <button type="button" className={sx.btn} disabled={fetching === j.id} onClick={() => void download(j.id)}>{t('download')}</button>

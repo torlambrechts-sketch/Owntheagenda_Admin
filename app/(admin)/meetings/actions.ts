@@ -4,6 +4,8 @@ import { z } from 'zod'
 import { rpc, type RpcCode } from '@/lib/rpc'
 import { getShell } from '@/lib/shell'
 import { signForMe } from '@/lib/storage/server'
+import { runJobForMe } from '@/lib/jobs/server'
+import type { JobRun } from '@/lib/jobs/run'
 import {
   loadControls, loadMailboxOptions, loadMeeting, loadMySettings, loadTranscript, loadWorkspace, searchLinkable,
   type Controls, type MailboxOption, type MeetingBundle, type MySettings, type Transcript, type Workspace,
@@ -212,7 +214,9 @@ export async function setRecordingSetting(input: unknown): Promise<Res> {
 // ---------------------------------------------------------------------------
 // Upload transcript (MTG-06): meeting_transcript_upload_begin checks the type, the extension and the 5 MB and makes the new
 // unlinked meeting with a pending upload → storage-sign signs that upload's path (0052) → the browser sends the file →
-// meeting_transcript_upload_done queues it for the upload parser. The path never comes from the browser.
+// meeting_transcript_upload_done confirms it → jobs-run reads it into the meeting right away (0054), with the staff
+// member's own token. The path never comes from the browser. If the reader cannot be reached the upload still stands: the
+// transcript waits («Waiting to be read …») and «Read now» asks again.
 const UploadBegun = z.object({ id: uuid, meeting_id: uuid, bucket: z.literal('meeting-files'), path: z.string().min(3).max(500), expires_in: z.number() })
 
 export async function transcriptUploadBegin(input: unknown): Promise<Res<{ id: string; meetingId: string; url: string }>> {
@@ -225,9 +229,18 @@ export async function transcriptUploadBegin(input: unknown): Promise<Res<{ id: s
   return { ok: true, id: begun.data.id, meetingId: begun.data.meeting_id, url: signed.url }
 }
 
-export async function transcriptUploadDone(input: unknown): Promise<Res<{ transcriptId: string }>> {
+export async function transcriptUploadDone(input: unknown): Promise<Res<{ transcriptId: string; job: JobRun }>> {
   const p = uuid.safeParse(input)
   if (!p.success) return bad
   const r = await rpc('meeting_transcript_upload_done', { p_upload: p.data }, z.object({ id: uuid, transcript_id: uuid, state: z.string() }))
-  return r.ok ? { ok: true, transcriptId: r.data.transcript_id } : fail(r)
+  if (!r.ok) return fail(r)
+  const job = await runJobForMe({ kind: 'transcript', id: r.data.transcript_id })
+  return { ok: true, transcriptId: r.data.transcript_id, job }
+}
+
+/** «Read now»: an uploaded transcript still waiting is read again (the database checks it is the caller's own upload). */
+export async function readTranscriptNow(input: unknown): Promise<Res<{ job: JobRun }>> {
+  const p = uuid.safeParse(input)
+  if (!p.success) return bad
+  return { ok: true, job: await runJobForMe({ kind: 'transcript', id: p.data }) }
 }

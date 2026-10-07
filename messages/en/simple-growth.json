@@ -1,3 +1,293 @@
 {
-  "simpleGrowth": {}
+  "simpleGrowth": {
+    "noAccess": {
+      "title": "Not available to you",
+      "body": "This part of Growth needs the right to see campaign or company reports, or Campaigns › See. Ask an administrator if you need it."
+    },
+    "tabs": {
+      "label": "Growth",
+      "analytics": "Analytics",
+      "seo": "SEO",
+      "campaigns": "Marketing campaigns",
+      "email": "Email and automation"
+    },
+    "range": {
+      "label": "Period",
+      "7d": "7 d",
+      "30d": "30 d",
+      "90d": "90 d"
+    },
+    "analytics": {
+      "kpi": {
+        "visitors": "Visitors",
+        "signups": "Signups",
+        "visitSignup": "Visit → signup",
+        "trialPaid": "Trial → paid",
+        "trialPaidTip": "Trials started in the cohort months that became paying within 45 days (as Analytics › Business).",
+        "cost": "Cost per customer",
+        "costNone": "No marketing spend has been entered for this period. Enter it on a campaign under Marketing campaigns.",
+        "costTip": "Spend entered from {from} ÷ {customers} new paying customers in the same months. Spend is entered per month."
+      },
+      "tracker": {
+        "waiting": "Visitors appear once the website tracker runs on {site}.",
+        "noSite": "No public website is registered for {app}, so there are no visitors to count."
+      },
+      "chart": {
+        "title": "Visitors and signups",
+        "visitors": "Visitors",
+        "signupsScaled": "Signups (scaled)",
+        "signups": "Signups"
+      },
+      "funnel": {
+        "title": "From visit to paying customer",
+        "visited": "Visited the site",
+        "viewed_pricing": "Viewed pricing",
+        "started_signup": "Started signup",
+        "account_created": "Created account",
+        "survey_sent": "Sent first survey",
+        "paying": "Became paying",
+        "topMissing": "Visits, pricing views and started signups need the website tracker. The bottom three steps follow the accounts created in this period."
+      },
+      "sources": {
+        "title": "Where visitors come from",
+        "source": "Source",
+        "visits": "Visits",
+        "signups": "Signups",
+        "conv": "Conv.",
+        "empty": "No signups in this period.",
+        "visitsMissing": "Signups by the channel of their first visit. Visits appear once the website tracker runs."
+      },
+      "pages": {
+        "title": "Top landing pages",
+        "sub": "Pages that bring signups",
+        "none": "No visits in this period.",
+        "signupsMissing": "A visit cannot be joined to a signup (the tracker keeps no cookie), so signups per page are not known."
+      },
+      "channels": {
+        "organic_search": "Organic search",
+        "paid_search": "Paid search",
+        "direct": "Direct",
+        "social": "Social",
+        "partner": "Referral",
+        "email": "Email",
+        "paid_social": "Paid social"
+      }
+    },
+    "seo": {
+      "kpi": {
+        "clicks": "Organic clicks",
+        "impressions": "Impressions",
+        "position": "Average position"
+      },
+      "connect": {
+        "title": "Connect Search Console",
+        "body": "Clicks, impressions and positions for {site} are imported every night once Search Console is connected. Until then no figure is shown.",
+        "noSite": "No public website is registered for {app}, so there is nothing to connect.",
+        "button": "Connect Search Console",
+        "reason": "Not available yet: the Google sign-in that connects Search Console has not been built."
+      },
+      "keywords": {
+        "title": "Tracked keywords",
+        "placeholder": "Add a keyword to track",
+        "track": "Track",
+        "cols": {
+          "keyword": "Keyword",
+          "impressions": "Impressions",
+          "position": "Position",
+          "change": "Change",
+          "page": "Ranking page"
+        },
+        "notRanking": "Not ranking yet",
+        "remove": "Stop tracking «{q}»",
+        "empty": "No keywords tracked yet.",
+        "noSite": "No public website is registered for {app}.",
+        "duplicate": "That keyword is already tracked.",
+        "limit": "200 keywords are tracked already. Remove one first.",
+        "tracked": "Keyword tracked · first position tomorrow",
+        "trackedNotConnected": "Keyword tracked · positions appear once Search Console is connected",
+        "removed": "Keyword no longer tracked"
+      }
+    },
+    "campaigns": {
+      "totals": {
+        "spent": "Spent <b>{spent}</b> of {budget}",
+        "visits": "Visits <b>{n}</b>",
+        "signups": "Signups <b>{n}</b>",
+        "cps": "Cost per signup <b>{v}</b>"
+      },
+      "new": "＋ New campaign",
+      "cols": {
+        "campaign": "Campaign",
+        "status": "Status",
+        "spent": "Spent",
+        "signups": "Signups",
+        "cps": "Per signup"
+      },
+      "states": {
+        "scheduled": "Scheduled",
+        "live": "Live",
+        "paused": "Paused",
+        "ended": "Ended"
+      },
+      "channels": {
+        "google_ads": "Google Ads",
+        "linkedin": "LinkedIn",
+        "facebook": "Facebook",
+        "newsletter": "Newsletter",
+        "webinar": "Webinar",
+        "other": "Other"
+      },
+      "empty": "No campaigns yet. ＋ New campaign makes one with its tracking link.",
+      "emptyNoRight": "No campaigns yet.",
+      "dates": {
+        "from": "From {date}",
+        "until": "Until {date}",
+        "none": "No dates set"
+      },
+      "copyName": "{name} (copy)",
+      "stats": {
+        "visits": "Visits",
+        "signups": "Signups",
+        "conversion": "Conversion",
+        "cps": "Per signup"
+      },
+      "budgetUsed": "Budget used",
+      "toggle": {
+        "pause": "Pause",
+        "resume": "Resume",
+        "launch": "Launch now",
+        "duplicate": "Duplicate",
+        "noRight": "Changing another person’s campaign needs Campaigns › Edit others.",
+        "recordOnly": "Pause, resume and launch change the status here only. They do not pause or start the ads on {channel}."
+      },
+      "spend": {
+        "title": "Spend",
+        "none": "No spend entered yet.",
+        "month": "Month",
+        "amount": "Spend (kr)",
+        "save": "Save spend",
+        "saved": "Spend saved",
+        "removed": "Spend removed"
+      },
+      "link": {
+        "title": "Tracking link",
+        "copy": "Copy link",
+        "copied": "Tracking link copied",
+        "note": "Visits and signups with this link are counted in Analytics under the campaign’s source.",
+        "noSite": "No public website is registered for {app}, so the link cannot be made yet."
+      },
+      "toast": {
+        "created": "Campaign created · tracking link ready",
+        "duplicated": "Campaign duplicated",
+        "live": "Marked live here · the ads run only if they are live on {channel}",
+        "paused": "Marked paused here · pause the ads on {channel} as well"
+      },
+      "modal": {
+        "title": "New marketing campaign",
+        "name": "Name",
+        "namePlaceholder": "e.g. Lovkrav — Q4",
+        "channel": "Channel",
+        "budget": "Budget (NOK)",
+        "starts": "Starts",
+        "ends": "Ends",
+        "landing": "Landing page",
+        "cancel": "Cancel",
+        "create": "Create campaign"
+      }
+    },
+    "email": {
+      "new": "＋ New email campaign",
+      "row": "{steps, plural, one {# step} other {# steps}} · {enrolled} enrolled · opens {open}",
+      "states": {
+        "active": "Active",
+        "paused": "Paused",
+        "draft": "Draft"
+      },
+      "empty": "No email campaigns yet.",
+      "emptyEditor": "Make one with ＋ New email campaign.",
+      "emptyEditorNoRight": "No email campaign to show.",
+      "name": "Name",
+      "activate": "Activate",
+      "pause": "Pause",
+      "readOnly": "You can read this. Changing it needs Deals › Manage workflows, Campaigns › Manage workflows and Campaigns › Add (and Global › Configure for someone else’s).",
+      "runningBlocked": "Running, but {reason}",
+      "blockers": {
+        "not_connected:email": "Activate is off: no email provider is connected, so nothing can be sent.",
+        "campaign_inactive": "Activate is off: its emails are drafts until they are activated in Campaigns.",
+        "sender_domain_unverified": "Activate is off: the sender domain is not verified.",
+        "limit": "Activate is off: the most active workflows allowed are already running.",
+        "other": "Activate is off: a step cannot run yet."
+      },
+      "trigger": "Starts when",
+      "list": "Send to list",
+      "exit": "Stop when",
+      "triggers": {
+        "trial_started": "Account signs up for a trial",
+        "trial_ending": "Trial has 5 days left",
+        "list_added": "Added to a list",
+        "account_cancels": "Account cancels",
+        "deal_stage": "Deal moves to {stage}",
+        "form_submitted": "Contact fills in a form",
+        "send_now": "Send once to the list now"
+      },
+      "proposalSent": "Proposal sent",
+      "unavailable": "{name} — {reason}",
+      "triggerWhy": {
+        "trial_started": "not yet: an account has no single contact to email",
+        "trial_ending": "not yet: no trial-end trigger",
+        "list_added": "not yet: no list-entry trigger",
+        "account_cancels": "not yet: an account has no single contact to email",
+        "deal_stage": "no stage named Proposal sent",
+        "form_submitted": "not available",
+        "send_now": "a one-off send is a broadcast campaign"
+      },
+      "lists": {
+        "anyone": "Anyone the trigger starts",
+        "unknown": "A list you cannot see"
+      },
+      "exits": {
+        "reply_unsub": "Contact replies or unsubscribes",
+        "paying": "Account becomes paying",
+        "never": "Never"
+      },
+      "kinds": {
+        "email": "Email",
+        "wait": "Wait",
+        "cond": "Condition",
+        "task": "Task for sales"
+      },
+      "stepLabel": "Step {i} · {kind}",
+      "waitText": "Wait {n, plural, one {# day} other {# days}}",
+      "waitInvalid": "Write the wait as a number of days, from 1 to 365.",
+      "conditions": {
+        "not_paying": "If the account is not paying yet",
+        "employees_missing": "If the employee list is not uploaded",
+        "on_list": "If the contact is on the list",
+        "opened_last": "If the contact opened the last email"
+      },
+      "conditionWhy": {
+        "on_list": "choose a list first",
+        "opened_last": "not yet: email opens are not a condition"
+      },
+      "emailStats": "Sent {sent} · opened {open} · clicked {click}",
+      "up": "Move step {i} up",
+      "down": "Move step {i} down",
+      "remove": "Remove step {i}",
+      "lastStep": "A campaign keeps at least one step.",
+      "nothingSends": "Nothing is sent yet: no email provider is connected. Each email is a draft in Campaigns, where its content is written.",
+      "defaults": {
+        "name": "New email campaign",
+        "firstEmail": "Første e-post",
+        "newEmail": "Ny e-post",
+        "task": "Create task: follow up by phone"
+      },
+      "toast": {
+        "active": "Active · contacts enter when the trigger fires",
+        "paused": "Paused · nobody new is enrolled"
+      },
+      "errors": {
+        "trigger": "That start is not available yet."
+      }
+    }
+  }
 }

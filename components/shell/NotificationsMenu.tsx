@@ -1,5 +1,6 @@
 'use client'
 
+import type { NotificationKind } from '@/lib/notification-kinds'
 import { useEffect, useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -8,7 +9,7 @@ import { markRead, notifications, type Notifications } from '@/app/(admin)/shell
 import type { ShellData } from './types'
 
 const TABS = [null, 'mention', 'reminder', 'security'] as const
-const DOT = { security: 'bg-alert', mention: 'bg-warn', reminder: 'bg-ok', system: 'bg-ok' } as const
+const DOT: Record<NotificationKind, string> = { security: 'bg-alert', mention: 'bg-warn', reminder: 'bg-ok', system: 'bg-ok', assignment: 'bg-ok', chat_request: 'bg-warn' }
 
 /** The bell and its panel: notifications in the reader's language, filtered by kind. */
 export function NotificationsMenu({ shell, open, toggle, close }: { shell: ShellData; open: boolean; toggle: () => void; close: () => void }) {

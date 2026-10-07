@@ -650,3 +650,11 @@ module + a per-user switch) and the meetings visibility default `owner` (Q13, an
 not delete a recording already made — for the D-27 legal review, which with a DPIA precedes go-live. Open: the
 calendar adapters, notice mailer, bot vendor, transcription, upload parser, AI gateway and the `meeting-files` bucket.
 `0041_web_salt_on_demand.sql` makes the tracker's daily salt on first use when the midnight rotation was missed.
+
+## Phase 8 schema (0043–0045) — departures from `specs/platform-security-mobile.md`
+
+Kept with each schema as the screen builders' contract: `deviations/security-schema.md` (V-P8S-01..30) and
+`deviations/platform-schema.md` (V-P8P-01..31). 0045 makes the audit stamp the column defaults, so a session with
+triggers off (the seed, a restore) still passes 0043's check. Open: V-P8P-28 (who may create a webhook — the spec lets
+any staff member send what they can see to a public https URL), Realtime broadcast (MOB-01), `app_extensions`
+(INT-10), and every edge worker (API gateway, webhook sender, OAuth, push, geocoding, alert mail, SSO).

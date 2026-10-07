@@ -3,6 +3,7 @@
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { NOTIFICATION_KINDS } from '@/lib/notification-kinds'
 import { rpc } from '@/lib/rpc'
 
 const year = 60 * 60 * 24 * 365
@@ -53,7 +54,7 @@ const Notifications = z.object({
   items: z.array(
     z.object({
       id: z.string().uuid(),
-      kind: z.enum(['mention', 'reminder', 'security', 'system']),
+      kind: z.enum(NOTIFICATION_KINDS),
       key: z.string(),
       params: z.record(z.string(), z.union([z.string(), z.number()])),
       route: z.string().nullable(),

@@ -16,7 +16,7 @@ What the Phase 1 screen builders asked for, and what happened to each. «0023» 
 | Contacts R-3 | XLSX import and export | Open: needs a library decision (exceljs) |
 | Contacts R-4 | Lead numbers | Done in 0023 (`leads.seq` from 501); the lead panel shows «L-<seq>» (V-CONTACTS-08 removed) |
 | Contacts R-5 | Person label colours in the seed | Done (seed generator, the design's colours); shown by the screen (V-CONTACTS-06 removed) |
-| Contacts R-6 | Revertable bulk changes | Open: needs a bulk-change log; with the audit work in phase 8 |
+| Contacts R-6 | Revertable bulk changes | Done in 0044 (`rec_bulk` logs before-values; `bulk_changes_get`, `bulk_change_revert` refuses rows changed since) · screen: Phase 8 |
 | Customers R-01, R-02, R-06, R-07 | Orgpuls commands and events | Open: Orgpuls side (D-40) |
 | Customers R-03 | Count keys in `counts.updated` | Open: Orgpuls side (D-21) |
 | Customers R-04, R-05 | Invoice mirror, coupons | Open: with Stripe (D-22) |
@@ -26,7 +26,7 @@ What the Phase 1 screen builders asked for, and what happened to each. «0023» 
 | Deals R-DEALS-03 | `deal_to_lead` | Done in 0023 · screen done |
 | Settings R-SETTINGS-01 | Currencies with Norges Bank rates | Open: needs an edge worker; with the worker deployment once hosted access returns (Q-01) |
 | Settings R-SETTINGS-02 | Invitation e-mail | Open: needs the transactional e-mail provider (D-07) |
-| Settings R-SETTINGS-03 | `sandbox_reset` | Open: the production sandbox loader |
+| Settings R-SETTINGS-03 | `sandbox_reset` | Done in 0044 (sample rows only, proved by phase8_platform_invariants) · screen: Settings › sandbox |
 | Settings R-SETTINGS-04 | `entities_get` | Done in 0023; the screen uses it (Data fields chips, visibility defaults, plans, sandbox) |
 | Settings R-SETTINGS-05 | Archived field keys | Done in 0023 (refused as `invalid`, detail `key`); the screen dropped the retry and says the key belongs to an archived field |
 | Settings R-SETTINGS-06 | First day of the week | Left out (V-SETTINGS-16); Monday throughout |

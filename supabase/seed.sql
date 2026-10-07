@@ -130,16 +130,20 @@ update app.admins set team_id = 'cb8c0e77-a103-4ee3-a502-d6a44058f09c' where id 
 update app.admins set team_id = '46d09f6b-969d-4a08-a7ab-e9997ce289ff' where id = '32993233-d440-48e0-ac00-c6c903c0fb80';
 insert into app.products (key, name, description, color, ink, ord) values ('orgpuls', 'Orgpuls', 'Work-environment surveys', '#DCEBD3', '#20431C', 10)
   on conflict (key) do update set name = excluded.name, description = excluded.description, color = excluded.color, ink = excluded.ink, ord = excluded.ord;
-insert into app.installations (product, api_url, public_key, enabled) values ('orgpuls', 'https://api.orgpuls.com', 'local-stand-in-public-key-orgpuls', true);
+insert into app.installations (product, api_url, public_key, enabled, scopes) values ('orgpuls', 'https://api.orgpuls.com', 'local-stand-in-public-key-orgpuls', true,
+  array['orgs:read', 'orgs:write', 'billing:read', 'billing:write', 'translations:read', 'translations:write', 'modules:read', 'modules:write', 'legal:read', 'legal:write', 'settings:read', 'settings:write']);
 insert into app.products (key, name, description, color, ink, ord) values ('skiftly', 'Skiftly', 'Shift planning', '#CFE0F5', '#1F3A5C', 20)
   on conflict (key) do update set name = excluded.name, description = excluded.description, color = excluded.color, ink = excluded.ink, ord = excluded.ord;
-insert into app.installations (product, api_url, public_key, enabled) values ('skiftly', 'https://api.skiftly.no', 'local-stand-in-public-key-skiftly', true);
+insert into app.installations (product, api_url, public_key, enabled, scopes) values ('skiftly', 'https://api.skiftly.no', 'local-stand-in-public-key-skiftly', true,
+  array['orgs:read', 'orgs:write', 'billing:read', 'billing:write', 'translations:read', 'translations:write', 'modules:read', 'modules:write', 'legal:read', 'legal:write', 'settings:read', 'settings:write']);
 insert into app.products (key, name, description, color, ink, ord) values ('avvik', 'Avvikspunkt', 'HSE incident reporting', '#F6D9C6', '#6B240C', 30)
   on conflict (key) do update set name = excluded.name, description = excluded.description, color = excluded.color, ink = excluded.ink, ord = excluded.ord;
-insert into app.installations (product, api_url, public_key, enabled) values ('avvik', 'https://api.avvikspunkt.no', 'local-stand-in-public-key-avvik', true);
+insert into app.installations (product, api_url, public_key, enabled, scopes) values ('avvik', 'https://api.avvikspunkt.no', 'local-stand-in-public-key-avvik', true,
+  array['orgs:read', 'orgs:write', 'billing:read', 'billing:write', 'translations:read', 'translations:write', 'modules:read', 'modules:write', 'legal:read', 'legal:write', 'settings:read', 'settings:write']);
 insert into app.products (key, name, description, color, ink, ord) values ('kurs', 'Kursrom', 'Mandatory training', '#E7DAF2', '#3E2A5C', 40)
   on conflict (key) do update set name = excluded.name, description = excluded.description, color = excluded.color, ink = excluded.ink, ord = excluded.ord;
-insert into app.installations (product, api_url, public_key, enabled) values ('kurs', 'https://api.kursrom.no', 'local-stand-in-public-key-kurs', true);
+insert into app.installations (product, api_url, public_key, enabled, scopes) values ('kurs', 'https://api.kursrom.no', 'local-stand-in-public-key-kurs', true,
+  array['orgs:read', 'orgs:write', 'billing:read', 'billing:write', 'translations:read', 'translations:write', 'modules:read', 'modules:write', 'legal:read', 'legal:write', 'settings:read', 'settings:write']);
 insert into app.labels (id, entity, name, bg, ink, ord) values ('1dd4ee9b-2d63-4552-a185-583b009b62d2', 'organization', 'Demo tenant', '#F2EAD6', '#5F5849', 0);
 insert into app.labels (id, entity, name, bg, ink, ord) values ('461229a6-2e7e-4222-a10a-8ebdfde335c4', 'organization', 'Pilot', '#F2EAD6', '#5F5849', 10);
 insert into app.labels (id, entity, name, bg, ink, ord) values ('7c985b41-071f-4a29-af01-6c7a9929809a', 'organization', 'Partner', '#F2EAD6', '#5F5849', 20);

@@ -70,7 +70,9 @@ for (const s of D.staff) {
 for (const [i, p] of D.products.entries()) {
   sql(`insert into app.products (key, name, description, color, ink, ord) values (${q(p.id)}, ${q(p.name)}, ${q(p.desc)}, ${q(p.color)}, ${q(p.ink)}, ${(i + 1) * 10})
   on conflict (key) do update set name = excluded.name, description = excluded.description, color = excluded.color, ink = excluded.ink, ord = excluded.ord;`)
-  sql(`insert into app.installations (product, api_url, public_key, enabled) values (${q(p.id)}, ${q('https://' + p.api.split('/')[0])}, ${q('local-stand-in-public-key-' + p.id)}, true);`)
+  // the scopes a running installation uses (0044 gives existing installations these; the seed runs after it)
+  sql(`insert into app.installations (product, api_url, public_key, enabled, scopes) values (${q(p.id)}, ${q('https://' + p.api.split('/')[0])}, ${q('local-stand-in-public-key-' + p.id)}, true,
+  array['orgs:read', 'orgs:write', 'billing:read', 'billing:write', 'translations:read', 'translations:write', 'modules:read', 'modules:write', 'legal:read', 'legal:write', 'settings:read', 'settings:write']);`)
 }
 
 // ---- labels

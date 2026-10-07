@@ -1,3 +1,676 @@
 {
-  "platform": {}
+  "platform": {
+    "readOnly": "You can read these settings. Changing them needs the right «{right}».",
+    "rights": {
+      "configure": "Configure (Global)",
+      "security": "Security (Global)",
+      "owner": "Owner"
+    },
+    "noAccess": {
+      "title": "Platform",
+      "body": "Your permission set does not include these tabs."
+    },
+    "tabs": {
+      "label": "Platform",
+      "apps": "Applications",
+      "api": "REST API and tokens",
+      "hooks": "Webhooks",
+      "catalog": "Integration catalog",
+      "mcp": "AI connector",
+      "jobs": "Job monitor",
+      "flags": "Feature flags",
+      "content": "Content"
+    },
+    "errors": {
+      "fresh_mfa": "This needs your authenticator code from the last 10 minutes.",
+      "owner_only": "Only the owner can do this.",
+      "active_token": "You already have an active token. Rotate it instead.",
+      "count_limit": "You have reached the number of webhooks allowed per user.",
+      "event_kind": "This event cannot be subscribed to.",
+      "url": "The address must be a public https address. Private and internal addresses are blocked.",
+      "redirect_uris": "Each redirect address must be a public https address, at most ten.",
+      "allowed_scopes": "Choose at least one known scope.",
+      "scopes": "Choose only scopes the installation may hold.",
+      "key": "The product key must be lower case letters, digits and underscores, starting with a letter.",
+      "key_taken": "This product key is already in use.",
+      "name": "Enter a name (at most 80 characters).",
+      "api_url": "The base URL must be https://host, without a path.",
+      "public_key": "The public key must be between 20 and 2 000 characters.",
+      "region": "The region may have at most 60 characters.",
+      "description": "The description may have at most 80 characters.",
+      "stage": "Choose a stage.",
+      "confirm": "Type the key exactly to confirm.",
+      "installed": "This integration is already installed.",
+      "maintenance": "Maintenance mode is not available: the product has no maintenance command yet.",
+      "mcp_off": "The AI connector is switched off.",
+      "mcp_sync": "Sync mode is off.",
+      "command_path": "This application has no command path from Sentral yet.",
+      "unreachable": "The product did not answer: the command function is not reachable from here.",
+      "not_configured": "The command function is not configured in this environment.",
+      "state": "This is not possible in the current state.",
+      "text": "The banner text must be between 1 and 500 characters.",
+      "problem": "The linked problem no longer exists.",
+      "expires_at": "Choose an expiry in the future.",
+      "connection": "This integration has no per-person connection to revoke.",
+      "reverted": "This change has already been reverted.",
+      "settings": {
+        "set_notice": "The product has no banner command."
+      },
+      "jobs": {
+        "retry": "A product's job is retried in the product: it has no retry command for Sentral yet."
+      }
+    },
+    "mfa": {
+      "title": "Confirm with your authenticator",
+      "body": "This needs a second factor from the last 10 minutes. Enter the code from your authenticator app, and the action runs again.",
+      "code": "6-digit code",
+      "verify": "Verify",
+      "cancel": "Cancel",
+      "failed": "That code was not accepted. Try the current one."
+    },
+    "once": {
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "health": {
+      "operational": "Operational",
+      "degraded": "Degraded",
+      "unreachable": "Unreachable",
+      "no_data": "No data",
+      "disabled": "Disabled",
+      "not_installed": "Not installed"
+    },
+    "apps": {
+      "title": "Every application talks to Sentral through one admin API.",
+      "connect": "＋ Connect an application",
+      "connectOwner": "Connecting an application needs the owner.",
+      "none": "No application is registered yet.",
+      "noneInstalled": "No application is installed yet.",
+      "beta": "Beta",
+      "noCalls": "No calls with Sentral in the last 24 h",
+      "rpm": "calls/min",
+      "errors": "errors",
+      "orgs": "orgs",
+      "connTitle": "{name} — connection",
+      "test": "Test connection",
+      "testOk": "{name} · 200 OK in {ms} ms",
+      "lastPingOk": "Last answer {ago} · {ms} ms",
+      "lastPingFailed": "No answer to the last test, {ago}",
+      "conn": {
+        "baseUrl": "Base URL",
+        "version": "API version",
+        "auth": "Auth",
+        "authValue": "Signed commands · token secret {token} · webhook secret {webhook}",
+        "inbound": "Inbound webhooks",
+        "inboundValue": "{count, plural, one {# event kind} other {# event kinds}} · signed",
+        "key": "Product key",
+        "region": "Region",
+        "lastSync": "Last sync",
+        "since": "Connected since",
+        "state": "State",
+        "enabled": "Enabled",
+        "awaitingSecrets": "Waiting for the product's secrets",
+        "notInstalled": "Not installed"
+      },
+      "syncTitle": "Data synced with {name}",
+      "syncKey": "org.nr is the shared customer key",
+      "sync": {
+        "orgs": "Organizations",
+        "orgsDir": "app → Sentral · commands back",
+        "users": "Users and roles",
+        "appToSentral": "app → Sentral",
+        "subs": "Subscriptions",
+        "subsDir": "billing.changed → Sentral",
+        "usage": "Usage events",
+        "perDay": "{count}/day",
+        "flags": "Feature flags",
+        "flagsDir": "Sentral → app",
+        "notRead": "Not read",
+        "healthy": "Healthy",
+        "lagging": "Lagging {min} min",
+        "noData": "No data"
+      },
+      "eventsTitle": "Events received · typed events table",
+      "noEvents": "No events received in the last 30 days.",
+      "eventsWindow": "Counts over the last 30 days.",
+      "actionsTitle": "Remote actions Sentral may call",
+      "noCommands": "No command is registered for this application.",
+      "destructive": "destructive",
+      "notInScopes": "Not in the installation's scopes ({scope})",
+      "firewall": "Survey answers never reach Sentral — the products send counts and dates only."
+    },
+    "eventUse": {
+      "crm": "CRM",
+      "funnel": "Funnel",
+      "billing": "Billing",
+      "health": "Health",
+      "activation": "Activation",
+      "usage": "Usage",
+      "tickets": "Tickets",
+      "leads": "Leads",
+      "workflows": "Workflows",
+      "support_access": "Support access",
+      "area": {
+        "applications": "Applications",
+        "customers": "Customers",
+        "tickets": "Tickets",
+        "privacy": "Privacy",
+        "content": "Content",
+        "flags": "Feature flags",
+        "settings": "Settings"
+      }
+    },
+    "connect": {
+      "title": "Connect an application",
+      "name": "Application name",
+      "baseUrl": "Base URL",
+      "key": "Product key (product_id)",
+      "publicKey": "Public key",
+      "region": "Region",
+      "description": "Description",
+      "stage": "Stage",
+      "stageGa": "Generally available",
+      "stageBeta": "Beta",
+      "scopes": "Scopes",
+      "secretsNote": "No secret is typed here. The product's operator posts its token and webhook secrets to the intake with a one-time code.",
+      "cancel": "Cancel",
+      "submit": "Connect",
+      "doneTitle": "{product} registered",
+      "doneBody": "Give this one-time code to the product's operator. They post the token and webhook secrets to the intake with it within {minutes} minutes. The application stays disabled until both secrets arrive.",
+      "intakeCode": "Intake code",
+      "onceWarning": "It is shown only once. Copy it now.",
+      "done": "Done"
+    },
+    "api": {
+      "restTitle": "REST API v2",
+      "reference": "API reference · OpenAPI 3.1 →",
+      "cost": "{count, plural, one {# token} other {# tokens}}",
+      "allEndpoints": "Show all {count} endpoints",
+      "fewer": "Show fewer",
+      "footnote": "Every entity incl. custom fields · filtering and cursor pagination · same permissions as the calling user",
+      "costOff": "token costs apply while rate limits are on",
+      "tokensTitle": "Tokens and OAuth apps",
+      "registerApp": "Register an OAuth app",
+      "rotate": "Rotate my token",
+      "create": "Create my token",
+      "noTokens": "No tokens or OAuth apps yet.",
+      "personal": "Personal token · {name}",
+      "grant": "OAuth app · {app} · {name}",
+      "app": "OAuth app · {app}",
+      "grants": "{count, plural, =0 {No grants} one {# grant} other {# grants}}",
+      "fullAsUser": "Full · as user",
+      "neverUsed": "Never used",
+      "revoke": "Revoke",
+      "disable": "Disable",
+      "tokenNote": "One active personal token per person · stored only as a hash · the API gateway is not deployed yet, so no call can use a token",
+      "rateTitle": "Rate limits",
+      "rate": {
+        "off": "Off (setting)",
+        "source_values": "Source values (setting)",
+        "custom": "Custom values (setting)"
+      },
+      "rateText": "When switched on with source values: daily budget = base × plan multiplier × seats, a token cost per endpoint type, and a burst limit per token in a rolling 2-second window.",
+      "budget": "Today {used} of {budget} tokens · burst {burst} per 2 s",
+      "noUsage": "No API calls in the last 24 h",
+      "usageCompany": "Requests per hour · last 24 h · {total} total",
+      "usageMine": "Requests per hour with your tokens · last 24 h · {total} total"
+    },
+    "token": {
+      "createTitle": "Create my token",
+      "rotateTitle": "Rotate my token",
+      "readyTitle": "Your new token",
+      "defaultName": "Personal token",
+      "name": "Name",
+      "expires": "Expires",
+      "never": "Never",
+      "days": "In {count} days",
+      "createBody": "The token acts as you, with your permissions. Its plaintext is shown once.",
+      "rotateBody": "Your current token stops working at once, and a new one is issued. Its plaintext is shown once.",
+      "mfaNote": "This needs a second factor from the last 10 minutes.",
+      "created": "Token {masked} is active.",
+      "rotated": "The old token stopped working. {masked} is active.",
+      "token": "Token",
+      "onceWarning": "It is shown only once and cannot be read again. Copy it now.",
+      "cancel": "Cancel",
+      "createSubmit": "Create token",
+      "rotateSubmit": "Rotate now",
+      "done": "Done"
+    },
+    "oauth": {
+      "title": "Register an OAuth app",
+      "name": "Name",
+      "kind": "Kind",
+      "kinds": {
+        "integration": "Integration",
+        "extension": "App extension"
+      },
+      "redirects": "Redirect addresses (https, one per line)",
+      "scopes": "Scopes it may ask for",
+      "confidential": "Confidential client (has a client secret)",
+      "mfaNote": "Registering an app needs a second factor from the last 10 minutes.",
+      "cancel": "Cancel",
+      "submit": "Register",
+      "doneTitle": "{name} registered",
+      "clientId": "Client ID",
+      "clientSecret": "Client secret",
+      "onceWarning": "The secret is shown only once. Copy it now.",
+      "public": "A public client: it signs in with PKCE and has no secret.",
+      "notConnected": "The OAuth endpoints are not deployed yet, so the app cannot sign anyone in until they are.",
+      "done": "Done"
+    },
+    "revoke": {
+      "title": {
+        "token": "Revoke {name}'s token",
+        "grant": "Revoke {name}",
+        "app": "Disable {name}"
+      },
+      "body": {
+        "token": "The token stops working at once.",
+        "grant": "The app loses access at once and its refresh token is deleted.",
+        "app": "Every grant the app holds is revoked at once."
+      },
+      "reason": "Reason",
+      "cancel": "Cancel",
+      "submit": {
+        "token": "Revoke",
+        "grant": "Revoke",
+        "app": "Disable"
+      },
+      "done": {
+        "token": "Revoked at once · {name}",
+        "grant": "Revoked at once · {name}",
+        "app": "{name} disabled · its grants are revoked"
+      }
+    },
+    "hooks": {
+      "subscriptions": "Subscriptions",
+      "perUser": "Webhooks per user: {limit} (setting)",
+      "unlimited": "unlimited",
+      "new": "＋ New webhook",
+      "none": "No webhooks yet.",
+      "state": {
+        "active": "Active",
+        "paused": "Paused",
+        "retrying": "Retrying",
+        "blocked": "Blocked (private address)",
+        "banned": "Banned until {until}"
+      },
+      "owner": "Owner {name}",
+      "test": "Send test",
+      "testQueued": "Test queued · no delivery worker is connected yet, so it waits in the queue",
+      "pause": "Pause",
+      "resume": "Resume",
+      "paused": "Webhook paused",
+      "resumed": "Webhook resumed",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deliveries": "Deliveries",
+      "deliveriesFor": "Deliveries · {event}",
+      "policy": {
+        "source_values": "Retry and ban policy: source values (safeguard)",
+        "custom": "Retry and ban policy: custom values (safeguard)",
+        "off": "Retry and ban policy: off — retries kept, no ban (safeguard)"
+      },
+      "noDeliveries": "No deliveries yet.",
+      "delivery": {
+        "queued": "Queued",
+        "sent": "Sent",
+        "failed": "Failed",
+        "skipped": "Skipped"
+      },
+      "attempt": "{n} / {of}",
+      "workerNote": "The delivery worker is not connected: queued attempts wait until it is. The log keeps the envelope, never the body.",
+      "payloadTitle": "Delivery — envelope and changed fields",
+      "pickDelivery": "Pick a delivery to see what it carried: the event, the record and the names of the changed fields. The body itself is never kept. Opening a delivery is logged.",
+      "loading": "Loading …",
+      "bodyHash": "Body {bytes} bytes · sha256 {hash}… · not stored",
+      "notBuilt": "Not built yet: the body is made when the worker claims the attempt.",
+      "error": "Error: {code}",
+      "redeliver": "Redeliver",
+      "redelivered": "Redelivery queued · no delivery worker is connected yet",
+      "signature": "Signature header: Sentral-Signature (HMAC-SHA256) · private and link-local targets blocked",
+      "deleteTitle": "Delete the {event} webhook",
+      "deleteBody": "Deliveries to {host} stop, and its signing secret is deleted.",
+      "deleted": "Webhook deleted",
+      "newTitle": "New webhook",
+      "editTitle": "Edit webhook",
+      "event": "Event",
+      "url": "Address (https)",
+      "urlNote": "Public https addresses only. Each delivery is signed with HMAC-SHA256; the secret is shown once when the webhook is created.",
+      "createdTitle": "Webhook created",
+      "createdBody": "Verify each delivery's Sentral-Signature header with this secret.",
+      "secret": "Signing secret",
+      "onceWarning": "It is shown only once. Copy it now.",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create",
+      "done": "Done"
+    },
+    "catalog": {
+      "placeholder": "Describe what you need — «send invoices when a deal is won»",
+      "hintMatches": "Highlighted: best matches",
+      "hintAssistant": "Assistant recommendations · AI not connected",
+      "readOnly": "You can read the catalog. Installing and removing needs the right «Configure (Global)».",
+      "collections": {
+        "productivity_mail": "Productivity and mail",
+        "team_chat": "Team chat",
+        "close_paid": "Close and get paid",
+        "automate": "Automate"
+      },
+      "items": {
+        "gw": {
+          "name": "Google Workspace",
+          "description": "Contacts, calendar, tasks, Drive files, Gmail, Meet links and sign-in"
+        },
+        "m365": {
+          "name": "Microsoft 365",
+          "description": "Outlook and Exchange mail, calendar, contacts, Teams links and notifications, OneDrive, SharePoint"
+        },
+        "slack": {
+          "name": "Slack",
+          "description": "Deal events to channels or DMs, search deals and people from chat"
+        },
+        "teams": {
+          "name": "Microsoft Teams",
+          "description": "Deal events to channels, search from chat"
+        },
+        "acc": {
+          "name": "Accounting system (EHF)",
+          "description": "Create invoices from deals with person, organization and products; status on the deal"
+        },
+        "sign": {
+          "name": "External e-signature",
+          "description": "Send documents to an external signing service"
+        },
+        "zap": {
+          "name": "No-code automation platforms",
+          "description": "Connectors built on the API and webhooks"
+        },
+        "ext": {
+          "name": "App extensions",
+          "description": "Panels in deal and contact views; actions that open a link, dialog or embedded view"
+        }
+      },
+      "access": "Access: {list}",
+      "accessLabels": {
+        "contacts": "contacts",
+        "calendar": "calendar",
+        "mail": "mail",
+        "drive": "drive",
+        "files": "files",
+        "deal_events": "deal events",
+        "search": "search",
+        "deals": "deals",
+        "products": "products",
+        "invoices": "invoices",
+        "documents": "documents",
+        "scoped_by_token": "scoped by token",
+        "per_app": "per app"
+      },
+      "available": "Available",
+      "installed": "Installed",
+      "installedNotConnected": "Installed · not connected",
+      "usersConnected": "{count, plural, one {# person connected} other {# people connected}}",
+      "install": "Install",
+      "remove": "Remove",
+      "settingsUsers": "Settings · users",
+      "installedToast": "{name} installed",
+      "installedConnect": "{name} installed · connecting it needs its provider, which is not connected yet",
+      "noMatch": "No integration matches.",
+      "removeDlg": {
+        "title": "Remove {name}",
+        "loading": "Checking what it is connected to …",
+        "body": "Removing it revokes its access at once:",
+        "companyConnection": "The company connection and its stored credentials are deleted.",
+        "effects": {
+          "users": "{count, plural, one {# person loses the connection} other {# people lose the connection}}",
+          "mailboxes": "{count, plural, one {# mailbox is disconnected} other {# mailboxes are disconnected}}",
+          "calendars": "{count, plural, one {# calendar is disconnected} other {# calendars are disconnected}}",
+          "workflows": "{count, plural, one {# active workflow uses it and will stop at that step} other {# active workflows use it and will stop at that step}}",
+          "grants": "{count, plural, one {# app grant is revoked} other {# app grants are revoked}}"
+        },
+        "nothing": "Nothing is connected to it.",
+        "confirm": "Type {key} to confirm",
+        "cancel": "Cancel",
+        "submit": "Remove",
+        "done": "{name} removed · access revoked"
+      },
+      "usersDlg": {
+        "title": "{name} · users",
+        "company": "Connected for the whole company.",
+        "companyNotConnected": "The company connection is not made: its provider is not connected yet.",
+        "loading": "Loading …",
+        "none": "Nobody is connected.",
+        "via": {
+          "mailbox": "mailbox",
+          "calendar": "calendar",
+          "token": "personal token",
+          "company": "company connection"
+        },
+        "revoke": "Revoke",
+        "revoked": "{name} disconnected",
+        "close": "Close"
+      }
+    },
+    "mcp": {
+      "title": "AI connector (MCP)",
+      "switch": "AI connector for the company",
+      "stateOn": "On for the company · {count, plural, =0 {no assistants connected} one {# assistant connected} other {# assistants connected}}",
+      "stateOff": "Off — new connections are blocked and existing ones removed",
+      "readOnly": "Switching it needs the right «Configure (Global)».",
+      "endpoint": "Connector endpoint not deployed yet · OAuth login waits for it",
+      "sync": "Sync mode (index every 30 min)",
+      "syncOn": "On · last index {ago}",
+      "syncOff": "Off",
+      "assistants": "Connected assistants",
+      "noAssistants": "No assistant has connected yet.",
+      "neverUsed": "Never used",
+      "revoke": "Revoke",
+      "revoked": "{app} disconnected",
+      "footnote": "Calls run with the user’s permissions · changes appear in the changelog with the connector as source · survey data unreachable",
+      "tools": "Tool catalog · {count}",
+      "switchedOn": "AI connector switched on",
+      "switchedOff": "AI connector switched off · assistants disconnected",
+      "offTitle": "Switch the AI connector off",
+      "offBody": "{count, plural, one {The connected assistant loses access at once.} other {All # connected assistants lose access at once.}} New connections are refused until it is switched on again.",
+      "cancel": "Cancel",
+      "offSubmit": "Switch off"
+    },
+    "entities": {
+      "organization": "Organizations",
+      "person": "People",
+      "lead": "Leads",
+      "deal": "Deals",
+      "ticket": "Tickets",
+      "activity": "Activities",
+      "catalog_item": "Products",
+      "form": "Forms",
+      "project": "Projects",
+      "campaign": "Campaigns",
+      "document": "Documents",
+      "document_template": "Document templates",
+      "search": "Search"
+    },
+    "jobs": {
+      "queued": "Queued",
+      "running": "Running",
+      "failed24": "Failed (24 h)",
+      "succeeded24": "Succeeded (24 h)",
+      "readOnly": "You can read the job monitor. Retrying a job needs the right «Configure (Global)».",
+      "quiet": "Runs every minute · a run is kept only when it did work",
+      "info": {
+        "count": "{count} items"
+      },
+      "source": {
+        "cron": "scheduled",
+        "queue": "queue",
+        "product": "product"
+      },
+      "state": {
+        "running": "Running",
+        "queued": "Queued",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
+        "never": "Not run yet"
+      },
+      "retry": "Retry",
+      "retried": "Retry queued · {name}"
+    },
+    "jobLabels": {
+      "api_burst_prune": "API burst window prune",
+      "campaign_ab": "Campaign A/B winner",
+      "campaign_due": "Scheduled campaign sends",
+      "campaign_prune": "Campaign data prune",
+      "capture_prune": "Lead capture prune",
+      "chat_fallback": "Chat fallback",
+      "dispatch": "Event dispatch",
+      "dns_check": "Sender domain DNS check",
+      "duplicates": "Duplicate detection",
+      "feed_checks": "Feed checks",
+      "files_purge": "Deleted files purge",
+      "health": "Customer health scores",
+      "mail_due": "Scheduled email sends",
+      "mcp_index": "MCP sync index",
+      "meeting_bots": "Meeting notetaker scheduling",
+      "meeting_briefs": "Pre-call briefs",
+      "meeting_calendar_scan": "Calendar scan for meetings",
+      "meeting_notices": "Recording notices",
+      "meeting_purge": "Meeting recordings purge",
+      "mrr_snapshot": "MRR snapshot",
+      "mrr_tenants": "MRR per customer snapshot",
+      "pipeline_snapshot": "Pipeline snapshot",
+      "platform_prune": "Platform logs prune",
+      "purge": "CRM soft-delete purge",
+      "reminders": "Activity reminders",
+      "scores": "Deal and lead scores",
+      "security_access_review_due": "Access review reminder",
+      "security_alerts": "Security alerts",
+      "security_audit_purge": "Audit log purge",
+      "security_digest": "Security digest",
+      "security_incident_clock": "Incident deadline clock",
+      "security_login_prune": "Login log prune",
+      "security_retention_email": "Email retention",
+      "security_retention_tickets": "Ticket retention",
+      "security_sessions_expire": "Idle session expiry",
+      "signature_expire": "E-signature expiry",
+      "status_notices": "Status banner clearing",
+      "web_prune": "Web visit prune",
+      "web_salt": "Web visitor salt rotation",
+      "webhook_sweep": "Webhook bans and cleanup",
+      "workflow_dates": "Date-based workflow triggers",
+      "workflow_resume": "Workflow resume",
+      "geocode": "Geocoding",
+      "product_command": "Product commands",
+      "push_send": "Push notifications",
+      "transcription": "Transcription",
+      "webhook_send": "Webhook deliveries"
+    },
+    "flags": {
+      "title": "Feature flags — global and per organization",
+      "readOnly": "You can read these settings. Changing them needs the right «Configure (Global)».",
+      "moduleSwitch": "Sentral module switch",
+      "global": "Global",
+      "off": "off",
+      "moduleOn": "sentral.{key} switched on",
+      "moduleOff": "sentral.{key} switched off",
+      "productFlags": "Kept in the product · read through modules.list · {tenants} active customers",
+      "noFlagCommand": "Kept in the product · no flag command for Sentral",
+      "maintTitle": "Maintenance mode and status banner",
+      "noApp": "No application is installed.",
+      "maintenance": "Maintenance mode · {name}",
+      "maintNotAvailable": "Not available: {name} has no maintenance command yet.",
+      "maintOwner": "Maintenance mode needs the owner and a fresh second factor.",
+      "banner": "Banner text",
+      "bannerPlaceholder": "No banner is shown. Write one to show it in the product.",
+      "preview": "Preview in the product:",
+      "linked": "Linked to known error {number} · shown in {name} until the problem is resolved",
+      "pushed": "Sent to the product {ago}",
+      "notPushed": "Waiting to be sent: the product command worker is not connected, so {name} does not show it yet.",
+      "pushFailed": "The product refused it: {code}",
+      "noNoticeCommand": "{name} has no banner command.",
+      "save": "Save banner",
+      "clear": "Clear banner",
+      "saved": "Banner saved for {name}",
+      "cleared": "Banner cleared for {name}",
+      "history": "History",
+      "clearedEntry": "cleared",
+      "maintDlg": {
+        "titleOn": "Put {name} into maintenance",
+        "titleOff": "End maintenance for {name}",
+        "bodyOn": "{name} stops for every customer until maintenance ends.",
+        "bodyOff": "{name} opens again for every customer.",
+        "confirm": "Type {key} to confirm",
+        "cancel": "Cancel",
+        "submitOn": "Start maintenance",
+        "submitOff": "End maintenance"
+      }
+    },
+    "content": {
+      "noApp": "No application is installed.",
+      "cards": {
+        "question_set": {
+          "name": "Question set",
+          "description": "QPS Nordic · 11 factors × 3 statements. A published version is immutable."
+        },
+        "pulse_templates": {
+          "name": "Pulse templates",
+          "description": "Short sets drawn from the main bank."
+        },
+        "tiltak": {
+          "name": "Tiltak library",
+          "description": "Suggestions per factor and score band."
+        },
+        "legal": {
+          "name": "Legal references",
+          "description": "Hjemmel per factor for risk assessment and the Arbeidstilsynet report."
+        },
+        "templates": {
+          "name": "Email and SMS templates",
+          "description": "Invitation, reminder, verneombud notice, results ready, trial expiring, payment failed · Bokmål first."
+        },
+        "help": {
+          "name": "Help texts and announcements",
+          "description": "In-app announcements and help articles · macros for tickets live here too."
+        }
+      },
+      "inProduct": "In {name}",
+      "readThrough": "Read through {command}",
+      "noReadCommand": "Managed in {name} · no read command for Sentral yet",
+      "live": "{count} live",
+      "lastChange": "Last change {ago} · {articles} articles · {macros} macros",
+      "noArticles": "No help articles yet",
+      "editDraft": "Edit draft",
+      "edit": "Edit",
+      "rollback": "Roll back",
+      "noDraft": "The product offers no draft command yet",
+      "noRollback": "No roll-back command yet",
+      "waits": "Waits for product commands",
+      "productContent": "Content in {name}",
+      "noCommands": "{name} keeps its own content and offers no content command to Sentral yet, so nothing is shown here."
+    },
+    "bulk": {
+      "title": "Bulk changes — revertable",
+      "loading": "Loading …",
+      "empty": "No bulk changes in the last 90 days.",
+      "change": "{fields} on {count, plural, one {# record} other {# records}} · {entity}",
+      "result": "Reverted {reverted} · changed since {stale} · deleted {gone} · not allowed {forbidden}",
+      "reverted": "Reverted",
+      "revert": "Revert",
+      "confirmTitle": "Revert this bulk change",
+      "confirmBody": "Each of the {count, plural, one {# record} other {# records}} goes back to its value before the change, if nobody has changed it since. A change can be reverted once.",
+      "reason": "Reason",
+      "cancel": "Cancel",
+      "done": "Reverted {reverted} · {skipped} left as they are",
+      "fields": {
+        "owner_id": "Owner",
+        "labels": "Labels",
+        "stage_id": "Stage",
+        "status": "Status",
+        "visibility": "Visibility",
+        "marketing_status": "Marketing status",
+        "pipeline_id": "Pipeline",
+        "expected_close": "Expected close"
+      }
+    }
+  }
 }

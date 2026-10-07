@@ -3030,6 +3030,25 @@ insert into app.notes (id, entity, record_id, body, mentions, author_id, created
   '@Magnus kan du ta opplæringen av skiftlederne torsdag?', array['e53792ad-5466-4510-a48c-6321c729dace']::uuid[], '32993233-d440-48e0-ac00-c6c903c0fb80', (now() - interval '4 days'), (now() - interval '4 days'));
 insert into app.email_links (thread_id, entity, record_id, linked_by, staff_id) select t.id, 'project', '663d8b98-d3bb-4b8f-a563-117af4d88163', 'manual', '32993233-d440-48e0-ac00-c6c903c0fb80'
   from app.email_threads t where t.subject = 'Re: Forslag — Skiftly for lageret';
+insert into app.installed_apps (key, installed_by, installed_at) values ('gw', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (now() - interval '120 days'));
+insert into app.installed_apps (key, installed_by, installed_at) values ('m365', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (now() - interval '120 days'));
+insert into app.installed_apps (key, installed_by, installed_at) values ('slack', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (now() - interval '60 days'));
+insert into app.installed_apps (key, installed_by, installed_at) values ('acc', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', (now() - interval '30 days'));
+insert into app.api_tokens (id, staff_id, name, token_sha256, last4, created_at) values ('f30f919e-166f-4ce3-a57f-22b06bad62b0', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'Personal token', extensions.digest(extensions.gen_random_bytes(32), 'sha256'), 'f3a9', (now() - interval '14 days'));
+insert into app.api_tokens (id, staff_id, name, token_sha256, last4, created_at) values ('ed269177-175a-4cdf-a06c-9170e87b34c4', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'Personal token', extensions.digest(extensions.gen_random_bytes(32), 'sha256'), '82bd', (now() - interval '40 days'));
+insert into app.oauth_apps (id, client_id, name, kind, owner_id, redirect_uris, client_secret_sha256, allowed_scopes, created_at)
+  values ('9670f005-2c4f-42ef-a384-9d27149b830f', 'client_3ebbdd0e19ba4d89afe75528', 'Zapier', 'integration', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array['https://zapier.com/dashboard/auth/oauth/return/App/']::text[], extensions.digest(extensions.gen_random_bytes(32), 'sha256'), array['deals:read', 'deals:write']::text[], (now() - interval '21 days'));
+insert into app.oauth_apps (id, client_id, name, kind, owner_id, redirect_uris, client_secret_sha256, allowed_scopes, created_at)
+  values ('ec998e72-fa1c-4a74-a36c-472e49a50d20', 'client_133a37d401c540afa237b4a0', 'Accounting', 'integration', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', array['https://accounting.example.no/oauth/callback']::text[], extensions.digest(extensions.gen_random_bytes(32), 'sha256'), array['deals:read']::text[], (now() - interval '18 days'));
+insert into app.webhooks (id, owner_id, event_kind, url, vault_secret_id, created_at, updated_at)
+  values ('5fa53fa0-37dd-4d01-aa0a-2998a27b4223', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'deal.updated', 'https://hooks.zapier.com/hooks/catch/8823', '8539324d-cbe0-4e63-a449-1dc29f9877a9', (now() - interval '20 days'), (now() - interval '20 days'));
+insert into app.webhooks (id, owner_id, event_kind, url, vault_secret_id, created_at, updated_at)
+  values ('7c9757bf-72e7-4dea-a5e6-68c9e31469e9', 'e1d74515-623a-48b1-a3ae-2b9cb638a560', 'person.created', 'https://crm-sync.lumio.no/hook', '72dec648-8dc5-4496-a107-6921f8485c2f', (now() - interval '35 days'), (now() - interval '35 days'));
+insert into app.webhooks (id, owner_id, event_kind, url, vault_secret_id, created_at, updated_at)
+  values ('367682d7-49cc-423e-acb1-cafe46da79dd', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'deal.won', 'https://api.skiftly.no/v1/provision', '76ea35df-d46a-486d-aa49-314d4fc80858', (now() - interval '9 days'), (now() - interval '9 days'));
+insert into app.status_notices (id, product, text, problem_ticket_id, set_by, set_at)
+  values ('aaa1b859-51a4-4717-ae11-39b87ea4a6c0', 'orgpuls', 'Noen invitasjoner til kommunale e-postdomener kommer forsinket frem. Vi jobber med saken.',
+  (select id from app.tickets where type = 'problem' and subject = 'Mail provider rejecting @kommune.no domains'), '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '2 hours');
 update app.event_cursors set last_event_id = coalesce((select max(id) from app.events), 0), updated_at = now();
 select app.scores_nightly();
 select app.feed_checks();

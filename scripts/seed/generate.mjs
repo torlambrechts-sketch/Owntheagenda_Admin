@@ -461,6 +461,7 @@ for (const [key, name, entity, pl, state] of models) {
 ;(await import('./phase5-documents.mjs')).seedDocuments({ sql, q, uid, ago })
 ;(await import('./phase6-campaigns.mjs')).seedCampaigns({ sql, q, uid }) // campaigns fixtures (Phase 6)
 ;(await import('./phase6-projects.mjs')).seedProjects({ sql, q, uid, D }) // projects fixtures (Phase 6)
+;(await import('./phase8-platform.mjs')).seedPlatform({ sql, q, uid }) // platform fixtures (Phase 8)
 
 // the seed is history: the event subscribers start after it
 sql(`update app.event_cursors set last_event_id = coalesce((select max(id) from app.events), 0), updated_at = now();`)

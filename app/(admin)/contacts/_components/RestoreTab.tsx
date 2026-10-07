@@ -5,6 +5,7 @@ import { useToast } from '@/components/ui/Toast'
 import { restoreRecord } from '../actions'
 import type { TabProps } from './ContactsScreen'
 import { useError, useNav } from './util'
+import { BulkChanges } from './BulkChanges'
 
 const KNOWN = ['person', 'organization', 'lead', 'deal', 'activity', 'catalog_item', 'ticket'] as const
 
@@ -50,6 +51,7 @@ export function RestoreTab({ data, rights, now }: TabProps) {
           </div>
         </div>
       </div>
+      <BulkChanges />
     </div>
   )
 }

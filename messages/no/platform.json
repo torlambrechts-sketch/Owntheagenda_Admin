@@ -1,3 +1,676 @@
 {
-  "platform": {}
+  "platform": {
+    "readOnly": "Du kan lese disse innstillingene. Å endre dem krever rettigheten «{right}».",
+    "rights": {
+      "configure": "Konfigurere (Global)",
+      "security": "Sikkerhet (Global)",
+      "owner": "Eier"
+    },
+    "noAccess": {
+      "title": "Plattform",
+      "body": "Rettighetssettet ditt omfatter ikke disse fanene."
+    },
+    "tabs": {
+      "label": "Plattform",
+      "apps": "Applikasjoner",
+      "api": "REST-API og tokener",
+      "hooks": "Webhooks",
+      "catalog": "Integrasjonskatalog",
+      "mcp": "AI-kobling",
+      "jobs": "Jobbovervåking",
+      "flags": "Funksjonsflagg",
+      "content": "Innhold"
+    },
+    "errors": {
+      "fresh_mfa": "Dette krever koden fra autentiseringsappen din fra de siste 10 minuttene.",
+      "owner_only": "Bare eieren kan gjøre dette.",
+      "active_token": "Du har allerede et aktivt token. Roter det i stedet.",
+      "count_limit": "Du har nådd antallet webhooks som er tillatt per bruker.",
+      "event_kind": "Denne hendelsen kan ikke abonneres på.",
+      "url": "Adressen må være en offentlig https-adresse. Private og interne adresser er blokkert.",
+      "redirect_uris": "Hver omdirigeringsadresse må være en offentlig https-adresse, høyst ti.",
+      "allowed_scopes": "Velg minst ett kjent omfang.",
+      "scopes": "Velg bare omfang installasjonen kan ha.",
+      "key": "Produktnøkkelen må bestå av små bokstaver, sifre og understrek, og begynne med en bokstav.",
+      "key_taken": "Denne produktnøkkelen er allerede i bruk.",
+      "name": "Skriv inn et navn (høyst 80 tegn).",
+      "api_url": "Basis-URL-en må være https://vert, uten sti.",
+      "public_key": "Den offentlige nøkkelen må være mellom 20 og 2 000 tegn.",
+      "region": "Regionen kan ha høyst 60 tegn.",
+      "description": "Beskrivelsen kan ha høyst 80 tegn.",
+      "stage": "Velg et stadium.",
+      "confirm": "Skriv nøkkelen nøyaktig for å bekrefte.",
+      "installed": "Denne integrasjonen er allerede installert.",
+      "maintenance": "Vedlikeholdsmodus er ikke tilgjengelig: produktet har ingen vedlikeholdskommando ennå.",
+      "mcp_off": "AI-koblingen er slått av.",
+      "mcp_sync": "Synkronisering er slått av.",
+      "command_path": "Denne applikasjonen har ingen kommandovei fra Sentral ennå.",
+      "unreachable": "Produktet svarte ikke: kommandofunksjonen kan ikke nås herfra.",
+      "not_configured": "Kommandofunksjonen er ikke satt opp i dette miljøet.",
+      "state": "Dette er ikke mulig i nåværende tilstand.",
+      "text": "Bannerteksten må være mellom 1 og 500 tegn.",
+      "problem": "Det koblede problemet finnes ikke lenger.",
+      "expires_at": "Velg et utløp fram i tid.",
+      "connection": "Denne integrasjonen har ingen personlig tilkobling å trekke tilbake.",
+      "reverted": "Denne endringen er allerede tilbakestilt.",
+      "settings": {
+        "set_notice": "Produktet har ingen bannerkommando."
+      },
+      "jobs": {
+        "retry": "En produktjobb kjøres på nytt i produktet: det har ingen kommando for nytt forsøk fra Sentral ennå."
+      }
+    },
+    "mfa": {
+      "title": "Bekreft med autentiseringsappen",
+      "body": "Dette krever en andre faktor fra de siste 10 minuttene. Skriv inn koden fra autentiseringsappen, så kjøres handlingen på nytt.",
+      "code": "6-sifret kode",
+      "verify": "Bekreft",
+      "cancel": "Avbryt",
+      "failed": "Koden ble ikke godtatt. Prøv den gjeldende koden."
+    },
+    "once": {
+      "copy": "Kopier",
+      "copied": "Kopiert"
+    },
+    "health": {
+      "operational": "I drift",
+      "degraded": "Redusert",
+      "unreachable": "Utilgjengelig",
+      "no_data": "Ingen data",
+      "disabled": "Deaktivert",
+      "not_installed": "Ikke installert"
+    },
+    "apps": {
+      "title": "Hver applikasjon snakker med Sentral gjennom ett admin-API.",
+      "connect": "＋ Koble til en applikasjon",
+      "connectOwner": "Å koble til en applikasjon krever eieren.",
+      "none": "Ingen applikasjon er registrert ennå.",
+      "noneInstalled": "Ingen applikasjon er installert ennå.",
+      "beta": "Beta",
+      "noCalls": "Ingen kall med Sentral de siste 24 t",
+      "rpm": "kall/min",
+      "errors": "feil",
+      "orgs": "org.",
+      "connTitle": "{name} — tilkobling",
+      "test": "Test tilkoblingen",
+      "testOk": "{name} · 200 OK på {ms} ms",
+      "lastPingOk": "Siste svar {ago} · {ms} ms",
+      "lastPingFailed": "Ikke svar på siste test, {ago}",
+      "conn": {
+        "baseUrl": "Basis-URL",
+        "version": "API-versjon",
+        "auth": "Autentisering",
+        "authValue": "Signerte kommandoer · token-hemmelighet {token} · webhook-hemmelighet {webhook}",
+        "inbound": "Innkommende webhooks",
+        "inboundValue": "{count, plural, one {# hendelsestype} other {# hendelsestyper}} · signert",
+        "key": "Produktnøkkel",
+        "region": "Region",
+        "lastSync": "Siste synkronisering",
+        "since": "Tilkoblet siden",
+        "state": "Tilstand",
+        "enabled": "Aktivert",
+        "awaitingSecrets": "Venter på produktets hemmeligheter",
+        "notInstalled": "Ikke installert"
+      },
+      "syncTitle": "Data synkronisert med {name}",
+      "syncKey": "org.nr er den felles kundenøkkelen",
+      "sync": {
+        "orgs": "Organisasjoner",
+        "orgsDir": "app → Sentral · kommandoer tilbake",
+        "users": "Brukere og roller",
+        "appToSentral": "app → Sentral",
+        "subs": "Abonnementer",
+        "subsDir": "billing.changed → Sentral",
+        "usage": "Brukshendelser",
+        "perDay": "{count}/døgn",
+        "flags": "Funksjonsflagg",
+        "flagsDir": "Sentral → app",
+        "notRead": "Ikke lest",
+        "healthy": "Frisk",
+        "lagging": "Henger {min} min",
+        "noData": "Ingen data"
+      },
+      "eventsTitle": "Mottatte hendelser · typet hendelsestabell",
+      "noEvents": "Ingen hendelser mottatt de siste 30 dagene.",
+      "eventsWindow": "Antall de siste 30 dagene.",
+      "actionsTitle": "Fjernhandlinger Sentral kan kalle",
+      "noCommands": "Ingen kommando er registrert for denne applikasjonen.",
+      "destructive": "destruktiv",
+      "notInScopes": "Ikke i installasjonens omfang ({scope})",
+      "firewall": "Undersøkelsessvar når aldri Sentral — produktene sender bare antall og datoer."
+    },
+    "eventUse": {
+      "crm": "CRM",
+      "funnel": "Trakt",
+      "billing": "Fakturering",
+      "health": "Helse",
+      "activation": "Aktivering",
+      "usage": "Bruk",
+      "tickets": "Saker",
+      "leads": "Leads",
+      "workflows": "Arbeidsflyter",
+      "support_access": "Støttetilgang",
+      "area": {
+        "applications": "Applikasjoner",
+        "customers": "Kunder",
+        "tickets": "Saker",
+        "privacy": "Personvern",
+        "content": "Innhold",
+        "flags": "Funksjonsflagg",
+        "settings": "Innstillinger"
+      }
+    },
+    "connect": {
+      "title": "Koble til en applikasjon",
+      "name": "Applikasjonsnavn",
+      "baseUrl": "Basis-URL",
+      "key": "Produktnøkkel (product_id)",
+      "publicKey": "Offentlig nøkkel",
+      "region": "Region",
+      "description": "Beskrivelse",
+      "stage": "Stadium",
+      "stageGa": "Allment tilgjengelig",
+      "stageBeta": "Beta",
+      "scopes": "Omfang",
+      "secretsNote": "Ingen hemmelighet skrives inn her. Produktets driftsansvarlige sender token- og webhook-hemmelighetene til mottaket med en engangskode.",
+      "cancel": "Avbryt",
+      "submit": "Koble til",
+      "doneTitle": "{product} registrert",
+      "doneBody": "Gi denne engangskoden til produktets driftsansvarlige. De sender token- og webhook-hemmelighetene til mottaket med den innen {minutes} minutter. Applikasjonen er deaktivert til begge hemmelighetene er mottatt.",
+      "intakeCode": "Mottakskode",
+      "onceWarning": "Den vises bare én gang. Kopier den nå.",
+      "done": "Ferdig"
+    },
+    "api": {
+      "restTitle": "REST-API v2",
+      "reference": "API-referanse · OpenAPI 3.1 →",
+      "cost": "{count, plural, one {# token} other {# tokener}}",
+      "allEndpoints": "Vis alle {count} endepunkter",
+      "fewer": "Vis færre",
+      "footnote": "Alle entiteter inkl. egendefinerte felt · filtrering og markørpaginering · samme rettigheter som brukeren som kaller",
+      "costOff": "tokenkostnader gjelder mens grensene er på",
+      "tokensTitle": "Tokener og OAuth-apper",
+      "registerApp": "Registrer en OAuth-app",
+      "rotate": "Roter mitt token",
+      "create": "Lag mitt token",
+      "noTokens": "Ingen tokener eller OAuth-apper ennå.",
+      "personal": "Personlig token · {name}",
+      "grant": "OAuth-app · {app} · {name}",
+      "app": "OAuth-app · {app}",
+      "grants": "{count, plural, =0 {Ingen tilganger} one {# tilgang} other {# tilganger}}",
+      "fullAsUser": "Full · som bruker",
+      "neverUsed": "Aldri brukt",
+      "revoke": "Trekk tilbake",
+      "disable": "Deaktiver",
+      "tokenNote": "Ett aktivt personlig token per person · lagres bare som hash · API-gatewayen er ikke satt i drift ennå, så ingen kall kan bruke et token",
+      "rateTitle": "Grenser",
+      "rate": {
+        "off": "Av (innstilling)",
+        "source_values": "Kildeverdier (innstilling)",
+        "custom": "Egne verdier (innstilling)"
+      },
+      "rateText": "Når de slås på med kildeverdier: dagsbudsjett = basis × planmultiplikator × plasser, en tokenkostnad per type endepunkt, og en toppgrense per token i et rullerende vindu på 2 sekunder.",
+      "budget": "I dag {used} av {budget} tokener · topp {burst} per 2 s",
+      "noUsage": "Ingen API-kall de siste 24 t",
+      "usageCompany": "Forespørsler per time · siste 24 t · {total} totalt",
+      "usageMine": "Forespørsler per time med dine tokener · siste 24 t · {total} totalt"
+    },
+    "token": {
+      "createTitle": "Lag mitt token",
+      "rotateTitle": "Roter mitt token",
+      "readyTitle": "Ditt nye token",
+      "defaultName": "Personlig token",
+      "name": "Navn",
+      "expires": "Utløper",
+      "never": "Aldri",
+      "days": "Om {count} dager",
+      "createBody": "Tokenet handler som deg, med dine rettigheter. Klarteksten vises én gang.",
+      "rotateBody": "Det nåværende tokenet slutter å virke straks, og et nytt utstedes. Klarteksten vises én gang.",
+      "mfaNote": "Dette krever en andre faktor fra de siste 10 minuttene.",
+      "created": "Tokenet {masked} er aktivt.",
+      "rotated": "Det gamle tokenet sluttet å virke. {masked} er aktivt.",
+      "token": "Token",
+      "onceWarning": "Det vises bare én gang og kan ikke leses igjen. Kopier det nå.",
+      "cancel": "Avbryt",
+      "createSubmit": "Lag token",
+      "rotateSubmit": "Roter nå",
+      "done": "Ferdig"
+    },
+    "oauth": {
+      "title": "Registrer en OAuth-app",
+      "name": "Navn",
+      "kind": "Type",
+      "kinds": {
+        "integration": "Integrasjon",
+        "extension": "Apputvidelse"
+      },
+      "redirects": "Omdirigeringsadresser (https, én per linje)",
+      "scopes": "Omfang den kan be om",
+      "confidential": "Konfidensiell klient (har en klienthemmelighet)",
+      "mfaNote": "Å registrere en app krever en andre faktor fra de siste 10 minuttene.",
+      "cancel": "Avbryt",
+      "submit": "Registrer",
+      "doneTitle": "{name} registrert",
+      "clientId": "Klient-ID",
+      "clientSecret": "Klienthemmelighet",
+      "onceWarning": "Hemmeligheten vises bare én gang. Kopier den nå.",
+      "public": "En offentlig klient: den logger inn med PKCE og har ingen hemmelighet.",
+      "notConnected": "OAuth-endepunktene er ikke satt i drift ennå, så appen kan ikke logge noen inn før de er det.",
+      "done": "Ferdig"
+    },
+    "revoke": {
+      "title": {
+        "token": "Trekk tilbake tokenet til {name}",
+        "grant": "Trekk tilbake {name}",
+        "app": "Deaktiver {name}"
+      },
+      "body": {
+        "token": "Tokenet slutter å virke straks.",
+        "grant": "Appen mister tilgangen straks, og fornyelsestokenet slettes.",
+        "app": "Alle tilganger appen har, trekkes tilbake straks."
+      },
+      "reason": "Begrunnelse",
+      "cancel": "Avbryt",
+      "submit": {
+        "token": "Trekk tilbake",
+        "grant": "Trekk tilbake",
+        "app": "Deaktiver"
+      },
+      "done": {
+        "token": "Trukket tilbake straks · {name}",
+        "grant": "Trukket tilbake straks · {name}",
+        "app": "{name} deaktivert · tilgangene er trukket tilbake"
+      }
+    },
+    "hooks": {
+      "subscriptions": "Abonnementer",
+      "perUser": "Webhooks per bruker: {limit} (innstilling)",
+      "unlimited": "ubegrenset",
+      "new": "＋ Ny webhook",
+      "none": "Ingen webhooks ennå.",
+      "state": {
+        "active": "Aktiv",
+        "paused": "Pauset",
+        "retrying": "Prøver igjen",
+        "blocked": "Blokkert (privat adresse)",
+        "banned": "Utestengt til {until}"
+      },
+      "owner": "Eier {name}",
+      "test": "Send test",
+      "testQueued": "Test i kø · ingen leveringsarbeider er tilkoblet ennå, så den venter i køen",
+      "pause": "Pause",
+      "resume": "Gjenoppta",
+      "paused": "Webhook pauset",
+      "resumed": "Webhook gjenopptatt",
+      "edit": "Rediger",
+      "delete": "Slett",
+      "deliveries": "Leveranser",
+      "deliveriesFor": "Leveranser · {event}",
+      "policy": {
+        "source_values": "Regler for nye forsøk og utestenging: kildeverdier (sikring)",
+        "custom": "Regler for nye forsøk og utestenging: egne verdier (sikring)",
+        "off": "Regler for nye forsøk og utestenging: av — nye forsøk beholdes, ingen utestenging (sikring)"
+      },
+      "noDeliveries": "Ingen leveranser ennå.",
+      "delivery": {
+        "queued": "I kø",
+        "sent": "Sendt",
+        "failed": "Feilet",
+        "skipped": "Hoppet over"
+      },
+      "attempt": "{n} / {of}",
+      "workerNote": "Leveringsarbeideren er ikke tilkoblet: forsøk i kø venter til den er det. Loggen beholder konvolutten, aldri innholdet.",
+      "payloadTitle": "Leveranse — konvolutt og endrede felt",
+      "pickDelivery": "Velg en leveranse for å se hva den bar: hendelsen, posten og navnene på de endrede feltene. Selve innholdet lagres aldri. Å åpne en leveranse logges.",
+      "loading": "Laster …",
+      "bodyHash": "Innhold {bytes} byte · sha256 {hash}… · ikke lagret",
+      "notBuilt": "Ikke bygget ennå: innholdet lages når arbeideren tar forsøket.",
+      "error": "Feil: {code}",
+      "redeliver": "Lever på nytt",
+      "redelivered": "Ny levering i kø · ingen leveringsarbeider er tilkoblet ennå",
+      "signature": "Signaturhode: Sentral-Signature (HMAC-SHA256) · private og lenkelokale mål blokkert",
+      "deleteTitle": "Slett webhooken for {event}",
+      "deleteBody": "Leveranser til {host} stopper, og signeringshemmeligheten slettes.",
+      "deleted": "Webhook slettet",
+      "newTitle": "Ny webhook",
+      "editTitle": "Rediger webhook",
+      "event": "Hendelse",
+      "url": "Adresse (https)",
+      "urlNote": "Bare offentlige https-adresser. Hver leveranse signeres med HMAC-SHA256; hemmeligheten vises én gang når webhooken lages.",
+      "createdTitle": "Webhook laget",
+      "createdBody": "Kontroller Sentral-Signature-hodet på hver leveranse med denne hemmeligheten.",
+      "secret": "Signeringshemmelighet",
+      "onceWarning": "Den vises bare én gang. Kopier den nå.",
+      "cancel": "Avbryt",
+      "save": "Lagre",
+      "create": "Lag",
+      "done": "Ferdig"
+    },
+    "catalog": {
+      "placeholder": "Beskriv hva du trenger — «send fakturaer når en avtale er vunnet»",
+      "hintMatches": "Uthevet: beste treff",
+      "hintAssistant": "Assistentens anbefalinger · AI ikke tilkoblet",
+      "readOnly": "Du kan lese katalogen. Å installere og fjerne krever rettigheten «Konfigurere (Global)».",
+      "collections": {
+        "productivity_mail": "Produktivitet og e-post",
+        "team_chat": "Teamchat",
+        "close_paid": "Lukk og få betalt",
+        "automate": "Automatiser"
+      },
+      "items": {
+        "gw": {
+          "name": "Google Workspace",
+          "description": "Kontakter, kalender, oppgaver, Drive-filer, Gmail, Meet-lenker og innlogging"
+        },
+        "m365": {
+          "name": "Microsoft 365",
+          "description": "Outlook- og Exchange-e-post, kalender, kontakter, Teams-lenker og varsler, OneDrive, SharePoint"
+        },
+        "slack": {
+          "name": "Slack",
+          "description": "Avtalehendelser til kanaler eller direktemeldinger, søk i avtaler og personer fra chat"
+        },
+        "teams": {
+          "name": "Microsoft Teams",
+          "description": "Avtalehendelser til kanaler, søk fra chat"
+        },
+        "acc": {
+          "name": "Regnskapssystem (EHF)",
+          "description": "Lag fakturaer fra avtaler med person, organisasjon og produkter; status på avtalen"
+        },
+        "sign": {
+          "name": "Ekstern e-signering",
+          "description": "Send dokumenter til en ekstern signeringstjeneste"
+        },
+        "zap": {
+          "name": "Automatiseringsplattformer uten kode",
+          "description": "Koblinger bygget på API-et og webhooks"
+        },
+        "ext": {
+          "name": "Apputvidelser",
+          "description": "Paneler i avtale- og kontaktvisninger; handlinger som åpner en lenke, dialog eller innebygd visning"
+        }
+      },
+      "access": "Tilgang: {list}",
+      "accessLabels": {
+        "contacts": "kontakter",
+        "calendar": "kalender",
+        "mail": "e-post",
+        "drive": "Drive",
+        "files": "filer",
+        "deal_events": "avtalehendelser",
+        "search": "søk",
+        "deals": "avtaler",
+        "products": "produkter",
+        "invoices": "fakturaer",
+        "documents": "dokumenter",
+        "scoped_by_token": "avgrenset av token",
+        "per_app": "per app"
+      },
+      "available": "Tilgjengelig",
+      "installed": "Installert",
+      "installedNotConnected": "Installert · ikke tilkoblet",
+      "usersConnected": "{count, plural, one {# person tilkoblet} other {# personer tilkoblet}}",
+      "install": "Installer",
+      "remove": "Fjern",
+      "settingsUsers": "Innstillinger · brukere",
+      "installedToast": "{name} installert",
+      "installedConnect": "{name} installert · å koble den til krever leverandøren, som ikke er tilkoblet ennå",
+      "noMatch": "Ingen integrasjon passer.",
+      "removeDlg": {
+        "title": "Fjern {name}",
+        "loading": "Sjekker hva den er koblet til …",
+        "body": "Når den fjernes, trekkes tilgangen tilbake straks:",
+        "companyConnection": "Firmatilkoblingen og den lagrede påloggingen slettes.",
+        "effects": {
+          "users": "{count, plural, one {# person mister tilkoblingen} other {# personer mister tilkoblingen}}",
+          "mailboxes": "{count, plural, one {# postboks kobles fra} other {# postbokser kobles fra}}",
+          "calendars": "{count, plural, one {# kalender kobles fra} other {# kalendere kobles fra}}",
+          "workflows": "{count, plural, one {# aktiv arbeidsflyt bruker den og stopper ved det steget} other {# aktive arbeidsflyter bruker den og stopper ved det steget}}",
+          "grants": "{count, plural, one {# apptilgang trekkes tilbake} other {# apptilganger trekkes tilbake}}"
+        },
+        "nothing": "Ingenting er koblet til den.",
+        "confirm": "Skriv {key} for å bekrefte",
+        "cancel": "Avbryt",
+        "submit": "Fjern",
+        "done": "{name} fjernet · tilgang trukket tilbake"
+      },
+      "usersDlg": {
+        "title": "{name} · brukere",
+        "company": "Tilkoblet for hele firmaet.",
+        "companyNotConnected": "Firmatilkoblingen er ikke laget: leverandøren er ikke tilkoblet ennå.",
+        "loading": "Laster …",
+        "none": "Ingen er tilkoblet.",
+        "via": {
+          "mailbox": "postboks",
+          "calendar": "kalender",
+          "token": "personlig token",
+          "company": "firmatilkobling"
+        },
+        "revoke": "Trekk tilbake",
+        "revoked": "{name} koblet fra",
+        "close": "Lukk"
+      }
+    },
+    "mcp": {
+      "title": "AI-kobling (MCP)",
+      "switch": "AI-kobling for firmaet",
+      "stateOn": "På for firmaet · {count, plural, =0 {ingen assistenter tilkoblet} one {# assistent tilkoblet} other {# assistenter tilkoblet}}",
+      "stateOff": "Av — nye tilkoblinger blokkeres og eksisterende fjernes",
+      "readOnly": "Å slå den av eller på krever rettigheten «Konfigurere (Global)».",
+      "endpoint": "Koblingsendepunktet er ikke satt i drift ennå · OAuth-innlogging venter på det",
+      "sync": "Synkronisering (indeks hvert 30. min)",
+      "syncOn": "På · siste indeks {ago}",
+      "syncOff": "Av",
+      "assistants": "Tilkoblede assistenter",
+      "noAssistants": "Ingen assistent har koblet seg til ennå.",
+      "neverUsed": "Aldri brukt",
+      "revoke": "Trekk tilbake",
+      "revoked": "{app} koblet fra",
+      "footnote": "Kall kjøres med brukerens rettigheter · endringer vises i endringsloggen med koblingen som kilde · undersøkelsesdata er utilgjengelige",
+      "tools": "Verktøykatalog · {count}",
+      "switchedOn": "AI-koblingen er slått på",
+      "switchedOff": "AI-koblingen er slått av · assistenter koblet fra",
+      "offTitle": "Slå av AI-koblingen",
+      "offBody": "{count, plural, one {Den tilkoblede assistenten mister tilgangen straks.} other {Alle # tilkoblede assistenter mister tilgangen straks.}} Nye tilkoblinger avvises til den slås på igjen.",
+      "cancel": "Avbryt",
+      "offSubmit": "Slå av"
+    },
+    "entities": {
+      "organization": "Organisasjoner",
+      "person": "Personer",
+      "lead": "Leads",
+      "deal": "Avtaler",
+      "ticket": "Saker",
+      "activity": "Aktiviteter",
+      "catalog_item": "Produkter",
+      "form": "Skjemaer",
+      "project": "Prosjekter",
+      "campaign": "Kampanjer",
+      "document": "Dokumenter",
+      "document_template": "Dokumentmaler",
+      "search": "Søk"
+    },
+    "jobs": {
+      "queued": "I kø",
+      "running": "Kjører",
+      "failed24": "Feilet (24 t)",
+      "succeeded24": "Fullført (24 t)",
+      "readOnly": "Du kan lese jobbovervåkingen. Å kjøre en jobb på nytt krever rettigheten «Konfigurere (Global)».",
+      "quiet": "Kjører hvert minutt · en kjøring beholdes bare når den gjorde noe",
+      "info": {
+        "count": "{count} elementer"
+      },
+      "source": {
+        "cron": "planlagt",
+        "queue": "kø",
+        "product": "produkt"
+      },
+      "state": {
+        "running": "Kjører",
+        "queued": "I kø",
+        "succeeded": "Fullført",
+        "failed": "Feilet",
+        "never": "Ikke kjørt ennå"
+      },
+      "retry": "Prøv igjen",
+      "retried": "Nytt forsøk i kø · {name}"
+    },
+    "jobLabels": {
+      "api_burst_prune": "Rydding av API-toppvindu",
+      "campaign_ab": "Vinner i kampanje-A/B",
+      "campaign_due": "Planlagte kampanjeutsendelser",
+      "campaign_prune": "Rydding av kampanjedata",
+      "capture_prune": "Rydding av leadinnsamling",
+      "chat_fallback": "Reserveløsning for chat",
+      "dispatch": "Hendelsesutsending",
+      "dns_check": "DNS-sjekk av avsenderdomener",
+      "duplicates": "Duplikatsøk",
+      "feed_checks": "Strømsjekker",
+      "files_purge": "Sletting av slettede filer",
+      "health": "Kundehelse",
+      "mail_due": "Planlagte e-poster",
+      "mcp_index": "MCP-synkroniseringsindeks",
+      "meeting_bots": "Planlegging av møtereferent",
+      "meeting_briefs": "Forberedelsesnotater",
+      "meeting_calendar_scan": "Kalendersøk etter møter",
+      "meeting_notices": "Varsler om opptak",
+      "meeting_purge": "Sletting av møteopptak",
+      "mrr_snapshot": "MRR-øyeblikksbilde",
+      "mrr_tenants": "MRR per kunde",
+      "pipeline_snapshot": "Øyeblikksbilde av salgstrakt",
+      "platform_prune": "Rydding av plattformlogger",
+      "purge": "Sletting av mykt slettede CRM-poster",
+      "reminders": "Aktivitetspåminnelser",
+      "scores": "Avtale- og leadpoeng",
+      "security_access_review_due": "Påminnelse om tilgangsgjennomgang",
+      "security_alerts": "Sikkerhetsvarsler",
+      "security_audit_purge": "Sletting av revisjonslogg",
+      "security_digest": "Sikkerhetsoppsummering",
+      "security_incident_clock": "Frister for hendelser",
+      "security_login_prune": "Rydding av innloggingslogg",
+      "security_retention_email": "Oppbevaring av e-post",
+      "security_retention_tickets": "Oppbevaring av saker",
+      "security_sessions_expire": "Utløp av inaktive økter",
+      "signature_expire": "Utløp av e-signering",
+      "status_notices": "Fjerning av statusbanner",
+      "web_prune": "Rydding av nettbesøk",
+      "web_salt": "Rotering av besøkssalt",
+      "webhook_sweep": "Webhook-utestenging og opprydding",
+      "workflow_dates": "Datobaserte arbeidsflytutløsere",
+      "workflow_resume": "Gjenopptak av arbeidsflyter",
+      "geocode": "Geokoding",
+      "product_command": "Produktkommandoer",
+      "push_send": "Pushvarsler",
+      "transcription": "Transkripsjon",
+      "webhook_send": "Webhook-leveranser"
+    },
+    "flags": {
+      "title": "Funksjonsflagg — globalt og per organisasjon",
+      "readOnly": "Du kan lese disse innstillingene. Å endre dem krever rettigheten «Konfigurere (Global)».",
+      "moduleSwitch": "Sentral-modulbryter",
+      "global": "Globalt",
+      "off": "av",
+      "moduleOn": "sentral.{key} slått på",
+      "moduleOff": "sentral.{key} slått av",
+      "productFlags": "Holdes i produktet · leses gjennom modules.list · {tenants} aktive kunder",
+      "noFlagCommand": "Holdes i produktet · ingen flaggkommando for Sentral",
+      "maintTitle": "Vedlikeholdsmodus og statusbanner",
+      "noApp": "Ingen applikasjon er installert.",
+      "maintenance": "Vedlikeholdsmodus · {name}",
+      "maintNotAvailable": "Ikke tilgjengelig: {name} har ingen vedlikeholdskommando ennå.",
+      "maintOwner": "Vedlikeholdsmodus krever eieren og en fersk andre faktor.",
+      "banner": "Bannertekst",
+      "bannerPlaceholder": "Ingen banner vises. Skriv et for å vise det i produktet.",
+      "preview": "Forhåndsvisning i produktet:",
+      "linked": "Koblet til kjent feil {number} · vises i {name} til problemet er løst",
+      "pushed": "Sendt til produktet {ago}",
+      "notPushed": "Venter på å bli sendt: arbeideren for produktkommandoer er ikke tilkoblet, så {name} viser det ikke ennå.",
+      "pushFailed": "Produktet avviste det: {code}",
+      "noNoticeCommand": "{name} har ingen bannerkommando.",
+      "save": "Lagre banner",
+      "clear": "Fjern banner",
+      "saved": "Banner lagret for {name}",
+      "cleared": "Banner fjernet for {name}",
+      "history": "Historikk",
+      "clearedEntry": "fjernet",
+      "maintDlg": {
+        "titleOn": "Sett {name} i vedlikehold",
+        "titleOff": "Avslutt vedlikehold for {name}",
+        "bodyOn": "{name} stopper for alle kunder til vedlikeholdet avsluttes.",
+        "bodyOff": "{name} åpner igjen for alle kunder.",
+        "confirm": "Skriv {key} for å bekrefte",
+        "cancel": "Avbryt",
+        "submitOn": "Start vedlikehold",
+        "submitOff": "Avslutt vedlikehold"
+      }
+    },
+    "content": {
+      "noApp": "Ingen applikasjon er installert.",
+      "cards": {
+        "question_set": {
+          "name": "Spørsmålssett",
+          "description": "QPS Nordic · 11 faktorer × 3 påstander. En publisert versjon kan ikke endres."
+        },
+        "pulse_templates": {
+          "name": "Pulsmaler",
+          "description": "Korte sett hentet fra hovedbanken."
+        },
+        "tiltak": {
+          "name": "Tiltaksbibliotek",
+          "description": "Forslag per faktor og poengbånd."
+        },
+        "legal": {
+          "name": "Juridiske henvisninger",
+          "description": "Hjemmel per faktor for risikovurdering og rapporten til Arbeidstilsynet."
+        },
+        "templates": {
+          "name": "E-post- og SMS-maler",
+          "description": "Invitasjon, påminnelse, varsel til verneombud, resultater klare, prøveperiode utløper, betaling feilet · bokmål først."
+        },
+        "help": {
+          "name": "Hjelpetekster og kunngjøringer",
+          "description": "Kunngjøringer i appen og hjelpeartikler · makroer for saker ligger også her."
+        }
+      },
+      "inProduct": "I {name}",
+      "readThrough": "Leses gjennom {command}",
+      "noReadCommand": "Forvaltes i {name} · ingen lesekommando for Sentral ennå",
+      "live": "{count} publisert",
+      "lastChange": "Sist endret {ago} · {articles} artikler · {macros} makroer",
+      "noArticles": "Ingen hjelpeartikler ennå",
+      "editDraft": "Rediger utkast",
+      "edit": "Rediger",
+      "rollback": "Rull tilbake",
+      "noDraft": "Produktet har ingen utkastkommando ennå",
+      "noRollback": "Ingen kommando for tilbakerulling ennå",
+      "waits": "Venter på produktkommandoer",
+      "productContent": "Innhold i {name}",
+      "noCommands": "{name} holder sitt eget innhold og har ingen innholdskommando for Sentral ennå, så ingenting vises her."
+    },
+    "bulk": {
+      "title": "Masseendringer — kan tilbakestilles",
+      "loading": "Laster …",
+      "empty": "Ingen masseendringer de siste 90 dagene.",
+      "change": "{fields} på {count, plural, one {# post} other {# poster}} · {entity}",
+      "result": "Tilbakestilt {reverted} · endret siden {stale} · slettet {gone} · ikke tillatt {forbidden}",
+      "reverted": "Tilbakestilt",
+      "revert": "Tilbakestill",
+      "confirmTitle": "Tilbakestill denne masseendringen",
+      "confirmBody": "Hver av {count, plural, one {# post} other {de # postene}} får tilbake verdien fra før endringen, hvis ingen har endret den siden. En endring kan tilbakestilles én gang.",
+      "reason": "Begrunnelse",
+      "cancel": "Avbryt",
+      "done": "Tilbakestilt {reverted} · {skipped} står som de er",
+      "fields": {
+        "owner_id": "Eier",
+        "labels": "Etiketter",
+        "stage_id": "Steg",
+        "status": "Status",
+        "visibility": "Synlighet",
+        "marketing_status": "Markedsføringsstatus",
+        "pipeline_id": "Salgstrakt",
+        "expected_close": "Forventet avslutning"
+      }
+    }
+  }
 }

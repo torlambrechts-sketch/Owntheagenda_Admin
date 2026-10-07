@@ -468,8 +468,16 @@
       "timeZone": "Tidssone",
       "numberFormat": "Tallformat",
       "idle": "Økten avsluttes etter 30 minutter uten aktivitet.",
-      "settings": "Innstillinger",
-      "signOut": "Logg ut"
+      "signOut": "Logg ut",
+      "manage": "Innstillinger og sikkerhet",
+      "links": {
+        "settings": "Innstillinger",
+        "pipelines": "Salgsløp og trinn",
+        "macros": "Makroer for saker",
+        "security": "Økter og tofaktor",
+        "privacy": "Personvernforespørsler",
+        "audit": "Revisjonslogg"
+      }
     },
     "noAccess": {
       "title": "Ingen tilgang",

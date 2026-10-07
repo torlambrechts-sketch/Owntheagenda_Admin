@@ -7,7 +7,8 @@ import { useTranslations } from 'next-intl'
 import { setLocale, setSandbox } from '@/app/(admin)/shell-actions'
 import { signOut } from '@/app/login/actions'
 import { formatNumber } from '@/lib/format'
-import type { ShellData } from './types'
+import { routeVisible } from '@/lib/nav'
+import { canIn, type ShellData } from './types'
 
 /** The initials button and its card: who I am, language, time zone, number format, settings, sign out. */
 export function AccountMenu({ shell, open, toggle, close }: { shell: ShellData; open: boolean; toggle: () => void; close: () => void }) {
@@ -87,13 +88,21 @@ export function AccountCard({ shell, close, className }: { shell: ShellData; clo
               </button>
             </div>
             {shell.settings.session_idle === 'on_30' ? <div className="px-3 py-2 text-12 text-muted">{t('idle')}</div> : null}
-            <Link
-              href="/settings"
-              onClick={close}
-              className="rounded-10 border-none bg-transparent px-3 py-[9px] text-left text-13 font-semibold text-ink hover:text-ink hover:no-underline"
-            >
-              {t('settings')}
-            </Link>
+          </div>
+          <div className="mt-[6px] flex flex-col gap-[2px] border-t border-line pt-2 text-13">
+            <div className="px-3 pb-1 pt-[2px] text-10.5 font-bold uppercase tracking-label text-muted">{t('manage')}</div>
+            {manageLinks(shell).map((l) => (
+              <Link
+                key={l.key}
+                href={l.href as never}
+                onClick={close}
+                className="rounded-10 border-none bg-transparent px-3 py-[7px] text-left text-13 font-semibold text-ink hover:text-ink hover:no-underline"
+              >
+                {t(`links.${l.key}`)}
+              </Link>
+            ))}
+          </div>
+          <div className="mt-[6px] border-t border-line pt-[6px]">
             <form action={signOut}>
               <button type="submit" className="w-full cursor-pointer rounded-10 border-none bg-transparent px-3 py-[9px] text-left text-13 font-semibold">
                 {t('signOut')}
@@ -102,6 +111,23 @@ export function AccountCard({ shell, close, className }: { shell: ShellData; clo
           </div>
     </div>
   )
+}
+
+/**
+ * Settings and security (S5): the screens Sentral Simple keeps out of the rail, reachable from the account card. Each link
+ * is offered only to someone who can open it; the screens and the database check again.
+ */
+export function manageLinks(shell: ShellData): { key: 'settings' | 'pipelines' | 'macros' | 'security' | 'privacy' | 'audit'; href: string }[] {
+  const who = { admin: shell.me.permission_kind === 'admin', rights: shell.me.rights, modules: shell.modules, meetingsWorkspace: shell.meetings_workspace }
+  const security = canIn(shell, 'global', 'security')
+  return [
+    { key: 'settings' as const, href: '/settings', on: true },
+    { key: 'pipelines' as const, href: '/settings?sec=pipelines', on: routeVisible('deals', who) },
+    { key: 'macros' as const, href: '/tickets?tab=macros', on: routeVisible('tickets', who) },
+    { key: 'security' as const, href: '/security', on: true },
+    { key: 'privacy' as const, href: '/security?tab=privacy', on: security },
+    { key: 'audit' as const, href: '/security?tab=audit', on: security },
+  ].filter((l) => l.on).map(({ key, href }) => ({ key, href }))
 }
 
 export const initialsOf = (me: ShellData['me']) => me.initials ?? me.name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase()

@@ -468,8 +468,16 @@
       "timeZone": "Time zone",
       "numberFormat": "Number format",
       "idle": "Session ends after 30 min idle.",
-      "settings": "Settings",
-      "signOut": "Sign out"
+      "signOut": "Sign out",
+      "manage": "Settings and security",
+      "links": {
+        "settings": "Settings",
+        "pipelines": "Pipelines and stages",
+        "macros": "Ticket macros",
+        "security": "Sessions and two-factor",
+        "privacy": "Privacy requests",
+        "audit": "Audit log"
+      }
     },
     "noAccess": {
       "title": "No access",

@@ -3112,6 +3112,63 @@ select app.mtg_brief_build('4d8e24a3-6656-4bf4-aec0-b8786d70fe62');
 select app.mtg_brief_build('77f965d7-4c45-43ca-a1f6-114a60f12b6e');
 select app.mtg_brief_build('81516757-2c18-48a8-a76a-f586ad9bfcd7');
 select app.mtg_brief_build('e0b34651-536b-4f0b-a9b2-0e955c0d4c60');
+insert into app.activities (id, type_id, subject, starts_at, duration_min, priority, done, deal_id, person_id, organization_id, owner_id, created_at, updated_at)
+  values ('2c1e7777-6eca-4fc5-a84e-00f8919221d4', (select id from app.activity_types where key = 'call'), 'Call Kari Nordmann', ((((now() at time zone 'Europe/Oslo')::date) + time '10:00') at time zone 'Europe/Oslo'), 15, 'high', false, 'e881fda1-c2f4-4d97-a646-535096f3fd6b', '0b29480e-c6f6-44ca-aca1-efb63d0ffac5', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9',
+  '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '2 days', now() - interval '2 days'),
+  ('d5727302-74aa-4bf4-a528-11ae5973c25f', (select id from app.activity_types where key = 'visit'), 'Site visit Bergheim Bygg', ((((now() at time zone 'Europe/Oslo')::date) + time '13:30') at time zone 'Europe/Oslo'), 60, 'medium', false, null, null, '41ef39ab-5ed7-45cf-a2c0-2ba6d1a8b355',
+  '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', now() - interval '3 days', now() - interval '3 days');
+insert into app.activity_reminders (activity_id, channel, offset_min) values ('2c1e7777-6eca-4fc5-a84e-00f8919221d4', 'app', 15);
+insert into app.notes (id, entity, record_id, body, pinned, mentions, author_id, created_at)
+  values ('124e0f8f-9a10-4a39-a5b0-c2f1999dc82b', 'deal', 'e881fda1-c2f4-4d97-a646-535096f3fd6b', '@Tor partner discount here?', false, array['5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb']::uuid[], 'e1d74515-623a-48b1-a3ae-2b9cb638a560', now() - interval '2 hours');
+insert into app.notifications (staff_id, kind, key, params, route, entity, record_id, created_at)
+  values ('5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', 'mention', 'mention', jsonb_build_object('actor', 'Ingrid Solberg', 'record', 'Lumio AS — Expansion to Skiftly', 'excerpt', '@Tor partner discount here?'),
+  '/deals?deal=e881fda1-c2f4-4d97-a646-535096f3fd6b', 'deal', 'e881fda1-c2f4-4d97-a646-535096f3fd6b', now() - interval '2 hours');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'd67d00a4-e8a8-430b-ac52-245c8a0d1fd9', 'address', 59.913900, 10.752200, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'a0c6edf4-cb52-4f00-adaa-77becd8cc14a', 'address', 63.430500, 10.395100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '41ef39ab-5ed7-45cf-a2c0-2ba6d1a8b355', 'address', 58.146700, 7.995600, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'd8e6d1a5-820f-4952-a9dc-6c367c76c647', 'address', 59.218100, 10.929800, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '33b11070-2b4f-4b6f-ac0d-994760006b58', 'address', 59.956000, 11.049000, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '4e617412-6788-4d9f-ac8c-97a03da2914a', 'address', 58.970000, 5.733100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '859e3e5a-170f-4a29-a996-65d77f5f88e3', 'address', 58.970000, 5.733100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '4e8d8728-68d8-4be4-abf8-c65654b80ac6', 'address', 58.970000, 5.733100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '31433ce8-231b-42e5-afc0-064c77bab0ef', 'address', 60.794500, 11.068000, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'b6aa023f-6d43-4e34-ae38-90c5be501749', 'address', 59.267500, 10.407600, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'bb5bc2fb-39f9-4fc3-a983-cb1a50d8ec88', 'address', 58.146700, 7.995600, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '2a8591b9-1d16-4630-ad88-4e36a1447e21', 'address', 59.267500, 10.407600, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'f2d9b825-2672-42a3-ab82-2170b4812f5a', 'address', 63.430500, 10.395100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'cefcd348-52f2-4f37-a3b3-5e42346717c2', 'address', 58.146700, 7.995600, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'c08bd479-9ca7-4884-ac80-5fc865ab689f', 'address', 67.280400, 14.404900, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'b73ecda4-4123-4d55-a935-7b6e4ee258b9', 'address', 62.472200, 6.149500, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '2d7585f5-06f1-427f-a2bd-e17f761f6ac6', 'address', 58.146700, 7.995600, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'f058e182-e3f9-4e3c-a237-aa2e67da9238', 'address', 59.267500, 10.407600, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '5c3fd076-21bc-41a3-a9ca-5f6a76bd936c', 'address', 69.649200, 18.955300, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'ee512a75-7906-42c6-a7af-27bc44ef6a7a', 'address', 58.970000, 5.733100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '76ce311b-ca87-4f8b-ae29-18344febfe78', 'address', 63.430500, 10.395100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'f142d9eb-3e73-496d-a54a-68fb777bcf0f', 'address', 58.970000, 5.733100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '2ada062d-15f8-411d-a5c0-2258d7966e61', 'address', 60.794500, 11.068000, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '9bed6b5b-639a-45c4-aed7-749552fac442', 'address', 62.472200, 6.149500, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '2725102e-cbf0-4a7f-afe9-e8e5c8ed5bb2', 'address', 60.391300, 5.322100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'e39ce338-c769-4466-a1d7-2c4117a820ec', 'address', 60.391300, 5.322100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '8b6bf1ad-a509-409c-ad76-3e55ed46a6bd', 'address', 67.280400, 14.404900, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '011cb3ee-717c-488c-a02a-5b1c00281f19', 'address', 69.649200, 18.955300, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'd535ea56-4bb0-428b-a17e-048c1660991e', 'address', 59.743900, 10.204500, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '8fec8260-ec68-4b20-a4cb-f2e352cc42ac', 'address', 62.472200, 6.149500, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '8e3e2e86-3cbd-4ed2-a620-24b681998849', 'address', 62.472200, 6.149500, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'fa517631-ecef-4c38-a016-fb63c810226c', 'address', 59.743900, 10.204500, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '362c4f6f-56ba-426f-ae0f-6d4a0867af5e', 'address', 59.956000, 11.049000, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '57f7447d-a544-4820-aeff-f4a5ce6d594f', 'address', 59.956000, 11.049000, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '5097f623-cf96-4bef-a170-678c8c0a02f7', 'address', 67.280400, 14.404900, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '212f9abe-09b0-4798-acea-891718be1ff1', 'address', 58.146700, 7.995600, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'b04fcefc-04d9-4382-a4f3-542db4ed20a8', 'address', 59.956000, 11.049000, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '6cdd00cd-9cd1-4d81-af5e-c77d1170ef83', 'address', 67.280400, 14.404900, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '95368868-20aa-4627-a36b-f1e799eba468', 'address', 58.970000, 5.733100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '2ce3beab-ff03-4bb5-a2e8-b2af7b0a7d70', 'address', 62.472200, 6.149500, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', 'a5963be4-463a-44b5-a28f-ae617fe9de62', 'address', 59.218100, 10.929800, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '7a8d923c-97e2-4350-a6d4-1b43d8db87b5', 'address', 60.794500, 11.068000, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '45b07675-116f-44f8-a030-ed969a3b407f', 'address', 69.649200, 18.955300, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '6a20e6d9-2eca-46dc-ab54-9897934f4245', 'address', 58.146700, 7.995600, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '6f52cd56-f112-4360-ab25-ee3a47ac2059', 'address', 63.430500, 10.395100, 'manual', now() - interval '1 day');
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source, geocoded_at) values ('organization', '4b8881a8-e92c-42be-a95f-7a94c8119eb0', 'address', 67.280400, 14.404900, 'manual', now() - interval '1 day');
 
 commit;
 set session_replication_role = origin;

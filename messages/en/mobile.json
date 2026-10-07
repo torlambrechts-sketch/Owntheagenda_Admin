@@ -1,3 +1,298 @@
 {
-  "mobile": {}
+  "mobile": {
+    "eyebrow": "Web app on the phone · same API · offline sync",
+    "headline": "Sentral in the pocket — for field visits, calls between meetings and live chats on the go.",
+    "previewNote": "The phones show your own data, live. «Simulate offline» and «Landscape» change only this preview.",
+    "simulateOffline": "Simulate offline",
+    "goOnline": "Go back online",
+    "landscape": "Landscape",
+    "portrait": "Portrait",
+    "noAccess": {
+      "title": "Mobile",
+      "moduleOff": "The mobile module is switched off in Settings › Modules.",
+      "body": "The mobile views need the right to see deals."
+    },
+    "cancel": "Cancel",
+    "needsConnection": "Needs a connection: this is not kept for later.",
+    "savedOffline": "Saved offline · syncs when back online",
+    "checkedIn": "Visit logged as activity",
+    "net": {
+      "online": "Online",
+      "offline": "No network"
+    },
+    "banner": {
+      "offline": "Offline · {n, plural, one {# change} other {# changes}} waiting",
+      "waiting": "{n, plural, one {# change} other {# changes}} waiting",
+      "sync": "Sync now"
+    },
+    "tabbar": {
+      "focus": "Focus",
+      "deals": "Deals",
+      "activities": "Activities",
+      "nearby": "Nearby",
+      "more": "More"
+    },
+    "phones": {
+      "focus": {
+        "label": "Focus",
+        "ids": "MOB-02 · opening screen"
+      },
+      "nearby": {
+        "label": "Nearby",
+        "ids": "MOB-03 · organizations near you, with their open deal"
+      },
+      "deal": {
+        "label": "Deal on the go",
+        "ids": "MOB-01 · MOB-04 · MOB-05 · pipeline, details, calls, offline"
+      },
+      "capture": {
+        "label": "Capture",
+        "ids": "MOB-06 · AIA-07 · audio notes, scanner, card scanner"
+      },
+      "notifications": {
+        "label": "Notifications",
+        "ids": "MOB-07 · reminders, assignments, mentions, chat requests"
+      },
+      "extras": {
+        "label": "Extras",
+        "ids": "MOB-08 · live chat, project tasks, statistics"
+      }
+    },
+    "focus": {
+      "greeting": {
+        "morning": "Good morning, {name}",
+        "afternoon": "Good afternoon, {name}",
+        "evening": "Good evening, {name}"
+      },
+      "overdue": "Overdue",
+      "nothingOverdue": "Nothing overdue",
+      "overdueActivities": "{a, plural, one {# activity} other {# activities}}",
+      "overdueBoth": "{a, plural, one {# activity} other {# activities}} · {d, plural, one {# deal} other {# deals}} past close date",
+      "today": "Today",
+      "nothingToday": "Nothing planned today",
+      "unreadEyebrow": "Unread email",
+      "unreadNearbyEyebrow": "Unread email · nearby",
+      "unread": "{n} unread",
+      "unreadNearby": "{n} unread · {near, plural, one {# organization} other {# organizations}} within 10 km",
+      "closing": "Expected to close this week: {count, plural, one {# deal} other {# deals}} · {value}",
+      "excluded": "{n} in other currencies not counted"
+    },
+    "nearby": {
+      "title": "Nearby",
+      "deal": "Deal «{deal}» · {stage}",
+      "customer": "Customer",
+      "health": "health {n}",
+      "lastVisit": "last visit {date}",
+      "noVisit": "no visit logged",
+      "noTiles": "Map tiles not connected",
+      "forget": "Forget my position",
+      "lat": "Latitude",
+      "lng": "Longitude",
+      "search": "Search here",
+      "asking": "Asking …",
+      "locate": "Use my location",
+      "why": "Your position is sent with this search only. It is never stored.",
+      "denied": "Your position was not shared. The browser or this site's settings block it.",
+      "blocked": "Location is switched off for the admin site. Type a position instead.",
+      "unavailable": "Your position could not be found.",
+      "type": "Type a position instead",
+      "failed": "Nearby could not be loaded.",
+      "none": "Nothing within 10 km",
+      "noneBody": "Places come from organization addresses. The geocoder is not connected, so only places set by hand are known.",
+      "navigate": "Navigate",
+      "checkIn": "Check in"
+    },
+    "deal": {
+      "empty": {
+        "title": "Deal on the go",
+        "t": "No open deal to show",
+        "s": "The deal of your next activity today, or your open deal closing soonest, appears here."
+      },
+      "score": "score {n}",
+      "close": "close {date}",
+      "call": "Call",
+      "text": "Text",
+      "noPhone": "No phone number on this person.",
+      "prompt": "How did the call go?",
+      "outcome": "Outcome",
+      "outcomes": {
+        "connected": "Connected",
+        "no_answer": "No answer",
+        "busy": "Busy",
+        "voicemail": "Voicemail",
+        "missed": "Missed"
+      },
+      "minutes": "Minutes",
+      "logCall": "Log call",
+      "moveTo": "Move to {stage}",
+      "movePending": "The stage change is waiting to sync.",
+      "missing": "{fields} must be filled in first",
+      "requires": "{fields} {count, plural, one {is} other {are}} required from this stage",
+      "openDeal": "Open the deal",
+      "move": "Move stage",
+      "notes": "Notes",
+      "noNotes": "No notes yet",
+      "moved": "Stage changed to {stage}",
+      "callSubject": "Call {name}",
+      "callLogged": "Call logged as activity · {n} min"
+    },
+    "capture": {
+      "title": "Capture",
+      "audio": {
+        "eyebrow": "Audio note · transcription not connected",
+        "t": "Recording waits for file storage",
+        "s": "Audio notes are kept on the record. File upload is not connected yet.",
+        "sOn": "Audio notes are kept on the record ({record}). File upload is not connected yet."
+      },
+      "card": {
+        "eyebrow": "Business card",
+        "t": "Type a card and review it",
+        "s": "The card scanner needs the AI service, which is not connected. Typed cards are reviewed before they are saved.",
+        "review": "Review the contact",
+        "refused": "The contact rule «opt-in only» refuses contacts from cards.",
+        "name": "Name",
+        "title": "Title",
+        "email": "Email",
+        "phone": "Phone",
+        "organization_name": "Organization",
+        "basis": "Basis for contact",
+        "save": "Save contact",
+        "create": "Create contact",
+        "basisNeeded": "The contact rule needs a basis for contact.",
+        "saved": "Contact saved · editable on Contacts"
+      },
+      "scan": {
+        "eyebrow": "Scan notes",
+        "t": "Handwritten notes → text",
+        "s": "Scanning needs the AI service and file storage. Neither is connected."
+      },
+      "rule": "Contact rule: {rule} (setting) — {effect}",
+      "rules": {
+        "no_rule": "no rule",
+        "source_and_basis": "source and basis",
+        "opt_in_only": "opt-in only"
+      },
+      "effects": {
+        "no_rule": "cards create contacts directly",
+        "source_and_basis": "a card needs a basis for contact",
+        "opt_in_only": "cards cannot create contacts"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "unknown": "Notification",
+      "failed": "Notifications could not be loaded.",
+      "none": "No notifications yet",
+      "noneBody": "Reminders, assignments, mentions and chat requests appear here.",
+      "inAppOnly": "Push is not connected: notifications stay in the app."
+    },
+    "kinds": {
+      "reminder": "Reminder",
+      "mention": "Mention",
+      "assignment": "Assigned to you",
+      "chat_request": "Chat request",
+      "security": "Security",
+      "system": "System"
+    },
+    "extras": {
+      "title": "Today’s numbers",
+      "month": "This month",
+      "won": "Won",
+      "goal": "{pct} of goal",
+      "newDeals": "{n, plural, one {# new deal} other {# new deals}}",
+      "chat": "Live chat",
+      "chatWaiting": "{n, plural, one {# visitor is} other {# visitors are}} waiting for a person",
+      "chatNone": "No visitor is waiting",
+      "chatS": "Chats on your website",
+      "openChat": "Open chat",
+      "tasks": "Project tasks",
+      "tasksDue": "{n} due today",
+      "tasksS": "Tasks you own or are assigned to",
+      "openProjects": "Open projects"
+    },
+    "sync": {
+      "none": "Back online · nothing to sync",
+      "failed": "Sync failed: {reason} The changes are kept.",
+      "mixed": "{applied} synced · {superseded} kept the newer change · {rejected} refused — see Offline sync",
+      "done": "{count, plural, one {# change} other {# changes}} synced · latest change wins",
+      "noNetwork": "No network · the changes wait until you are back online",
+      "eyebrow": "This device",
+      "title": "Offline sync",
+      "body": "Changes made offline wait here in order and are sent when the device is back online. Each change is sent once: a retry returns the same result. When the record changed on the web in the meantime, the latest change wins and the earlier value stays in the history.",
+      "offline": "Offline",
+      "online": "Online",
+      "device": "device {id}",
+      "syncing": "Syncing …",
+      "syncNow": "Sync now",
+      "waiting": "Waiting · {n}",
+      "nothingWaiting": "Nothing is waiting.",
+      "kinds": {
+        "checkin": "Check in",
+        "call": "Call",
+        "stage": "Stage"
+      },
+      "halfway": "activity created, completion waiting",
+      "lastSync": "Last sync",
+      "pulled": "{n, plural, =0 {No record changed} one {# record changed} other {# records changed}} since the last pull · {time}",
+      "result": {
+        "applied": "Synced",
+        "appliedConflict": "Synced over a change made on the web: yours was later. The earlier value is kept in the history.",
+        "replayed": "Already synced earlier · nothing changed",
+        "superseded": "Not applied: a later change on the web wins. The record shows that change.",
+        "missingFields": "Refused: the stage needs fields to be filled in first. Open the deal to fill them.",
+        "rejected": "Refused: {reason}"
+      }
+    },
+    "devices": {
+      "eyebrow": "Push",
+      "title": "Your devices",
+      "failed": "Devices could not be loaded.",
+      "state": {
+        "moduleOff": {
+          "t": "The mobile module is off",
+          "s": "Nothing is pushed while the module is switched off."
+        },
+        "settingOff": {
+          "t": "Push notifications are off",
+          "s": "The setting «Push notifications» is off, so nothing is pushed."
+        },
+        "notConnected": {
+          "t": "Push is not connected",
+          "s": "No push provider key (VAPID) is in place. Notifications stay in the app until it is."
+        },
+        "ready": {
+          "t": "Push is connected",
+          "s": "New notifications go to the devices below, by the types you choose."
+        }
+      },
+      "none": "No device is registered.",
+      "unnamed": "Unnamed device",
+      "added": "added {date}",
+      "lastUsed": "last push {date}",
+      "failures": "{n, plural, one {# failed push} other {# failed pushes}}",
+      "revoke": "Remove",
+      "register": "Register this browser",
+      "registerDisabled": "Registering needs the push provider's key and the installed app, which are not in place yet."
+    },
+    "prefs": {
+      "eyebrow": "Notifications",
+      "title": "Notification types",
+      "body": "Choose which types also come as push. In the app they always appear.",
+      "bodyNotConnected": "Choose which types also come as push once push is connected. In the app they always appear.",
+      "failed": "Notification types could not be loaded.",
+      "kind": "Type",
+      "inApp": "In app",
+      "push": "Push",
+      "kinds": {
+        "assignment": "Assignments",
+        "mention": "Mentions",
+        "chat_request": "Chat requests",
+        "security": "Security",
+        "system": "System"
+      },
+      "inAppLabel": "{kind} in the app",
+      "pushLabel": "{kind} as push",
+      "reminders": "Reminders follow your reminder channels on Activities."
+    }
+  }
 }

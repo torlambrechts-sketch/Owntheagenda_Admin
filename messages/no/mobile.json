@@ -1,3 +1,298 @@
 {
-  "mobile": {}
+  "mobile": {
+    "eyebrow": "Nettapp på telefonen · samme API · frakoblet synk",
+    "headline": "Sentral i lomma — for kundebesøk, samtaler mellom møter og livechat på farten.",
+    "previewNote": "Telefonene viser dine egne data, direkte. «Simuler frakoblet» og «Liggende» endrer bare denne forhåndsvisningen.",
+    "simulateOffline": "Simuler frakoblet",
+    "goOnline": "Koble til igjen",
+    "landscape": "Liggende",
+    "portrait": "Stående",
+    "noAccess": {
+      "title": "Mobil",
+      "moduleOff": "Mobilmodulen er slått av i Innstillinger › Moduler.",
+      "body": "Mobilvisningene krever rett til å se avtaler."
+    },
+    "cancel": "Avbryt",
+    "needsConnection": "Krever nett: dette lagres ikke til senere.",
+    "savedOffline": "Lagret frakoblet · synkes når du er på nett igjen",
+    "checkedIn": "Besøk logget som aktivitet",
+    "net": {
+      "online": "På nett",
+      "offline": "Ingen nett"
+    },
+    "banner": {
+      "offline": "Frakoblet · {n, plural, one {# endring} other {# endringer}} venter",
+      "waiting": "{n, plural, one {# endring} other {# endringer}} venter",
+      "sync": "Synk nå"
+    },
+    "tabbar": {
+      "focus": "Fokus",
+      "deals": "Avtaler",
+      "activities": "Aktiviteter",
+      "nearby": "I nærheten",
+      "more": "Mer"
+    },
+    "phones": {
+      "focus": {
+        "label": "Fokus",
+        "ids": "MOB-02 · startskjerm"
+      },
+      "nearby": {
+        "label": "I nærheten",
+        "ids": "MOB-03 · organisasjoner nær deg, med åpen avtale"
+      },
+      "deal": {
+        "label": "Avtale på farten",
+        "ids": "MOB-01 · MOB-04 · MOB-05 · pipeline, detaljer, samtaler, frakoblet"
+      },
+      "capture": {
+        "label": "Fangst",
+        "ids": "MOB-06 · AIA-07 · lydnotater, skanner, visittkortskanner"
+      },
+      "notifications": {
+        "label": "Varsler",
+        "ids": "MOB-07 · påminnelser, tildelinger, omtaler, chatforespørsler"
+      },
+      "extras": {
+        "label": "Ekstra",
+        "ids": "MOB-08 · livechat, prosjektoppgaver, statistikk"
+      }
+    },
+    "focus": {
+      "greeting": {
+        "morning": "God morgen, {name}",
+        "afternoon": "God ettermiddag, {name}",
+        "evening": "God kveld, {name}"
+      },
+      "overdue": "Forfalt",
+      "nothingOverdue": "Ingenting har forfalt",
+      "overdueActivities": "{a, plural, one {# aktivitet} other {# aktiviteter}}",
+      "overdueBoth": "{a, plural, one {# aktivitet} other {# aktiviteter}} · {d, plural, one {# avtale} other {# avtaler}} over forventet lukkedato",
+      "today": "I dag",
+      "nothingToday": "Ingenting planlagt i dag",
+      "unreadEyebrow": "Ulest e-post",
+      "unreadNearbyEyebrow": "Ulest e-post · i nærheten",
+      "unread": "{n} uleste",
+      "unreadNearby": "{n} uleste · {near, plural, one {# organisasjon} other {# organisasjoner}} innen 10 km",
+      "closing": "Forventet lukket denne uken: {count, plural, one {# avtale} other {# avtaler}} · {value}",
+      "excluded": "{n} i andre valutaer er ikke regnet med"
+    },
+    "nearby": {
+      "title": "I nærheten",
+      "deal": "Avtale «{deal}» · {stage}",
+      "customer": "Kunde",
+      "health": "helse {n}",
+      "lastVisit": "sist besøkt {date}",
+      "noVisit": "ingen besøk logget",
+      "noTiles": "Kartfliser er ikke tilkoblet",
+      "forget": "Glem posisjonen min",
+      "lat": "Breddegrad",
+      "lng": "Lengdegrad",
+      "search": "Søk her",
+      "asking": "Spør …",
+      "locate": "Bruk posisjonen min",
+      "why": "Posisjonen sendes bare med dette søket. Den lagres aldri.",
+      "denied": "Posisjonen ble ikke delt. Nettleseren eller nettstedets innstillinger blokkerer den.",
+      "blocked": "Posisjon er slått av for administrasjonsnettstedet. Skriv inn en posisjon i stedet.",
+      "unavailable": "Posisjonen kunne ikke finnes.",
+      "type": "Skriv inn en posisjon i stedet",
+      "failed": "I nærheten kunne ikke lastes.",
+      "none": "Ingenting innen 10 km",
+      "noneBody": "Steder kommer fra organisasjonenes adresser. Geokoderen er ikke tilkoblet, så bare steder satt for hånd er kjent.",
+      "navigate": "Naviger",
+      "checkIn": "Sjekk inn"
+    },
+    "deal": {
+      "empty": {
+        "title": "Avtale på farten",
+        "t": "Ingen åpen avtale å vise",
+        "s": "Avtalen til din neste aktivitet i dag, eller den åpne avtalen din som lukkes først, vises her."
+      },
+      "score": "score {n}",
+      "close": "lukkes {date}",
+      "call": "Ring",
+      "text": "SMS",
+      "noPhone": "Ingen telefonnummer på denne personen.",
+      "prompt": "Hvordan gikk samtalen?",
+      "outcome": "Utfall",
+      "outcomes": {
+        "connected": "Fikk svar",
+        "no_answer": "Ikke svar",
+        "busy": "Opptatt",
+        "voicemail": "Talepost",
+        "missed": "Tapt"
+      },
+      "minutes": "Minutter",
+      "logCall": "Logg samtale",
+      "moveTo": "Flytt til {stage}",
+      "movePending": "Fasebyttet venter på synk.",
+      "missing": "{fields} må fylles ut først",
+      "requires": "{fields} er påkrevd fra denne fasen",
+      "openDeal": "Åpne avtalen",
+      "move": "Flytt fase",
+      "notes": "Notater",
+      "noNotes": "Ingen notater ennå",
+      "moved": "Fase endret til {stage}",
+      "callSubject": "Ring {name}",
+      "callLogged": "Samtale logget som aktivitet · {n} min"
+    },
+    "capture": {
+      "title": "Fangst",
+      "audio": {
+        "eyebrow": "Lydnotat · transkribering ikke tilkoblet",
+        "t": "Opptak venter på fillagring",
+        "s": "Lydnotater lagres på posten. Filopplasting er ikke tilkoblet ennå.",
+        "sOn": "Lydnotater lagres på posten ({record}). Filopplasting er ikke tilkoblet ennå."
+      },
+      "card": {
+        "eyebrow": "Visittkort",
+        "t": "Skriv inn et kort og kontroller det",
+        "s": "Visittkortskanneren trenger AI-tjenesten, som ikke er tilkoblet. Innskrevne kort kontrolleres før de lagres.",
+        "review": "Kontroller kontakten",
+        "refused": "Kontaktregelen «bare samtykke» avviser kontakter fra visittkort.",
+        "name": "Navn",
+        "title": "Tittel",
+        "email": "E-post",
+        "phone": "Telefon",
+        "organization_name": "Organisasjon",
+        "basis": "Grunnlag for kontakt",
+        "save": "Lagre kontakt",
+        "create": "Opprett kontakt",
+        "basisNeeded": "Kontaktregelen krever et grunnlag for kontakt.",
+        "saved": "Kontakt lagret · kan redigeres under Kontakter"
+      },
+      "scan": {
+        "eyebrow": "Skann notater",
+        "t": "Håndskrevne notater → tekst",
+        "s": "Skanning krever AI-tjenesten og fillagring. Ingen av dem er tilkoblet."
+      },
+      "rule": "Kontaktregel: {rule} (innstilling) — {effect}",
+      "rules": {
+        "no_rule": "ingen regel",
+        "source_and_basis": "kilde og grunnlag",
+        "opt_in_only": "bare samtykke"
+      },
+      "effects": {
+        "no_rule": "visittkort oppretter kontakter direkte",
+        "source_and_basis": "et visittkort trenger et grunnlag for kontakt",
+        "opt_in_only": "visittkort kan ikke opprette kontakter"
+      }
+    },
+    "notifications": {
+      "title": "Varsler",
+      "unknown": "Varsel",
+      "failed": "Varslene kunne ikke lastes.",
+      "none": "Ingen varsler ennå",
+      "noneBody": "Påminnelser, tildelinger, omtaler og chatforespørsler vises her.",
+      "inAppOnly": "Push er ikke tilkoblet: varslene blir i appen."
+    },
+    "kinds": {
+      "reminder": "Påminnelse",
+      "mention": "Omtale",
+      "assignment": "Tildelt deg",
+      "chat_request": "Chatforespørsel",
+      "security": "Sikkerhet",
+      "system": "System"
+    },
+    "extras": {
+      "title": "Dagens tall",
+      "month": "Denne måneden",
+      "won": "Vunnet",
+      "goal": "{pct} av målet",
+      "newDeals": "{n, plural, one {# ny avtale} other {# nye avtaler}}",
+      "chat": "Livechat",
+      "chatWaiting": "{n, plural, one {# besøkende venter} other {# besøkende venter}} på en person",
+      "chatNone": "Ingen besøkende venter",
+      "chatS": "Chatter på nettstedet ditt",
+      "openChat": "Åpne chat",
+      "tasks": "Prosjektoppgaver",
+      "tasksDue": "{n} forfaller i dag",
+      "tasksS": "Oppgaver du eier eller er tildelt",
+      "openProjects": "Åpne prosjekter"
+    },
+    "sync": {
+      "none": "På nett igjen · ingenting å synke",
+      "failed": "Synk feilet: {reason} Endringene er tatt vare på.",
+      "mixed": "{applied} synket · {superseded} beholdt den nyere endringen · {rejected} avvist — se Frakoblet synk",
+      "done": "{count, plural, one {# endring} other {# endringer}} synket · siste endring vinner",
+      "noNetwork": "Ingen nett · endringene venter til du er på nett igjen",
+      "eyebrow": "Denne enheten",
+      "title": "Frakoblet synk",
+      "body": "Endringer gjort frakoblet venter her i rekkefølge og sendes når enheten er på nett igjen. Hver endring sendes én gang: et nytt forsøk gir samme resultat. Er posten endret på nettet i mellomtiden, vinner siste endring, og den tidligere verdien blir stående i historikken.",
+      "offline": "Frakoblet",
+      "online": "På nett",
+      "device": "enhet {id}",
+      "syncing": "Synker …",
+      "syncNow": "Synk nå",
+      "waiting": "Venter · {n}",
+      "nothingWaiting": "Ingenting venter.",
+      "kinds": {
+        "checkin": "Innsjekk",
+        "call": "Samtale",
+        "stage": "Fase"
+      },
+      "halfway": "aktivitet opprettet, fullføring venter",
+      "lastSync": "Siste synk",
+      "pulled": "{n, plural, =0 {Ingen poster endret} one {# post endret} other {# poster endret}} siden forrige henting · {time}",
+      "result": {
+        "applied": "Synket",
+        "appliedConflict": "Synket over en endring gjort på nettet: din var senere. Den tidligere verdien er beholdt i historikken.",
+        "replayed": "Allerede synket tidligere · ingenting endret",
+        "superseded": "Ikke brukt: en senere endring på nettet vinner. Posten viser den endringen.",
+        "missingFields": "Avvist: fasen krever at felt fylles ut først. Åpne avtalen for å fylle dem ut.",
+        "rejected": "Avvist: {reason}"
+      }
+    },
+    "devices": {
+      "eyebrow": "Push",
+      "title": "Dine enheter",
+      "failed": "Enhetene kunne ikke lastes.",
+      "state": {
+        "moduleOff": {
+          "t": "Mobilmodulen er av",
+          "s": "Ingenting sendes som push mens modulen er slått av."
+        },
+        "settingOff": {
+          "t": "Push-varsler er av",
+          "s": "Innstillingen «Push-varsler» er av, så ingenting sendes som push."
+        },
+        "notConnected": {
+          "t": "Push er ikke tilkoblet",
+          "s": "Ingen nøkkel for push-leverandøren (VAPID) er på plass. Varslene blir i appen til den er det."
+        },
+        "ready": {
+          "t": "Push er tilkoblet",
+          "s": "Nye varsler går til enhetene nedenfor, etter typene du velger."
+        }
+      },
+      "none": "Ingen enhet er registrert.",
+      "unnamed": "Enhet uten navn",
+      "added": "lagt til {date}",
+      "lastUsed": "siste push {date}",
+      "failures": "{n, plural, one {# mislykket push} other {# mislykkede push}}",
+      "revoke": "Fjern",
+      "register": "Registrer denne nettleseren",
+      "registerDisabled": "Registrering krever push-leverandørens nøkkel og den installerte appen, som ikke er på plass ennå."
+    },
+    "prefs": {
+      "eyebrow": "Varsler",
+      "title": "Varseltyper",
+      "body": "Velg hvilke typer som også kommer som push. I appen vises de alltid.",
+      "bodyNotConnected": "Velg hvilke typer som også skal komme som push når push er tilkoblet. I appen vises de alltid.",
+      "failed": "Varseltypene kunne ikke lastes.",
+      "kind": "Type",
+      "inApp": "I appen",
+      "push": "Push",
+      "kinds": {
+        "assignment": "Tildelinger",
+        "mention": "Omtaler",
+        "chat_request": "Chatforespørsler",
+        "security": "Sikkerhet",
+        "system": "System"
+      },
+      "inAppLabel": "{kind} i appen",
+      "pushLabel": "{kind} som push",
+      "reminders": "Påminnelser følger påminnelseskanalene dine under Aktiviteter."
+    }
+  }
 }

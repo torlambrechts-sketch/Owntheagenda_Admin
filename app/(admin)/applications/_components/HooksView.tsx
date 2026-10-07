@@ -56,7 +56,8 @@ export function HooksView({ hooks, selected, rows }: { hooks: Webhooks; selected
             <b className="text-14">{t('subscriptions')}</b>
             <span className="flex flex-wrap items-center gap-[10px]">
               <span className="text-12 text-muted">{t('perUser', { limit: hooks.limit === null ? t('unlimited') : String(hooks.limit) })}</span>
-              <button type="button" onClick={() => setDlg({ hook: null })} className={k.btn}>{t('new')}</button>
+              {hooks.kinds.length === 0 ? <span className="text-12 text-muted">{t('noExport')}</span> : null}
+              <button type="button" disabled={hooks.kinds.length === 0} onClick={() => setDlg({ hook: null })} className={k.btn}>{t('new')}</button>
             </span>
           </div>
           {hooks.webhooks.length === 0 ? <div className={k.empty}>{t('none')}</div> : null}

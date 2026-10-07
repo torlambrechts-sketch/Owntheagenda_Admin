@@ -757,8 +757,8 @@ schema's own departures are V-P8S-* in `security-schema.md` and are not repeated
 
 Kept with each schema as the screen builders' contract: `deviations/security-schema.md` (V-P8S-01..30) and
 `deviations/platform-schema.md` (V-P8P-01..31). 0045 makes the audit stamp the column defaults, so a session with
-triggers off (the seed, a restore) still passes 0043's check. Open: V-P8P-28 (who may create a webhook — the spec lets
-any staff member send what they can see to a public https URL), Realtime broadcast (MOB-01), `app_extensions`
+triggers off (the seed, a restore) still passes 0043's check. V-P8P-28 is decided: a webhook needs the export right
+of its event's area (0049). Open: Realtime broadcast (MOB-01), `app_extensions`
 (INT-10), and every edge worker (API gateway, webhook sender, OAuth, push, geocoding, alert mail, SSO).
 
 ## Session reports (R-SECURITY-04: `supabase/functions/session-report`, `lib/supabase/report.ts`, 0047–0048)

@@ -959,4 +959,24 @@ select public.setting_set('contact_rule', 'source_and_basis');
 select pg_temp.as_staff('ingrid@orgpuls.no');
 select pg_temp.expect_detail($$select public.card_draft_save('{"name":"Per Hansen"}')$$, 'invalid', 'basis', 'source_and_basis needs a basis');
 
+-- ---------------------------------------------------------------------------
+-- 0049 (V-P8P-28): a webhook is an export; it needs the export right of its event's area
+select pg_temp.as_staff('hanna@orgpuls.no');
+select pg_temp.expect_detail($$select public.webhook_save(null, '{"event_kind":"deal.updated","url":"https://hooks.example.com/hanna"}')$$, 'forbidden', 'deals:export',
+                             'without deals:export no webhook on deal events (0049)');
+select pg_temp.check(not (public.webhooks_get() -> 'kinds') ? 'deal.updated', 'the event picker leaves out what the caller may not export');
+select pg_temp.as_staff('ingrid@orgpuls.no');
+select pg_temp.check((public.webhooks_get() -> 'kinds') ? 'deal.updated' and app.webhook_scope('deal.updated') = 'deals' and app.webhook_scope('note.created') = 'global',
+                     'with deals:export the deal events are offered; an event without a record type is global');
+create temp table t_wh_x as select (public.webhook_save(null, '{"event_kind":"deal.won","url":"https://hooks.example.com/export"}') ->> 'id')::uuid id;
+-- the owner loses the right: the next attempt is written as skipped and never claimed
+update app.admins set permission_set_id = (select id from app.permission_sets where key = 'analyst') where email = 'ingrid@orgpuls.no';
+select pg_temp.expect_detail(format($$select public.webhook_save(%L, '{"url":"https://hooks.example.com/elsewhere"}')$$, (select id from t_wh_x)), 'forbidden', 'deals:export',
+                             're-pointing a webhook needs the export right too');
+insert into app.webhook_deliveries (webhook_id, event_id, attempt)
+  select (select id from t_wh_x), (select max(id) from app.events where kind <> 'webhook.ping'), 1;
+select pg_temp.check((select state = 'skipped' and error_code = 'no_export' from app.webhook_deliveries where webhook_id = (select id from t_wh_x) order by scheduled_at desc limit 1),
+                     'a delivery for an owner without the export right is skipped as no_export, never sent');
+update app.admins set permission_set_id = (select id from app.permission_sets where key = 'sales') where email = 'ingrid@orgpuls.no';
+
 rollback;

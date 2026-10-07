@@ -344,7 +344,8 @@
       "cancel": "Avbryt",
       "save": "Lagre",
       "create": "Lag",
-      "done": "Ferdig"
+      "done": "Ferdig",
+      "noExport": "En webhook sender data ut av plattformen og krever eksportrettighet for området."
     },
     "catalog": {
       "placeholder": "Beskriv hva du trenger — «send fakturaer når en avtale er vunnet»",

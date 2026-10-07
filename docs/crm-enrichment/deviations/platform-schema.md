@@ -41,7 +41,7 @@ no product ping. The `worker_*` functions and `api_exec` (service role) stand in
 | V-P8P-25 | Application status | operational / degraded / unreachable | Adds `no_data` (no calls and no events), `disabled`, `not_installed`. The expected push interval is 5 min for every product (no per-product column) | Honest states |
 | V-P8P-26 | `event_catalog` | — | Adds `entity` and `event_catalog_get()` (staff): the automation trigger picker can read the kinds per record type (R-AUTOMATION-04's open part) | Small, and the same registry |
 | V-P8P-27 | Jobs | Each platform cron job wrapped | All `platform-*` schedules and 0043's `security-*` schedules that call one function now run `select app.run_job('<key>')` under their old names (0043's `retention_rules` keep working). `security-backup-poll` (a `pgmq.send`) is left as is | — |
-| V-P8P-28 | Webhook creation | Owner, count_limits | As spec: any staff member may create a webhook on events they can see, to any public https URL. **Open for Tor:** this is an export path for every staff member; consider requiring `<scope>:export` | Spec §3.8 |
+| V-P8P-28 | Webhook creation | Owner, count_limits | **Decided (Tor, 2026-10-07; 0049):** creating a webhook, changing its event or re-pointing its URL requires `<scope>:export` for the event's record type (`global` without one). The picker offers only exportable events; a delivery whose owner has lost the right is skipped as `no_export` | Spec §3.8 |
 | V-P8P-29 | Chat request (MOB-07) | kind `chat_request` | Trigger on `chat_conversations` entering `queued` (0031's handoff) notifies staff online for chat (`chat_presence`), once per queueing; params `page` (path without query string) | LGN-02 exists since phase 5 |
 | V-P8P-30 | Retention | Listed in §3.11 | `app.platform_prune` (daily): integration_calls 30 d, webhook deliveries 30 d, api hourly 90 d, idempotency 24 h, budget days 90 d, job runs 90 d, sync receipts 30 d, push deliveries 30 d, bulk changes 90 d, revoked devices 90 d, expired codes. Not yet rows in 0043's `retention_rules` | The lead may add rows naming `platform-platform-prune` |
 | V-P8P-31 | Realtime (MOB-01, Q14) | Broadcast on `staff:<id>` | Not built: `sync_changes` gives the pull; the Broadcast trigger and the `realtime.messages` policy wait | Needs a policy outside `app`, to be decided with the lead |
@@ -180,7 +180,7 @@ existing `not_signed_in`, `module_off`, `reason_required`.
 
 ## Open
 
-- V-P8P-28: should creating a webhook require the scope's `export` right?
+- V-P8P-28: decided — yes, the export right (0049).
 - V-P8P-10: the shell's notification filter must include kind `assignment`.
 - V-P8P-30: add `retention_rules` rows for `platform_prune` if Security's register should list them.
 - D-40 product additions unblock: a ping/version reply, `settings.set_maintenance`, `jobs.retry`, `job.run` events, content read commands.

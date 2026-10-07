@@ -344,7 +344,8 @@
       "cancel": "Cancel",
       "save": "Save",
       "create": "Create",
-      "done": "Done"
+      "done": "Done",
+      "noExport": "A webhook sends records out of the platform: it needs the export right for their area."
     },
     "catalog": {
       "placeholder": "Describe what you need — «send invoices when a deal is won»",

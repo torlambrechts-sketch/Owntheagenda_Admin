@@ -69,6 +69,12 @@ export const Seo = z.object({
   connected: z.boolean(),
   days: n,
   site: Site,
+  /** the Search Console connection (0064): who may manage it, the account to give access to, the site's property, the last import */
+  search_console: z.object({
+    status: z.enum(['not_connected', 'connected', 'error']), can_manage: z.boolean(), key_stored: z.boolean(),
+    client_email: z.string().nullable(), last_error: z.string().nullable(), property: z.string().nullable(),
+    site_error: z.string().nullable(), last_import_at: z.string().nullable(), last_day: z.string().nullable(),
+  }),
   totals: z.object({ clicks: nn, clicks_prev: nn, impressions: nn, impressions_prev: nn, position: nn, position_prev: nn }).nullable(),
   keywords: z.array(z.object({
     id: uuid, query: z.string(), created_at: z.string(), mine: z.boolean().nullable(),

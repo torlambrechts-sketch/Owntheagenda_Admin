@@ -84,7 +84,40 @@
         "body": "Klikk, visninger og posisjoner for {site} hentes hver natt når Search Console er koblet til. Inntil da vises ingen tall.",
         "noSite": "Ingen offentlig nettside er registrert for {app}, så det er ingenting å koble til.",
         "button": "Koble til Search Console",
-        "reason": "Ikke tilgjengelig ennå: Google-innloggingen som kobler til Search Console, er ikke bygget."
+        "ownerOnly": "Bare eieren kan koble til Search Console.",
+        "stepsTitle": "Slik kobler du til",
+        "step1": "Opprett en tjenestekonto i et Google Cloud-prosjekt (IAM og administrasjon › Tjenestekontoer), og lag en JSON-nøkkel for den.",
+        "step2": "Slå på «Google Search Console API» i det samme prosjektet.",
+        "step3": "Legg til tjenestekontoens e-postadresse som bruker på {site} i Search Console (Innstillinger › Brukere og tillatelser). Begrenset tilgang holder.",
+        "keyLabel": "Tjenestekontoens JSON-nøkkel",
+        "keyNote": "Nøkkelen går rett til hvelvet og vises aldri igjen. Bare kontoens e-postadresse lagres synlig.",
+        "badKey": "Dette er ikke en JSON-nøkkel for en tjenestekonto.",
+        "cancel": "Avbryt",
+        "connected": "Search Console er koblet til. {mapped} av {sites} nettsider funnet, {rows} rader hentet."
+      },
+      "searchConsole": {
+        "title": "Search Console",
+        "property": "Eiendom: {property}",
+        "lastImport": "Sist hentet {ago}",
+        "neverImported": "Ikke hentet ennå: tallene kommer i natt, eller trykk «Hent nå».",
+        "noProperty": "Kontoen {email} har ikke tilgang til {site} i Search Console. Legg den til som bruker der, og trykk «Sjekk igjen».",
+        "siteError": "Siste henting feilet ({code}).",
+        "error": "Google godtok ikke tilkoblingen ({code}).",
+        "check": "Sjekk igjen",
+        "importNow": "Hent nå",
+        "replaceKey": "Bytt nøkkel",
+        "disconnect": "Koble fra",
+        "checked": "Sjekket. {mapped} nettside(r) funnet, {rows} rader hentet.",
+        "imported": "{rows} rader hentet.",
+        "disconnected": "Search Console er koblet fra. Tallene som er hentet, blir liggende.",
+        "codes": {
+          "bad_key": "Dette er ikke en gyldig JSON-nøkkel for en tjenestekonto.",
+          "token": "Google godtok ikke nøkkelen. Lag en ny JSON-nøkkel for tjenestekontoen og prøv igjen.",
+          "http_403": "Kontoen fikk ikke lese Search Console. Slå på Search Console API i prosjektet og gi kontoen tilgang til eiendommen.",
+          "expired": "Engangsnummeret gikk ut. Prøv igjen.",
+          "unreachable": "Fikk ikke kontakt med tjenesten. Prøv igjen om litt.",
+          "other": "Noe gikk galt ({code})."
+        }
       },
       "keywords": {
         "title": "Sporede søkeord",

@@ -81,10 +81,43 @@
       },
       "connect": {
         "title": "Connect Search Console",
-        "body": "Clicks, impressions and positions for {site} are imported every night once Search Console is connected. Until then no figure is shown.",
+        "body": "Clicks, impressions and positions for {site} are fetched every night once Search Console is connected. Until then no figures are shown.",
         "noSite": "No public website is registered for {app}, so there is nothing to connect.",
         "button": "Connect Search Console",
-        "reason": "Not available yet: the Google sign-in that connects Search Console has not been built."
+        "ownerOnly": "Only the owner can connect Search Console.",
+        "stepsTitle": "How to connect",
+        "step1": "Create a service account in a Google Cloud project (IAM & Admin › Service accounts) and create a JSON key for it.",
+        "step2": "Turn on the «Google Search Console API» in the same project.",
+        "step3": "Add the service account's email address as a user on {site} in Search Console (Settings › Users and permissions). Restricted access is enough.",
+        "keyLabel": "The service account's JSON key",
+        "keyNote": "The key goes straight to the vault and is never shown again. Only the account's email address is kept visible.",
+        "badKey": "This is not a JSON key for a service account.",
+        "cancel": "Cancel",
+        "connected": "Search Console is connected. {mapped} of {sites} websites found, {rows} rows fetched."
+      },
+      "searchConsole": {
+        "title": "Search Console",
+        "property": "Property: {property}",
+        "lastImport": "Last fetched {ago}",
+        "neverImported": "Not fetched yet: the figures arrive tonight, or press «Fetch now».",
+        "noProperty": "The account {email} has no access to {site} in Search Console. Add it as a user there and press «Check again».",
+        "siteError": "The last fetch failed ({code}).",
+        "error": "Google did not accept the connection ({code}).",
+        "check": "Check again",
+        "importNow": "Fetch now",
+        "replaceKey": "Replace key",
+        "disconnect": "Disconnect",
+        "checked": "Checked. {mapped} website(s) found, {rows} rows fetched.",
+        "imported": "{rows} rows fetched.",
+        "disconnected": "Search Console is disconnected. The figures already fetched stay.",
+        "codes": {
+          "bad_key": "This is not a valid JSON key for a service account.",
+          "token": "Google did not accept the key. Create a new JSON key for the service account and try again.",
+          "http_403": "The account may not read Search Console. Turn on the Search Console API in the project and give the account access to the property.",
+          "expired": "The one-time number expired. Try again.",
+          "unreachable": "Could not reach the service. Try again shortly.",
+          "other": "Something went wrong ({code})."
+        }
       },
       "keywords": {
         "title": "Tracked keywords",

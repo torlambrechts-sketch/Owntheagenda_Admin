@@ -4,11 +4,12 @@ import type { Seo } from '@/lib/data/simple-growth-shared'
 import { signed, deltaTone } from '../../analytics/_components/kit'
 import { Tile, pctDelta } from './kit'
 import { Keywords } from './Keywords'
+import { SearchConsoleCard } from './SearchConsole'
 
 /**
- * Growth › SEO (SimpleGrowth.dc.html, v.seo) on seo_get. Search Console is not connected and no sign-in for it exists, so
- * the KPIs give way to the «Connect Search Console» empty state and every position is «—»; keywords can be tracked all
- * the same. «Indexed pages», «Site health» and «Content ideas» have no source and are left out (V-SGR-06).
+ * Growth › SEO (SimpleGrowth.dc.html, v.seo) on seo_get. Until Search Console is connected (0064: a service account's key,
+ * SearchConsoleCard) the KPIs give way to the «Connect Search Console» empty state and every position is «—»; keywords
+ * can be tracked all the same. Connected, the KPIs are Search Console's own day totals and the card says the property. «Indexed pages», «Site health» and «Content ideas» have no source and are left out (V-SGR-06).
  */
 export async function SeoTab({ d, nf, product, app, canAdd, editOthers }: {
   d: Seo; nf: NumberFormat; product: string; app: string; canAdd: boolean; editOthers: boolean
@@ -29,18 +30,8 @@ export async function SeoTab({ d, nf, product, app, canAdd, editOthers }: {
           <Tile label={t('kpi.impressions')} value={s.impressions === null ? '—' : formatNumber(s.impressions, nf)} delta={pctDelta(s.impressions, s.impressions_prev, nf)} />
           <Tile label={t('kpi.position')} value={pos(s.position)} delta={posDelta} />
         </div>
-      ) : (
-        <div className="flex flex-wrap items-center gap-3 rounded-20 border border-dashed border-line-strong bg-surface px-[22px] py-[18px]">
-          <div className="min-w-[240px] flex-1">
-            <b className="text-15">{t('connect.title')}</b>
-            <div className="mt-1 text-12.5 text-muted">{d.site ? t('connect.body', { site: d.site.hostname }) : t('connect.noSite', { app })}</div>
-          </div>
-          <button type="button" disabled aria-describedby="sc-reason" className="h-9 cursor-not-allowed whitespace-nowrap rounded-10 border border-ink bg-primary px-4 text-12.5 font-bold opacity-50">
-            {t('connect.button')}
-          </button>
-          <div id="sc-reason" className="w-full text-11.5 text-muted">{t('connect.reason')}</div>
-        </div>
-      )}
+      ) : null}
+      <SearchConsoleCard sc={d.search_console} site={d.site?.hostname ?? null} app={app} connected={d.connected} />
       <Keywords rows={d.keywords} connected={d.connected} hasSite={!!d.site} app={app} product={product} nf={nf} canAdd={canAdd} editOthers={editOthers} />
     </div>
   )

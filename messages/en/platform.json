@@ -575,7 +575,8 @@
       "transcription": "Transcription",
       "webhook_send": "Webhook deliveries",
       "mail_send": "Email sending (Brevo)",
-      "mail_tick": "Email sending check"
+      "mail_tick": "Email sending check",
+      "search_console_import": "Google Search Console import"
     },
     "flags": {
       "title": "Feature flags — global and per organization",

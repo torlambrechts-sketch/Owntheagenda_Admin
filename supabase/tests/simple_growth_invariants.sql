@@ -116,6 +116,13 @@ insert into app.search_console_daily (day, site_id, query, impressions, clicks, 
   (current_date - 1, (app.product_site('orgpuls')).id, 'growth test søkeord', 300, 30, 4),
   (current_date - 2, (app.product_site('orgpuls')).id, 'growth test søkeord', 100, 10, 8),
   (current_date - 40, (app.product_site('orgpuls')).id, 'growth test søkeord', 100, 5, 9);
+-- the totals are Search Console's own day totals (0064); the per-query rows feed the keywords
+insert into app.search_console_sites (site_id, property) values ((app.product_site('orgpuls')).id, 'sc-domain:orgpuls.com')
+on conflict (site_id) do update set property = excluded.property;
+insert into app.search_console_totals (day, site_id, impressions, clicks, position) values
+  (current_date - 1, (app.product_site('orgpuls')).id, 300, 30, 4),
+  (current_date - 2, (app.product_site('orgpuls')).id, 100, 10, 8),
+  (current_date - 40, (app.product_site('orgpuls')).id, 100, 5, 9);
 create temp table t_s as select public.seo_get('orgpuls', 30) s;
 select pg_temp.check((select (s -> 'totals' ->> 'clicks')::int = 40 and (s -> 'totals' ->> 'impressions')::int = 400 and (s -> 'totals' ->> 'position')::numeric = 5.0
                              and (s -> 'totals' ->> 'clicks_prev')::int = 5 from t_s), 'clicks and impressions sum, the position is weighted by impressions');

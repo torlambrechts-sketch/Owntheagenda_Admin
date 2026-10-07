@@ -3,6 +3,11 @@
 \ir _helpers.psql
 begin;
 
+-- the seed carries the design's platform fixtures (phase8-platform.mjs); this suite counts from an empty register
+delete from app.webhooks; delete from app.api_tokens; delete from app.oauth_apps; delete from app.installed_apps; delete from app.status_notices;
+delete from app.record_geo;  -- the mobile seed (phase8-mobile.mjs) places 46 organizations
+
+
 -- the suite's own helpers. as_staff is redefined so it also leaves any token principal an earlier api_exec set in this transaction
 create or replace function pg_temp.as_staff(p_email text, p_aal text default 'aal2') returns void language plpgsql as $$
 declare v uuid;

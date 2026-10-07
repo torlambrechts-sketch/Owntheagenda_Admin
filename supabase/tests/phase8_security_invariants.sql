@@ -2,6 +2,14 @@
 \ir _helpers.psql
 begin;
 
+-- the seed carries the design's security fixtures; this suite counts from an empty register (R-SECURITY-01)
+select set_config('app.purging', 'on', true);
+delete from app.security_alert_deliveries; delete from app.security_events; delete from app.login_log; delete from app.staff_sessions;
+delete from app.staff_devices; delete from app.staff_locations; delete from app.password_changes; delete from app.security_incidents;
+delete from app.recovery_codes;
+select set_config('app.purging', '', true);
+
+
 -- expect_detail(sql, message, detail): the statement must raise with this message and this detail
 create or replace function pg_temp.expect_detail(p_sql text, p_message text, p_detail text, p_label text) returns void language plpgsql as $$
 declare v_msg text; v_det text;

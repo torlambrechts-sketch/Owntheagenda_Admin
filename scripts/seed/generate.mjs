@@ -474,6 +474,7 @@ sql(`select app.snapshot_mrr_tenants();`)
 sql(`select app.health_nightly();`)
 ;(await import('./phase7-meetings.mjs')).seedMeetings({ sql, q, uid, D }) // meetings fixtures (Phase 7), after the nightly jobs: briefs read scores and health
 ;(await import('./phase8-mobile.mjs')).seedMobile({ sql, q, uid, D }) // mobile fixtures (Phase 8): Tor's day, a mention, hand-set places
+;(await import('./phase8-security.mjs')).seedSecurity({ sql, q, uid }) // security fixtures (Phase 8): sign-ins, sessions, events, incidents
 
 sql(`
 commit;

@@ -741,4 +741,11 @@ select pg_temp.check(not exists (select 1 from app.audit where detail::text ~ '(
                      and not exists (select 1 from app.events where payload::text ~ '(erik@slett|84\.208\.12|185\.12\.4)'),
                      'no address, IP or message text in the audit, security events, notifications or the outbox');
 
+-- 0045: with triggers off (a seed or a restore) the defaults still stamp a direct insert
+set local session_replication_role = replica;
+insert into app.audit (actor, action, ok) values ('system', 'test.replica_insert', true);
+set local session_replication_role = origin;
+select pg_temp.check((select source is not null and principal_kind is not null from app.audit where action = 'test.replica_insert' order by id desc limit 1),
+                     'a direct audit insert with triggers off is stamped by the column defaults');
+
 rollback;

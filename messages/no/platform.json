@@ -573,7 +573,9 @@
       "product_command": "Produktkommandoer",
       "push_send": "Pushvarsler",
       "transcription": "Transkripsjon",
-      "webhook_send": "Webhook-leveranser"
+      "webhook_send": "Webhook-leveranser",
+      "mail_send": "E-postutsending (Brevo)",
+      "mail_tick": "Sjekk av e-postutsending"
     },
     "flags": {
       "title": "Funksjonsflagg — globalt og per organisasjon",

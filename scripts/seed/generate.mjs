@@ -478,6 +478,9 @@ sql(`select app.health_nightly();`)
 ;(await import('./phase8-mobile.mjs')).seedMobile({ sql, q, uid, D }) // mobile fixtures (Phase 8): Tor's day, a mention, hand-set places
 ;(await import('./phase8-security.mjs')).seedSecurity({ sql, q, uid }) // security fixtures (Phase 8): sign-ins, sessions, events, incidents
 
+// the mail tick reaches the edge functions through the API gateway inside Docker (0060); hosted keeps the project URL
+sql(`update app.mail_settings set functions_url = 'http://supabase_kong_owntheagenda_admin:8000';`)
+
 sql(`
 commit;
 set session_replication_role = origin;

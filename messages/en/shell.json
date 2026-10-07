@@ -436,6 +436,16 @@
             "title": "Your voice note is transcribed",
             "body": "Open the record to read it."
           }
+        },
+        "tickets": {
+          "mail_failed": {
+            "title": "A ticket reply was not delivered",
+            "body": "Code: {code}. Open the ticket to answer another way."
+          },
+          "customer_replied": {
+            "title": "The customer answered {record}",
+            "body": "Their email is on the ticket."
+          }
         }
       }
     },

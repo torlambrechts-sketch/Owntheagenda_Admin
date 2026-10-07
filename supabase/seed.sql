@@ -3306,6 +3306,7 @@ insert into app.audit (at, actor, ok, action, target_type, target_id, staff_id, 
   values (((((now() at time zone 'Europe/Oslo')::date - 22) + time '11:05') at time zone 'Europe/Oslo'), 'tor@orgpuls.no', true, 'incident.saved', 'security_incident', '85398626-4ecf-48bf-ab93-68ef26705adb', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '{"created":false,"state":"assessed_not_notifiable","personal_data":true,"fields":["state"]}'::jsonb, 'web', 'staff', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
 insert into app.audit (at, actor, ok, action, target_type, target_id, staff_id, detail, source, principal_kind, principal_id)
   values (now() - interval '26 hours 40 minutes', 'tor@orgpuls.no', true, 'incident.saved', 'security_incident', '2b9086ae-f515-4e2a-a480-6b74370de6a8', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb', '{"created":true,"state":"investigating","personal_data":false,"fields":["detected_at","summary","title"]}'::jsonb, 'web', 'staff', '5f3f5ad9-1a54-44ac-a57f-57a6320f4ceb');
+update app.mail_settings set functions_url = 'http://supabase_kong_owntheagenda_admin:8000';
 
 commit;
 set session_replication_role = origin;

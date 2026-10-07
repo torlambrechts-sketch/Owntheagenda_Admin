@@ -436,6 +436,16 @@
             "title": "Talenotatet ditt er transkribert",
             "body": "Åpne posten for å lese det."
           }
+        },
+        "tickets": {
+          "mail_failed": {
+            "title": "Et svar på en sak ble ikke levert",
+            "body": "Kode: {code}. Åpne saken for å svare på en annen måte."
+          },
+          "customer_replied": {
+            "title": "Kunden svarte på {record}",
+            "body": "E-posten deres ligger på saken."
+          }
         }
       }
     },

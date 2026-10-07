@@ -573,7 +573,9 @@
       "product_command": "Product commands",
       "push_send": "Push notifications",
       "transcription": "Transcription",
-      "webhook_send": "Webhook deliveries"
+      "webhook_send": "Webhook deliveries",
+      "mail_send": "Email sending (Brevo)",
+      "mail_tick": "Email sending check"
     },
     "flags": {
       "title": "Feature flags — global and per organization",

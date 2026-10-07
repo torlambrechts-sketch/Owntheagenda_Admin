@@ -288,6 +288,36 @@
             "title": "Statusrapporten for {record} feilet",
             "body": "Prøv igjen fra prosjektet."
           }
+        },
+        "meeting": {
+          "transcript_ready": {
+            "title": "Transkripsjonen av {record} er klar",
+            "body": "Åpne møtet for å lese den."
+          },
+          "transcript_failed": {
+            "title": "Transkripsjonen av {record} feilet",
+            "body": "Prøv igjen fra møtet, eller last opp en transkripsjon."
+          },
+          "recap_ready": {
+            "title": "Oppsummeringen av {record} er klar",
+            "body": "{suggestions, plural, =0 {Ingen CRM-forslag} one {# CRM-forslag å gå gjennom} other {# CRM-forslag å gå gjennom}}"
+          },
+          "recap_failed": {
+            "title": "Oppsummeringen av {record} feilet",
+            "body": "Transkripsjonen finnes fortsatt; prøv igjen fra møtet."
+          },
+          "notice_blocked": {
+            "title": "{record} blir ikke tatt opp",
+            "body": "Varselet om opptak kunne ikke sendes, så boten blir ute."
+          },
+          "recording_blocked": {
+            "title": "{record} ble ikke tatt opp",
+            "body": "Boten ble ikke med: {reason, select, notice_not_sent {varselet til gjestene kunne ikke sendes} opted_out {en gjest har reservert seg} not_connected {møteboten er ikke koblet til} no_link {møtet har ingen lenke} disabled {opptak er slått av} internal_only {bare kolleger er invitert} other {en regel for opptak var ikke oppfylt}}."
+          },
+          "opted_out": {
+            "title": "En gjest har reservert seg mot opptak av {record}",
+            "body": "Møtet blir ikke tatt opp."
+          }
         }
       }
     },

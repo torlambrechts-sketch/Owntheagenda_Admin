@@ -288,6 +288,36 @@
             "title": "The status report for {record} failed",
             "body": "Try again from the project."
           }
+        },
+        "meeting": {
+          "transcript_ready": {
+            "title": "The transcript of {record} is ready",
+            "body": "Open the meeting to read it."
+          },
+          "transcript_failed": {
+            "title": "The transcript of {record} failed",
+            "body": "Retry from the meeting, or upload a transcript."
+          },
+          "recap_ready": {
+            "title": "The recap of {record} is ready",
+            "body": "{suggestions, plural, =0 {No CRM suggestions} one {# CRM suggestion to review} other {# CRM suggestions to review}}"
+          },
+          "recap_failed": {
+            "title": "The recap of {record} failed",
+            "body": "The transcript is still there; try again from the meeting."
+          },
+          "notice_blocked": {
+            "title": "{record} will not be recorded",
+            "body": "The recording notice could not go out, so the bot stays out."
+          },
+          "recording_blocked": {
+            "title": "{record} was not recorded",
+            "body": "The bot did not join: {reason, select, notice_not_sent {the notice to guests could not be sent} opted_out {a guest has opted out} not_connected {the meeting bot is not connected} no_link {the meeting has no link} disabled {recording is switched off} internal_only {only colleagues are invited} other {a recording rule was not met}}."
+          },
+          "opted_out": {
+            "title": "A guest opted out of recording {record}",
+            "body": "The meeting will not be recorded."
+          }
         }
       }
     },

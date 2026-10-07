@@ -607,3 +607,12 @@ A report follows the generic rule «own records without See reports of others»,
 reports_others) counts its own campaigns in Insights while the campaign screens show colleagues' figures (V-P6C-19).
 Still open: the edge workers (campaign send, provider webhooks, DNS check, unsubscribe page, record-files signer, PDF and
 AI workers).
+
+## Phase 7 schema (0042) — departures from `specs/projects-meetings.md` §2–§10 (meetings, AI gateway)
+
+Kept with the schema as the screen builder's contract: `deviations/meetings-schema.md` (V-P7M-01..30). Two to confirm
+with Tor: V-P7M-01 (no `meetings` rights scope — the spec's «one permission covers all features»: `deals:see` + the
+module + a per-user switch) and the meetings visibility default `owner` (Q13, an exception to D-16). An opt-out does
+not delete a recording already made — for the D-27 legal review, which with a DPIA precedes go-live. Open: the
+calendar adapters, notice mailer, bot vendor, transcription, upload parser, AI gateway and the `meeting-files` bucket.
+`0041_web_salt_on_demand.sql` makes the tracker's daily salt on first use when the midnight rotation was missed.

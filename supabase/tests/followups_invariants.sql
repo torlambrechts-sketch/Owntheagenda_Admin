@@ -155,4 +155,15 @@ create temp table t_doc as select id, person_id from app.documents where person_
 select pg_temp.check((public.document_get((select id from t_doc)) #>> '{person,email}') is not distinct from (select email from app.people where id = (select person_id from t_doc)),
                      'document_get names the person''s email');
 
+-- the tracker's salt is made on demand when the midnight rotation was missed (0041)
+delete from vault.secrets where name like 'web_salt:%';
+-- (the read and the count are separate statements: one statement's subqueries do not see the salt it makes)
+create temp table t_salt as select public.worker_web_salt() s;
+select pg_temp.check((select s from t_salt) is not null
+                     and (select count(*) from vault.secrets where name like 'web_salt:%') = 1
+                     and exists (select 1 from vault.secrets where name = 'web_salt:' || current_date),
+                     'a missing daily salt is made on first use, and there is still exactly one');
+select pg_temp.check(public.worker_web_salt() = public.worker_web_salt(), 'the same salt is returned for the rest of the day');
+select pg_temp.check(not has_function_privilege('authenticated', 'public.worker_web_salt()', 'execute'), 'the salt read still belongs to the service role');
+
 rollback;

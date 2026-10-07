@@ -112,6 +112,27 @@ select pg_temp.expect_detail($$select public.email_provider_settings('http://x.e
 select pg_temp.check((public.email_provider_settings('https://Admin.Example/') ->> 'public_base') = 'https://admin.example', 'the address is kept tidy');
 select pg_temp.expect_detail($$select public.email_provider_settings('https://admin.example', 'not a domain')$$, 'invalid', 'inbound_domain', 'a reply domain is a domain');
 select pg_temp.check((public.email_provider_settings('https://admin.example', 'Svar.Mailtest.Example') ->> 'inbound_domain') = 'svar.mailtest.example', 'the reply domain is kept');
+
+-- an application's own link address (0063)
+create temp table t_app as select product p from app.tickets where id = (select ticket from t_ids);
+select pg_temp.expect_detail(format($$select public.email_provider_app_base(%L, 'https://orgpuls.example')$$, (select p from t_app)), 'invalid', 'app_base',
+                             'a link address is a post. host, the one the app serves only the unsubscribe page on');
+select pg_temp.expect_detail($$select public.email_provider_app_base('no_such_app', 'https://post.x.example')$$, 'invalid', 'product', 'for an application that exists');
+select pg_temp.check((public.email_provider_app_base((select p from t_app), 'https://Post.Mailtest.Example/') ->> 'base') = 'https://post.mailtest.example', 'the link address is kept tidy');
+select pg_temp.check(public.email_provider_get() -> 'app_bases' ->> (select p from t_app) = 'https://post.mailtest.example', 'and the screen shows it back');
+select pg_temp.as_service();
+select pg_temp.check(public.worker_campaign_base((select id from app.campaigns where utm_campaign = 'mail_test_campaign')) = 'https://post.mailtest.example',
+                     'the application''s campaign links open on the application''s own address');
+update app.campaigns set product = null where utm_campaign = 'mail_test_campaign';
+select pg_temp.check(public.worker_campaign_base((select id from app.campaigns where utm_campaign = 'mail_test_campaign')) = 'https://admin.example',
+                     'a campaign of no application links to Sentral''s public address');
+select pg_temp.as_staff('tor@orgpuls.no');
+select pg_temp.check((public.email_provider_app_base((select p from t_app), '') ->> 'base') is null, 'an empty address clears it');
+select pg_temp.check(not ((public.email_provider_get() -> 'app_bases') ? (select p from t_app)), 'and the application goes back to Sentral''s own');
+select pg_temp.as_staff('hanna@orgpuls.no');
+select pg_temp.expect_detail(format($$select public.email_provider_app_base(%L, 'https://post.x.example')$$, (select p from t_app)), 'forbidden', 'owner_only',
+                             'only the owner sets a link address');
+select pg_temp.as_staff('tor@orgpuls.no');
 select pg_temp.as_service();
 select public.worker_email_provider_result(true, '{"inbound_ok": true}');
 select pg_temp.as_staff('tor@orgpuls.no');
@@ -220,6 +241,7 @@ select pg_temp.check((app.mail_tick() ->> 'called')::int = 0, 'disconnected: the
 select pg_temp.check(not has_function_privilege('authenticated', 'public.worker_ticket_mail_claim(int)', 'execute')
                      and not has_function_privilege('authenticated', 'public.worker_mail_take(int)', 'execute')
                      and not has_function_privilege('authenticated', 'public.worker_ticket_inbound(text, text, text, text)', 'execute')
+                     and not has_function_privilege('authenticated', 'public.worker_campaign_base(uuid)', 'execute')
                      and has_function_privilege('service_role', 'public.worker_invite_claim(int)', 'execute'),
                      'the worker functions are the service role''s alone');
 select pg_temp.check((select relrowsecurity from pg_class where oid = 'app.mail_settings'::regclass)

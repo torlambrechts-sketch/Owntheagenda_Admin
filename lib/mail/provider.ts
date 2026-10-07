@@ -18,6 +18,8 @@ export const EmailProvider = z.object({
   connected_at: z.string().nullable(),
   key_stored: z.boolean(),
   public_base: z.string().nullable(),
+  /** each application's own link address (0063): its campaigns' unsubscribe links open there */
+  app_bases: z.record(z.string(), z.string()).default({}),
   inbound_domain: z.string().nullable(),
   inbound_ok: z.boolean(),
   account: z.object({ plan: z.string().nullable().optional() }).passthrough(),

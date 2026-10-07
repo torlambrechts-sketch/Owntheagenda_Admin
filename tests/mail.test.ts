@@ -103,3 +103,17 @@ describe('Brevo events', () => {
     expect(items).toEqual([{ id: 'u-1', from: 'kunde@firma.no', subject: 'Sv: [T-2329] PDF', body: 'Takk!' }])
   })
 })
+
+describe('link addresses (0063)', () => {
+  it('an application\'s post. host serves the unsubscribe page and nothing else', async () => {
+    const { servedOnHost, isLinkHost } = await import('../lib/mail/link-host')
+    expect(isLinkHost('post.orgpuls.com')).toBe(true)
+    expect(servedOnHost('post.orgpuls.com', '/u/abcdefghijklmnop')).toBe(true)
+    expect(servedOnHost('post.orgpuls.com', '/login')).toBe(false)
+    expect(servedOnHost('post.orgpuls.com', '/')).toBe(false)
+    expect(servedOnHost('post.orgpuls.com', '/uu')).toBe(false)
+    expect(servedOnHost('sentral.orgpuls.no', '/login')).toBe(true)
+    expect(servedOnHost('postkontor.example', '/login')).toBe(true)
+    expect(servedOnHost(null, '/')).toBe(true)
+  })
+})

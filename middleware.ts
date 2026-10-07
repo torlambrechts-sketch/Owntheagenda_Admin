@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { boundedFetch, supabaseEnv } from '@/lib/supabase/env'
 import { DEVICE_COOKIE, SEEN_COOKIE, originOf, report, sessionOf } from '@/lib/supabase/report'
+import { servedOnHost } from '@/lib/mail/link-host'
 
 /**
  * Every page but the sign-in needs a session, and a session needs its second factor: an admin tool
@@ -20,6 +21,8 @@ const PUBLIC = ['/login', '/ingen-tilgang', '/u', '/velkommen']
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
+  // an application's link address (post.<domain>, 0063) answers the unsubscribe page only; everything else there is absent
+  if (!servedOnHost(request.headers.get('host'), path)) return new NextResponse(null, { status: 404 })
   if (PUBLIC.some((p) => path === p || path.startsWith(`${p}/`))) return NextResponse.next({ request })
 
   // the admin layout decides access by route (lib/nav.ts routeVisible); this is the only writer, so a client's own header is overwritten

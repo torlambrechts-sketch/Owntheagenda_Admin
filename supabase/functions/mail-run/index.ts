@@ -215,7 +215,9 @@ async function run(svc: SupabaseClient, key: string, config: Config, url: string
         case 'campaign_test': {
           const subjects = arr<string | null>(j.subjects).filter((s): s is string => typeof s === 'string' && s.trim() !== '')
           if (typeof j.to !== 'string' || typeof j.from !== 'string' || typeof j.html !== 'string') break
-          const html = R.campaignHtml(j.html, link('/u/test') ?? '#')
+          // the test opens where the campaign's own links will: its application's link address, else Sentral's
+          const testBase = typeof j.campaign_id === 'string' && UUID.test(j.campaign_id) ? await rpc<string | null>(svc, 'worker_campaign_base', { p_campaign: j.campaign_id }) : null
+          const html = R.campaignHtml(j.html, testBase ? R.safeLink(testBase, '/u/test') : (link('/u/test') ?? '#'))
           for (const subject of [...new Set(subjects)].slice(0, 2)) {
             const r = await send({ sender: { email: j.from, name: String(j.from_name ?? '') }, to: { email: j.to }, subject: `[Test] ${subject}`,
                                    ...(typeof j.reply_to === 'string' ? { replyTo: { email: j.reply_to } } : {}),
@@ -241,8 +243,10 @@ async function run(svc: SupabaseClient, key: string, config: Config, url: string
   return c
 }
 
-// one campaign's batches: each recipient's own unsubscribe link (page and RFC 8058 one-click)
-async function campaign(svc: SupabaseClient, id: string, base: string | null, url: string, send: (m: BrevoMessage) => Promise<SendResult>, left: () => boolean) {
+// one campaign's batches: each recipient's own unsubscribe link (page and RFC 8058 one-click), on the campaign's
+// application's link address when it has one (0063), else on Sentral's public address
+async function campaign(svc: SupabaseClient, id: string, fallback: string | null, url: string, send: (m: BrevoMessage) => Promise<SendResult>, left: () => boolean) {
+  const base = (await rpc<string | null>(svc, 'worker_campaign_base', { p_campaign: id })) ?? fallback
   if (!base) {
     log('campaign held no_public_base')
     return 0

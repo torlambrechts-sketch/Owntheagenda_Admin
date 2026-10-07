@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import type { EmailProvider } from '@/lib/mail/provider'
 import { useAct, useAgo, useSensitive, k } from '../../applications/_components/kit'
-import { checkBrevo, connectBrevo, disconnectBrevo, saveMailSettings, saveSender, testBrevo } from '../mail-actions'
+import { checkBrevo, connectBrevo, disconnectBrevo, saveAppBase, saveMailSettings, saveSender, testBrevo } from '../mail-actions'
 
 const PILL = { connected: 'bg-ok-bg text-ok-ink', not_connected: 'bg-beige text-muted', error: 'bg-peach text-rust-ink' } as const
 
@@ -26,6 +26,8 @@ export function EmailCard({ p, apps, current }: { p: EmailProvider; apps: { key:
   const [editing, setEditing] = useState(!p.key_stored)
   const [base, setBase] = useState(p.public_base ?? '')
   const [inbound, setInbound] = useState(p.inbound_domain ?? '')
+  const [appBase, setAppBase] = useState(p.app_bases[current] ?? '')
+  const appName = apps.find((a) => a.key === current)?.name ?? current
   const [adding, setAdding] = useState(false)
 
   const connect = () => s.call(() => connectBrevo({ key }), (r) => {
@@ -101,6 +103,14 @@ export function EmailCard({ p, apps, current }: { p: EmailProvider; apps: { key:
               <input value={base} onChange={(e) => setBase(e.target.value)} placeholder="https://…" className={`${k.input} ${k.mono}`} />
             </label>
             <span className={k.note}>{t('publicBaseNote')}</span>
+            <label className={k.label}>
+              {t('appBase', { app: appName })}
+              <input value={appBase} onChange={(e) => setAppBase(e.target.value)} placeholder="https://post.…" className={`${k.input} ${k.mono}`} />
+            </label>
+            <span className={k.note}>{t('appBaseNote', { app: appName })}{p.app_bases[current] ? '' : ` ${t('appBaseNone', { app: appName })}`}</span>
+            <div>
+              <button type="button" disabled={pending || appBase === (p.app_bases[current] ?? '')} onClick={() => run(() => saveAppBase({ product: current, base: appBase.trim() }), t('saved'))} className={k.btn}>{t('save')}</button>
+            </div>
             <label className={k.label}>
               {t('inbound')}
               <input value={inbound} onChange={(e) => setInbound(e.target.value)} placeholder={t('inboundPh')} className={`${k.input} ${k.mono}`} />

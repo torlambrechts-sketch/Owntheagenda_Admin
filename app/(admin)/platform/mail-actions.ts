@@ -60,6 +60,17 @@ export async function saveMailSettings(input: unknown): Promise<Res> {
   return r.ok ? { ok: true } : r
 }
 
+/** An application's link address (0063): https://post.<domain>, or empty to fall back to Sentral's own. */
+export async function saveAppBase(input: unknown): Promise<Res> {
+  const p = z.object({
+    product: z.string().regex(/^[a-z][a-z0-9_]{1,30}$/),
+    base: z.union([z.literal(''), z.string().trim().toLowerCase().regex(/^https:\/\/post\.[a-z0-9.-]+\.[a-z]{2,}\/?$/)]),
+  }).safeParse(input)
+  if (!p.success) return { ok: false, code: 'invalid', detail: 'app_base' }
+  const r = await rpc('email_provider_app_base', { p_product: p.data.product, p_base: p.data.base || null }, z.unknown())
+  return r.ok ? { ok: true } : r
+}
+
 export async function disconnectBrevo(): Promise<Res> {
   const r = await rpc('email_provider_disconnect', {}, z.unknown())
   return r.ok ? { ok: true } : r

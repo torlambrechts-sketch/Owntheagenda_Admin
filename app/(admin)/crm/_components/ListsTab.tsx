@@ -92,12 +92,14 @@ export function ListsTab({ rights, data, blocked, creating, setCreating }: {
               <div className="flex flex-wrap items-center justify-between gap-[10px]">
                 <b className="font-serif text-20">{list.name}</b>
                 <span className="flex gap-[6px]">
-                  <Link
-                    href={'/growth?tab=email' as Route}
-                    className="flex h-8 flex-none items-center whitespace-nowrap rounded-9 border border-ink bg-primary px-3 text-12 font-bold text-ink hover:text-ink hover:no-underline"
-                  >
-                    {tl('useInCampaign')}
-                  </Link>
+                  {rights.growth ? (
+                    <Link
+                      href={'/growth?tab=email' as Route}
+                      className="flex h-8 flex-none items-center whitespace-nowrap rounded-9 border border-ink bg-primary px-3 text-12 font-bold text-ink hover:text-ink hover:no-underline"
+                    >
+                      {tl('useInCampaign')}
+                    </Link>
+                  ) : null}
                   <button
                     type="button"
                     disabled={!rights.exportRows || exporting}

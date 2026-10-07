@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { can, getShell } from '@/lib/shell'
+import { routeVisible } from '@/lib/nav'
 import { loadCrmDeal, loadCrmDeals, loadCrmLists } from '@/lib/data/simple-crm'
 import { CRM_TABS, type CrmRights } from '@/lib/data/simple-crm-shared'
 import { CrmScreen } from './_components/CrmScreen'
@@ -26,6 +27,9 @@ export default async function CrmPage({ searchParams }: { searchParams: Promise<
     exportRows: can(shell, 'deals', 'export'),
     lists: shell.modules.campaigns !== false && can(shell, 'campaigns', 'see'),
     addList: shell.modules.campaigns !== false && can(shell, 'campaigns', 'add'),
+    growth: routeVisible('growth', {
+      admin: shell.me.permission_kind === 'admin', rights: shell.me.rights, modules: shell.modules, meetingsWorkspace: shell.meetings_workspace,
+    }),
   }
   const common = { rights, nf: shell.me.number_format, tz: shell.me.time_zone }
 

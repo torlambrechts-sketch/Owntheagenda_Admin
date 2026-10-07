@@ -38,7 +38,7 @@ describe('the board summary', () => {
 })
 
 describe('who may move a deal', () => {
-  const r = (x: Partial<CrmRights>): CrmRights => ({ meId: 'me', add: true, editOthers: false, readOnly: false, exportRows: false, lists: false, addList: false, ...x })
+  const r = (x: Partial<CrmRights>): CrmRights => ({ meId: 'me', add: true, editOthers: false, readOnly: false, exportRows: false, lists: false, addList: false, growth: false, ...x })
   it('the owner, or anyone with edit_others; never a read-only person', () => {
     expect(canEditDeal(r({}), { owner_id: 'me' })).toBe(true)
     expect(canEditDeal(r({}), { owner_id: 'someone' })).toBe(false)

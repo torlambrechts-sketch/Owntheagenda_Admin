@@ -827,3 +827,16 @@ already running or finished is not run twice. Proved by `supabase/tests/storage_
 |---|---|---|---|---|
 | V-NAV-01 | Left menu | Every item for everyone | An item shows only when the person holds one of the rights that open its page (`ACCESS`, mirroring the page's main `app.require`), its module is on, and for Meetings their workspace. Automation, Insights, API, Settings, Security and Coverage stay for everyone: each has a view of one's own | The prototype has no permissions; a menu item that opens onto a refusal tells the person nothing |
 | V-NAV-02 | A route opened by address without the right | — | The layout shows «No access» (or «switched off» for a module) inside the shell instead of the page, so the page's reads never run. The middleware passes the path in `x-sentral-path` and always overwrites a client's own | Pages without their own guard answered with a server error (500) |
+
+## Sentral Simple — shell and S5 (`components/shell/*`, `lib/nav.ts`, old routes)
+
+Each section's own departures are in `deviations/simple-customers.md` (V-SCU), `simple-crm.md` (V-SCR), `simple-growth.md`
+(V-SGR) and `simple-platform.md` (V-SPL).
+
+| ID | Where | Design | Built | Why |
+|---|---|---|---|---|
+| V-SS-01 | Rail footer | A static name and role | The initials button opens the account card upward: language, time zone, number format, sandbox, «Settings and security», sign out | The design has no other place for these; sign-out and the idle rule must be reachable |
+| V-SS-02 | Account card › Settings and security | — | Links to Settings, Pipelines and stages, Ticket macros, Sessions and two-factor, Privacy requests, Audit log; each only for someone who can open it | The plan keeps these screens out of the rail but reachable (S5) |
+| V-SS-03 | Growth in the rail | Marketing: Growth; Sales: CRM | Growth opens with a reports right (`global:reports_others` or `campaigns:reports_others`), not with `campaigns:see`, which Sales now holds for CRM › Lists (0057). «Use in email campaign» in Lists shows only to someone who can open Growth | Keep Sales on CRM as the design says |
+| V-SS-04 | Old deep links | — | `/tickets` (inbox) and `/tickets?ticket=` redirect to Customers › Tickets and requests; `/deals?deal=` to `/crm?deal=`; `recordHref` sends deals and tickets there directly. The other tickets tabs (problems, help centre, macros, reports) and the full deals screen (other pipelines, forecast, archive, catalogue) stay at their addresses | Notifications already stored point at the old addresses; the features Simple does not show are kept until a later release removes them |
+| V-SS-05 | Marketing and email campaigns | Marketing edits email campaigns | Marketing sees the editor read-only (V-SGR-25): the engine requires `deals:workflows` for deal and lead triggers, and Marketing has no deals rights | Granting it would let Marketing run workflows on deals it cannot see; decide with the owner |

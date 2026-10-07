@@ -26,6 +26,8 @@ export type CrmRights = {
   lists: boolean
   /** campaigns:add — a new list */
   addList: boolean
+  /** Growth is in the person's rail (lib/nav ACCESS): «Use in email campaign» leads there, so it is offered only then */
+  growth: boolean
 }
 
 export const canEditDeal = (r: CrmRights, d: { owner_id: string | null }) => !r.readOnly && (r.editOthers || d.owner_id === r.meId)

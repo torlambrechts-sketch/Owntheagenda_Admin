@@ -53,3 +53,16 @@ without the tickets scope, the toast's shadow, and the Overview failing for staf
 | Projects R-PROJECTS-02 | Whether the PDF worker runs | State done in 0040 (`pdf` provider, `project_pdf_status`) · screen done; the worker is open |
 | Projects R-PROJECTS-04 | Template line day = start offset | Done in 0040 · screen unchanged (reads `preview[].day`) |
 | Insights INS-01 / V-P6P-02 | Report entities project and campaign | Done in 0040 · screen done |
+
+## Phase 7 (0050)
+
+«0050» is `supabase/migrations/0050_crm_requests.sql`, proved by `supabase/tests/phase7_meetings_invariants.sql`.
+
+| Request | What | Status |
+|---|---|---|
+| Meetings R-MEETINGS-01 | Controller in `meeting_controls` | Done in 0050 · screen done (notice preview) |
+| Meetings R-MEETINGS-02 | `shell().meetings_workspace` | Done in 0050 · shell done (Sidebar) |
+| Meetings R-MEETINGS-03 | Organisation name on health and applications facts | Done in 0050 · screen done (brief) |
+| Meetings R-MEETINGS-04 | Currency on value suggestions | Done in 0050 · screen done (suggestions) |
+| Meetings R-MEETINGS-05 | `speakers[].email` | Done in 0050 · screen done (speakers) |
+| Meetings R-MEETINGS-06 | meeting-files bucket and signer | Open: storage and an edge function |

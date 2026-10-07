@@ -253,7 +253,9 @@
         "lead": "Lead",
         "score": "Score",
         "health": "Helse · {product}",
-        "applications": "Applikasjoner"
+        "healthOrg": "Helse · {product} · {organization}",
+        "applications": "Applikasjoner",
+        "applicationsOrg": "Applikasjoner · {organization}"
       }
     },
     "transcript": {
@@ -543,14 +545,16 @@
       "preview": {
         "title": "Det gjestene mottar",
         "subject": "Varsel om opptak: [møte] [dato]",
-        "body": "[Arrangør] i [selskap] vil ta opp [møte] med en notatbot som blir med i samtalen som synlig deltaker merket «(opptak)». Opptaket blir en transkripsjon og en oppsummering i kunderegisteret vårt. Denne e-posten sendes {timing}. Lyden beholdes {retention}; transkripsjonen følger våre opplysninger om samtalen. Du kan si nei med lenken nedenfor — for dette møtet, eller for alle møter med adressen din — og notatboten blir ikke med. [Reservasjonslenke]",
+        "body": "[Arrangør] i {company} vil ta opp [møte] med en notatbot som blir med i samtalen som synlig deltaker merket «(opptak)». Opptaket blir en transkripsjon og en oppsummering i kunderegisteret vårt. Denne e-posten sendes {timing}. Lyden beholdes {retention}; transkripsjonen følger våre opplysninger om samtalen. Du kan si nei med lenken nedenfor — for dette møtet, eller for alle møter med adressen din — og notatboten blir ikke med. [Reservasjonslenke]",
         "off": "Ingen varsel-e-post sendes. Gjestene får vite om opptaket fra notatboten i samtalen, som sier i navnet at den tar opp og legger ut en reservasjonslenke når den blir med.",
         "hoursBefore": "{n, plural, one {# time} other {# timer}} før møtet",
         "whenKnown": "så snart møtet er kjent",
         "months": "i {n, plural, one {# måned} other {# måneder}}",
         "keep": "til noen sletter den",
         "emailConnected": "Varselet sendes gjennom den transaksjonelle e-poststrømmen; kan det ikke sendes, holdes boten ute.",
-        "emailNotConnected": "E-postleverandøren er ikke koblet til, så ingen varsler kan gå ut: et møte som krever varsel, holder boten ute."
+        "emailNotConnected": "E-postleverandøren er ikke koblet til, så ingen varsler kan gå ut: et møte som krever varsel, holder boten ute.",
+        "companyUnknown": "[selskap]",
+        "noController": "Ikke noe verifisert transaksjonelt avsenderdomene navngir selskapet ennå, så ingen varsler kan gå ut: et møte som krever varsel, holder boten ute."
       },
       "retention": {
         "title": "Hvor lenge lyd beholdes",

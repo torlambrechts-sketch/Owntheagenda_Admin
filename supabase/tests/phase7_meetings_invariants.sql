@@ -112,6 +112,7 @@ insert into app.labels (id, entity, name, bg, ink) select lbl, 'deal', 'Multi-pr
 -- rights (MTG-08, SEC-07): deals:see, the module, the per-user switch; Workspace and controls for global:configure
 select pg_temp.as_staff('emma@orgpuls.no');
 select pg_temp.expect_detail($$select public.meetings_workspace()$$, 'forbidden', 'deals:see', 'a projects-only user has no meeting workspace');
+select pg_temp.check(not (public.shell() ->> 'meetings_workspace')::boolean, 'and the shell hides «Meetings» from them (R-MEETINGS-02)');
 select pg_temp.as_nobody();
 select pg_temp.expect_error($$select public.meetings_workspace()$$, 'not_signed_in', 'nobody signed in reads nothing');
 select pg_temp.as_staff('ingrid@orgpuls.no');
@@ -131,14 +132,19 @@ select pg_temp.check((select detail -> 'fields' ? 'enabled' from app.audit where
 select pg_temp.check(jsonb_path_exists(public.meeting_controls(), '$.users[*] ? (@.name == "Ingrid Solberg" && @.enabled == false)')
                      and not jsonb_path_exists(public.meeting_controls(), '$.users[*] ? (@.name == "Emma Lie")'),
                      'the controls list staff with deals:see and their switch');
+select pg_temp.check(public.meeting_controls() ? 'controller' and public.meeting_controls() -> 'controller' = 'null'::jsonb,
+                     'without a verified transactional sender the controls name no controller (R-MEETINGS-01)');
+select pg_temp.check((public.shell() ->> 'meetings_workspace')::boolean, 'the shell offers «Meetings» to a user with the workspace (R-MEETINGS-02)');
 select pg_temp.as_staff('ingrid@orgpuls.no');
 select pg_temp.expect_detail($$select public.meetings_workspace()$$, 'forbidden', 'meetings:disabled', 'a user switched off sees no workspace (MTG-08 A)');
+select pg_temp.check(not (public.shell() ->> 'meetings_workspace')::boolean, 'and the shell hides «Meetings» from them (R-MEETINGS-02)');
 select pg_temp.as_staff('tor@orgpuls.no');
 select public.meeting_user_set((select ingrid from t_ids), '{"enabled":true}');
 select pg_temp.expect_detail(format($$select public.meeting_user_set(%L, jsonb_build_object('mailbox_id', gen_random_uuid()))$$, (select ingrid from t_ids)), 'invalid', 'mailbox_id',
                              'a mailbox must be one the user may use');
 select public.module_set('meetings', false);
 select pg_temp.expect_error($$select public.meetings_workspace()$$, 'module_off', 'the module switch turns the workspace off');
+select pg_temp.check(not (public.shell() ->> 'meetings_workspace')::boolean, 'with the module off the shell hides «Meetings» (R-MEETINGS-02)');
 select public.module_set('meetings', true);
 
 -- ---------------------------------------------------------------------------
@@ -197,6 +203,9 @@ select pg_temp.check((select r ->> 'refused' from t_refB) = 'notice_not_sent'
 update app.integration_connections set status = 'connected' where provider = 'email';
 select pg_temp.check(app.mtg_controller() is null, 'no transactional sender: no controller to name');
 insert into app.sender_domains (domain, stream, from_name, from_local, verified_at) values ('varsel.p7.example', 'transactional', 'Owntheagenda P7 AS', 'noreply', now());
+select pg_temp.as_staff('tor@orgpuls.no');
+select pg_temp.check(public.meeting_controls() ->> 'controller' = 'Owntheagenda P7 AS', 'the controls name the controller a notice speaks for (R-MEETINGS-01)');
+select pg_temp.as_nobody();
 insert into t_m select 'C', (public.worker_meeting_upsert((select tor from t_ids), pg_temp.ev('evC', now() + interval '4 minutes', array['tor@orgpuls.no', 'kari@kyst.example'])) ->> 'id')::uuid;
 create temp table t_nd as select app.mtg_notices_due() r;
 select pg_temp.check((select (r ->> 'queued')::int from t_nd) = 1 and exists (select 1 from pgmq.q_jobs where message ->> 'job' = 'meeting_notices' and message ->> 'meeting_id' = (select id::text from t_m where k = 'C')),
@@ -299,6 +308,27 @@ select pg_temp.check((select b ->> 'state' = 'ready' and jsonb_path_exists(b, '$
 select pg_temp.expect_detail(format($$select public.meeting_brief_check(%L, 'chg:0', true)$$, (select id from t_m where k = 'D')), 'invalid', 'item_key', 'only an item of the brief can be ticked');
 select public.meeting_brief_check((select id from t_m where k = 'D'), (select c ->> 'key' from t_brief, jsonb_array_elements(b -> 'changes') c limit 1), true);
 select pg_temp.check(jsonb_path_exists(public.meeting_brief((select id from t_m where k = 'D')), '$.changes[*] ? (@.checked == true)'), 'a tick is kept per user (Q18)');
+-- two organisations with the same product: each health and applications line names its organisation (R-MEETINGS-03)
+create temp table t_ho as select gen_random_uuid() acct1, gen_random_uuid() acct2, gen_random_uuid() org2;
+insert into app.accounts (id, name) select acct1, 'Kystlinje Konto P7' from t_ho union all select acct2, 'Mjøsa Konto P7' from t_ho;
+update app.organizations set account_id = (select acct1 from t_ho) where id = (select org from t_ids);
+insert into app.organizations (id, name, account_id) select org2, 'Mjøsa Energi P7', acct2 from t_ho;
+insert into app.account_products (product, tenant_id, account_id) select 'orgpuls', 'p7-tenant-1', acct1 from t_ho union all select 'orgpuls', 'p7-tenant-2', acct2 from t_ho;
+insert into app.health_scores (product, tenant_id, day, score, factors, model_id)
+select 'orgpuls', t, current_date, s, '[]', (select id from app.health_models where active) from (values ('p7-tenant-1', 71), ('p7-tenant-2', 44)) v(t, s);
+update app.meetings set organization_id = (select org2 from t_ho) where id = (select id from t_m where k = 'D');
+select public.meeting_brief_regenerate((select id from t_m where k = 'D'));
+create temp table t_bf as select f from jsonb_array_elements(public.meeting_brief((select id from t_m where k = 'D')) -> 'facts') f;
+select pg_temp.check((select count(*) from t_bf where f ->> 'key' = 'health:orgpuls') = 2
+                     and exists (select 1 from t_bf where f ->> 'key' = 'health:orgpuls' and f -> 'params' ->> 'organization' = 'Kystlinje Transport P7' and (f -> 'params' ->> 'score')::int = 71
+                                 and f -> 'source' ->> 'id' = (select org::text from t_ids))
+                     and exists (select 1 from t_bf where f ->> 'key' = 'health:orgpuls' and f -> 'params' ->> 'organization' = 'Mjøsa Energi P7' and (f -> 'params' ->> 'score')::int = 44),
+                     'each organisation''s health line names the organisation (R-MEETINGS-03)');
+select pg_temp.check((select count(*) from t_bf where f ->> 'key' = 'applications') = 2
+                     and exists (select 1 from t_bf where f ->> 'key' = 'applications' and f -> 'params' ->> 'organization' = 'Mjøsa Energi P7'
+                                 and f -> 'params' -> 'products' = '["orgpuls"]'::jsonb and f -> 'source' ->> 'id' = (select org2::text from t_ho)),
+                     'applications is one line per organisation, named and cited to it (R-MEETINGS-03)');
+update app.meetings set organization_id = null where id = (select id from t_m where k = 'D');
 select pg_temp.as_nobody();
 create temp table t_bj as select app.mtg_briefs_due() n;
 select pg_temp.check((select n from t_bj) >= 1 and exists (select 1 from app.meeting_briefs where meeting_id = (select id from t_m where k = 'C') and state = 'ready'),
@@ -408,6 +438,11 @@ select pg_temp.check(exists (select 1 from app.notifications where key = 'meetin
 select pg_temp.as_staff('tor@orgpuls.no');
 select pg_temp.check((select r -> 'state' ->> 'key' = 'suggestions' and (r -> 'state' ->> 'n')::int = 5 and r ->> 'group' = 'review'
                       from (select public.meeting_detail((select id from t_m where k = 'H2')) r) x), 'the meeting needs review: «5 suggestions»');
+create temp table t_sg as select x from jsonb_array_elements(public.meeting_suggestions((select id from t_m where k = 'H2')) -> 'suggestions') x;
+select pg_temp.check(exists (select 1 from t_sg where x ->> 'field' = 'value' and x ->> 'target_entity' = 'deal' and x ->> 'currency' = 'NOK')
+                     and not exists (select 1 from t_sg where x ->> 'field' <> 'value' and x -> 'currency' <> 'null'::jsonb)
+                     and (select count(*) from t_sg where x ? 'currency') = (select count(*) from t_sg),
+                     'a suggestion on a deal''s value carries the deal''s currency; other fields carry none (R-MEETINGS-04)');
 
 -- ---------------------------------------------------------------------------
 -- CRM update suggestions (MTG-05): nothing written without approval; written with the meeting as source; stale never overwritten
@@ -527,7 +562,14 @@ select pg_temp.check((select state = 'failed' and error_code = 'parse_failed' fr
 delete from app.meeting_transcripts where id = (select (r ->> 'transcript_id')::uuid from t_ud2);
 select pg_temp.as_staff('ingrid@orgpuls.no');
 select pg_temp.check((public.meeting_recap((select id from t_m where k = 'U')) ->> 'state') = 'requested', 'the upload''s recap follows the AI provider (connected here)');
+select public.meeting_speaker_map((select (r ->> 'transcript_id')::uuid from t_ud), 'Lars', '{"email":"Lars@Gjest.example"}');
+select pg_temp.check(jsonb_path_exists(public.meeting_transcript((select id from t_m where k = 'U')),
+                                       '$.speakers[*] ? (@.label == "Lars" && @.email == "lars@gjest.example" && @.kind == "unknown" && @.name == null)')
+                     and jsonb_path_exists(public.meeting_transcript((select id from t_m where k = 'U')), '$.speakers[*] ? (@.label == "Ingrid Solberg" && @.kind == "staff")'),
+                     'a label mapped to an address only reads back with that address (R-MEETINGS-05)');
 select public.meeting_speaker_map((select (r ->> 'transcript_id')::uuid from t_ud), 'Lars', jsonb_build_object('person_id', (select kari from t_ids)));
+select pg_temp.check(jsonb_path_exists(public.meeting_transcript((select id from t_m where k = 'U')), '$.speakers[*] ? (@.label == "Lars" && @.email == "kari@kyst.example" && @.kind == "external")'),
+                     'a label mapped to a visible person carries the person''s address (R-MEETINGS-05)');
 select pg_temp.check((select person_id = (select kari from t_ids) and email = 'kari@kyst.example' from app.transcript_speakers where transcript_id = (select (r ->> 'transcript_id')::uuid from t_ud) and label = 'Lars'),
                      'the owner maps a speaker to a person');
 select pg_temp.expect_detail(format($$select public.meeting_speaker_map(%L, 'Nobody', '{}')$$, (select (r ->> 'transcript_id')::uuid from t_ud)), 'not_found', 'label', 'only a label of the transcript');

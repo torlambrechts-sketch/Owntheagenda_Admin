@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
+import { money } from '@/lib/format'
 import type { RpcCode } from '@/lib/rpc'
 import type { Detail, Suggestion } from '@/lib/data/meetings'
 import { valueText } from '@/lib/data/meetings-shared'
@@ -42,7 +43,9 @@ export function SuggestionsTab({ detail, rows, labels, onChanged, me }: Props) {
   }
 
   const fieldName = (s: Suggestion) => s.field_label ?? (t.has(`field.${s.field}`) ? t(`field.${s.field}`) : s.field.replace(/_/g, ' '))
-  const show = (v: unknown) => valueText(v, num, (id) => labels[id] ?? null) ?? t('dash')
+  // a money column reads with its record's currency («120 000 kr», R-MEETINGS-04); anything else as the value is
+  const show = (v: unknown, currency: string | null = null) =>
+    (currency && typeof v === 'number' ? money(v, me.numberFormat, currency) : valueText(v, num, (id) => labels[id] ?? null)) ?? t('dash')
 
   if (rows.length === 0) {
     const why = !detail.transcript ? t('empty.noTranscript') : detail.recap?.state === 'not_connected' ? t('empty.notConnected') : detail.recap?.state === 'ready' ? t('empty.none') : t('empty.waiting')
@@ -74,14 +77,14 @@ export function SuggestionsTab({ detail, rows, labels, onChanged, me }: Props) {
             const p = (isNew && s.proposed_value && typeof s.proposed_value === 'object' ? s.proposed_value : {}) as Record<string, unknown>
             const org = typeof p.organization_id === 'string' && detail.links.organization?.id === p.organization_id ? detail.links.organization.title : null
             const field = isNew ? String(p.name ?? '') : s.target_entity === 'person' ? `${s.target_title ?? t('dash')} · ${fieldName(s)}` : fieldName(s)
-            const proposed = isNew ? [p.title, org].filter((x) => typeof x === 'string' && x).join(' · ') || t('dash') : show(s.proposed_value)
+            const proposed = isNew ? [p.title, org].filter((x) => typeof x === 'string' && x).join(' · ') || t('dash') : show(s.proposed_value, s.currency)
             const tone = s.state === 'accepted' ? 'text-link' : s.state === 'pending' ? '' : 'text-danger'
             return (
               <div key={s.id} className={`border-0 border-b border-solid border-line px-4 py-[10px] text-12.5 ${s.state === 'accepted' ? 'bg-mint' : 'bg-transparent'}`}>
                 <div className={`grid items-center gap-[10px] ${cols}`}>
                   <span className="text-muted">{isNew ? t('entity.new') : t(`entity.${s.target_entity}`)}</span>
                   <b>{field}</b>
-                  <span className="text-faint">{isNew ? t('dash') : show(s.current_value)}</span>
+                  <span className="text-faint">{isNew ? t('dash') : show(s.current_value, s.currency)}</span>
                   <b className="text-ok-ink">{proposed}</b>
                   <span className="flex justify-end gap-[6px]">
                     {s.state === 'pending' && canDecide ? (

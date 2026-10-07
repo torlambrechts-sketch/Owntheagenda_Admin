@@ -20,6 +20,8 @@ export type ShellData = {
   settings: { session_idle: string; ip_allowlist: string }
   unread: number
   badges: Record<string, number>
+  /** false: no meeting workspace (deals:see, the module, the staff member's switch; 0050) — «Meetings» is not listed */
+  meetings_workspace?: boolean
 }
 
 export const canIn = (shell: ShellData, scope: 'deals' | 'projects' | 'campaigns' | 'global', action: string) =>

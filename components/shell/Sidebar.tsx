@@ -25,7 +25,7 @@ export function Sidebar({ shell, route, product, open, onNavigate }: { shell: Sh
       <ProductPicker shell={shell} product={product} />
       <nav aria-label={t('mainMenu')} className="flex-1 overflow-y-auto px-[10px] pb-[14px]">
         {NAV.map((g, gi) => {
-          const items = g.items.filter((k) => !(MODULE_OF[k] && shell.modules[MODULE_OF[k]!] === false))
+          const items = g.items.filter((k) => !(MODULE_OF[k] && shell.modules[MODULE_OF[k]!] === false) && !(k === 'meetings' && shell.meetings_workspace === false))
           if (!items.length) return null
           return (
             <div key={gi} className="mt-3 flex flex-col gap-px">

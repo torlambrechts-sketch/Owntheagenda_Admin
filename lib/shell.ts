@@ -26,6 +26,8 @@ export const Shell = z.object({
   settings: z.object({ session_idle: z.string(), ip_allowlist: z.string() }),
   unread: z.number(),
   badges: z.record(z.string(), z.number()),
+  /** whether the staff member has the meeting workspace (deals:see, the module, their own switch; 0050, R-MEETINGS-02) */
+  meetings_workspace: z.boolean().optional(),
 })
 export type Shell = z.infer<typeof Shell>
 

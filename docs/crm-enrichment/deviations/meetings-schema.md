@@ -49,6 +49,9 @@ Nothing is connected: no calendar adapter, meeting bot, transcription, AI provid
 - `public.worker_project_summary_ready`: 0038 body plus `ai_call_id`.
 - `public.thread_insight_request`: 0020 body plus `app.require_connected('ai')`.
 - Not touched: the engine (`wf_*`), `app.person_erased`, `note_save`, `app.filter_sql`, the report functions, `prj_template_row`, `campaign_*`.
+- 0050 (R-MEETINGS-01..05) redefines from these bodies: `public.shell()` (0014, plus `meetings_workspace`), `app.mtg_brief_build`
+  (health and applications facts name the organisation; applications per organisation), `public.meeting_transcript` (speakers'
+  `email`), `public.meeting_suggestions` (`currency`), `public.meeting_controls` (`controller`).
 
 ## AI call log: every place that should log
 
@@ -162,12 +165,12 @@ Errors:
 
   The read is audited.
 - `meeting_brief(p_id uuid)` returns `{state: 'none' | 'ready' | …, generated_at, since_at, last_contact_at, linked, changes: [{key, kind, at, params, source: {entity, id}, checked}], people: [{person_id, name, title, labels, first_meeting, last_signed_in, source}], facts: [{key, ord, params, source}], quotes: [{text, kind: 'segment' | 'note', transcript_id?, seq?, note_id?, meeting_id?, speaker, person_id, at, record}], quotes_state, ai, instructions_set}`.
-- `meeting_transcript(p_id uuid, p_cursor int default 0, p_limit int default 200)` returns `{transcript | null, speakers: [{label, staff_id, person_id, name, kind: 'staff' | 'external' | 'unknown'}], segments: [{seq, start_ms, end_ms, label, text, redacted}], next: seq | null}`.
+- `meeting_transcript(p_id uuid, p_cursor int default 0, p_limit int default 200)` returns `{transcript | null, speakers: [{label, staff_id, person_id, name, kind: 'staff' | 'external' | 'unknown', email}], segments: [{seq, start_ms, end_ms, label, text, redacted}], next: seq | null}`.
   - Staff ink is `#191510`; external is `#2F5D2A`.
   - Text is untrusted (escape it).
 - `meeting_recap(p_id uuid)` returns `{transcript_id, state, takeaways: [{text, seq}], next_steps: [{text, seq, activity_id?}], generated_at, saved_at, announced_at, note: {id, entity, record_id} | null, save_target, ai, can_edit}`. Clicking an item scrolls to `seq`.
-- `meeting_suggestions(p_id uuid)` returns `{transcript_id, suggestions: [{id, ord, target_entity, target_id, target_title, field, field_label, current_value, proposed_value, evidence, state, error_code, decided_by, decided_at, written_record_id, stale_now}]}`. For a new contact, `field = '*new'` and the proposed value is `{name, title, …}`.
-- `meeting_controls()` returns `{users: [{id, name, title, initials, enabled, bot_auto_join, mailbox: {id, address, status, kind, own} | null, calendar}], rec_notice: {value, hours}, rec_retention: {value, months}, visibility_default, capabilities}`.
+- `meeting_suggestions(p_id uuid)` returns `{transcript_id, suggestions: [{id, ord, target_entity, target_id, target_title, field, field_label, currency, current_value, proposed_value, evidence, state, error_code, decided_by, decided_at, written_record_id, stale_now}]}`. For a new contact, `field = '*new'` and the proposed value is `{name, title, …}`.
+- `meeting_controls()` returns `{users: [{id, name, title, initials, enabled, bot_auto_join, mailbox: {id, address, status, kind, own} | null, calendar}], rec_notice: {value, hours}, rec_retention: {value, months}, visibility_default, controller, capabilities}`.
   - The mailbox `status` value `reauth` gives «(re-auth)»; `own` means «own»; null means «no mailbox».
   - Write the notice choice with `setting_set('rec_notice', 'on_24h' | 'custom' | 'off', '', hours)`.
 - `meeting_my_settings()` returns the caller's user row plus `brief_instructions`.

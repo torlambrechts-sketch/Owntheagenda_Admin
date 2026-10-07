@@ -253,7 +253,9 @@
         "lead": "Lead",
         "score": "Score",
         "health": "Health · {product}",
-        "applications": "Applications"
+        "healthOrg": "Health · {product} · {organization}",
+        "applications": "Applications",
+        "applicationsOrg": "Applications · {organization}"
       }
     },
     "transcript": {
@@ -543,14 +545,16 @@
       "preview": {
         "title": "What guests receive",
         "subject": "Recording notice: [meeting] on [date]",
-        "body": "[Organiser] at [company] will record [meeting] with a notetaker that joins the call as a visible participant marked «(recording)». The recording becomes a transcript and a summary in our customer records. This email goes out {timing}. The audio is kept {retention}; the transcript stays with our records of the conversation. You can say no with the link below — for this meeting, or for every meeting with your address — and the notetaker will not join. [Opt-out link]",
+        "body": "[Organiser] at {company} will record [meeting] with a notetaker that joins the call as a visible participant marked «(recording)». The recording becomes a transcript and a summary in our customer records. This email goes out {timing}. The audio is kept {retention}; the transcript stays with our records of the conversation. You can say no with the link below — for this meeting, or for every meeting with your address — and the notetaker will not join. [Opt-out link]",
         "off": "No notice email is sent. Guests learn of the recording from the notetaker in the call, whose name says it records and which posts an opt-out link when it joins.",
         "hoursBefore": "{n, plural, one {# hour} other {# hours}} before the meeting",
         "whenKnown": "as soon as the meeting is known",
         "months": "for {n, plural, one {# month} other {# months}}",
         "keep": "until someone deletes it",
         "emailConnected": "The notice goes out through the transactional email stream; if it cannot be sent, the bot stays out.",
-        "emailNotConnected": "The email provider is not connected, so no notice can go out: a meeting that needs one keeps the bot out."
+        "emailNotConnected": "The email provider is not connected, so no notice can go out: a meeting that needs one keeps the bot out.",
+        "companyUnknown": "[company]",
+        "noController": "No verified transactional sender domain names the company yet, so no notice can go out: a meeting that needs one keeps the bot out."
       },
       "retention": {
         "title": "How long audio is kept",

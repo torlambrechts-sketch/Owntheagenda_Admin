@@ -63,6 +63,7 @@ export function BriefTab({ detail, brief, onChanged, me, products }: Props) {
     }
   }
 
+  const twice = new Set((brief?.facts ?? []).map((x) => x.key).filter((k, i, all) => all.indexOf(k) !== i))
   const fact = (x: Brief['facts'][number]): [string, string] => {
     const p = x.params
     if (x.key === 'deal') {
@@ -74,8 +75,13 @@ export function BriefTab({ detail, brief, onChanged, me, products }: Props) {
       return [t('fact.lead'), [`L-${str(p.seq) ?? ''}`, v].filter(Boolean).join(' · ')]
     }
     if (x.key === 'score') return [t('fact.score'), str(p.score) ?? '—']
-    if (x.key.startsWith('health:')) return [t('fact.health', { product: products[str(p.product) ?? ''] ?? str(p.product) ?? '' }), str(p.score) ?? '—']
-    if (x.key === 'applications') return [t('fact.applications'), (Array.isArray(p.products) ? p.products : []).map((k) => products[String(k)] ?? String(k)).join(', ')]
+    // two organisations with the same line (two «Health · Orgpuls») are told apart by the organisation's name (R-MEETINGS-03)
+    const org = twice.has(x.key) ? str(p.organization) : null
+    if (x.key.startsWith('health:')) {
+      const product = products[str(p.product) ?? ''] ?? str(p.product) ?? ''
+      return [org ? t('fact.healthOrg', { product, organization: org }) : t('fact.health', { product }), str(p.score) ?? '—']
+    }
+    if (x.key === 'applications') return [org ? t('fact.applicationsOrg', { organization: org }) : t('fact.applications'), (Array.isArray(p.products) ? p.products : []).map((k) => products[String(k)] ?? String(k)).join(', ')]
     if (x.key.startsWith('custom.')) return [str(p.label) ?? x.key.slice(7), str(p.value) ?? '—']
     return [x.key, '—']
   }

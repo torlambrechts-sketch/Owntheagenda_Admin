@@ -89,7 +89,7 @@ export function TranscriptTab({ bundle, capabilities, onChanged, me }: Props) {
         ) : null}
         {segments.map((s) => {
           const sp = s.label ? speakers.get(s.label) : undefined
-          const who = sp?.name ?? s.label ?? t('unknownSpeaker')
+          const who = sp?.name ?? (sp?.email ? d.attendee_list.find((a) => a.email.toLowerCase() === sp.email)?.name : null) ?? s.label ?? t('unknownSpeaker')
           return (
             <div key={s.seq} data-seq={s.seq} className="grid gap-[10px] rounded-6 text-12.5 transition-colors [grid-template-columns:48px_minmax(0,1fr)]">
               <span className="pt-[2px] font-mono text-11 text-faint">{clock(s.start_ms)}</span>
@@ -253,7 +253,17 @@ function SpeakersCard({ bundle, speakers, onChanged }: { bundle: MeetingBundle; 
     else options.push({ value: `e:${a.email}`, label: `${a.name ?? a.email} · ${t('notInCrm')}` })
   }
   if (d.owner && !options.some((o) => o.value === `s:${d.owner!.id}`)) options.unshift({ value: `s:${d.owner.id}`, label: `${d.owner.name} · ${t('colleague')}` })
-  const current = (s: Speaker) => (s.staff_id ? `s:${s.staff_id}` : s.person_id ? `p:${s.person_id}` : '')
+  // a label mapped to an address only (a guest unknown to the CRM) reads back by its address (0050, R-MEETINGS-05)
+  const current = (s: Speaker) => (s.staff_id ? `s:${s.staff_id}` : s.person_id ? `p:${s.person_id}` : s.email ? `e:${s.email}` : '')
+  for (const s of speakers) {
+    if (!s.staff_id && !s.person_id && s.email && !options.some((o) => o.value === `e:${s.email}`)) options.push({ value: `e:${s.email}`, label: `${s.email} · ${t('notInCrm')}` })
+  }
+  const shown = (s: Speaker) => {
+    if (s.kind !== 'unknown') return s.name ?? t('hidden')
+    if (!s.email) return t('unmapped')
+    const a = d.attendee_list.find((x) => x.email.toLowerCase() === s.email)
+    return `${a?.name ?? s.email} · ${t('notInCrm')}`
+  }
   const change = async (s: Speaker, v: string) => {
     if (!d.transcript) return
     const [k, id] = [v.slice(0, 1), v.slice(2)]
@@ -271,7 +281,7 @@ function SpeakersCard({ bundle, speakers, onChanged }: { bundle: MeetingBundle; 
         <div key={s.label} className="flex flex-wrap items-center justify-between gap-2 border-0 border-b border-solid border-line py-[5px] text-12.5">
           <span className="flex flex-col">
             <b style={{ color: s.kind === 'staff' ? '#191510' : '#2F5D2A' }}>{s.label}</b>
-            <span className="text-11.5 text-muted">{s.kind === 'unknown' ? t('unmapped') : s.name ?? t('hidden')}</span>
+            <span className="text-11.5 text-muted">{shown(s)}</span>
           </span>
           {d.can_edit ? (
             <select aria-label={t('mapLabel', { label: s.label })} disabled={busy} value={current(s)} onChange={(e) => void change(s, e.target.value)} className="h-[30px] max-w-[220px] rounded-8 border border-line bg-canvas text-12">

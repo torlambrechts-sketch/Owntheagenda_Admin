@@ -104,7 +104,8 @@ export const Brief = z.object({
 })
 export type Brief = z.infer<typeof Brief>
 
-export const Speaker = z.object({ label: str, staff_id: id.nullable(), person_id: id.nullable(), name: nstr, kind: z.enum(['staff', 'external', 'unknown']) })
+/** email: the address the label is mapped to (0050, R-MEETINGS-05); null for a person the caller may not see */
+export const Speaker = z.object({ label: str, staff_id: id.nullable(), person_id: id.nullable(), name: nstr, kind: z.enum(['staff', 'external', 'unknown']), email: nstr })
 export type Speaker = z.infer<typeof Speaker>
 export const Segment = z.object({ seq: num, start_ms: num, end_ms: num.nullable(), label: nstr, text: str, redacted: z.boolean() })
 export type Segment = z.infer<typeof Segment>
@@ -129,6 +130,8 @@ export type Recap = z.infer<typeof Recap>
 
 export const Suggestion = z.object({
   id, ord: num, target_entity: z.enum(['deal', 'lead', 'person', 'organization']), target_id: id.nullable(), target_title: nstr, field: str, field_label: nstr,
+  /** the record's currency when the field is its money «value» (0050, R-MEETINGS-04), else null */
+  currency: nstr,
   current_value: z.unknown(), proposed_value: z.unknown(), evidence: z.array(num), state: z.enum(['pending', 'accepted', 'rejected', 'stale', 'failed']),
   error_code: nstr, decided_by: nstr, decided_at: iso.nullable(), written_record_id: id.nullable(), stale_now: z.boolean(),
 })
@@ -143,6 +146,8 @@ export const Controls = z.object({
   rec_notice: z.object({ value: str, hours: num.nullable() }),
   rec_retention: z.object({ value: str, months: num.nullable() }),
   visibility_default: str,
+  /** the controller a notice names: the verified transactional sender, null while there is none (0050, R-MEETINGS-01) */
+  controller: nstr,
   capabilities: Capabilities,
 })
 export type Controls = z.infer<typeof Controls>

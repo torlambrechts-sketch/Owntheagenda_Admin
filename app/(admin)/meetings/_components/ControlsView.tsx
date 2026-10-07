@@ -143,12 +143,14 @@ function NoticeCard({ controls, capabilities, onChanged }: { controls: Controls;
         ) : (
           <>
             <b className="text-12.5">{t('preview.subject')}</b>
-            <span className="text-12.5 leading-[1.55]">{t('preview.body', { timing: timing ?? '', retention })}</span>
+            <span className="text-12.5 leading-[1.55]">{t('preview.body', { timing: timing ?? '', retention, company: controls.controller ?? t('preview.companyUnknown') })}</span>
           </>
         )}
         <span className="text-11.5 leading-[1.5] text-amber-ink">
-          {capabilities.email === 'connected' ? t('preview.emailConnected') : t('preview.emailNotConnected')}
+          {capabilities.email !== 'connected' ? t('preview.emailNotConnected') : controls.controller ? t('preview.emailConnected') : t('preview.noController')}
         </span>
+        {/* the controller the notice speaks for (art. 13): the verified transactional sender (0050, R-MEETINGS-01) */}
+        {capabilities.email !== 'connected' && !controls.controller ? <span className="text-11.5 leading-[1.5] text-amber-ink">{t('preview.noController')}</span> : null}
       </div>
     </div>
   )

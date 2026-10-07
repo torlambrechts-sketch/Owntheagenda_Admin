@@ -61,7 +61,7 @@ export function decodeText(bytes: Uint8Array): string | null {
       }
     }
   }
-  text = text.replace(/^﻿/, '')
+  text = text.replace(/^\uFEFF/, '')
   // a NUL or a run of control characters is a binary file, not a transcript
   if (/[\u0000-\u0008\u000E-\u001F]/.test(text.slice(0, 4096))) return null
   return text

@@ -112,10 +112,11 @@ export const MODULE_OF: Partial<Record<RouteKey, string>> = {
  * tokens, settings and sessions).
  */
 export const ACCESS: Partial<Record<RouteKey, readonly `${'deals' | 'projects' | 'campaigns' | 'tickets' | 'global'}:${string}`[]>> = {
-  // Simple: Customers holds accounts and tickets; Growth opens with either reports right or the campaigns right
+  // Simple: Customers holds accounts and tickets; Growth is the marketing view (design: «Sales: CRM»), opened by a reports
+  // right — Marketing and Read-only hold one, Sales has campaigns:see for CRM › Lists only (0057)
   customers: ['deals:see', 'tickets:see'],
   crm: ['deals:see'],
-  growth: ['global:reports_others', 'campaigns:reports_others', 'campaigns:see'],
+  growth: ['global:reports_others', 'campaigns:reports_others'],
   analytics: ['global:reports_others', 'campaigns:reports_others'],
   tickets: ['tickets:see'],
   feed: ['deals:see'], leads: ['deals:see'], deals: ['deals:see'], contacts: ['deals:see'], activities: ['deals:see'],

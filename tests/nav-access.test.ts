@@ -42,5 +42,6 @@ describe('simple rail by rights', () => {
   it('an admin sees all four sections', () => expect(rail([], true)).toEqual(['customers', 'crm', 'growth', 'platform']))
   it('support sees customers (tickets) and platform', () => expect(rail(['tickets:see', 'global:see'])).toEqual(['customers', 'platform']))
   it('sales sees customers and CRM', () => expect(rail(['deals:see', 'global:see'])).toEqual(['customers', 'crm', 'platform']))
-  it('marketing sees growth through the campaigns right', () => expect(rail(['campaigns:see'])).toEqual(['growth', 'platform']))
+  it('marketing sees growth through the campaign reports right', () => expect(rail(['campaigns:see', 'campaigns:reports_others', 'global:see'])).toEqual(['growth', 'platform']))
+  it('sales with campaigns:see (for CRM › Lists) does not get growth', () => expect(rail(['deals:see', 'campaigns:see', 'global:see'])).toEqual(['customers', 'crm', 'platform']))
 })

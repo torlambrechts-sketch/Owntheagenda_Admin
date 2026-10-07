@@ -1,11 +1,11 @@
-/** Where a record opens: the screen of its type with the record in focus. */
+/** Where a record opens: the screen of its type with the record in focus (deals and tickets in Sentral Simple's sections). */
 const BASE: Record<string, string> = {
   organization: '/customers?org=',
   person: '/contacts?person=',
   lead: '/leads?lead=',
-  deal: '/deals?deal=',
+  deal: '/crm?deal=',
   activity: '/activities?activity=',
-  ticket: '/tickets?ticket=',
+  ticket: '/customers?tab=tickets&ticket=',
   project: '/projects?project=',
   document: '/documents?document=',
   campaign: '/campaigns?campaign=',

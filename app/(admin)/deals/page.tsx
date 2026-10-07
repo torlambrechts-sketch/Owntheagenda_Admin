@@ -1,15 +1,22 @@
+import type { Route } from 'next'
+import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import { can, getShell } from '@/lib/shell'
-import { loadBoard, loadDeal, loadDealsBase } from '@/lib/data/deals'
+import { loadBoard, loadDealsBase } from '@/lib/data/deals'
 import { DealsScreen } from './_components/DealsScreen'
 import type { Rights } from './_components/shared'
 
-/** Deals (Deals.dc.html): pipeline, list, forecast, archive and catalog, with the deal drawer at ?deal=<id>. */
+/** Deals (Deals.dc.html): pipeline, list, forecast, archive and catalog, with the deal drawer (opened in
+ * place; a ?deal=<id> address now opens the deal in CRM). */
 export default async function DealsPage({ searchParams }: { searchParams: Promise<{ deal?: string }> }) {
+  const sp = await searchParams
+  // Sentral Simple (S5): a link to one deal (notifications, search, saved addresses) opens it in CRM; the full deals
+  // screen (other pipelines, forecast, archive, catalogue) stays at /deals
+  const linked = z.string().uuid().safeParse(sp.deal)
+  if (linked.success) redirect(`/crm?deal=${linked.data}` as Route)
   const shell = await getShell()
   const base = await loadDealsBase()
-  const sp = await searchParams
   const t = await getTranslations('deals')
 
   if (base.pipelines.length === 0) {
@@ -25,8 +32,6 @@ export default async function DealsPage({ searchParams }: { searchParams: Promis
   const pipeline = base.pipelines.find((p) => p.id === prefPipeline)?.id ?? base.pipelines[0]!.id
   const showClosed = prefs.show_closed === true
   const board = await loadBoard(pipeline, [], showClosed)
-  const dealId = z.string().uuid().safeParse(sp.deal)
-  const deal = dealId.success ? await loadDeal(dealId.data) : null
 
   const rights: Rights = {
     meId: shell.me.id,
@@ -47,8 +52,8 @@ export default async function DealsPage({ searchParams }: { searchParams: Promis
       initialPipeline={pipeline}
       initialShowClosed={showClosed}
       initialBoard={board.ok ? board.data : null}
-      initialDeal={deal && deal.ok ? deal.data : null}
-      initialDealId={dealId.success ? dealId.data : null}
+      initialDeal={null}
+      initialDealId={null}
     />
   )
 }

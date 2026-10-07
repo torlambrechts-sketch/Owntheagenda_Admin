@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { can, getShell } from '@/lib/shell'
 import {
@@ -36,6 +37,9 @@ export default async function TicketsPage({ searchParams }: { searchParams: Prom
     tab: one(sp.tab) ?? 'inbox', view: one(sp.view) ?? 'open', sort: one(sp.sort) ?? 'sla', q: one(sp.q) ?? '',
     ticket: one(sp.ticket) ?? null, new: one(sp.new) ?? null,
   })
+  // Sentral Simple (S5): the inbox and every ticket link (notifications, search, saved addresses) open in Customers ›
+  // Tickets and requests; the other tabs (problems, help centre, macros, reports) stay here, reached from the account card
+  if (p.tab === 'inbox') redirect(p.ticket ? `/customers?tab=tickets&ticket=${p.ticket}` : '/customers?tab=tickets')
   const shell = await getShell()
   const product = (await cookies()).get('product')?.value ?? 'all'
   const config = await loadConfig()

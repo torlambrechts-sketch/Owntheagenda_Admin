@@ -59,6 +59,7 @@ no product ping. The `worker_*` functions and `api_exec` (service role) stand in
 - `public.store_product_secrets`: 0002 body + the product binding.
 - Constraints: `changelog_source_check` (0042's list + `mobile`), `notifications_kind_check` (+ `assignment`, `chat_request`), `record_files_mime_check`.
 - Not touched: 0043's `app.log`, `audit_guard`, `setting_set`, `session_ok`, `require_fresh_mfa`, guards, security subscriber.
+- 0051 (`0051_ops_requests.sql`): `public.nearby` (0044 body, volatile as 0046, + `lat`/`lng` of the organisation's nearest place), `public.mobile_focus` (+ `today[].deal_id`, `organization_id`), `public.webhooks_get` (0049 body + `has_secret`, `can_export`). New: `push_vapid_public_key`, `api_scopes_get`, `problems_open`, `webhook_rotate_secret`.
 
 ## Message keys the app must add
 
@@ -99,6 +100,7 @@ existing `not_signed_in`, `module_off`, `reason_required`.
 - `flags_get(p_product?)` → `{modules:[{key, enabled, updated_at}], products:[{key, name, flags_command, pilots_command, set_command, active_tenants}]}`
 - `status_notice_get(p_product)` → `{notice_command, maintenance_command, current:{id, text, maintenance, problem_ticket_id, problem_number, set_at, pushed_at, push_error}|null, history:[…]}`
 - `status_notice_set(p_product, p_text, p_problem uuid?, p_maintenance bool?, p_confirm text?)` global:configure → `{id}`
+- `problems_open()` global:see (0051, R-PLATFORM-03) → `[{id, number, subject, problem_status}]`: open problem tickets (not resolved or closed) the caller may see under the tickets' own rules (queue, visibility, sandbox), newest first, at most 100
 - `content_get(p_product)` → `{help:{articles, published, last_change, macros}, cards:{question_set|pulse_templates|tiltak|legal|templates|modules:{command}}, draft_command:false, rollback_command:false}`
 - `jobs_get(p_filter {state?, job?})` → `{stats:{queued, running, failed_24h, succeeded_24h}, jobs:[{key, label_key, product, schedule, source, quiet, last_run_at, last_state, last_run}], runs:[…50]}`
 - `job_retry(p_run bigint)` global:configure → `{run, state}`
@@ -109,6 +111,7 @@ existing `not_signed_in`, `module_off`, `reason_required`.
 - `api_token_create(p_name, p_expires_at?)` fresh MFA → `{id, token (once), masked, expires_at}`
 - `api_token_rotate()` fresh MFA → `{id, token (once), masked}`
 - `api_token_revoke(p_id, p_reason?)` owner of token or global:security → `{id}`
+- `api_scopes_get()` staff (0051, R-PLATFORM-02) → `[{scope}]` in `app.api_scopes` order: exactly what `app.scopes_ok` accepts
 - `oauth_apps_get()` → `[{id, client_id, name, kind, redirect_uris, allowed_scopes, confidential, dynamic, owner, created_at, disabled_at, grants}]`
 - `oauth_app_save(p_id, p_values {name, kind, redirect_uris[], allowed_scopes[], confidential?, rotate_secret?})` global:configure (+ fresh MFA to create or rotate) → `{id, client_id, client_secret (once)|null}`
 - `oauth_app_disable(p_id)` global:configure → `{id, grants_revoked}`
@@ -119,8 +122,9 @@ existing `not_signed_in`, `module_off`, `reason_required`.
 - `mcp_set(p_enabled)`, `mcp_sync_set(p_on)` global:configure → `{access}` / `{sync}`
 
 ### Webhooks (owner; all with global:configure)
-- `webhooks_get(p_filter {owner_id?})` → `{webhooks:[{id, owner_id, owner, event_kind, url, state, banned_until, retrying, last_success_at, failing_since, created_at, version, mine}], deliveries:[{id, webhook_id, at, event, host, status, state, attempt, attempts:4, error}], kinds, limit, count_limits, policy, can_manage_all}`
+- `webhooks_get(p_filter {owner_id?})` → `{webhooks:[{id, owner_id, owner, event_kind, url, state, banned_until, retrying, last_success_at, failing_since, created_at, version, mine, has_secret, can_export}], deliveries:[{id, webhook_id, at, event, host, status, state, attempt, attempts:4, error}], kinds, limit, count_limits, policy, can_manage_all}`
 - `webhook_save(p_id, p_values {event_kind, url}, p_version?)` → `{id, version, secret (once, on create)}`
+- `webhook_rotate_secret(p_id)` (0051, R-PLATFORM-06) owner or global:configure, and `<scope>:export` of the event's area (0049) → `{id, version, secret (once)}`: replaces the Vault secret `webhook:<id>` (or creates it when the webhook had none), audited as `webhook.secret_rotated` without the secret
 - `webhook_delete(p_id)`, `webhook_set_state(p_id, 'active'|'paused')`, `webhook_test(p_id)` → `{delivery_id}`, `webhook_redeliver(p_delivery)` → `{delivery_id}`
 - `webhook_deliveries_get(p_webhook, p_cursor timestamptz?)` → `[{id, event_id, event, attempt, attempts, redelivery, state, scheduled_at, sent_at, status, duration_ms, error}]`
 - `webhook_delivery_get(p_id)` (audited) → `{id, event, attempt, attempts, state, status, duration_ms, error, scheduled_at, sent_at, envelope, body_sha256, bytes, signature_header, signed_at}`
@@ -135,10 +139,10 @@ existing `not_signed_in`, `module_off`, `reason_required`.
 - `integration_recommend(p_need)` global:ai + `ai` connected → `{basis:'in_use', catalog:[{key, terms, tags, installed, connected}]}`
 
 ### Mobile (deals:see + module mobile)
-- `mobile_focus(p_lat?, p_lng?)` → `{hour, name, overdue_activities, deals_past_close, today:[{id, subject, starts_at, done, type, organization, deal, km}], unread_threads, nearby_10km|null, closing_this_week:{count, value_nok, excluded_currency}, month:{won_value_nok, new_deals, goal}, tasks_due_today|null, chats_waiting|null, contact_rule}`
-- `nearby(p_lat, p_lng, p_radius_km=10, p_entities=['organization'], p_filter {customers_only?, no_visit_days?})` → `[{entity, id, title, city|subtitle, km, deal, health, customer, last_visit_at, organization, organization_id}]`
+- `mobile_focus(p_lat?, p_lng?)` → `{hour, name, overdue_activities, deals_past_close, today:[{id, subject, starts_at, done, type, organization, organization_id, deal, deal_id, km}], unread_threads, nearby_10km|null, closing_this_week:{count, value_nok, excluded_currency}, month:{won_value_nok, new_deals, goal}, tasks_due_today|null, chats_waiting|null, contact_rule}`
+- `nearby(p_lat, p_lng, p_radius_km=10, p_entities=['organization'], p_filter {customers_only?, no_visit_days?})` → `[{entity, id, title, city|subtitle, km, lat, lng, deal, health, customer, last_visit_at, organization, organization_id}]` (`lat`/`lng`: the organisation's place the distance was measured to, never the device's; 0051)
 - `checkin(p_entity, p_id, p_note?)` → `{activity_id}`
-- `push_device_register(p_endpoint, p_p256dh, p_auth, p_label?)` → `{id}`; `push_device_revoke(p_id)` → `{id}`; `push_devices_get()` → `{push_ready, setting, module, devices:[{id, platform, label, created_at, last_used_at, failures}]}`
+- `push_device_register(p_endpoint, p_p256dh, p_auth, p_label?)` → `{id}`; `push_device_revoke(p_id)` → `{id}`; `push_devices_get()` → `{push_ready, setting, module, devices:[{id, platform, label, created_at, last_used_at, failures}]}`; `push_vapid_public_key()` staff (0051, R-MOBILE-03) → the VAPID public key as text, or null while push is not configured (no `vapid_private_key` in Vault); never the private key
 - `notification_prefs_get()` → `[{kind, channels}]`; `notification_prefs_set(p_kind, p_channels[])` → `{kind, channels}`
 - `sync_apply(p_device, p_mutations [{mutation_id, op: create|update|note|activity_done|stage_move, entity, record_id, base_version, fields, client_at}] ≤ 200)` → `{results:[{mutation_id, result, entity, id, version, conflict?, current?, error?, detail?, replayed?}], applied, superseded, rejected}`
 - `sync_changes(p_since bigint=0, p_limit=200)` → `{changes:[{entity, id, version, deleted}], cursor, more}`

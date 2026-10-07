@@ -272,7 +272,17 @@
       "failures": "{n, plural, one {# mislykket push} other {# mislykkede push}}",
       "revoke": "Fjern",
       "register": "Registrer denne nettleseren",
-      "registerDisabled": "Registrering krever push-leverandørens nøkkel og den installerte appen, som ikke er på plass ennå."
+      "registerWaits": "Registrering venter til push er koblet til (over).",
+      "registerNoKey": "Den offentlige nøkkelen til push-leverandøren er ikke på plass, så en nettleser kan ikke abonnere ennå.",
+      "registerUnsupported": "Denne nettleseren kan ikke motta push-varsler.",
+      "registerHint": "Nettleseren ber om tillatelse først. Varslene viser bare typen, aldri posten.",
+      "registering": "Registrerer …",
+      "registered": "Denne nettleseren er registrert for push",
+      "registerProblem": {
+        "unsupported": "Denne nettleseren kan ikke motta push-varsler.",
+        "denied": "Varsler er blokkert for dette nettstedet i nettleserens innstillinger.",
+        "failed": "Nettleseren kunne ikke abonnere. Prøv igjen senere."
+      }
     },
     "prefs": {
       "eyebrow": "Varsler",
@@ -293,6 +303,15 @@
       "inAppLabel": "{kind} i appen",
       "pushLabel": "{kind} som push",
       "reminders": "Påminnelser følger påminnelseskanalene dine under Aktiviteter."
+    },
+    "pwa": {
+      "name": "Sentral",
+      "shortName": "Sentral",
+      "description": "Kundene, avtalene og dagen din, på telefonen.",
+      "push": {
+        "title": "Sentral",
+        "body": "Åpne Sentral for å lese det."
+      }
     }
   }
 }

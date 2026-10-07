@@ -199,17 +199,20 @@ export async function privacyPreview(input: { subject: z.input<typeof Subject> }
   return r.ok ? { ok: true, data: r.data } : { ok: false, code: r.code, detail: r.detail }
 }
 
-export async function privacyExport(input: { subject: z.input<typeof Subject>; reason?: string | null }): Promise<Result> {
-  const p = z.object({ subject: Subject, reason }).safeParse(input)
+/** The personvern request an export or an erasure answers (privacy_requests_get), or none; the job closes it when done. */
+const request = uuid.nullable().default(null)
+
+export async function privacyExport(input: { subject: z.input<typeof Subject>; request?: string | null; reason?: string | null }): Promise<Result> {
+  const p = z.object({ subject: Subject, request, reason }).safeParse(input)
   if (!p.success) return bad('subject')
-  return strip(await call('privacy_export', { p_subject: p.data.subject, p_request: null, p_reason: p.data.reason }, z.object({ job: uuid, state: z.string() })))
+  return strip(await call('privacy_export', { p_subject: p.data.subject, p_request: p.data.request, p_reason: p.data.reason }, z.object({ job: uuid, state: z.string() })))
 }
 
 const Erased = z.object({ job: uuid, state: z.enum(['done', 'previewed']), approval: z.literal('required').optional(), counts: z.record(z.string(), z.coerce.number()) })
-export async function privacyErase(input: { subject: z.input<typeof Subject>; confirm: string; reason?: string | null }): Promise<Result<{ state: 'done' | 'previewed'; rows: number }>> {
-  const p = z.object({ subject: Subject, confirm: z.string().trim().min(1).max(320), reason }).safeParse(input)
+export async function privacyErase(input: { subject: z.input<typeof Subject>; confirm: string; request?: string | null; reason?: string | null }): Promise<Result<{ state: 'done' | 'previewed'; rows: number }>> {
+  const p = z.object({ subject: Subject, confirm: z.string().trim().min(1).max(320), request, reason }).safeParse(input)
   if (!p.success) return bad('confirm')
-  const r = await call('privacy_erase', { p_subject: p.data.subject, p_request: null, p_confirm: p.data.confirm, p_reason: p.data.reason }, Erased)
+  const r = await call('privacy_erase', { p_subject: p.data.subject, p_request: p.data.request, p_confirm: p.data.confirm, p_reason: p.data.reason }, Erased)
   return r.ok ? { ok: true, state: r.data.state, rows: Object.values(r.data.counts).reduce((a, b) => a + b, 0) } : r
 }
 
@@ -248,6 +251,20 @@ export async function incidentSave(input: { id: string | null; values: unknown; 
   if (!p.success) return bad(String(p.error.issues[0]?.path.at(-1) ?? 'title'))
   if (p.data.id === null && !p.data.values.title) return bad('title')
   return strip(await call('incident_save', { p_id: p.data.id, p_values: p.data.values, p_version: p.data.version }, z.object({ id: uuid })))
+}
+
+/**
+ * Who receives security alerts (SEC-02): everyone with the security right, or the people named. The names are written
+ * first (alert_recipients_set accepts only active holders of global:security), then the mode.
+ */
+export async function setAlertRecipients(input: { mode: 'role' | 'list'; staff: string[] }): Promise<Result> {
+  const p = z.object({ mode: z.enum(['role', 'list']), staff: z.array(uuid).max(100) }).refine((v) => v.mode === 'role' || v.staff.length > 0, { path: ['staff'] }).safeParse(input)
+  if (!p.success) return bad('staff')
+  if (p.data.mode === 'list') {
+    const r = await call('alert_recipients_set', { p_staff: p.data.staff }, z.object({ count: z.coerce.number() }))
+    if (!r.ok) return r
+  }
+  return setSecuritySetting({ key: 'security_alert_recipients', value: p.data.mode })
 }
 
 /** The alert modes a toggle may write (kept here so the client cannot send another register key through it). */

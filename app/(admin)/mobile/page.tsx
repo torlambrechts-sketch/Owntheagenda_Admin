@@ -30,5 +30,11 @@ export default async function MobilePage() {
     if (preview.code === 'forbidden') return closed('body')
     throw new Error(preview.code)
   }
-  return <MobileScreen staffId={shell.me.id} numberFormat={shell.me.number_format} initial={preview.data} />
+  return (
+    <>
+      {/* the PWA's manifest (R-MOBILE-03), fetched with the session's cookies like every signed-in path; React places it in <head> */}
+      <link rel="manifest" href="/m/manifest.webmanifest" crossOrigin="use-credentials" />
+      <MobileScreen staffId={shell.me.id} numberFormat={shell.me.number_format} initial={preview.data} />
+    </>
+  )
 }

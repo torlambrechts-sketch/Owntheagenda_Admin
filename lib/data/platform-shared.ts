@@ -30,10 +30,10 @@ export const PRODUCT_SCOPES = [
 ] as const
 
 /**
- * The API scopes an OAuth app may ask for (0044 app.api_scopes). No RPC lists them yet (R-PLATFORM-02); the database
- * refuses any other value (app.scopes_ok), so this list can only be narrower than the truth, never wider.
+ * The shape of an API scope (0044 app.api_scopes' check). The scopes themselves are data, read with api_scopes_get
+ * (R-PLATFORM-02); the database refuses any scope it does not hold (app.scopes_ok).
  */
-export const API_SCOPES = ['*', 'deals:read', 'deals:write', 'projects:read', 'projects:write', 'campaigns:read', 'campaigns:write', 'tickets:read', 'tickets:write', 'global:read'] as const
+export const API_SCOPE_RE = /^[a-z_]+:(read|write)$|^\*$/
 
 export const CATALOG_COLLECTIONS = ['productivity_mail', 'team_chat', 'close_paid', 'automate'] as const
 

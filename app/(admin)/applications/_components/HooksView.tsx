@@ -5,7 +5,7 @@ import type { Route } from 'next'
 import { useState, useTransition } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
 import type { Delivery, DeliveryRow, Webhooks } from '@/lib/data/platform'
-import { fetchDelivery, webhookDelete, webhookRedeliver, webhookSave, webhookSetState, webhookTest } from '../actions'
+import { fetchDelivery, webhookDelete, webhookRedeliver, webhookRotate, webhookSave, webhookSetState, webhookTest } from '../actions'
 import { Dialog, OnceValue, k, useAct, useErrorText, type Fail } from './kit'
 
 type Hook = Webhooks['webhooks'][number]
@@ -20,6 +20,7 @@ export function HooksView({ hooks, selected, rows }: { hooks: Webhooks; selected
   const { run, pending, flash } = useAct()
   const [dlg, setDlg] = useState<null | { hook: Hook | null }>(null)
   const [del, setDel] = useState<Hook | null>(null)
+  const [rotate, setRotate] = useState<Hook | null>(null)
   const [picked, setPicked] = useState<string | null>(null)
   const [delivery, setDelivery] = useState<Delivery | null>(null)
   const [loading, start] = useTransition()
@@ -87,8 +88,12 @@ export function HooksView({ hooks, selected, rows }: { hooks: Webhooks; selected
                 </button>
               ) : null}
               <button type="button" onClick={() => setDlg({ hook: sel })} className={k.btnSoft}>{t('edit')}</button>
+              <button type="button" disabled={!sel.can_export} title={sel.can_export ? undefined : t('rotateNoExport')} onClick={() => setRotate(sel)} className={k.btnSoft}>{t('rotate')}</button>
               <button type="button" onClick={() => setDel(sel)} className={`${k.btnSoft} border-coral text-rust`}>{t('delete')}</button>
             </div>
+          ) : null}
+          {sel && !sel.has_secret ? (
+            <div className="border-b border-line bg-canvas px-[18px] py-[9px] text-12 font-semibold text-warn-ink">{t('noSecret')}</div>
           ) : null}
         </div>
 
@@ -144,6 +149,7 @@ export function HooksView({ hooks, selected, rows }: { hooks: Webhooks; selected
       </div>
 
       {dlg ? <HookDialog hook={dlg.hook} kinds={hooks.kinds} onClose={() => setDlg(null)} /> : null}
+      {rotate ? <RotateDialog hook={rotate} onClose={() => setRotate(null)} /> : null}
       {del ? (
         <Dialog title={t('deleteTitle', { event: del.event_kind })} onClose={() => setDel(null)} width={480}>
           <span className="text-12.5 leading-[1.55]">{t('deleteBody', { host: host(del.url) })}</span>
@@ -154,6 +160,34 @@ export function HooksView({ hooks, selected, rows }: { hooks: Webhooks; selected
         </Dialog>
       ) : null}
     </div>
+  )
+}
+
+/**
+ * Rotate a webhook's signing secret (R-PLATFORM-06): the old secret stops signing at once, the new one is shown once and
+ * kept only in Vault. A webhook without a secret (the database says so) gets its first one this way.
+ */
+function RotateDialog({ hook, onClose }: { hook: Hook; onClose: () => void }) {
+  const t = useTranslations('platform.hooks')
+  const { run, pending } = useAct()
+  const [secret, setSecret] = useState<string | null>(null)
+  if (secret) {
+    return (
+      <Dialog title={t('rotatedTitle')} onClose={onClose}>
+        <span className="text-12.5 leading-[1.55]">{t('rotatedBody')}</span>
+        <OnceValue label={t('secret')} value={secret} warning={t('onceWarning')} />
+        <div className="flex justify-end"><button type="button" onClick={onClose} className={k.dlgConfirm}>{t('done')}</button></div>
+      </Dialog>
+    )
+  }
+  return (
+    <Dialog title={t('rotateTitle', { event: hook.event_kind })} onClose={onClose} width={480}>
+      <span className="text-12.5 leading-[1.55]">{hook.has_secret ? t('rotateBody', { host: host(hook.url) }) : t('rotateBodyNone', { host: host(hook.url) })}</span>
+      <div className="flex justify-end gap-2">
+        <button type="button" onClick={onClose} className={k.dlgCancel}>{t('cancel')}</button>
+        <button type="button" disabled={pending} onClick={() => run(() => webhookRotate(hook.id), (r) => { if (r.ok) setSecret(r.secret) })} className={k.dlgConfirm}>{t('rotateSubmit')}</button>
+      </div>
+    </Dialog>
   )
 }
 

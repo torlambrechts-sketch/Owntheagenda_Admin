@@ -5,7 +5,10 @@
 
 export type Coords = { lat: number; lng: number }
 
-export type TodayItem = { id: string; subject: string; starts_at: string | null; done: boolean; type: string | null; organization: string | null; deal: string | null; km: number | null }
+export type TodayItem = {
+  id: string; subject: string; starts_at: string | null; done: boolean; type: string | null
+  organization: string | null; organization_id: string | null; deal: string | null; deal_id: string | null; km: number | null
+}
 
 export type Focus = {
   hour: number
@@ -28,6 +31,9 @@ export type NearbyRow = {
   title: string
   city: string | null
   km: number
+  /** the organisation's place (R-MOBILE-05), not the device's; null where unknown */
+  lat: number | null
+  lng: number | null
   deal: { id: string; title: string; stage: string | null } | null
   health: number | null
   customer: boolean
@@ -54,7 +60,12 @@ export type DealPreview = {
 
 export type NotificationItem = { id: string; kind: string; key: string; params: Record<string, string | number>; route: string | null; created_at: string; read: boolean }
 
-export type PushState = { push_ready: boolean; setting: string; module: boolean; devices: { id: string; platform: string; label: string | null; created_at: string; last_used_at: string | null; failures: number }[] }
+export type PushState = {
+  push_ready: boolean; setting: string; module: boolean
+  devices: { id: string; platform: string; label: string | null; created_at: string; last_used_at: string | null; failures: number }[]
+  /** the Web Push (VAPID) public key to subscribe with, or null while push is not configured (R-MOBILE-03) */
+  public_key: string | null
+}
 
 export const PREF_KINDS = ['assignment', 'mention', 'chat_request', 'security', 'system'] as const
 export type PrefKind = (typeof PREF_KINDS)[number]

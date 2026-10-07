@@ -7,7 +7,7 @@ import { runCommand } from '@/lib/platform/command'
 import {
   loadCatalog, loadDeliveries, loadDelivery, type Catalog, type Delivery, type DeliveryRow,
 } from '@/lib/data/platform'
-import { API_SCOPES, PRODUCT_SCOPES } from '@/lib/data/platform-shared'
+import { API_SCOPE_RE, PRODUCT_SCOPES } from '@/lib/data/platform-shared'
 
 /**
  * The Platform screen's server actions (Applications and API and integrations). Every input is parsed; every answer is
@@ -111,7 +111,7 @@ export async function oauthAppCreate(input: unknown): Promise<Res<{ client_id: s
     name: z.string().trim().min(1).max(80),
     kind: z.enum(['integration', 'extension']),
     redirect_uris: z.array(z.string().trim().url().startsWith('https://')).min(1).max(10),
-    allowed_scopes: z.array(z.enum(API_SCOPES)).min(1).max(20),
+    allowed_scopes: z.array(z.string().regex(API_SCOPE_RE)).min(1).max(20),
     confidential: z.boolean(),
   }).safeParse(input)
   if (!p.success) return { ok: false, code: 'invalid', detail: String(p.error.issues[0]?.path[0] ?? '') }
@@ -139,6 +139,17 @@ export async function webhookSave(input: unknown): Promise<Res<{ id: string; sec
   const r = await rpc('webhook_save', { p_id: p.data.id, p_values: { event_kind: p.data.event_kind, url: p.data.url }, p_version: p.data.version },
     z.object({ id: z.string(), version: z.number(), secret: z.string().optional() }))
   return r.ok ? { ok: true, id: r.data.id, secret: r.data.secret ?? null } : fail(r)
+}
+
+/**
+ * A new signing secret for a webhook (R-PLATFORM-06): the owner or global:configure, with the export right of its event's
+ * area (0049). The secret travels only in this answer, shown once in its dialog; the old one stops signing at once.
+ */
+export async function webhookRotate(input: unknown): Promise<Res<{ secret: string }>> {
+  const p = uuid.safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('webhook_rotate_secret', { p_id: p.data }, z.object({ id: z.string(), version: z.number(), secret: z.string().regex(/^whsec_/) }))
+  return r.ok ? { ok: true, secret: r.data.secret } : fail(r)
 }
 
 export async function webhookDelete(input: unknown): Promise<Res> {

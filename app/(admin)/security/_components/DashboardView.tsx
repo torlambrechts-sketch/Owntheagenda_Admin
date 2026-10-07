@@ -32,8 +32,8 @@ export function DashboardView({ data, now, mayRemind }: { data: Dashboard; now: 
     { key: 'newLocations', v: String(k.new_locations_7d.count), s: k.new_locations_7d.places.map((p) => place(p.city, p.country)).join(' · ') || t('kpi.none'), tone: k.new_locations_7d.count > 0 ? 'text-warn-ink' : 'text-ink' },
     { key: 'events', v: String(k.security_events_7d.count), s: t('kpi.critical', { n: k.security_events_7d.critical }), tone: k.security_events_7d.critical > 0 ? 'text-danger' : 'text-ink' },
     { key: 'forced', v: String(k.forced_logouts_7d), s: t('kpi.forcedSub'), tone: 'text-ink' },
-    // coverage as the two counts the function returns: a percentage would be a figure computed here (V-SECURITY-04)
-    { key: 'mfa', v: t('kpi.mfaValue', { enrolled: k.mfa.enrolled, active: k.mfa.active }), s: t('kpi.mfaSub'), tone: k.mfa.enrolled < k.mfa.active ? 'text-danger' : 'text-ink' },
+    // coverage is the database's own rounded percentage (security_dashboard, R-SECURITY-02); «—» with no active staff
+    { key: 'mfa', v: k.mfa.coverage_pct === null ? '—' : t('kpi.mfaPct', { n: k.mfa.coverage_pct }), s: t('kpi.mfaOf', { enrolled: k.mfa.enrolled, active: k.mfa.active }), tone: k.mfa.enrolled < k.mfa.active ? 'text-danger' : 'text-ink' },
   ]
 
   const settingsLine = [

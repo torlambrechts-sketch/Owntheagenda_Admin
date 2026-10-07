@@ -345,7 +345,16 @@
       "save": "Lagre",
       "create": "Lag",
       "done": "Ferdig",
-      "noExport": "En webhook sender data ut av plattformen og krever eksportrettighet for området."
+      "noExport": "En webhook sender data ut av plattformen og krever eksportrettighet for området.",
+      "rotate": "Bytt hemmelighet",
+      "rotateNoExport": "Å bytte hemmeligheten krever eksportretten for området til denne hendelsen.",
+      "noSecret": "Ingen signeringshemmelighet er lagret for denne webhooken, så leveransene kan ikke signeres. Bytt hemmeligheten for å lage en.",
+      "rotateTitle": "Bytt signeringshemmeligheten til {event}-webhooken",
+      "rotateBody": "En ny hemmelighet erstatter den nåværende med en gang: leveranser til {host} signeres med den nye fra nå av, og den gamle slutter å virke.",
+      "rotateBodyNone": "Ingen hemmelighet er lagret for denne webhooken. En ny lages, og leveranser til {host} signeres med den.",
+      "rotateSubmit": "Bytt hemmelighet",
+      "rotatedTitle": "Ny signeringshemmelighet",
+      "rotatedBody": "Kontroller Sentral-Signature-headeren på hver leveranse med denne hemmeligheten fra nå av."
     },
     "catalog": {
       "placeholder": "Beskriv hva du trenger — «send fakturaer når en avtale er vunnet»",
@@ -604,7 +613,11 @@
         "cancel": "Avbryt",
         "submitOn": "Start vedlikehold",
         "submitOff": "Avslutt vedlikehold"
-      }
+      },
+      "problem": "Tilknyttet problem",
+      "noProblem": "Ingen problem tilknyttet",
+      "noProblems": "Ingen åpen problemsak å knytte til.",
+      "problemsFailed": "Problemsakene kunne ikke lastes."
     },
     "content": {
       "noApp": "Ingen applikasjon er installert.",

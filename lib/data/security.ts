@@ -65,7 +65,8 @@ export const Dashboard = z.object({
     new_locations_7d: z.object({ count: num, places: z.array(z.object({ city: str, country: str })) }),
     security_events_7d: z.object({ count: num, critical: num }),
     forced_logouts_7d: num,
-    mfa: z.object({ enrolled: num, active: num }),
+    // coverage_pct is the database's own rounded percentage (R-SECURITY-02), null with no active staff
+    mfa: z.object({ enrolled: num, active: num, coverage_pct: num.nullable() }),
   }),
   settings: z.object({ session_idle: z.string(), ip_allowlist: z.string(), signin_hours: z.string(), ip_rules: num }),
   live: z.array(LiveSession),
@@ -107,6 +108,8 @@ export const Alerts = z.object({
   large_export_rows: num,
   recipients: z.array(z.object({ id: uuid, name: z.string(), email: z.string() })),
   listed: z.array(uuid),
+  // who alert_recipients_set accepts: the active holders of global:security (R-SECURITY-06)
+  eligible: z.array(Named),
   email: z.enum(['connected', 'not_connected']),
   slack: z.enum(['connected', 'not_connected']),
   slack_channel: str,
@@ -223,7 +226,8 @@ export const loadProtection = async () => {
 // privacy compliance (SEC-11)
 export const RetentionRule = z.object({
   key: z.string(),
-  keep: str,
+  keep: str, // for a rule tied to a setting, the setting's period («12 mons»), or null when it keeps until deleted (R-SECURITY-07)
+  default_keep: str,
   basis: z.enum(['platform', 'product']),
   job: str,
   setting: z.object({ key: z.string(), value: z.string() }).nullable(),
@@ -276,12 +280,26 @@ export const PrivacyJob = z.object({
 })
 export type PrivacyJob = z.infer<typeof PrivacyJob>
 export const loadPrivacy = async () => {
-  const [retention, subprocessors, incidents, jobs] = await Promise.all([
+  const [retention, subprocessors, incidents, jobs, requests] = await Promise.all([
     rpc('retention_get', {}, z.array(RetentionRule)), rpc('subprocessors_get', {}, z.array(Subprocessor)),
     rpc('incidents_get', {}, z.array(Incident)), rpc('privacy_jobs_get', {}, z.array(PrivacyJob)),
+    rpc('privacy_requests_get', {}, z.array(PrivacyRequest)),
   ])
-  return { retention, subprocessors, incidents, jobs }
+  return { retention, subprocessors, incidents, jobs, requests }
 }
+
+/** An open personvern request (R-SECURITY-05): what an export or an erasure may answer (p_request). No requester text. */
+export const PrivacyRequest = z.object({
+  id: uuid,
+  kind: z.enum(['access', 'correction', 'deletion']),
+  status: z.enum(['received', 'in_progress']),
+  received_at: ts,
+  due_at: ts,
+  overdue: z.boolean(),
+  ticket_number: num.nullable(),
+  organization: str,
+})
+export type PrivacyRequest = z.infer<typeof PrivacyRequest>
 
 export const FindResult = z.object({
   people: z.array(z.object({ id: uuid, name: z.string(), email: str, organization: str, deleted: z.boolean(), leads: z.array(uuid) })),

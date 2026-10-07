@@ -55,6 +55,7 @@ Nothing is connected. There is no SSO provider in the Auth project, no email pro
 - Register: `login_alerts` options become off/immediate/digest (group `security_alerts`; any stored `on` becomes `immediate`). `ip_allowlist` gets its hook. `second_admin.applies_to` gains SEC-11.
 - New subscriber `('security_alerts', 'app.sub_security_alerts', 70)`. New triggers on `app.admins` (`admins_security_watch`) and `app.people` (`person_tombstoned`).
 - Not touched: `app.me()`, `app.can()`, notifications, changelog sources, `activity_types`, and everything in 0044's list.
+- 0051 (`0051_ops_requests.sql`): `security_dashboard` (+ `kpis.mfa.coverage_pct`), `alerts_get` (+ `eligible`), `retention_get` (a rule with `setting_key` reports the setting's period; + `default_keep`). New: `privacy_requests_get`.
 
 ## Settings (all with a consumer and a test of both states)
 
@@ -101,7 +102,7 @@ Errors use only: `forbidden` (detail = `scope:action` or a reason above), `not_f
 
 | Function | Right | Returns |
 |---|---|---|
-| `security_dashboard()` | global:security | `{kpis: {signed_in_now, new_devices_7d: {count, staff: [{id, name}]}, new_locations_7d: {count, places: [{city, country}]}, security_events_7d: {count, critical}, forced_logouts_7d, mfa: {enrolled, active}}, settings: {session_idle, ip_allowlist, signin_hours, ip_rules}, live: [{session_id, staff_id, name, city, country, device, method, since, last_seen_at, current}], issues: [{key, severity, count?, staff?/mailboxes?/tokens?/webhooks?/runs?, due_on?, action}], issues_open, events: [{id, at, kind, severity, subject_id, subject, actor_id, actor, detail, alert_state}]}` |
+| `security_dashboard()` | global:security | `{kpis: {signed_in_now, new_devices_7d: {count, staff: [{id, name}]}, new_locations_7d: {count, places: [{city, country}]}, security_events_7d: {count, critical}, forced_logouts_7d, mfa: {enrolled, active, coverage_pct (0051: rounded, null with no active staff)}}, settings: {session_idle, ip_allowlist, signin_hours, ip_rules}, live: [{session_id, staff_id, name, city, country, device, method, since, last_seen_at, current}], issues: [{key, severity, count?, staff?/mailboxes?/tokens?/webhooks?/runs?, due_on?, action}], issues_open, events: [{id, at, kind, severity, subject_id, subject, actor_id, actor, detail, alert_state}]}` |
 | `session_revoke(p_session uuid, p_reason text default null)` | self, or global:security | `{ended}` |
 | `staff_sessions_revoke_all(p_staff uuid, p_reason text default null)` | self (keeps the current session), or global:security | `{ended: n}` |
 | `my_sessions()` | self | `[{session_id, created_at, last_seen_at, device, city, country, method, ip, current}]` |
@@ -110,7 +111,7 @@ Errors use only: `forbidden` (detail = `scope:action` or a reason above), `not_f
 | `security_rule_save(p_id uuid, p_values jsonb, p_version int default null)` | global:security; fresh MFA to edit a rule in force | rule `{id, kind, cidr, days, starts, ends, label, created_at, version}` |
 | `security_rule_delete(p_id uuid)` | global:security; fresh MFA while in force | `{ok}` |
 | `security_rule_preview(p_change jsonb)` | global:security | `{staff: [{staff_id, name, refused, sign_ins}], self_lockout}` |
-| `alerts_get()` | global:security | `{settings: {alert_*, login_alerts, alert_digest_time, security_alert_recipients}, failed_logins_count, large_export_rows, recipients: [{id, name, email}], listed: [uuid], email, slack: 'connected'\|'not_connected', slack_channel}` |
+| `alerts_get()` | global:security | `{settings: {alert_*, login_alerts, alert_digest_time, security_alert_recipients}, failed_logins_count, large_export_rows, recipients: [{id, name, email}], listed: [uuid], eligible: [{id, name}] (0051: the active holders of global:security that `alert_recipients_set` accepts), email, slack: 'connected'\|'not_connected', slack_channel}` |
 | `alert_recipients_set(p_staff uuid[])` | global:security | `{count}` |
 | `sso_get()` | global:security | `{providers: [{provider, enabled, configured, state: not_connected\|on\|off, allowed_domains, updated_at, users}], access_review_due, access_review_open}` |
 | `sso_set(p_provider text, p_enabled boolean, p_domains text[] default null)` | global:security + fresh MFA | `{provider, enabled}` |
@@ -129,8 +130,9 @@ Errors use only: `forbidden` (detail = `scope:action` or a reason above), `not_f
 | `privacy_export_url(p_job uuid)` | global:security; audited | `{path, expires_at}` |
 | `privacy_erase(p_subject jsonb, p_request uuid, p_confirm text, p_reason text default null)` | global:security + fresh MFA | `{job, state: 'done', counts}`, or with `second_admin` on `{job, state: 'previewed', approval: 'required', counts}` |
 | `privacy_approve(p_job uuid)` | another global:security holder + fresh MFA | `{job, state: 'done', counts}` |
+| `privacy_requests_get()` (0051, R-SECURITY-05) | global:security | `[{id, kind, status: received\|in_progress, received_at, due_at, overdue, ticket_number, organization}]`, by due date; no requester text |
 | `privacy_jobs_get()` | global:security | `[{id, kind, state, preview, request_id, created_at, created_by, approved_by, finished_at, url_expires_at, error}]` |
-| `retention_get()` | global:security | `[{key, keep, basis, job, setting: {key, value}?, in_force, last_run_at, last_purged}]` |
+| `retention_get()` | global:security | `[{key, keep, default_keep, basis, job, setting: {key, value}?, in_force, last_run_at, last_purged}]`; 0051: for a rule with `setting_key` (`meeting_recordings` → `rec_retention`) `keep` is the setting's period in months (`'12 mons'`, the custom number, or null = kept until deleted) |
 | `subprocessors_get()` / `subprocessor_save(p_id uuid, p_values jsonb, p_version int default null)` | global:security | rows / the saved row |
 | `incidents_get()` / `incident_save(p_id uuid, p_values jsonb, p_version int default null)` | global:security | `[incident + {hours_left, elapsed_pct, logged_by_name}]` / one incident |
 | `audit_search(p_filter jsonb default '{}', p_cursor bigint default null, p_limit int default 50)` | global:security; audited with filter keys only | `{rows: [{id, at, kind, action, command, ok, staff_id, who, principal_kind, principal_id, workflow, source, target_type, target_id, target: {state: ok\|hidden\|removed\|other, title?}, organization, account_id, reason}], next, typed_reason}` |

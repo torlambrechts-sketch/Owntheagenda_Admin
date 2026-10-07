@@ -51,6 +51,7 @@ export const SECURITY_SETTINGS: Record<string, readonly string[]> = {
   alert_password_reset: ALERT_MODES,
   alert_large_export: ALERT_MODES,
   alert_digest_time: DIGEST_HOURS,
+  security_alert_recipients: ['role', 'list'],
 }
 
 /** The error details the database raises on this screen that have their own message (security.errors.<detail>). */

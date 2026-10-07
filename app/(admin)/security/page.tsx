@@ -74,7 +74,8 @@ export default async function SecurityPage({ searchParams }: { searchParams: Pro
       const p = await loadPrivacy()
       body = (
         <PrivacyView retention={p.retention.ok ? p.retention.data : null} subprocessors={p.subprocessors.ok ? p.subprocessors.data : null}
-          incidents={p.incidents.ok ? p.incidents.data : null} jobs={p.jobs.ok ? p.jobs.data : null} now={now} meName={shell.me.name} />
+          incidents={p.incidents.ok ? p.incidents.data : null} jobs={p.jobs.ok ? p.jobs.data : null}
+          requests={p.requests.ok ? p.requests.data : null} now={now} meName={shell.me.name} />
       )
       break
     }

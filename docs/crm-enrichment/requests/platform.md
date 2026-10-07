@@ -5,7 +5,10 @@
 | Request | Status |
 |---|---|
 | R-01 | Done: the `job.*`, `webhook.*`, `api.*`, `security.*` and `capture.*` texts are in `shell.json`; the bell knows kind `assignment` (`lib/notification-kinds.ts`) |
-| R-02..R-06 | Open: an API scopes read, an open-problems list, product-command recording (edge), the Orgpuls reply contracts (D-40), webhook secret rotation |
+| R-02 | Done in 0051: `api_scopes_get()`; the OAuth app dialog's chips are data, `API_SCOPES` is gone |
+| R-03 | Done in 0051: `problems_open()`; the banner has a «Linked problem» picker (V-PLATFORM-17) |
+| R-04, R-05 | Open: product-command recording (edge), the Orgpuls reply contracts (D-40) — other work |
+| R-06 | Done in 0051: `webhook_rotate_secret(p_id)` (owner or global:configure, plus the event area's export right as 0049); «Rotate secret» in Webhooks; `webhooks_get.has_secret` says when a webhook has none |
 
 What the Platform screens need beyond `0044_platform.sql`. None of it blocks the screens: each item is left out or shown in
 its honest state until the change exists (`deviations/platform.md`).

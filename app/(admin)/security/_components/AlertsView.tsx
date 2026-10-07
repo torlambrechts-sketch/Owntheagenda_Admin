@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import type { Alerts, Preview, Rule, Rules } from '@/lib/data/security'
 import { ALERT_KEYS, DIGEST_HOURS, ISO_DAYS, cidrOk, timeOk, type AlertKey } from '@/lib/data/security-shared'
-import { deleteRule, previewRules, saveRule, setAlert, setSecuritySetting, type Result } from '../actions'
+import { deleteRule, previewRules, saveRule, setAlert, setAlertRecipients, setSecuritySetting, type Result } from '../actions'
 import { formatNumber, type NumberFormat } from '@/lib/format'
 import { Modal, Toggle, dialogBtn, dialogCancel, sx, useErrorText, useGuarded } from './kit'
 
@@ -46,6 +46,7 @@ function AlertCard({ a, numberFormat }: { a: Alerts; numberFormat: (n: number) =
   const flash = useToast()
   const { run, busy, dialog } = useGuarded()
   const [modes, setModes] = useState<Record<string, string>>(a.settings)
+  const [picking, setPicking] = useState(false)
   const names = a.recipients.map((r) => r.name).join(', ')
   const header = [
     a.email === 'connected' ? t('to', { names: a.recipients.map((r) => r.email).join(', ') }) : t('inAppOnly'),
@@ -105,8 +106,58 @@ function AlertCard({ a, numberFormat }: { a: Alerts; numberFormat: (n: number) =
           </select>
         </label>
         <span>· {t(modes.security_alert_recipients === 'list' && a.listed.length ? 'recipientsList' : 'recipientsRole', { names: names || t('nobody') })}</span>
+        <button type="button" disabled={busy} onClick={() => setPicking(true)} className="cursor-pointer border-none bg-transparent p-0 text-11.5 font-bold text-link underline disabled:cursor-default disabled:opacity-60">
+          {t('chooseRecipients')}
+        </button>
       </div>
+      {picking ? <RecipientsDialog a={a} mode={modes.security_alert_recipients === 'list' ? 'list' : 'role'} onClose={() => setPicking(false)}
+        onSaved={(mode) => { setModes((m) => ({ ...m, security_alert_recipients: mode })); setPicking(false) }} /> : null}
     </section>
+  )
+}
+
+/**
+ * Who receives the alerts (alert_recipients_set, SEC-02): everyone with the security right, or the people chosen from
+ * alerts_get's eligible list — the active holders of global:security, the only ones the database accepts (R-SECURITY-06).
+ */
+function RecipientsDialog({ a, mode: initial, onClose, onSaved }: { a: Alerts; mode: 'role' | 'list'; onClose: () => void; onSaved: (mode: 'role' | 'list') => void }) {
+  const t = useTranslations('security.alerts.pick')
+  const flash = useToast()
+  const { run, busy, dialog } = useGuarded()
+  const [mode, setMode] = useState<'role' | 'list'>(initial)
+  const [chosen, setChosen] = useState<string[]>(a.listed.filter((id) => a.eligible.some((e) => e.id === id)))
+  const save = async () => {
+    const r = await run(() => setAlertRecipients({ mode, staff: mode === 'list' ? chosen : [] }))
+    if (r.ok) { flash(t('saved')); onSaved(mode) }
+  }
+  const radio = (value: 'role' | 'list', hint: string) => (
+    <label className="flex cursor-pointer items-start gap-2 text-13">
+      <input type="radio" name="alert-recipients" className="mt-[3px]" checked={mode === value} onChange={() => setMode(value)} />
+      <span className="flex flex-col"><b>{t(value)}</b><span className="text-12 text-muted">{hint}</span></span>
+    </label>
+  )
+  return (
+    <Modal eyebrow={t('eyebrow')} title={t('title')} onClose={onClose} width={460}>
+      {dialog}
+      {radio('role', t('roleHint'))}
+      {radio('list', t('listHint'))}
+      {mode === 'list' ? (
+        <div className="flex flex-col gap-[6px] rounded-14 border border-solid border-line bg-canvas px-[13px] py-[10px]">
+          {a.eligible.length === 0 ? <span className="text-12.5 text-muted">{t('none')}</span> : null}
+          {a.eligible.map((e) => (
+            <label key={e.id} className="flex cursor-pointer items-center gap-2 text-12.5">
+              <input type="checkbox" checked={chosen.includes(e.id)} onChange={(ev) => setChosen(ev.target.checked ? [...chosen, e.id] : chosen.filter((x) => x !== e.id))} />
+              {e.name}
+            </label>
+          ))}
+        </div>
+      ) : null}
+      {mode === 'list' && chosen.length === 0 && a.eligible.length > 0 ? <span className="text-12 text-muted">{t('pickOne')}</span> : null}
+      <div className="flex justify-end gap-2">
+        <button type="button" className={dialogCancel} onClick={onClose}>{t('cancel')}</button>
+        <button type="button" className={dialogBtn} disabled={busy || (mode === 'list' && chosen.length === 0)} onClick={save}>{t('save')}</button>
+      </div>
+    </Modal>
   )
 }
 

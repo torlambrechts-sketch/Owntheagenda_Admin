@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { formatNumber, type NumberFormat } from '@/lib/format'
 import type { ApiOverview, OauthApp } from '@/lib/data/platform'
-import { API_SCOPES } from '@/lib/data/platform-shared'
 import { grantRevoke, oauthAppCreate, oauthAppDisable, tokenCreate, tokenRevoke, tokenRotate } from '../actions'
 import { Dialog, OnceValue, k, useAct, useAgo, useSensitive } from './kit'
 
@@ -12,7 +11,7 @@ const METHOD: Record<string, string> = { GET: 'bg-teal-soft', POST: 'bg-highligh
 
 type Confirm = { kind: 'token' | 'grant' | 'app'; id: string; name: string }
 
-export function ApiView({ api, oauth, canConfigure, canSecurity, nf }: { api: ApiOverview; oauth: OauthApp[]; canConfigure: boolean; canSecurity: boolean; nf: NumberFormat }) {
+export function ApiView({ api, oauth, scopes, canConfigure, canSecurity, nf }: { api: ApiOverview; oauth: OauthApp[]; scopes: string[]; canConfigure: boolean; canSecurity: boolean; nf: NumberFormat }) {
   const t = useTranslations('platform.api')
   const ago = useAgo()
   const [all, setAll] = useState(false)
@@ -98,7 +97,7 @@ export function ApiView({ api, oauth, canConfigure, canSecurity, nf }: { api: Ap
       </div>
 
       {tokenDlg ? <TokenDialog mode={tokenDlg} onClose={() => setTokenDlg(null)} /> : null}
-      {appDlg ? <AppDialog onClose={() => setAppDlg(false)} /> : null}
+      {appDlg ? <AppDialog scopes={scopes} onClose={() => setAppDlg(false)} /> : null}
       {confirm ? <ConfirmDialog c={confirm} onClose={() => setConfirm(null)} /> : null}
     </div>
   )
@@ -163,14 +162,14 @@ function TokenDialog({ mode, onClose }: { mode: 'create' | 'rotate'; onClose: ()
   )
 }
 
-/** Register an OAuth app (UF-16 step 2): a confidential app's client secret is shown once. */
-function AppDialog({ onClose }: { onClose: () => void }) {
+/** Register an OAuth app (UF-16 step 2): a confidential app's client secret is shown once. The scope chips are app.api_scopes (R-PLATFORM-02). */
+function AppDialog({ scopes: offered, onClose }: { scopes: string[]; onClose: () => void }) {
   const t = useTranslations('platform.oauth')
   const { call, pending, mfa, alert, blocked } = useSensitive()
   const [name, setName] = useState('')
   const [kind, setKind] = useState<'integration' | 'extension'>('integration')
   const [uris, setUris] = useState('https://')
-  const [scopes, setScopes] = useState<string[]>(['deals:read'])
+  const [scopes, setScopes] = useState<string[]>(offered.includes('deals:read') ? ['deals:read'] : [])
   const [confidential, setConfidential] = useState(true)
   const [done, setDone] = useState<{ client_id: string; client_secret: string | null } | null>(null)
   const submit = () => call(
@@ -203,7 +202,7 @@ function AppDialog({ onClose }: { onClose: () => void }) {
       </label>
       <div className="text-11.5 font-semibold text-muted">{t('scopes')}</div>
       <div className="flex flex-wrap gap-[5px]">
-        {API_SCOPES.map((s) => {
+        {offered.map((s) => {
           const on = scopes.includes(s)
           return <button key={s} type="button" aria-pressed={on} onClick={() => setScopes(on ? scopes.filter((x) => x !== s) : [...scopes, s])} className={k.chip(on)}>{s}</button>
         })}

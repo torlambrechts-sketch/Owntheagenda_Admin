@@ -272,7 +272,17 @@
       "failures": "{n, plural, one {# failed push} other {# failed pushes}}",
       "revoke": "Remove",
       "register": "Register this browser",
-      "registerDisabled": "Registering needs the push provider's key and the installed app, which are not in place yet."
+      "registerWaits": "Registering waits until push is connected (above).",
+      "registerNoKey": "The push provider's public key is not in place, so a browser cannot subscribe yet.",
+      "registerUnsupported": "This browser cannot receive push notifications.",
+      "registerHint": "The browser asks for permission first. Notifications show the kind only, never the record.",
+      "registering": "Registering …",
+      "registered": "This browser is registered for push",
+      "registerProblem": {
+        "unsupported": "This browser cannot receive push notifications.",
+        "denied": "Notifications are blocked for this site in the browser's settings.",
+        "failed": "The browser could not subscribe. Try again later."
+      }
     },
     "prefs": {
       "eyebrow": "Notifications",
@@ -293,6 +303,15 @@
       "inAppLabel": "{kind} in the app",
       "pushLabel": "{kind} as push",
       "reminders": "Reminders follow your reminder channels on Activities."
+    },
+    "pwa": {
+      "name": "Sentral",
+      "shortName": "Sentral",
+      "description": "Your customers, deals and day, on the phone.",
+      "push": {
+        "title": "Sentral",
+        "body": "Open Sentral to read it."
+      }
     }
   }
 }

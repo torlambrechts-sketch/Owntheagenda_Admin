@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { can, getShell } from '@/lib/shell'
 import { loadMeeting, loadWorkspace } from '@/lib/data/meetings'
 import { VIEWS, type View } from '@/lib/data/meetings-shared'
+import { storageReady } from '@/lib/storage/server'
 import { MeetingsScreen } from './_components/MeetingsScreen'
 
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? null
@@ -43,7 +44,7 @@ export default async function MeetingsPage({ searchParams }: { searchParams: Pro
   const all = [...workspace.data.upcoming, ...workspace.data.review, ...workspace.data.history]
   // the design opens on the first meeting of the first group that has one
   const selected = wanted.success ? wanted.data : (all[0]?.id ?? null)
-  const meeting = selected ? await loadMeeting(selected) : null
+  const [meeting, storage] = await Promise.all([selected ? loadMeeting(selected) : Promise.resolve(null), storageReady()])
 
   return (
     <MeetingsScreen
@@ -54,6 +55,7 @@ export default async function MeetingsPage({ searchParams }: { searchParams: Pro
       initialMeetingError={meeting && !meeting.ok ? meeting.code : null}
       me={{ id: shell.me.id, timeZone: shell.me.time_zone, numberFormat: shell.me.number_format, dealsAdd: can(shell, 'deals', 'add') }}
       products={Object.fromEntries(shell.products.map((p) => [p.key, p.name]))}
+      storage={storage}
     />
   )
 }

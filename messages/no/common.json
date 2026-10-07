@@ -23,6 +23,16 @@
     "pending": {
       "title": "Denne skjermen bygges nå",
       "body": "Den kommer med fase {phase} i implementeringsplanen."
+    },
+    "storage": {
+      "type": "Denne filtypen kan ikke lastes opp her.",
+      "tooLarge": "Filen er større enn {mb} MB.",
+      "sendFailed": "Filen kunne ikke sendes. Ingenting ble lagret.",
+      "expired": "Tiden for dette gikk ut. Prøv igjen.",
+      "missing": "Filen finnes ikke i lagringen.",
+      "exists": "Denne filen er allerede sendt.",
+      "storage": "Fillagringen er ikke tilkoblet ennå.",
+      "path": "Filens plass i lagringen er ikke gyldig."
     }
   }
 }

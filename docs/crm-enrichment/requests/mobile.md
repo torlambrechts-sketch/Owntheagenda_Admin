@@ -7,7 +7,7 @@
 | R-MOBILE-01 | Done in 0046 (`nearby` volatile); structure_invariants now refuses any non-volatile public function that writes |
 | R-MOBILE-02 | Done: `Permissions-Policy` allows `geolocation=(self)`; camera and microphone wait for capture uploads (R-MOBILE-04) |
 | R-MOBILE-03 | Done in 0051 (`push_vapid_public_key`), `app/m/sw.js` (service worker, scope `/m/`), `app/m/manifest.webmanifest`; «Register this browser» subscribes and calls `push_device_register`. Open: the push worker (edge) and the VAPID key pair in Vault |
-| R-MOBILE-04 | Open: the record-files signer (other work) |
+| R-MOBILE-04 | Done in 0052 and `storage-sign`: audio notes, photos and scans upload to the deal and `capture_save` marks them (V-MOBILE-16). They use a file input with `capture`, so the Permissions-Policy keeps camera and microphone off. Open: deploying the function; transcription and the AI scanner |
 | R-MOBILE-05 | Done in 0051: `nearby()` rows carry `lat`/`lng`; the map draws pins (V-MOBILE-09 closed) |
 | R-MOBILE-06 | Done in 0051: `mobile_focus().today[]` carries `deal_id`, `organization_id`; «Deal on the go» no longer calls `activities_get` |
 

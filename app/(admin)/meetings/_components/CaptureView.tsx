@@ -8,14 +8,14 @@ import { setMySettings } from '../actions'
 import type { Mine } from './MeetingsScreen'
 import { Modal, btn32, btnCancel, useFail } from './kit'
 
-type Props = { ws: Workspace; mine: Mine | null; onMineChanged: () => Promise<void>; onUpload: () => void }
+type Props = { ws: Workspace; mine: Mine | null; storage: boolean; onMineChanged: () => Promise<void>; onUpload: () => void }
 
 /**
  * Ways to capture (Meetings.dc.html, v.capture; spec §2.5): the four cards, each with its honest state. The notetaker
- * and transcription wait for their providers, the desktop app is not available (D-38), and upload waits for the file
- * storage signer. The auto-join choice behind «Configure» is real and stored (meeting_my_settings_set).
+ * and transcription wait for their providers, the desktop app is not available (D-38), and upload works while the storage
+ * signer runs (storage-sign, 0052). The auto-join choice behind «Configure» is real and stored (meeting_my_settings_set).
  */
-export function CaptureView({ ws, mine, onMineChanged, onUpload }: Props) {
+export function CaptureView({ ws, mine, storage, onMineChanged, onUpload }: Props) {
   const t = useTranslations('meetings.capture')
   const [configure, setConfigure] = useState(false)
   const botOn = ws.capabilities.meeting_bot === 'connected'
@@ -24,7 +24,7 @@ export function CaptureView({ ws, mine, onMineChanged, onUpload }: Props) {
     { k: 'bot', g: '◉', bg: '#CFE7E4', s: auto ? t(`autoJoin.${auto}`) : t('dash'), status: botOn ? t('bot.connected') : t('bot.notConnected'), cta: t('bot.cta'), run: () => setConfigure(true), off: !mine },
     { k: 'desktop', g: '▣', bg: '#CFE0F5', s: t('desktop.s'), status: t('desktop.status'), cta: t('desktop.cta'), run: null, off: true },
     { k: 'adhoc', g: '●', bg: '#FBD5C4', s: t('adhoc.s'), status: t('adhoc.status'), cta: t('adhoc.cta'), run: null, off: true },
-    { k: 'upload', g: '▤', bg: '#F3E2C9', s: t('upload.s'), status: t('upload.status'), cta: t('upload.cta'), run: onUpload, off: false },
+    { k: 'upload', g: '▤', bg: '#F3E2C9', s: t('upload.s'), status: storage ? t('upload.statusReady') : t('upload.status'), cta: t('upload.cta'), run: onUpload, off: false },
   ]
   return (
     <div className="grid gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))]">

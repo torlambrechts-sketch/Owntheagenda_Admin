@@ -1,13 +1,14 @@
 'use client'
 
-import { useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import { useFormatter, useNow, useTranslations } from 'next-intl'
 import { formatNumber, money, percent, type NumberFormat } from '@/lib/format'
 import { recordHref } from '@/lib/records-href'
 import {
-  CALL_OUTCOMES, CONTACT_RULES, type CallOutcome, type Coords, type DealPreview, type Focus, type NearbyRow, type NotificationItem,
+  CALL_OUTCOMES, CONTACT_RULES, type CallOutcome, type Captures, type Coords, type DealPreview, type Focus, type NearbyRow, type NotificationItem,
 } from '@/lib/data/mobile-shared'
+import { acceptFor, RECORD_TYPES } from '@/lib/storage/mime'
 import { Btn, BtnLink, Btns, Card, Phone, fieldCls, fieldLabel, type Tone } from './kit'
 
 /** What every phone frame shares: orientation, the status bar, the offline banner, the tab bar. */
@@ -234,18 +235,39 @@ export function DealPhone({ frame, deal, nf, offline, movePending, canCallOfflin
 }
 
 // ---------------------------------------------------------------------------
-// Capture (MOB-06, AIA-07, SF-44): files need the storage signer, scanning needs the AI service; neither is connected. A card
-// can be typed and reviewed, then saved under the contact rule (card_draft_save)
+// Capture (MOB-06, AIA-07, SF-44): audio notes, photos and scanned notes upload to the deal through the storage signer (0052)
+// when it runs; transcription and reading handwriting need their providers, which are not connected. A card can be typed and
+// reviewed, then saved under the contact rule (card_draft_save)
 export type CardValues = { name: string; title: string; email: string; phone: string; organization_name: string; basis: string }
-export function CapturePhone({ frame, rule, deal, offline, onSaveCard }: {
-  frame: Frame; rule: string; deal: DealPreview | null; offline: boolean; onSaveCard: (v: CardValues) => Promise<string | null>
+export type CaptureUpload = 'audio' | 'photo' | 'scan'
+
+/** A design button that opens the device's recorder, camera or file picker (a file input: no camera or microphone permission). */
+function PickBtn({ kind, primary, disabled, label, onFile }: { kind: CaptureUpload; primary?: boolean; disabled?: boolean; label: string; onFile: (f: File) => void }) {
+  const input = useRef<HTMLInputElement>(null)
+  const accept = kind === 'audio' ? acceptFor(RECORD_TYPES, (m) => m.startsWith('audio/'))
+    : kind === 'photo' ? acceptFor(RECORD_TYPES, (m) => m.startsWith('image/'))
+    : acceptFor(RECORD_TYPES, (m) => m.startsWith('image/') || m === 'application/pdf')
+  return (
+    <>
+      <input ref={input} type="file" hidden accept={accept} capture={kind === 'audio' ? 'user' : 'environment'}
+        onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) onFile(f) }} />
+      <Btn primary={primary} disabled={disabled} onClick={() => input.current?.click()}>{label}</Btn>
+    </>
+  )
+}
+
+export function CapturePhone({ frame, rule, deal, offline, storage, captures, onSaveCard, onCapture }: {
+  frame: Frame; rule: string; deal: DealPreview | null; offline: boolean; storage: boolean; captures: Captures | null
+  onSaveCard: (v: CardValues) => Promise<string | null>; onCapture: (kind: CaptureUpload, file: File) => Promise<boolean>
 }) {
   const t = useTranslations('mobile')
+  const format = useFormatter()
   const empty: CardValues = { name: '', title: '', email: '', phone: '', organization_name: '', basis: '' }
   const [open, setOpen] = useState(false)
   const [v, setV] = useState<CardValues>(empty)
   const [bad, setBad] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [sending, setSending] = useState<CaptureUpload | null>(null)
   const known = (CONTACT_RULES as readonly string[]).includes(rule) ? rule : 'no_rule'
   const refused = known === 'opt_in_only'
   const needsBasis = known === 'source_and_basis'
@@ -254,9 +276,30 @@ export function CapturePhone({ frame, rule, deal, offline, onSaveCard }: {
       <input className={`${fieldCls} ${bad === k ? 'border-danger' : ''}`} type={type} value={v[k]} onChange={(e) => setV({ ...v, [k]: e.target.value })} aria-invalid={bad === k} />
     </label>
   )
+  const canSend = storage && !!deal && !offline && sending === null
+  const send = async (kind: CaptureUpload, f: File) => {
+    setSending(kind)
+    try { await onCapture(kind, f) } finally { setSending(null) }
+  }
+  const day = (iso: string) => format.dateTime(new Date(iso), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  const audio = captures?.items.find((c) => c.kind === 'audio') ?? null
+  const scans = captures?.items.filter((c) => c.kind === 'photo' || c.kind === 'scan') ?? []
+  const transcribing = captures?.transcription === 'connected'
   return (
     <Phone {...frame} title={t('capture.title')} label={t('phones.capture.label')} ids={t('phones.capture.ids')}>
-      <Card eyebrow={t('capture.audio.eyebrow')} t={t('capture.audio.t')} s={deal ? t('capture.audio.sOn', { record: deal.title }) : t('capture.audio.s')} />
+      {!storage ? (
+        <Card eyebrow={t('capture.audio.eyebrow')} t={t('capture.audio.t')} s={deal ? t('capture.audio.sOn', { record: deal.title }) : t('capture.audio.s')} />
+      ) : (
+        <Card eyebrow={transcribing ? t('capture.audio.eyebrowReady') : t('capture.audio.eyebrow')}
+          t={audio ? (audio.transcript ? `«${audio.transcript}»` : audio.filename) : t('capture.audio.tReady')}
+          s={!deal ? t('capture.audio.noDeal')
+            : audio ? [t('capture.audio.attached', { when: day(audio.created_at), record: deal.title }),
+                audio.transcript ? null : transcribing ? t('capture.audio.pending') : t('capture.audio.untranscribed')].filter(Boolean).join(' · ')
+            : t('capture.audio.sReady', { record: deal.title })}>
+          {deal ? <Btns><PickBtn kind="audio" primary disabled={!canSend} label={sending === 'audio' ? t('capture.sending') : t('capture.audio.record')} onFile={(f) => void send('audio', f)} /></Btns> : null}
+          {deal && offline ? <span className="text-11.5 opacity-80">{t('needsConnection')}</span> : null}
+        </Card>
+      )}
       <Card eyebrow={t('capture.card.eyebrow')} t={open ? t('capture.card.review') : t('capture.card.t')} s={refused ? t('capture.card.refused') : open ? undefined : t('capture.card.s')}>
         {open ? (
           <form className="flex flex-col gap-[6px]" onSubmit={async (e) => {
@@ -278,7 +321,17 @@ export function CapturePhone({ frame, rule, deal, offline, onSaveCard }: {
         )}
         {!open && offline && !refused ? <span className="text-11.5 opacity-80">{t('needsConnection')}</span> : null}
       </Card>
-      <Card eyebrow={t('capture.scan.eyebrow')} t={t('capture.scan.t')} s={t('capture.scan.s')} />
+      {!storage ? <Card eyebrow={t('capture.scan.eyebrow')} t={t('capture.scan.t')} s={t('capture.scan.s')} /> : (
+        <Card eyebrow={t('capture.scan.eyebrow')} t={t('capture.scan.t')}
+          s={deal ? (scans.length ? t('capture.scan.kept', { n: scans.length, record: deal.title }) : t('capture.scan.sReady', { record: deal.title })) : t('capture.scan.noDeal')}>
+          {deal ? (
+            <Btns>
+              <PickBtn kind="photo" disabled={!canSend} label={sending === 'photo' ? t('capture.sending') : t('capture.scan.photo')} onFile={(f) => void send('photo', f)} />
+              <PickBtn kind="scan" disabled={!canSend} label={sending === 'scan' ? t('capture.sending') : t('capture.scan.scan')} onFile={(f) => void send('scan', f)} />
+            </Btns>
+          ) : null}
+        </Card>
+      )}
       <Card tone="canvas" s={t('capture.rule', { rule: t(`capture.rules.${known}`), effect: t(`capture.effects.${known}`) })} />
     </Phone>
   )

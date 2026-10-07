@@ -544,6 +544,9 @@
           "erasure": { "previewed": "Awaiting approval", "approved": "Approved", "running": "Erasing", "done": "Erased", "failed": "Failed" }
         },
         "downloadUnavailable": "download link not available: the storage signer is not connected",
+        "download": "Download package",
+        "linkExpired": "the download link has expired",
+        "linkUntil": "link valid until {when}",
         "waitingWorker": "waiting for the privacy worker",
         "approvedBy": "approved by {name}",
         "failedJob": "the worker reported an error",

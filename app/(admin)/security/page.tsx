@@ -10,6 +10,7 @@ import { LoginsView } from './_components/LoginsView'
 import { SigninView } from './_components/SigninView'
 import { ProtectView } from './_components/ProtectView'
 import { PrivacyView } from './_components/PrivacyView'
+import { storageReady } from '@/lib/storage/server'
 import { AuditView } from './_components/AuditView'
 import { SelfView } from './_components/SelfView'
 
@@ -71,11 +72,11 @@ export default async function SecurityPage({ searchParams }: { searchParams: Pro
       break
     }
     case 'privacy': {
-      const p = await loadPrivacy()
+      const [p, storage] = await Promise.all([loadPrivacy(), storageReady()])
       body = (
         <PrivacyView retention={p.retention.ok ? p.retention.data : null} subprocessors={p.subprocessors.ok ? p.subprocessors.data : null}
           incidents={p.incidents.ok ? p.incidents.data : null} jobs={p.jobs.ok ? p.jobs.data : null}
-          requests={p.requests.ok ? p.requests.data : null} now={now} meName={shell.me.name} />
+          requests={p.requests.ok ? p.requests.data : null} now={now} meName={shell.me.name} storage={storage} />
       )
       break
     }

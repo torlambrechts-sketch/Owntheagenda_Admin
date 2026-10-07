@@ -141,7 +141,8 @@
         "d": "Last opp en transkripsjon fra en samtale tatt opp et annet sted for å få samme oppsummering og forslag.",
         "s": ".vtt · .srt · .txt · .docx",
         "status": "Fillagring er ikke koblet til ennå · opplasting venter på den",
-        "cta": "Last opp"
+        "cta": "Last opp",
+        "statusReady": "Opplastinger lagres · innlesingen venter på opplastingsleseren"
       }
     },
     "linkLabel": {
@@ -201,7 +202,11 @@
       "formatsHint": "Opptil 5 MB · WebVTT-stemmer, SRT-tider, «Navn: tekst»-linjer eller Word-avsnitt",
       "notConnected": "Fillagring er ikke koblet til ennå, så ingen fil kan sendes. Ingenting opprettes før den er det.",
       "close": "Lukk",
-      "choose": "Velg fil"
+      "choose": "Velg fil",
+      "reader": "Et nytt, ukoblet møte lages for filen. Å lese den inn i møtet venter på opplastingsleseren, som ikke kjører ennå.",
+      "sendFailed": "Filen kunne ikke sendes. Det nye møtet har ingen transkripsjon.",
+      "uploaded": "Transkripsjonen er lastet opp",
+      "sending": "Sender …"
     },
     "brief": {
       "since": "Siden siste kontakt",
@@ -264,7 +269,7 @@
       "speakers": "{n, plural, one {# taler} other {# talere}}",
       "uploaded": "Lastet opp · {file}",
       "processing": "Transkriberes …",
-      "processingUpload": "Filen leses …",
+      "processingUpload": "Venter på å bli lest …",
       "failed": "Transkriberingen feilet ({code}).",
       "failedUpload": "Filen kunne ikke leses. Last den opp på nytt.",
       "retry": "Prøv igjen",

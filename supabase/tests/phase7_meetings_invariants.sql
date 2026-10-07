@@ -687,4 +687,8 @@ select pg_temp.check(not exists (select 1 from app.audit where detail::text like
                      and not exists (select 1 from app.notifications where params::text like '%sjåfører%' or params::text like '%Excel%'),
                      'what was said never reaches the audit, an event or a notification');
 
+-- 0053 (R-MEETINGS-07): a meeting without a brief answers «none», not null
+delete from app.meeting_briefs where meeting_id = (select id from t_m where k = 'D');
+select pg_temp.check(public.meeting_brief((select id from t_m where k = 'D')) ->> 'state' = 'none', 'a meeting without a brief answers state none (0053)');
+
 rollback;

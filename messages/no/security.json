@@ -544,6 +544,9 @@
           "erasure": { "previewed": "Venter på godkjenning", "approved": "Godkjent", "running": "Sletter", "done": "Slettet", "failed": "Feilet" }
         },
         "downloadUnavailable": "nedlastingslenke ikke tilgjengelig: lagringssignering er ikke tilkoblet",
+        "download": "Last ned pakken",
+        "linkExpired": "nedlastingslenken er utløpt",
+        "linkUntil": "lenken gjelder til {when}",
         "waitingWorker": "venter på personvernarbeideren",
         "approvedBy": "godkjent av {name}",
         "failedJob": "arbeideren meldte en feil",

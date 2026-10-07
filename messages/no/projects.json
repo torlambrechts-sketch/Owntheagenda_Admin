@@ -375,7 +375,11 @@
       "ownerOnly": "bare eieren",
       "groupSub": "{group} og undergruppene",
       "sharedWith": "Delt med {who} · {followers}",
-      "sharedWithOnly": "Delt med {who}"
+      "sharedWithOnly": "Delt med {who}",
+      "download": "Last ned {name}",
+      "uploaded": "{name} er lastet opp",
+      "uploading": "Laster opp …",
+      "limits": "PDF, Office, bilder, CSV, tekst eller lyd · opptil 25 MB"
     },
     "details": {
       "title": "Detaljer",

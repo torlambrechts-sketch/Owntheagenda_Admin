@@ -14,6 +14,8 @@ import { useDates } from './Board'
 import { useExporter } from './ExportMenu'
 import { WorkItems } from './WorkItems'
 import { StatusReportModal } from './StatusReportModal'
+import { recordDownload, recordUploadAbandon, recordUploadBegin, recordUploadDone } from '@/lib/storage/actions'
+import { acceptFor, putSigned, RECORD_MAX_BYTES, RECORD_TYPES, typeFor } from '@/lib/storage/mime'
 import { btnCancel, btnConfirm, card, field, fieldInput, inputSmall, Modal, Picker } from './kit'
 
 type Props = { bundle: ProjectBundle; base: ProjectsBase; boards: BoardRow[]; rights: Rights; onClose: () => void; onChanged: () => void }
@@ -246,16 +248,44 @@ function Notes({ bundle, base, onAfter }: { bundle: ProjectBundle; base: Project
 // ---------------------------------------------------------------------------
 function Files({ bundle, onAfter }: { bundle: ProjectBundle; onAfter: (p: R | Promise<R>, msg?: string) => Promise<boolean> }) {
   const t = useTranslations('projects.files')
+  const te = useTranslations('common.errors')
+  const ts = useTranslations('common.storage')
   const flash = useToast()
   const d = bundle.detail
+  const ready = bundle.storageReady
+  const canUpload = ready && d.can_edit
+  const picker = useRef<HTMLInputElement>(null)
+  const [busy, setBusy] = useState(false)
   const size = (n: number) => (n >= 1_048_576 ? `${(n / 1_048_576).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} kB`)
   const shared = d.sharing.visibility === 'all' ? t('everyone') : d.sharing.visibility === 'owner' ? t('ownerOnly') : d.sharing.visibility === 'group_sub' ? t('groupSub', { group: d.sharing.group ?? '—' }) : (d.sharing.group ?? '—')
+  const why = (r: { code: RpcCode; detail?: string | null }) => (r.detail && ts.has(r.detail) ? ts(r.detail) : te(r.code))
+  // storage-sign (0052): the database begins the upload, the signer signs its path, the browser sends the file, the database lists it
+  const upload = async (file: File) => {
+    const mime = typeFor(file.name, RECORD_TYPES)
+    if (!mime) { flash(ts('type')); return }
+    if (file.size > RECORD_MAX_BYTES) { flash(ts('tooLarge', { mb: 25 })); return }
+    setBusy(true)
+    try {
+      const begun = await recordUploadBegin({ entity: 'project', id: d.id, filename: file.name, mime, size: file.size })
+      if (!begun.ok) { flash(why(begun)); return }
+      if (!(await putSigned(begun.url, file, mime))) { await recordUploadAbandon(begun.id); flash(ts('sendFailed')); return }
+      await onAfter(recordUploadDone(begun.id), t('uploaded', { name: file.name }))
+    } finally {
+      setBusy(false)
+    }
+  }
+  const open = async (id: string) => {
+    if (!ready) { flash(t('downloadOff')); return }
+    const r = await recordDownload(id)
+    if (!r.ok) { flash(why(r)); return }
+    window.location.assign(r.url)
+  }
   return (
     <div className={`${card} flex flex-col gap-2 px-4 py-[14px]`}>
       <b className="text-13.5">{t('title')}</b>
       {bundle.files.map((f) => (
         <div key={f.id} className="flex items-center justify-between gap-2 border-b border-line py-[6px] text-12.5">
-          <button type="button" onClick={() => flash(t('downloadOff'))} title={t('downloadOff')} className="min-w-0 cursor-pointer truncate border-none bg-transparent p-0 text-left text-12.5">▦ {f.filename}</button>
+          <button type="button" onClick={() => void open(f.id)} title={ready ? t('download', { name: f.filename }) : t('downloadOff')} className="min-w-0 cursor-pointer truncate border-none bg-transparent p-0 text-left text-12.5">▦ {f.filename}</button>
           <span className="flex flex-none items-center gap-2 text-muted">
             {size(f.size_bytes)}
             {f.can_delete ? <button type="button" aria-label={t('remove', { name: f.filename })} onClick={() => void onAfter(deleteFile(f.id), t('removed'))} className="cursor-pointer border-none bg-transparent p-0 text-faint">×</button> : null}
@@ -264,8 +294,9 @@ function Files({ bundle, onAfter }: { bundle: ProjectBundle; onAfter: (p: R | Pr
       ))}
       {bundle.files.length === 0 ? <div className="text-12.5 text-muted">{t('empty')}</div> : null}
       <span className="flex flex-wrap items-center gap-2">
-        <button type="button" disabled className="h-[30px] cursor-default rounded-9 border border-dashed border-line-strong bg-transparent px-[10px] text-12 font-semibold opacity-60">{t('upload')}</button>
-        <span className="text-11.5 text-faint">{t('signerOff')}</span>
+        <input ref={picker} type="file" hidden accept={acceptFor(RECORD_TYPES)} onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void upload(f) }} />
+        <button type="button" disabled={!canUpload || busy} onClick={() => picker.current?.click()} className="h-[30px] cursor-pointer rounded-9 border border-dashed border-line-strong bg-transparent px-[10px] text-12 font-semibold disabled:cursor-default disabled:opacity-60">{busy ? t('uploading') : t('upload')}</button>
+        {!ready ? <span className="text-11.5 text-faint">{t('signerOff')}</span> : canUpload ? <span className="text-11.5 text-faint">{t('limits')}</span> : null}
       </span>
       <span className="text-11.5 text-muted">
         {d.sharing.followers.length ? t('sharedWith', { who: shared, followers: d.sharing.followers.map((f) => f.name).join(', ') }) : t('sharedWithOnly', { who: shared })}

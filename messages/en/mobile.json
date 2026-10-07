@@ -142,7 +142,17 @@
         "eyebrow": "Audio note · transcription not connected",
         "t": "Recording waits for file storage",
         "s": "Audio notes are kept on the record. File upload is not connected yet.",
-        "sOn": "Audio notes are kept on the record ({record}). File upload is not connected yet."
+        "sOn": "Audio notes are kept on the record ({record}). File upload is not connected yet.",
+        "eyebrowReady": "Audio note · transcribed",
+        "tReady": "Record an audio note",
+        "sReady": "Audio notes are kept on the record ({record}).",
+        "noDeal": "Audio notes are kept on a deal. You have no open deal to attach one to.",
+        "attached": "{when} · attached to {record}",
+        "pending": "being transcribed",
+        "untranscribed": "not transcribed: transcription is not connected",
+        "record": "Record audio note",
+        "saved": "Audio note attached to {record} · transcription not connected",
+        "savedQueued": "Audio note attached to {record} · being transcribed"
       },
       "card": {
         "eyebrow": "Business card",
@@ -164,7 +174,13 @@
       "scan": {
         "eyebrow": "Scan notes",
         "t": "Handwritten notes → text",
-        "s": "Scanning needs the AI service and file storage. Neither is connected."
+        "s": "Scanning needs the AI service and file storage. Neither is connected.",
+        "sReady": "Photos and scans upload to {record}. Reading handwriting needs the AI service, which is not connected.",
+        "kept": "{n, plural, one {# photo or scan} other {# photos and scans}} on {record}. Reading handwriting needs the AI service, which is not connected.",
+        "noDeal": "Photos and scans are kept on a deal. You have no open deal to attach them to.",
+        "photo": "Take photo",
+        "scan": "Scan note",
+        "saved": "Saved on {record}"
       },
       "rule": "Contact rule: {rule} (setting) — {effect}",
       "rules": {
@@ -176,7 +192,8 @@
         "no_rule": "cards create contacts directly",
         "source_and_basis": "a card needs a basis for contact",
         "opt_in_only": "cards cannot create contacts"
-      }
+      },
+      "sending": "Sending …"
     },
     "notifications": {
       "title": "Notifications",

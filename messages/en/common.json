@@ -23,6 +23,16 @@
     "pending": {
       "title": "This screen is being built",
       "body": "It arrives with phase {phase} of the implementation plan."
+    },
+    "storage": {
+      "type": "This type of file cannot be uploaded here.",
+      "tooLarge": "The file is larger than {mb} MB.",
+      "sendFailed": "The file could not be sent. Nothing was saved.",
+      "expired": "The time for this ran out. Try again.",
+      "missing": "The file is not in storage.",
+      "exists": "This file has already been sent.",
+      "storage": "File storage is not connected yet.",
+      "path": "The file's place in storage is not valid."
     }
   }
 }

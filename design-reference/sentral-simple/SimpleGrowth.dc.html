@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:22px 28px 60px; display:flex; flex-direction:column; gap:16px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+    <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.pick }}" style="padding:8px 16px; border-radius:999px; font-size:13px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}; white-space:nowrap; flex:none">{{ t.n }}</button></sc-for></div>
+    <span style="flex:1"></span>
+    <sc-if value="{{ showRange }}"><div style="display:flex; padding:3px; border-radius:11px; background:#F2EAD6"><sc-for list="{{ ranges }}" as="r"><button onClick="{{ r.pick }}" style="padding:6px 12px; border-radius:8px; border:none; font-size:12px; cursor:pointer; background:{{ r.bg }}; font-weight:{{ r.fw }}">{{ r.n }}</button></sc-for></div></sc-if>
+  </div>
+
+  <sc-if value="{{ v.analytics }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="5"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ k.n }}</div><div style="display:flex; align-items:baseline; gap:8px; margin-top:6px"><span style="font-family:'Playfair Display',serif; font-size:25px; font-weight:600; white-space:nowrap">{{ k.v }}</span><span style="font-size:12px; font-weight:700; color:{{ k.dc }}">{{ k.d }}</span></div></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:baseline; margin-bottom:10px"><b style="font-size:15px">Visitors and signups</b><span style="display:flex; gap:14px; font-size:11.5px; color:#5F5849"><span style="display:flex; gap:6px; align-items:center"><span style="width:14px; height:3px; background:#9DB8B3"></span>Visitors</span><span style="display:flex; gap:6px; align-items:center"><span style="width:14px; height:3px; background:#2F5D2A"></span>Signups (scaled)</span></span></div>
+        <svg viewBox="0 0 600 170" preserveAspectRatio="none" style="width:100%; height:170px; display:block"><polygon points="{{ chart.area }}" fill="#E4EEEC"></polygon><polyline points="{{ chart.line }}" fill="none" stroke="#9DB8B3" stroke-width="2" vector-effect="non-scaling-stroke"></polyline><polyline points="{{ chart.sign }}" fill="none" stroke="#2F5D2A" stroke-width="2" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></polyline></svg>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:18px 22px">
+          <b style="font-size:15px">From visit to paying customer</b>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px"><sc-for list="{{ funnel }}" as="f"><div style="display:grid; grid-template-columns:150px minmax(0,1fr) 64px 50px; gap:10px; align-items:center; font-size:12.5px"><span style="font-weight:600">{{ f.n }}</span><span style="height:22px; border-radius:7px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ f.w }}%; background:{{ f.c }}"></span></span><b style="text-align:right">{{ f.v }}</b><span style="text-align:right; font-size:11.5px; font-weight:700; color:#A33A16">{{ f.drop }}</span></div></sc-for></div>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; font-size:15px; font-weight:700">Where visitors come from</div>
+          <div style="display:grid; grid-template-columns:minmax(0,1.3fr) 70px 60px 60px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Source</span><span>Visits</span><span>Signups</span><span>Conv.</span></div>
+          <sc-for list="{{ sources }}" as="s"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) 70px 60px 60px; gap:10px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; font-variant-numeric:tabular-nums"><span style="display:flex; align-items:center; gap:8px"><span style="width:9px; height:9px; border-radius:3px; background:{{ s.c }}"></span><b>{{ s.n }}</b></span><span>{{ s.v }}</span><span>{{ s.s }}</span><b>{{ s.conv }}</b></div></sc-for>
+        </div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Top landing pages</b><span style="font-size:12px; color:#5F5849">Pages that bring signups</span></div>
+        <sc-for list="{{ pages }}" as="p"><div style="display:grid; grid-template-columns:minmax(0,1.8fr) 80px 70px 70px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; font-variant-numeric:tabular-nums"><span style="font-family:ui-monospace,Menlo,monospace; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ p.p }}</span><span>{{ p.v }}</span><span>{{ p.s }}</span><b style="color:#2F5D2A">{{ p.c }}</b></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.seo }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px">
+        <sc-for list="{{ seoKpis }}" as="k"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:14px 16px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ k.n }}</div><div style="display:flex; align-items:baseline; gap:8px; margin-top:6px"><span style="font-family:'Playfair Display',serif; font-size:25px; font-weight:600">{{ k.v }}</span><span style="font-size:12px; font-weight:700; color:{{ k.dc }}">{{ k.d }}</span></div></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; align-items:center; padding:12px 18px; border-bottom:1px solid #E8DFC9"><b style="font-size:15px">Tracked keywords</b><span style="display:flex; gap:6px"><input value="{{ kw }}" onChange="{{ setKw }}" placeholder="Add a keyword to track" style="width:220px; height:32px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input><button onClick="{{ addKw }}" style="height:32px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">Track</button></span></div>
+        <div style="display:grid; grid-template-columns:minmax(0,1.5fr) 80px 70px 70px minmax(0,1.2fr); gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Keyword</span><span>Volume</span><span>Position</span><span>Change</span><span>Ranking page</span></div>
+        <sc-for list="{{ keywords }}" as="k"><div style="display:grid; grid-template-columns:minmax(0,1.5fr) 80px 70px 70px minmax(0,1.2fr); gap:10px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; font-variant-numeric:tabular-nums"><b>{{ k.q }}</b><span>{{ k.vol }}</span><b style="color:{{ k.pc }}">{{ k.pos }}</b><span style="font-weight:700; color:{{ k.cc }}">{{ k.ch }}</span><span style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ k.page }}</span></div></sc-for>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Site health</b><span style="font-size:12px; color:#5F5849">{{ openIssues }} issues to fix</span></div>
+          <sc-for list="{{ issues }}" as="i"><div style="display:flex; gap:12px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9"><span style="width:7px; align-self:stretch; border-radius:999px; background:{{ i.c }}"></span><span style="flex:1; display:flex; flex-direction:column; gap:2px"><b style="font-size:13px">{{ i.t }}</b><span style="font-size:12px; color:#5F5849">{{ i.s }}</span></span><button onClick="{{ i.fix }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap">Mark fixed</button></div></sc-for>
+          <sc-if value="{{ allFixed }}"><div style="padding:24px; text-align:center; font-size:13px; color:#2F5D2A; font-weight:600">No open issues.</div></sc-if>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Content ideas</b><span style="font-size:12px; color:#5F5849">Searches with no strong page yet</span></div>
+          <sc-for list="{{ ideas }}" as="i"><div style="display:flex; gap:12px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9"><span style="flex:1; display:flex; flex-direction:column; gap:2px"><b style="font-size:13px">{{ i.t }}</b><span style="font-size:12px; color:#5F5849">{{ i.s }}</span></span><button onClick="{{ i.plan }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid {{ i.bc }}; background:{{ i.bg }}; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap">{{ i.cta }}</button></div></sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.campaigns }}" hint-placeholder-val="{{ false }}"><dc-import name="GrowthMarketing" view="campaigns" hint-size="100%,700px"></dc-import></sc-if>
+  <sc-if value="{{ v.email }}" hint-placeholder-val="{{ false }}"><dc-import name="GrowthMarketing" view="email" hint-size="100%,700px"></dc-import></sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: null, range: '30 d', kw: '', extraKw: [], fixed: [], planned: [], toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2400); }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { tabs: [], ranges: [], v: {}, kpis: [], chart: {}, funnel: [], sources: [], pages: [], seoKpis: [], keywords: [], issues: [], ideas: [] };
+    const tab = st.tab || (['seo', 'campaigns', 'email'].includes(this.props.tab) ? this.props.tab : 'analytics');
+    const pill = (on) => ({ bg: on ? '#191510' : 'transparent', c: on ? '#FCF6E9' : '#191510', bc: on ? '#191510' : '#C4BCA8', fw: on ? 700 : 500 });
+    const tabs = [['analytics', 'Analytics'], ['seo', 'SEO'], ['campaigns', 'Marketing campaigns'], ['email', 'Email and automation']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(tab === k) }));
+    const ranges = ['7 d', '30 d', '90 d'].map((n) => ({ n, pick: () => this.setState({ range: n }), bg: st.range === n ? '#FFFDF6' : 'transparent', fw: st.range === n ? 700 : 500 }));
+    const k = { '7 d': 0.24, '30 d': 1, '90 d': 2.9 }[st.range];
+    const days = { '7 d': 7, '30 d': 30, '90 d': 90 }[st.range];
+    let s = 41; const r = () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+    const vis = [], sig = [];
+    for (let i = 0; i < days; i++) { const b = 700 + Math.sin(i / 3) * 120 + r() * 160 + (i % 7 > 4 ? -220 : 0) + i * 2; vis.push(b); sig.push(b * (0.012 + r() * 0.008)); }
+    const vmax = Math.max(...vis);
+    const pts = (arr, m) => arr.map((v, i) => (i * 600 / (days - 1)).toFixed(1) + ',' + (166 - (v * m / vmax) * 154).toFixed(1)).join(' ');
+    const line = pts(vis, 1);
+    const V = Math.round(21480 * k), SU = Math.round(312 * k);
+    const kpis = [['Visitors', D.nb(V), '+12 %', '#2F5D2A'], ['Signups', D.nb(SU), '+18 %', '#2F5D2A'], ['Visit → signup', D.pct(SU / V * 100), '+0,1', '#2F5D2A'], ['Trial → paid', '31 %', '+4', '#2F5D2A'], ['Cost per customer', D.kr(1840), '−9 %', '#2F5D2A']].map(([n, v, d, dc]) => ({ n, v, d, dc }));
+    const F = [['Visited the site', 21480, '#E4EEEC'], ['Viewed pricing', 6890, '#CFE0F5'], ['Started signup', 1420, '#F3E2C9'], ['Created account', 312, '#DCEBD3'], ['Sent first survey', 214, '#CFE7E4'], ['Became paying', 97, '#F5C64A']];
+    const funnel = F.map(([n, v, c], i) => ({ n, c, v: D.nb(v * k), w: Math.max(2, (v / 21480) * 100), drop: i ? '−' + Math.round((1 - v / F[i - 1][1]) * 100) + ' %' : '' }));
+    const sources = [['Organic search', 9840, 151, '#5C9A55'], ['Paid search', 3920, 64, '#E0A21F'], ['Direct', 2510, 29, '#C4BCA8'], ['Social', 2460, 21, '#6E8FB8'], ['Referral', 1890, 38, '#8F74B3'], ['Email', 860, 9, '#D4633A']].map(([n, v, sg, c]) => ({ n, c, v: D.nb(v * k), s: Math.round(sg * k), conv: D.pct(sg / v * 100) }));
+    const pages = [['/lovkrav', 4210, 88], ['/', 5840, 74], ['/artikler/medarbeiderundersokelse-mal', 3120, 61], ['/pris', 2980, 52], ['/bruksomrader/verneombud', 1460, 19]].map(([p, v, sg]) => ({ p, v: D.nb(v * k), s: Math.round(sg * k), c: D.pct(sg / v * 100) }));
+    // SEO
+    const seoKpis = [['Organic clicks', D.nb(9840 * k), '+14 %', '#2F5D2A'], ['Impressions', D.nb(412000 * k), '+9 %', '#2F5D2A'], ['Average position', '6,8', '+0,9', '#2F5D2A'], ['Indexed pages', '142', '+6', '#2F5D2A']].map(([n, v, d, dc]) => ({ n, v, d, dc }));
+    const KW = [['medarbeiderundersøkelse', 18400, 4.2, 1.3, '/artikler/medarbeiderundersokelse-mal'], ['arbeidsmiljøkartlegging', 9200, 2.8, 0.6, '/artikler/arbeidsmiljokartlegging'], ['psykososialt arbeidsmiljø lovkrav', 6100, 1.9, 0.4, '/lovkrav'], ['verneombud plikter', 11800, 8.4, -1.2, '/bruksomrader/verneombud'], ['medarbeiderundersøkelse mal gratis', 3400, 11.6, 2.1, '/artikler/medarbeiderundersokelse-mal'], ['pulsundersøkelse', 2900, 14.2, -0.8, '/plattform'], ...st.extraKw.map((q) => [q, 0, 0, 0, 'Not ranking yet'])];
+    const keywords = KW.map(([q, vol, pos, ch, page]) => ({ q, page, vol: vol ? D.nb(vol) : '—', pos: pos ? String(pos).replace('.', ',') : '—', pc: !pos ? '#8A8272' : pos <= 3 ? '#2F5D2A' : pos <= 10 ? '#8A6A00' : '#A33A16', ch: ch ? (ch > 0 ? '▲ ' : '▼ ') + String(Math.abs(ch)).replace('.', ',') : '—', cc: ch > 0 ? '#2F5D2A' : ch < 0 ? '#A33A16' : '#8A8272' }));
+    const IS = [['#D4633A', '3 pages are missing a meta description', '/pris · /kom-i-gang · /bruksomrader/bygg'], ['#D4633A', 'Slow page: /plattform loads in 4,1 s on mobile', 'Large hero image — compress to under 200 kB'], ['#E0A21F', '2 broken internal links', 'From /artikler/arbeidsmiljo-2025 to removed pages'], ['#E0A21F', 'Duplicate title on 4 article pages', '«Orgpuls — artikler» used as title']];
+    const issues = IS.filter((i) => !st.fixed.includes(i[1])).map(([c, t, sub]) => ({ c, t, s: sub, fix: () => { this.setState({ fixed: [...st.fixed, t] }); this.flash('Marked fixed · re-checked on the next crawl'); } }));
+    const ideas = [['Hvordan gjennomføre en medarbeiderundersøkelse', '6 200 searches/month · no page in top 20'], ['Sjekkliste for vernerunde', '4 100 searches/month · competitors rank'], ['QPS Nordic forklart', '2 400 searches/month · position 18 today']].map(([t, sub]) => { const on = st.planned.includes(t); return { t, s: sub, cta: on ? '✓ Planned' : 'Plan article', bg: on ? '#CFE7E4' : '#F5C64A', bc: on ? '#2F5D2A' : '#191510', plan: () => { if (!on) { this.setState({ planned: [...st.planned, t] }); this.flash('Article added to the content plan'); } } }; });
+    return { tabs, ranges, showRange: tab === 'analytics' || tab === 'seo', v: { [tab]: true }, kpis, chart: { line, area: '0,166 ' + line + ' 600,166', sign: pts(sig, 22) }, funnel, sources, pages,
+      seoKpis, keywords, kw: st.kw, setKw: (e) => this.setState({ kw: e.target.value }), addKw: () => { if (!st.kw.trim()) return; this.setState({ extraKw: [...st.extraKw, st.kw.trim()], kw: '' }); this.flash('Keyword tracked · first position tomorrow'); },
+      issues, openIssues: issues.length, allFixed: issues.length === 0, ideas, toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

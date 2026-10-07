@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:22px 28px 60px; display:flex; flex-direction:column; gap:16px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="display:flex; align-items:center; gap:7px; padding:8px 16px; border-radius:999px; font-size:13px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}; white-space:nowrap; flex:none">{{ t.n }}<span style="font-size:11px; opacity:.75">{{ t.count }}</span></button></sc-for></div>
+
+  <sc-if value="{{ v.accounts }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:16px 18px"><div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">{{ k.n }}</div><div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:600; margin-top:6px; white-space:nowrap">{{ k.v }}</div><div style="font-size:12px; color:#5F5849">{{ k.s }}</div></div></sc-for>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px">
+        <input value="{{ q }}" onChange="{{ setQ }}" placeholder="Search name or org.nr" style="flex:1 1 260px; height:38px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:13px"></input>
+        <sc-for list="{{ filters }}" as="f"><button onClick="{{ f.pick }}" style="height:38px; padding:0 14px; border-radius:10px; font-size:12.5px; cursor:pointer; border:1px solid {{ f.bc }}; background:{{ f.bg }}; font-weight:{{ f.fw }}; white-space:nowrap; flex:none">{{ f.n }}</button></sc-for>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="display:grid; grid-template-columns:minmax(0,1.6fr) 90px 90px 90px; gap:10px; padding:10px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Account</span><span>Status</span><span>Plan</span><span>MRR</span></div>
+          <sc-for list="{{ list }}" as="o" hint-placeholder-count="10">
+            <button onClick="{{ o.open }}" style="display:grid; width:100%; grid-template-columns:minmax(0,1.6fr) 90px 90px 90px; gap:10px; align-items:center; padding:10px 16px; border:none; border-bottom:1px solid #E8DFC9; background:{{ o.bg }}; cursor:pointer; text-align:left; font-size:13px">
+              <span style="display:flex; flex-direction:column; min-width:0"><b style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ o.name }}</b><span style="font-size:11.5px; color:#5F5849">{{ o.orgnr }} · {{ o.employees }} employees</span></span>
+              <span><span style="padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ o.sbg }}; color:{{ o.sc }}">{{ o.status }}</span></span>
+              <span style="color:#3A342A">{{ o.band }}</span><b style="font-variant-numeric:tabular-nums">{{ o.mrrF }}</b>
+            </button>
+          </sc-for>
+        </div>
+        <div style="position:sticky; top:80px; background:#FFFDF6; border:1px solid #191510; border-radius:20px; padding:20px 22px; display:flex; flex-direction:column; gap:12px">
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start"><div><div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:600; line-height:1.15">{{ acc.name }}</div><div style="font-size:12px; color:#5F5849; margin-top:3px">{{ acc.orgnr }} · {{ acc.city }} · {{ acc.industry }}</div></div><span style="padding:4px 11px; border-radius:999px; font-size:11.5px; font-weight:700; background:{{ acc.sbg }}; color:{{ acc.sc }}">{{ acc.status }}</span></div>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px"><sc-for list="{{ acc.facts }}" as="f"><div style="border-radius:13px; background:#FCF6E9; border:1px solid #E8DFC9; padding:9px 11px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#5F5849">{{ f.k }}</div><b style="font-size:14px; color:{{ f.c }}">{{ f.v }}</b></div></sc-for></div>
+          <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Admin contact</div>
+          <div style="font-size:13px"><b>{{ acc.contact }}</b><div style="color:#5F5849; font-size:12px">{{ acc.email }}</div></div>
+          <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Actions</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px"><sc-for list="{{ actions }}" as="a"><button onClick="{{ a.run }}" style="height:38px; padding:0 10px; border-radius:10px; border:1px solid {{ a.bc }}; background:{{ a.bg }}; color:{{ a.c }}; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">{{ a.n }}</button></sc-for></div>
+          <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Recent</div>
+          <sc-for list="{{ acc.log }}" as="l"><div style="display:flex; justify-content:space-between; gap:8px; font-size:12.5px; padding:5px 0; border-bottom:1px solid #F2EAD6"><span>{{ l.t }}</span><span style="color:#8A8272; white-space:nowrap">{{ l.when }}</span></div></sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.tickets }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="display:flex; gap:5px; flex-wrap:wrap; padding:10px 12px; border-bottom:1px solid #E8DFC9"><sc-for list="{{ queues }}" as="qq"><button onClick="{{ qq.pick }}" style="padding:5px 11px; border-radius:999px; font-size:12px; cursor:pointer; border:1px solid {{ qq.bc }}; background:{{ qq.bg }}; font-weight:{{ qq.fw }}; white-space:nowrap; flex:none">{{ qq.n }} {{ qq.count }}</button></sc-for></div>
+        <div style="max-height:640px; overflow:auto">
+          <sc-for list="{{ tickets }}" as="t" hint-placeholder-count="8">
+            <button onClick="{{ t.pick }}" style="display:flex; width:100%; gap:10px; padding:11px 12px; border:none; border-bottom:1px solid #E8DFC9; background:{{ t.bg }}; cursor:pointer; text-align:left">
+              <span style="width:5px; align-self:stretch; border-radius:999px; background:{{ t.pc }}"></span>
+              <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px"><span style="display:flex; justify-content:space-between; gap:8px; font-size:11px; color:#5F5849"><span><b style="color:#191510">{{ t.id }}</b> · {{ t.kind }}</span><span>{{ t.status }}</span></span><span style="font-size:13px; font-weight:{{ t.fw }}; line-height:1.3">{{ t.subject }}</span><span style="font-size:11.5px; color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ t.orgName }}</span></span>
+            </button>
+          </sc-for>
+          <sc-if value="{{ noTickets }}"><div style="padding:30px; text-align:center; font-size:13px; color:#5F5849">Nothing waiting in this queue.</div></sc-if>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px; min-width:0; grid-column:span 2">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 20px; display:flex; flex-direction:column; gap:10px">
+          <div style="font-size:12px; color:#5F5849"><b style="color:#191510">{{ tk.id }}</b> · {{ tk.kind }} · {{ tk.orgName }} · {{ tk.personName }}</div>
+          <div style="font-family:'Playfair Display',serif; font-size:21px; font-weight:600; line-height:1.2">{{ tk.subject }}</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+            <label style="display:flex; align-items:center; gap:6px; height:32px; padding:0 4px 0 10px; border-radius:9px; border:1px solid #E8DFC9; font-size:12px; color:#5F5849">Status<select value="{{ tk.status }}" onChange="{{ setStatus }}" style="border:none; background:transparent; font-weight:700; font-size:12.5px"><option>New</option><option>Open</option><option>Waiting on customer</option><option>Resolved</option></select></label>
+            <label style="display:flex; align-items:center; gap:6px; height:32px; padding:0 4px 0 10px; border-radius:9px; border:1px solid #E8DFC9; font-size:12px; color:#5F5849">Priority<select value="{{ tk.prio }}" onChange="{{ setPrio }}" style="border:none; background:transparent; font-weight:700; font-size:12.5px"><option>Urgent</option><option>High</option><option>Normal</option><option>Low</option></select></label>
+            <label style="display:flex; align-items:center; gap:6px; height:32px; padding:0 4px 0 10px; border-radius:9px; border:1px solid #E8DFC9; font-size:12px; color:#5F5849">Assignee<select value="{{ tk.assignee }}" onChange="{{ setAssignee }}" style="border:none; background:transparent; font-weight:700; font-size:12.5px"><option value="">Unassigned</option><option value="magnus">Magnus Berg</option><option value="hanna">Hanna Vik</option><option value="tor">Tor Lambrechts</option></select></label>
+          </div>
+          <sc-if value="{{ tk.isRequest }}"><div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:11px 13px; border-radius:14px; background:#FBEBBE; border:1px solid #191510"><span style="flex:1 1 220px; font-size:12.5px; color:#5C4600"><b style="color:#191510">Request:</b> {{ tk.request }}</span><button onClick="{{ approve }}" style="height:32px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">{{ tk.approveLabel }}</button><button onClick="{{ decline }}" style="height:32px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12.5px; font-weight:600; cursor:pointer; white-space:nowrap; flex:none">Decline</button></div></sc-if>
+        </div>
+        <sc-for list="{{ tk.thread }}" as="m"><div style="display:flex; gap:10px; align-items:flex-start"><span style="width:32px; height:32px; flex:none; border-radius:10px; background:{{ m.abg }}; color:{{ m.ac }}; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700">{{ m.ini }}</span><div style="flex:1; min-width:0; border-radius:16px; padding:12px 14px; background:{{ m.bg }}; border:1px solid {{ m.bc }}"><div style="display:flex; justify-content:space-between; gap:10px; font-size:12px; color:#5F5849; margin-bottom:5px"><span><b style="color:#191510">{{ m.who }}</b> · {{ m.kind }}</span><span>{{ m.when }}</span></div><div style="font-size:13px; line-height:1.6; white-space:pre-wrap">{{ m.text }}</div></div></div></sc-for>
+        <div style="background:#FFFDF6; border:1px solid {{ cbc }}; border-radius:18px; overflow:hidden">
+          <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center; padding:6px; border-bottom:1px solid #E8DFC9; background:{{ cbg }}">
+            <sc-for list="{{ modes }}" as="md"><button onClick="{{ md.pick }}" style="padding:6px 12px; border-radius:9px; border:none; font-size:12.5px; cursor:pointer; background:{{ md.bg }}; font-weight:{{ md.fw }}">{{ md.n }}</button></sc-for>
+            <span style="flex:1"></span>
+            <select onChange="{{ useCanned }}" value="" style="max-width:200px; height:30px; border-radius:9px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px"><option value="">Canned reply …</option><sc-for list="{{ canned }}" as="c"><option value="{{ c.i }}">{{ c.n }}</option></sc-for></select>
+          </div>
+          <textarea value="{{ draft }}" onChange="{{ setDraft }}" placeholder="{{ draftPh }}" style="display:block; width:100%; min-height:110px; padding:12px 14px; border:none; background:transparent; font-size:13px; line-height:1.55; resize:vertical; outline:none"></textarea>
+          <div style="display:flex; justify-content:flex-end; gap:8px; align-items:center; padding:8px 10px; border-top:1px solid #E8DFC9">
+            <select value="{{ after }}" onChange="{{ setAfter }}" style="height:32px; border-radius:9px; border:1px solid #E8DFC9; background:#FFFDF6; font-size:12px"><option>then Waiting on customer</option><option>then Resolved</option><option>keep status</option></select>
+            <button onClick="{{ send }}" style="height:34px; padding:0 16px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">{{ sendLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: null, q: '', status: 'All', sel: 'o1', over: {}, log: {}, queue: 'Open', tsel: null, tover: {}, msgs: {}, mode: 'Reply', draft: '', after: 'then Waiting on customer', toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2400); }
+  tone(s) { return { Active: ['#CFE7E4', '#20431C'], Trial: ['#FBEBBE', '#5C4600'], 'Past due': ['#F0B9A0', '#6B240C'], Suspended: ['#FBD5C4', '#6B240C'], Cancelled: ['rgba(25,21,16,.06)', '#5F5849'] }[s] || ['#F2EAD6', '#5F5849']; }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { tabs: [], v: {}, kpis: [], filters: [], list: [], acc: { facts: [], log: [] }, actions: [], queues: [], tickets: [], tk: { thread: [] }, modes: [], canned: [] };
+    const tab = st.tab || (this.props.tab === 'tickets' ? 'tickets' : 'accounts');
+    const product = this.props.product || 'orgpuls';
+    const orgs = D.orgs.filter((o) => o.products.includes(product)).map((o) => ({ ...o, ...(st.over[o.id] || {}) }));
+    const allT = D.tickets.filter((t) => product === 'orgpuls' || t.product === product).map((t) => ({ ...t, ...(st.tover[t.id] || {}) }));
+    const isOpen = (t) => t.status !== 'Resolved' && t.status !== 'Closed';
+    const pill = (on) => ({ bg: on ? '#191510' : 'transparent', c: on ? '#FCF6E9' : '#191510', bc: on ? '#191510' : '#C4BCA8', fw: on ? 700 : 500 });
+    const tabs = [['accounts', 'Accounts', orgs.length], ['tickets', 'Tickets and requests', allT.filter(isOpen).length]].map(([k, n, count]) => ({ n, count, pick: () => this.setState({ tab: k }), ...pill(tab === k) }));
+    const mrr = orgs.reduce((a, o) => a + o.mrr, 0);
+    const kpis = [['MRR', D.kr(mrr), 'ARR ' + D.kr(mrr * 12)], ['Paying accounts', orgs.filter((o) => o.mrr > 0).length, 'Active and past due'], ['Trials', orgs.filter((o) => o.status === 'Trial').length, 'Trial → paid 31 %'], ['Open tickets', allT.filter(isOpen).length, 'Median first reply 2 h']].map(([n, v, s]) => ({ n, v: String(v), s }));
+    const filters = ['All', 'Trial', 'Active', 'Past due', 'Suspended'].map((n) => ({ n, pick: () => this.setState({ status: n }), bg: st.status === n ? '#FBEBBE' : 'transparent', bc: st.status === n ? '#191510' : '#E8DFC9', fw: st.status === n ? 700 : 500 }));
+    const q = st.q.toLowerCase().replace(/\s/g, '');
+    const list = orgs.filter((o) => (st.status === 'All' || o.status === st.status) && (!q || o.name.toLowerCase().replace(/\s/g, '').includes(q) || o.orgnr.replace(/\s|\u00A0/g, '').includes(q))).map((o) => { const [sbg, sc] = this.tone(o.status); return { ...o, sbg, sc, mrrF: o.mrr ? D.kr(o.mrr) : '—', bg: st.sel === o.id ? '#FBEBBE' : 'transparent', open: () => this.setState({ sel: o.id }) }; });
+    const a = orgs.find((o) => o.id === st.sel) || orgs[0];
+    const [asbg, asc] = this.tone(a.status);
+    const contact = D.people.find((p) => p.org === a.id) || D.people[0];
+    const addLog = (t, patch) => this.setState({ over: { ...st.over, [a.id]: { ...(st.over[a.id] || {}), ...patch } }, log: { ...st.log, [a.id]: [{ t, when: 'Just now' }, ...(st.log[a.id] || [])] } });
+    const acc = { ...a, sbg: asbg, sc: asc, contact: contact.name, email: contact.email,
+      facts: [{ k: 'Plan', v: a.band }, { k: 'MRR', v: a.mrr ? D.kr(a.mrr) : '—' }, { k: 'Health', v: String(a.health), c: a.health < 40 ? '#A33A16' : a.health < 70 ? '#8A6A00' : '#2F5D2A' }],
+      log: [...(st.log[a.id] || []), { t: 'Admin logged in', when: '2 d ago' }, { t: 'Survey sent to ' + a.employees + ' employees', when: '1 w ago' }, { t: 'Signed up · ' + a.source, when: Math.round(a.signupDaysAgo / 30) + ' mo ago' }].slice(0, 5) };
+    const susp = a.status === 'Suspended';
+    const actions = [
+      ['Extend trial 14 days', () => addLog('Trial extended by 14 days', { status: 'Trial', trialLeft: (a.trialLeft || 0) + 14 }), false],
+      ['Change plan', () => { const i = D.bands.findIndex((b) => b.label === a.band); const nb = D.bands[(i + 1) % D.bands.length]; addLog('Plan changed to ' + nb.label, { band: nb.label }); }, false],
+      ['Send login link', () => { addLog('Login link sent to ' + contact.email, {}); this.flash('Login link sent'); }, false],
+      [susp ? 'Reactivate' : 'Suspend', () => addLog(susp ? 'Account reactivated' : 'Account suspended', { status: susp ? 'Active' : 'Suspended' }), !susp],
+    ].map(([n, run, danger]) => ({ n, run: () => { run(); this.flash(n + ' · saved to the account log'); }, bg: danger ? '#FBD5C4' : n.startsWith('Extend') ? '#F5C64A' : '#FFFDF6', bc: danger ? '#E38258' : '#191510', c: danger ? '#6B240C' : '#191510' }));
+    // tickets
+    const Q = { Open: isOpen, Unassigned: (t) => isOpen(t) && !t.assignee, Requests: (t) => isOpen(t) && t.type === 'Service request', Resolved: (t) => !isOpen(t) };
+    const queues = Object.keys(Q).map((n) => ({ n, count: allT.filter(Q[n]).length, pick: () => this.setState({ queue: n, tsel: null }), bg: st.queue === n ? '#FBEBBE' : 'transparent', bc: st.queue === n ? '#191510' : '#C4BCA8', fw: st.queue === n ? 700 : 500 }));
+    const pc = { Urgent: '#D4633A', High: '#E0A21F', Normal: '#9DB8B3', Low: '#C4BCA8' };
+    const inQ = allT.filter(Q[st.queue]);
+    const selId = st.tsel || (inQ[0] && inQ[0].id) || allT[0].id;
+    const tickets = inQ.map((t) => ({ ...t, kind: t.type === 'Service request' ? 'Request' : t.type, orgName: D.orgById[t.org].name, pc: pc[t.prio], bg: t.id === selId ? '#FBEBBE' : 'transparent', fw: t.status === 'New' ? 700 : 600, pick: () => this.setState({ tsel: t.id, draft: '' }) }));
+    const T = allT.find((t) => t.id === selId) || allT[0]; const P = D.personById[T.person];
+    const reqText = T.cat === 'Billing' ? T.subject + ' — approving applies it to the account' : T.subject;
+    const thread = [{ who: P.name, kind: 'Customer · ' + T.channel.toLowerCase(), when: T.ageH + ' h ago', text: 'Hei! ' + T.subject + '. Kan dere hjelpe oss?\n\n' + P.name.split(' ')[0], ini: P.ini, cust: true }, ...(st.msgs[T.id] || [])].map((m) => ({ ...m, abg: m.cust ? '#F2EAD6' : '#191510', ac: m.cust ? '#191510' : '#FBEBBE', bg: m.note ? '#FBEBBE' : '#FFFDF6', bc: m.note ? '#F5DC96' : '#E8DFC9' }));
+    const tk = { ...T, kind: T.type === 'Service request' ? 'Request' : T.type, orgName: D.orgById[T.org].name, personName: P.name, assignee: T.assignee || '', isRequest: T.type === 'Service request' && isOpen(T), request: reqText, approveLabel: 'Approve and apply', thread };
+    const setT = (k) => (e) => this.setState({ tover: { ...st.tover, [T.id]: { ...(st.tover[T.id] || {}), [k]: e.target.value || null } } });
+    const addMsg = (m, patch) => this.setState({ msgs: { ...st.msgs, [T.id]: [...(st.msgs[T.id] || []), m] }, tover: { ...st.tover, [T.id]: { ...(st.tover[T.id] || {}), ...patch } }, draft: '' });
+    const CAN = [['Thanks — looking into it', 'Hei ' + P.name.split(' ')[0] + ',\n\nTakk for beskjeden. Vi ser på saken nå og kommer tilbake i dag.\n\nVennlig hilsen\nTor'], ['Trial extended', 'Hei ' + P.name.split(' ')[0] + ',\n\nVi har forlenget prøveperioden med 14 dager. Alt dere har satt opp, ligger der fortsatt.\n\nVennlig hilsen\nTor'], ['Resolved — please confirm', 'Hei ' + P.name.split(' ')[0] + ',\n\nDette skal være løst nå. Si gjerne fra om noe fortsatt ikke fungerer.\n\nVennlig hilsen\nTor']];
+    const modes = ['Reply', 'Internal note'].map((n) => ({ n, pick: () => this.setState({ mode: n }), bg: st.mode === n ? (n === 'Reply' ? '#FFFDF6' : '#F5DC96') : 'transparent', fw: st.mode === n ? 700 : 500 }));
+    return { tabs, v: { [tab]: true }, kpis, filters, q: st.q, setQ: (e) => this.setState({ q: e.target.value }), list, acc, actions,
+      queues, tickets, noTickets: tickets.length === 0, tk, setStatus: setT('status'), setPrio: setT('prio'), setAssignee: setT('assignee'),
+      approve: () => { addMsg({ who: 'System', kind: 'Request approved', when: 'Just now', text: 'Approved by Tor Lambrechts and applied to ' + tk.orgName + '. The customer has been notified.', ini: '✓', note: true }, { status: 'Resolved', responded: true }); this.flash('Request approved and applied'); },
+      decline: () => this.setState({ mode: 'Reply', draft: 'Hei ' + P.name.split(' ')[0] + ',\n\nDessverre kan vi ikke gjøre dette nå, fordi …\n\nVennlig hilsen\nTor' }),
+      modes, cbc: st.mode === 'Internal note' ? '#F5DC96' : '#E8DFC9', cbg: st.mode === 'Internal note' ? '#FBEBBE' : '#FCF6E9', canned: CAN.map(([n], i) => ({ n, i: String(i) })), useCanned: (e) => { const c = CAN[+e.target.value]; if (c) this.setState({ draft: c[1] }); },
+      draft: st.draft, setDraft: (e) => this.setState({ draft: e.target.value }), draftPh: st.mode === 'Reply' ? 'Reply to ' + P.name + ' — sent by email' : 'Internal note — only staff see this', after: st.after, setAfter: (e) => this.setState({ after: e.target.value }), sendLabel: st.mode === 'Reply' ? 'Send reply' : 'Save note',
+      send: () => { if (!st.draft.trim()) return; const note = st.mode === 'Internal note'; const status = note || st.after === 'keep status' ? T.status : st.after.includes('Resolved') ? 'Resolved' : 'Waiting on customer'; addMsg({ who: 'Tor Lambrechts', kind: note ? 'Internal note' : 'Reply', when: 'Just now', text: st.draft, ini: 'TL', note }, { status, responded: true }); this.flash(note ? 'Note saved' : 'Reply sent'); },
+      toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

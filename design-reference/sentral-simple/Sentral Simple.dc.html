@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Sentral — simple admin</title>
+<script src="admin-data.js"></script>
+<style>
+@font-face{font-family:'DM Sans';font-weight:400 700;font-display:swap;src:url(fonts/dmsans-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+20AC,U+2122,U+2212}
+@font-face{font-family:'DM Sans';font-weight:400 700;font-display:swap;src:url(fonts/dmsans-latinext.woff2) format('woff2');unicode-range:U+0100-02BA,U+1E00-1E9F}
+@font-face{font-family:'Playfair Display';font-weight:500 700;font-display:swap;src:url(fonts/playfair-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:'Playfair Display';font-weight:500 700;font-display:swap;src:url(fonts/playfair-latinext.woff2) format('woff2');unicode-range:U+0100-02BA,U+1E00-1E9F}
+html,body{margin:0;background:#FCF6E9;color:#191510;font-family:'DM Sans',Arial,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button,input,select,textarea{font-family:inherit;color:inherit}
+a{color:#2F5D2A;text-decoration:none}
+a:hover{color:#1E3D1A;text-decoration:underline}
+</style>
+</helmet>
+<div style="display:flex; min-height:100vh; background:#FCF6E9; color:#191510; font-family:'DM Sans',Arial,sans-serif; font-size:14px">
+  <aside style="position:sticky; top:0; height:100vh; width:244px; flex:none; display:flex; flex-direction:column; gap:14px; padding:16px 12px; border-right:1px solid #E8DFC9; background:#FFFDF6">
+    <div style="display:flex; align-items:center; gap:10px; padding:0 4px">
+      <img src="assets/orgpuls-mark.svg" alt="" width="30" height="30" style="display:block"></img>
+      <div style="display:flex; flex-direction:column"><span style="font-family:'Playfair Display',serif; font-size:19px; font-weight:600; line-height:1">Sentral</span><span style="font-size:11px; color:#5F5849; font-weight:600">SaaS admin</span></div>
+    </div>
+    <label style="display:flex; flex-direction:column; gap:4px; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849; padding:0 4px">Application
+      <select value="{{ product }}" onChange="{{ setProduct }}" style="height:38px; padding:0 8px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; font-weight:700; letter-spacing:0; text-transform:none; color:#191510">
+        <sc-for list="{{ products }}" as="p" hint-placeholder-count="5"><option value="{{ p.id }}">{{ p.name }}</option></sc-for>
+      </select>
+    </label>
+    <nav aria-label="Main menu" style="display:flex; flex-direction:column; gap:4px">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+        <button onClick="{{ n.go }}" aria-current="{{ n.cur }}" style="display:flex; align-items:center; gap:11px; width:100%; padding:9px 10px; border-radius:13px; border:none; cursor:pointer; text-align:left; background:{{ n.bg }}">
+          <span style="display:flex; width:32px; height:32px; flex:none; align-items:center; justify-content:center; border-radius:10px; background:{{ n.tile }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ n.icon }}"></path></svg></span>
+          <span style="display:flex; flex-direction:column; min-width:0"><span style="font-size:14px; font-weight:{{ n.fw }}">{{ n.label }}</span><span style="font-size:11.5px; color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ n.sub }}</span></span>
+        </button>
+      </sc-for>
+    </nav>
+    <span style="flex:1"></span>
+    <div style="display:flex; align-items:center; gap:10px; padding:10px; border-top:1px solid #E8DFC9">
+      <span style="width:32px; height:32px; border-radius:999px; border:1px solid #191510; background:#FBEBBE; display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:700">TL</span>
+      <span style="display:flex; flex-direction:column"><b style="font-size:13px">Tor Lambrechts</b><span style="font-size:11.5px; color:#5F5849">Super-admin</span></span>
+    </div>
+  </aside>
+  <main style="flex:1; min-width:0; display:flex; flex-direction:column">
+    <header style="position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:14px; min-height:60px; padding:10px 28px; background:#FFFDF6; border-bottom:1px solid #E8DFC9">
+      <div style="flex:1; min-width:0; display:flex; flex-direction:column"><span style="font-size:11px; color:#5F5849; font-weight:600">{{ productName }}</span><span style="font-family:'Playfair Display',serif; font-size:20px; font-weight:600; line-height:1.15">{{ title }}</span></div>
+      <span style="display:flex; align-items:center; gap:7px; font-size:12px; color:#5F5849"><span style="width:7px; height:7px; border-radius:999px; background:{{ statusDot }}"></span>{{ statusText }}</span>
+    </header>
+    <div style="flex:1; min-width:0">
+      <sc-if value="{{ r.customers }}" hint-placeholder-val="{{ true }}"><dc-import name="SimpleCustomers" go="{{ go }}" product="{{ product }}" tab="{{ tab }}" hint-size="100%,800px"></dc-import></sc-if>
+      <sc-if value="{{ r.crm }}"><dc-import name="SimpleCRM" go="{{ go }}" product="{{ product }}" tab="{{ tab }}" hint-size="100%,800px"></dc-import></sc-if>
+      <sc-if value="{{ r.growth }}"><dc-import name="SimpleGrowth" go="{{ go }}" product="{{ product }}" tab="{{ tab }}" hint-size="100%,800px"></dc-import></sc-if>
+      <sc-if value="{{ r.platform }}"><dc-import name="SimplePlatform" go="{{ go }}" product="{{ product }}" tab="{{ tab }}" hint-size="100%,800px"></dc-import></sc-if>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { section: 'customers', tab: null, product: 'orgpuls', ready: !!window.SA };
+  componentDidMount() {
+    if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40);
+    try { const s = localStorage.getItem('ss.section'); if (s) this.setState({ section: s }); const p = localStorage.getItem('ss.product'); if (p) this.setState({ product: p }); } catch (e) {}
+  }
+  componentWillUnmount() { clearInterval(this.t); }
+  go = (section, tab) => { this.setState({ section, tab: tab || null }); try { localStorage.setItem('ss.section', section); } catch (e) {} window.scrollTo(0, 0); };
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    const I = { customers: 'M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M20 20v-1.5a3.5 3.5 0 0 0-2.5-3.35M15.5 4.2a3.5 3.5 0 0 1 0 6.6', crm: 'M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v6h-4z', growth: 'M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6', platform: 'M9 4h4v2a1.5 1.5 0 0 0 3 0V4h4v4h-2a1.5 1.5 0 0 0 0 3h2v4h-4v-2a1.5 1.5 0 0 0-3 0v2H9v-4H7a1.5 1.5 0 0 1 0-3h2z' };
+    const S = [['customers', 'Customers', 'Accounts, tickets'], ['crm', 'CRM', 'Deals, lists'], ['growth', 'Growth', 'Analytics, SEO, email'], ['platform', 'Platform', 'Apps, plans, team']];
+    const nav = S.map(([k, label, sub]) => { const on = st.section === k; return { label, sub, icon: I[k], cur: on ? 'page' : undefined, bg: on ? '#FBEBBE' : 'transparent', tile: on ? '#F5C64A' : '#F2EAD6', fw: on ? 700 : 600, go: () => this.go(k) }; });
+    const products = D ? D.products : [{ id: 'orgpuls', name: 'Orgpuls' }];
+    const p = D ? D.productById[st.product] || D.products[0] : { name: 'Orgpuls', status: 'Operational' };
+    const degraded = p.status === 'Degraded';
+    return { nav, products, product: st.product, setProduct: (e) => { this.setState({ product: e.target.value }); try { localStorage.setItem('ss.product', e.target.value); } catch (er) {} },
+      productName: p.name + ' · ' + (p.desc || ''), title: S.find((s) => s[0] === st.section)[1], statusDot: degraded ? '#E0A21F' : '#5C9A55', statusText: 'API ' + (p.status || '').toLowerCase(),
+      r: { [st.section]: true }, go: this.go, tab: st.tab };
+  }
+}
+</script>
+</body>
+</html>

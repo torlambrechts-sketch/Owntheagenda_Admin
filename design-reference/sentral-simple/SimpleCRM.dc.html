@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:22px 28px 60px; display:flex; flex-direction:column; gap:16px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+    <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="padding:8px 16px; border-radius:999px; font-size:13px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}; white-space:nowrap; flex:none">{{ t.n }}</button></sc-for></div>
+    <span style="flex:1"></span>
+    <button onClick="{{ primary }}" style="height:38px; padding:0 16px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">{{ primaryLabel }}</button>
+  </div>
+
+  <sc-if value="{{ v.deals }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div style="display:flex; flex-wrap:wrap; gap:8px 16px; font-size:12.5px; color:#5F5849; white-space:nowrap"><span>Open <b style="color:#191510; white-space:nowrap">{{ sum.count }}</b> deals</span><span>Value <b style="color:#191510; white-space:nowrap">{{ sum.value }}</b></span><span>Weighted <b style="color:#191510; white-space:nowrap">{{ sum.weighted }}</b></span><span>Won this month <b style="color:#2F5D2A; white-space:nowrap">{{ sum.won }}</b></span><span style="color:#8A8272">Drag a card to change stage</span></div>
+      <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px; align-items:flex-start">
+        <sc-for list="{{ columns }}" as="col" hint-placeholder-count="5">
+          <div onDragOver="{{ allowDrop }}" onDrop="{{ col.drop }}" style="flex:0 0 240px; display:flex; flex-direction:column; gap:8px; border-radius:18px; padding:8px; background:#F2EAD6; min-height:380px">
+            <div style="padding:6px 6px 8px; border-bottom:3px solid {{ col.c }}"><div style="display:flex; justify-content:space-between"><b style="font-size:13px">{{ col.name }}</b><span style="font-size:11px; color:#5F5849; white-space:nowrap">{{ col.prob }} %</span></div><div style="font-size:12px; color:#5F5849; margin-top:2px"><b style="color:#191510">{{ col.sum }}</b> · {{ col.count }}</div></div>
+            <sc-for list="{{ col.cards }}" as="d"><div draggable="true" onDragStart="{{ d.drag }}" onClick="{{ d.open }}" style="display:flex; flex-direction:column; gap:5px; padding:10px 11px; border-radius:14px; background:#FFFDF6; border:1px solid {{ d.bc }}; cursor:pointer"><b style="font-size:12.5px; line-height:1.3">{{ d.title }}</b><span style="font-size:11.5px; color:#5F5849">{{ d.orgName }}</span><span style="display:flex; justify-content:space-between; align-items:center; font-size:11.5px"><b style="white-space:nowrap">{{ d.valueF }}</b><span style="display:flex; gap:6px; align-items:center"><span style="color:{{ d.nc }}">{{ d.next }}</span><span style="width:20px; height:20px; border-radius:999px; background:#F2EAD6; display:flex; align-items:center; justify-content:center; font-size:9.5px; font-weight:700">{{ d.ownerIni }}</span></span></span></div></sc-for>
+          </div>
+        </sc-for>
+        <div style="flex:0 0 200px; display:flex; flex-direction:column; gap:8px">
+          <div onDragOver="{{ allowDrop }}" onDrop="{{ dropWon }}" style="height:120px; border-radius:18px; border:2px dashed #2F5D2A; background:#CFE7E4; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:#20431C"><b style="font-size:14px">Won</b><span style="font-size:12px">{{ wonCount }} this month</span></div>
+          <div onDragOver="{{ allowDrop }}" onDrop="{{ dropLost }}" style="height:120px; border-radius:18px; border:2px dashed #E38258; background:#FBD5C4; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:#6B240C"><b style="font-size:14px">Lost</b><span style="font-size:12px">{{ lostCount }} this month</span></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.lists }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:12px 16px; border-bottom:1px solid #E8DFC9; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Saved lists</div>
+        <sc-for list="{{ lists }}" as="l" hint-placeholder-count="5"><button onClick="{{ l.pick }}" style="display:flex; width:100%; justify-content:space-between; align-items:center; gap:10px; padding:12px 16px; border:none; border-bottom:1px solid #E8DFC9; background:{{ l.bg }}; cursor:pointer; text-align:left"><span style="display:flex; flex-direction:column; min-width:0"><b style="font-size:13px">{{ l.n }}</b><span style="font-size:11.5px; color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ l.rule }}</span></span><b style="font-size:13px">{{ l.count }}</b></button></sc-for>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px; min-width:0; grid-column:span 2">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:center"><b style="font-family:'Playfair Display',serif; font-size:20px">{{ list.n }}</b><span style="display:flex; gap:6px"><button onClick="{{ toCampaign }}" style="height:32px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">Use in email campaign</button><button onClick="{{ exportList }}" style="height:32px; padding:0 12px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; flex:none">Export CSV</button></span></div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center"><span style="font-size:12px; color:#5F5849">Who is in it</span><sc-for list="{{ list.conds }}" as="c"><span style="padding:5px 10px; border-radius:9px; background:#FCF6E9; border:1px solid #E8DFC9; font-size:12px">{{ c }}</span></sc-for></div>
+          <span style="font-size:12px; color:#5F5849">{{ list.count }} people · {{ list.subs }} can receive marketing email · updates automatically</span>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1.2fr) 110px 120px; gap:10px; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Person</span><span>Account</span><span>Role</span><span>Email status</span></div>
+          <sc-for list="{{ members }}" as="p"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1.2fr) 110px 120px; gap:10px; align-items:center; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column; min-width:0"><b>{{ p.name }}</b><span style="font-size:11.5px; color:#5F5849; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ p.email }}</span></span><span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ p.orgName }}</span><span>{{ p.role }}</span><span><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ p.cbg }}; color:{{ p.cc }}">{{ p.consent }}</span></span></div></sc-for>
+          <sc-if value="{{ noMembers }}"><div style="padding:24px; text-align:center; font-size:13px; color:#5F5849">No one matches these conditions yet.</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ deal }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDeal }}" style="position:fixed; inset:0; z-index:80; background:rgba(25,21,16,.42); display:flex; justify-content:flex-end">
+      <div onClick="{{ stop }}" style="width:min(460px,100%); height:100%; overflow:auto; background:#FFFDF6; padding:22px 24px; display:flex; flex-direction:column; gap:14px">
+        <div style="display:flex; justify-content:space-between; gap:10px"><div><div style="font-size:12px; color:#5F5849">{{ deal.stageName }} · {{ deal.status }}</div><div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:600; line-height:1.2; margin-top:3px">{{ deal.title }}</div></div><button onClick="{{ closeDeal }}" style="width:32px; height:32px; flex:none; border-radius:999px; border:1px solid #191510; background:transparent; cursor:pointer; white-space:nowrap; flex:none">×</button></div>
+        <div style="display:flex; gap:3px"><sc-for list="{{ deal.steps }}" as="s"><button onClick="{{ s.go }}" title="{{ s.name }}" style="flex:1; height:30px; border:none; border-radius:8px; background:{{ s.bg }}; font-size:10.5px; font-weight:{{ s.fw }}; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 4px">{{ s.name }}</button></sc-for></div>
+        <sc-for list="{{ deal.facts }}" as="f"><div style="display:flex; justify-content:space-between; gap:10px; font-size:13px; padding:7px 0; border-bottom:1px solid #F2EAD6"><span style="color:#5F5849">{{ f.k }}</span><b style="text-align:right">{{ f.v }}</b></div></sc-for>
+        <div style="display:flex; flex-direction:column; gap:8px"><b style="font-size:13px">Add a note or next step</b><textarea value="{{ note }}" onChange="{{ setNote }}" placeholder="e.g. Call Thursday about the proposal" style="min-height:70px; padding:10px 12px; border-radius:12px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></textarea><button onClick="{{ addNote }}" style="align-self:flex-end; height:32px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Save</button></div>
+        <sc-for list="{{ deal.notes }}" as="n"><div style="font-size:12.5px; padding:8px 10px; border-radius:11px; background:#FCF6E9; border:1px solid #E8DFC9"><b>{{ n.by }}</b> <span style="color:#8A8272">· {{ n.when }}</span><div style="margin-top:3px">{{ n.t }}</div></div></sc-for>
+        <div style="display:flex; gap:8px; margin-top:auto"><button onClick="{{ markWon }}" style="flex:1; height:42px; border-radius:11px; border:1px solid #2F5D2A; background:#CFE7E4; color:#20431C; font-size:13px; font-weight:700; cursor:pointer">Mark won</button><button onClick="{{ markLost }}" style="flex:1; height:42px; border-radius:11px; border:1px solid #E38258; background:#FBD5C4; color:#6B240C; font-size:13px; font-weight:700; cursor:pointer">Mark lost</button></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed; inset:0; z-index:90; background:rgba(25,21,16,.42); display:flex; align-items:center; justify-content:center; padding:20px">
+      <div onClick="{{ stop }}" style="width:480px; max-width:100%; background:#FFFDF6; border-radius:22px; padding:22px 24px; display:flex; flex-direction:column; gap:12px; box-shadow:0 34px 80px rgba(25,21,16,.3)">
+        <b style="font-family:'Playfair Display',serif; font-size:21px">{{ modal.title }}</b>
+        <sc-if value="{{ modal.isDeal }}">
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Deal title<input value="{{ f.title }}" onChange="{{ setF.title }}" placeholder="e.g. Annual plan for 3 sites" style="height:40px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"></input></label>
+            <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Account<select value="{{ f.org }}" onChange="{{ setF.org }}" style="height:40px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"><sc-for list="{{ orgOpts }}" as="o"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+              <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Value (NOK)<input value="{{ f.value }}" onChange="{{ setF.value }}" style="height:40px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"></input></label>
+              <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Stage<select value="{{ f.stage }}" onChange="{{ setF.stage }}" style="height:40px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"><sc-for list="{{ stageOpts }}" as="s"><option value="{{ s.id }}">{{ s.name }}</option></sc-for></select></label>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ modal.isList }}">
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">List name<input value="{{ f.listName }}" onChange="{{ setF.listName }}" placeholder="e.g. HR in trial accounts" style="height:40px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"></input></label>
+            <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Role<select value="{{ f.role }}" onChange="{{ setF.role }}" style="height:40px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"><option>Any role</option><option>Daglig leder</option><option>HR</option><option>Leder</option><option>Verneombud</option></select></label>
+            <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Account status<select value="{{ f.ostatus }}" onChange="{{ setF.ostatus }}" style="height:40px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"><option>Any status</option><option>Trial</option><option>Active</option><option>Cancelled</option></select></label>
+            <span style="font-size:12px; color:#5F5849">{{ previewCount }} people match right now</span>
+          </div>
+        </sc-if>
+        <div style="display:flex; justify-content:flex-end; gap:8px"><button onClick="{{ closeModal }}" style="height:40px; padding:0 16px; border-radius:11px; border:1px solid #E8DFC9; background:transparent; font-size:13px; font-weight:600; cursor:pointer">Cancel</button><button onClick="{{ create }}" style="height:40px; padding:0 18px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">{{ modal.cta }}</button></div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: null, deals: null, open: null, modal: null, f: {}, note: '', notes: {}, extraLists: [], list: 0, toast: null };
+  componentDidMount() {
+    const init = () => this.setState({ deals: window.SA.deals.filter((d) => d.pipeline === 'new').map((d) => ({ ...d })) });
+    if (window.SA) init(); else this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); init(); } }, 40);
+  }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2400); }
+  patch(id, p) { this.setState((s) => ({ deals: s.deals.map((d) => (d.id === id ? { ...d, ...p } : d)) })); }
+  match(c, D) { return D.people.filter((p) => (c.role === 'Any role' || p.role === c.role) && (c.ostatus === 'Any status' || D.orgById[p.org].status === c.ostatus) && (!c.consent || p.consent === 'Subscribed')); }
+  renderVals() {
+    const D = window.SA; const st = this.state; const go = this.props.go || (() => {});
+    if (!D || !st.deals) return { tabs: [], v: {}, sum: {}, columns: [], lists: [], list: { conds: [] }, members: [], orgOpts: [], stageOpts: [], f: {}, setF: {} };
+    const tab = st.tab || (this.props.tab === 'lists' ? 'lists' : 'deals');
+    const pill = (on) => ({ bg: on ? '#191510' : 'transparent', c: on ? '#FCF6E9' : '#191510', bc: on ? '#191510' : '#C4BCA8', fw: on ? 700 : 500 });
+    const tabs = [['deals', 'Deals'], ['lists', 'Lists']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(tab === k) }));
+    const stages = D.pipelines[0].stages; const viz = ['#F6D9C6', '#DCEBD3', '#CFE0F5', '#F3E2C9', '#E7DAF2'];
+    const open = st.deals.filter((d) => d.status === 'open');
+    const prob = Object.fromEntries(stages.map((s) => [s.id, s.prob]));
+    const won = st.deals.filter((d) => d.status === 'won'), lost = st.deals.filter((d) => d.status === 'lost');
+    const sum = { count: open.length, value: D.kr(open.reduce((a, d) => a + d.value, 0)), weighted: D.kr(open.reduce((a, d) => a + d.value * prob[d.stage] / 100, 0)), won: D.kr(won.reduce((a, d) => a + d.value, 0) + 312000) };
+    const dropOn = (fn) => (e) => { e.preventDefault(); const id = e.dataTransfer.getData('text/plain'); const d = st.deals.find((x) => x.id === id); if (d) fn(d); };
+    const columns = stages.map((s, i) => { const cs = open.filter((d) => d.stage === s.id); return { ...s, c: viz[i], count: cs.length, sum: D.kr(cs.reduce((a, d) => a + d.value, 0)),
+      drop: dropOn((d) => { if (d.stage !== s.id) { this.patch(d.id, { stage: s.id, idle: 0 }); this.flash('Moved to ' + s.name); } }),
+      cards: cs.map((d) => ({ ...d, orgName: D.orgById[d.org].name, valueF: D.kr(d.value), ownerIni: D.staffById[d.owner].ini, next: d.act === 'overdue' ? 'Overdue' : d.act === 'none' ? 'No next step' : 'Planned', nc: d.act === 'overdue' ? '#A33A16' : d.act === 'none' ? '#8A6A00' : '#2F5D2A', bc: d.act === 'overdue' ? '#E38258' : '#E8DFC9', drag: (e) => e.dataTransfer.setData('text/plain', d.id), open: () => this.setState({ open: d.id, note: '' }) })) }; });
+    const close = (d, status) => { this.patch(d.id, { status }); this.flash(status === 'won' ? 'Won · ' + d.title : 'Marked lost'); };
+    // lists
+    const L = [{ n: 'All subscribed contacts', rule: 'Email status is Subscribed', c: { role: 'Any role', ostatus: 'Any status', consent: true } }, { n: 'HR in trial accounts', rule: 'Role is HR · account is Trial', c: { role: 'HR', ostatus: 'Trial' } }, { n: 'Daglig ledere — customers', rule: 'Role is Daglig leder · account is Active', c: { role: 'Daglig leder', ostatus: 'Active' } }, { n: 'Win-back: former customers', rule: 'Account is Cancelled', c: { role: 'Any role', ostatus: 'Cancelled' } }, ...st.extraLists];
+    const lists = L.map((l, i) => ({ ...l, count: this.match(l.c, D).length, bg: st.list === i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ list: i }) }));
+    const cur = L[st.list] || L[0]; const mem = this.match(cur.c, D);
+    const ct = { Subscribed: ['#CFE7E4', '#20431C'], 'No consent': ['rgba(25,21,16,.06)', '#5F5849'], 'Pending double opt-in': ['#FBEBBE', '#5C4600'], Unsubscribed: ['#FBD5C4', '#6B240C'], Bounced: ['#F0B9A0', '#6B240C'] };
+    const members = mem.map((p) => ({ ...p, orgName: D.orgById[p.org].name, cbg: ct[p.consent][0], cc: ct[p.consent][1] }));
+    const conds = [cur.c.role !== 'Any role' ? 'Role is ' + cur.c.role : null, cur.c.ostatus !== 'Any status' ? 'Account is ' + cur.c.ostatus : null, cur.c.consent ? 'Email status is Subscribed' : null].filter(Boolean);
+    const list = { n: cur.n, conds: conds.length ? conds : ['Everyone'], count: mem.length, subs: mem.filter((p) => p.consent === 'Subscribed').length };
+    // deal drawer
+    let deal = null; const od = st.open ? st.deals.find((x) => x.id === st.open) : null;
+    if (od) { const si = stages.findIndex((s) => s.id === od.stage); const p = D.personById[od.person];
+      deal = { ...od, stageName: stages[si].name, steps: stages.map((s, i) => ({ name: s.name, bg: i < si ? '#CFE7E4' : i === si ? '#F5C64A' : '#F2EAD6', fw: i === si ? 700 : 500, go: () => { this.patch(od.id, { stage: s.id }); this.flash('Moved to ' + s.name); } })),
+        facts: [['Value', D.kr(od.value)], ['Account', D.orgById[od.org].name], ['Contact', p.name + ' · ' + p.role], ['Owner', D.staffById[od.owner].name], ['Expected close', od.close], ['Source', od.source]].map(([k, v]) => ({ k, v })),
+        notes: [...(st.notes[od.id] || []), { by: 'Ingrid Solberg', when: '28 Sep', t: 'Sent proposal. Board decides in October.' }] }; }
+    const f = { title: '', org: 'o1', value: '50000', stage: 's1', listName: '', role: 'HR', ostatus: 'Trial', ...st.f };
+    const setF = Object.fromEntries(Object.keys(f).map((k) => [k, (e) => this.setState({ f: { ...f, [k]: e.target.value } })]));
+    const create = () => { const m = st.modal;
+      if (m.isDeal) { const id = 'd' + (500 + st.deals.length); this.setState({ deals: [{ ...st.deals[0], id, title: f.title || 'New deal', org: f.org, person: (D.people.find((p) => p.org === f.org) || D.people[0]).id, value: parseInt(String(f.value).replace(/\D/g, ''), 10) || 0, stage: f.stage, status: 'open', act: 'none', owner: 'tor', source: 'Manual' }, ...st.deals], modal: null, f: {} }); this.flash('Deal created'); }
+      else { this.setState({ extraLists: [...st.extraLists, { n: f.listName || 'New list', rule: [f.role, f.ostatus].join(' · '), c: { role: f.role, ostatus: f.ostatus } }], list: L.length, modal: null, f: {} }); this.flash('List saved'); } };
+    return { tabs, v: { [tab]: true }, primary: () => this.setState({ modal: tab === 'deals' ? { title: 'New deal', isDeal: true, cta: 'Create deal' } : { title: 'New list', isList: true, cta: 'Save list' } }), primaryLabel: tab === 'deals' ? '＋ New deal' : '＋ New list',
+      sum, columns, allowDrop: (e) => e.preventDefault(), dropWon: dropOn((d) => close(d, 'won')), dropLost: dropOn((d) => close(d, 'lost')), wonCount: won.length + 6, lostCount: lost.length + 2,
+      lists, list, members, noMembers: members.length === 0, toCampaign: () => go('growth', 'email'), exportList: () => this.flash(members.length + ' rows exported'),
+      deal, closeDeal: () => this.setState({ open: null }), stop: (e) => e.stopPropagation(), note: st.note, setNote: (e) => this.setState({ note: e.target.value }),
+      addNote: () => { if (!st.note.trim()) return; this.setState({ notes: { ...st.notes, [od.id]: [{ by: 'Tor Lambrechts', when: 'Just now', t: st.note }, ...(st.notes[od.id] || [])] }, note: '' }); this.patch(od.id, { act: 'planned' }); this.flash('Saved'); },
+      markWon: () => { close(od, 'won'); this.setState({ open: null }); }, markLost: () => { close(od, 'lost'); this.setState({ open: null }); },
+      modal: st.modal, closeModal: () => this.setState({ modal: null }), f, setF, orgOpts: D.orgs, stageOpts: stages, previewCount: this.match({ role: f.role, ostatus: f.ostatus }, D).length, create, toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

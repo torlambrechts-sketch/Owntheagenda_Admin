@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+  <sc-if value="{{ v.campaigns }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; font-size:12.5px; color:#5F5849; white-space:nowrap"><span>Spent <b style="color:#191510; white-space:nowrap">{{ tot.spent }}</b> of {{ tot.budget }}</span><span>Visits <b style="color:#191510; white-space:nowrap">{{ tot.visits }}</b></span><span>Signups <b style="color:#191510; white-space:nowrap">{{ tot.signups }}</b></span><span>Cost per signup <b style="color:#191510; white-space:nowrap">{{ tot.cps }}</b></span><span style="flex:1"></span><button onClick="{{ openNew }}" style="height:36px; padding:0 15px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; color:#191510; cursor:pointer; white-space:nowrap; flex:none">＋ New campaign</button></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="display:grid; grid-template-columns:minmax(0,1.5fr) 80px 80px 60px 80px; gap:10px; padding:9px 16px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Campaign</span><span>Status</span><span>Spent</span><span>Signups</span><span>Per signup</span></div>
+          <sc-for list="{{ camps }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.pick }}" style="display:grid; width:100%; grid-template-columns:minmax(0,1.5fr) 80px 80px 60px 80px; gap:10px; align-items:center; padding:10px 16px; border:none; border-bottom:1px solid #E8DFC9; background:{{ c.bg }}; cursor:pointer; text-align:left; font-size:12.5px; font-variant-numeric:tabular-nums"><span style="display:flex; flex-direction:column; min-width:0"><b style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ c.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ c.ch }}</span></span><span><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ c.sbg }}; color:{{ c.sc }}">{{ c.status }}</span></span><span>{{ c.spentF }}</span><span>{{ c.signups }}</span><b>{{ c.cps }}</b></button></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #191510; border-radius:20px; padding:18px 20px; display:flex; flex-direction:column; gap:12px">
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start"><div><div style="font-size:12px; color:#5F5849">{{ cur.ch }} · {{ cur.dates }}</div><div style="font-family:'Playfair Display',serif; font-size:21px; font-weight:600; line-height:1.2; margin-top:3px">{{ cur.n }}</div></div><button onClick="{{ togglePause }}" style="height:32px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">{{ cur.toggleLabel }}</button></div>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px"><sc-for list="{{ cur.stats }}" as="s"><div style="border-radius:13px; background:#FCF6E9; border:1px solid #E8DFC9; padding:9px 10px"><div style="font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#5F5849">{{ s.k }}</div><b style="font-size:14px">{{ s.v }}</b></div></sc-for></div>
+          <div style="display:flex; flex-direction:column; gap:5px"><div style="display:flex; justify-content:space-between; font-size:12px; color:#5F5849"><span>Budget used</span><b style="color:#191510">{{ cur.pct }} %</b></div><div style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><div style="height:100%; width:{{ cur.pct }}%; background:#E0A21F"></div></div></div>
+          <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Tracking link</div>
+          <div style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; padding:10px 12px; border-radius:10px; background:#FCF6E9; border:1px solid #E8DFC9; word-break:break-all">{{ cur.url }}</div>
+          <button onClick="{{ copyUrl }}" style="align-self:flex-start; height:30px; padding:0 11px; border-radius:9px; border:1px solid #E8DFC9; background:transparent; font-size:12px; font-weight:600; cursor:pointer">Copy link</button>
+          <div style="font-size:12px; color:#5F5849">Visits and signups with this link are counted in Analytics under the campaign’s source.</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.email }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:14px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <button onClick="{{ newSeq }}" style="height:38px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">＋ New email campaign</button>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <sc-for list="{{ seqs }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.pick }}" style="display:flex; width:100%; flex-direction:column; gap:3px; padding:12px 14px; border:none; border-bottom:1px solid #E8DFC9; background:{{ s.bg }}; cursor:pointer; text-align:left"><span style="display:flex; justify-content:space-between; gap:8px"><b style="font-size:13px">{{ s.n }}</b><span style="font-size:11px; font-weight:700; color:{{ s.sc }}">{{ s.state }}</span></span><span style="font-size:11.5px; color:#5F5849">{{ s.steps }} steps · {{ s.enrolled }} enrolled · opens {{ s.open }}</span></button></sc-for>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px; min-width:0; grid-column:span 2">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:12px">
+          <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between"><input value="{{ seq.n }}" onChange="{{ setName }}" style="flex:1 1 240px; height:38px; padding:0 11px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-family:'Playfair Display',serif; font-size:18px; font-weight:600"></input><button onClick="{{ toggleActive }}" style="height:36px; padding:0 14px; border-radius:10px; border:1px solid #191510; background:{{ seq.btnBg }}; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">{{ seq.btn }}</button></div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px">
+            <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; font-weight:600; color:#5F5849">Starts when<select value="{{ seq.trigger }}" onChange="{{ setTrigger }}" style="height:36px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; color:#191510"><sc-for list="{{ triggers }}" as="t"><option>{{ t }}</option></sc-for></select></label>
+            <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; font-weight:600; color:#5F5849">Send to list<select value="{{ seq.list }}" onChange="{{ setList }}" style="height:36px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; color:#191510"><sc-for list="{{ listOpts }}" as="l"><option>{{ l }}</option></sc-for></select></label>
+            <label style="display:flex; flex-direction:column; gap:4px; font-size:11.5px; font-weight:600; color:#5F5849">Stop when<select value="{{ seq.exit }}" onChange="{{ setExit }}" style="height:36px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px; color:#191510"><option>Contact replies or unsubscribes</option><option>Account becomes paying</option><option>Never</option></select></label>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:stretch; gap:0">
+          <sc-for list="{{ steps }}" as="s">
+            <div style="display:flex; flex-direction:column; align-items:center">
+              <div style="width:100%; display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:16px; border:1.5px solid {{ s.bc }}; background:#FFFDF6">
+                <span style="width:34px; height:34px; flex:none; border-radius:10px; background:{{ s.ibg }}; display:flex; align-items:center; justify-content:center; font-size:14px">{{ s.g }}</span>
+                <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:6px">
+                  <span style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">Step {{ s.i }} · {{ s.kind }}</span>
+                  <input value="{{ s.text }}" onChange="{{ s.setText }}" style="height:34px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; font-weight:600"></input>
+                  <sc-if value="{{ s.isEmail }}"><span style="font-size:11.5px; color:#5F5849">Sent {{ s.sent }} · opened {{ s.open }} · clicked {{ s.click }}</span></sc-if>
+                </div>
+                <span style="display:flex; flex-direction:column; gap:3px"><button onClick="{{ s.up }}" style="width:26px; height:22px; border-radius:6px; border:1px solid #E8DFC9; background:transparent; font-size:10px; cursor:pointer">▲</button><button onClick="{{ s.down }}" style="width:26px; height:22px; border-radius:6px; border:1px solid #E8DFC9; background:transparent; font-size:10px; cursor:pointer">▼</button><button onClick="{{ s.del }}" style="width:26px; height:22px; border-radius:6px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:11px; cursor:pointer">×</button></span>
+              </div>
+              <span style="width:1.5px; height:14px; background:#C4BCA8"></span>
+            </div>
+          </sc-for>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; padding:4px 0"><sc-for list="{{ addBtns }}" as="b"><button onClick="{{ b.add }}" style="height:32px; padding:0 13px; border-radius:999px; border:1px dashed #191510; background:#FFFDF6; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; flex:none">＋ {{ b.n }}</button></sc-for></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed; inset:0; z-index:90; background:rgba(25,21,16,.42); display:flex; align-items:center; justify-content:center; padding:20px">
+      <div onClick="{{ stop }}" style="width:480px; max-width:100%; background:#FFFDF6; border-radius:22px; padding:22px 24px; display:flex; flex-direction:column; gap:11px; box-shadow:0 34px 80px rgba(25,21,16,.3)">
+        <b style="font-family:'Playfair Display',serif; font-size:21px">New marketing campaign</b>
+        <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Name<input value="{{ f.n }}" onChange="{{ setF.n }}" placeholder="e.g. Lovkrav — Q4" style="height:40px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"></input></label>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+          <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Channel<select value="{{ f.ch }}" onChange="{{ setF.ch }}" style="height:40px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"><option>Google Ads</option><option>LinkedIn</option><option>Facebook</option><option>Newsletter</option><option>Webinar</option></select></label>
+          <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Budget (NOK)<input value="{{ f.b }}" onChange="{{ setF.b }}" style="height:40px; padding:0 12px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"></input></label>
+        </div>
+        <label style="display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:600; color:#5F5849">Landing page<select value="{{ f.p }}" onChange="{{ setF.p }}" style="height:40px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; color:#191510"><option>/lovkrav</option><option>/pris</option><option>/kom-i-gang</option><option>/bruksomrader/verneombud</option></select></label>
+        <div style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; padding:9px 11px; border-radius:10px; background:#FCF6E9; border:1px dashed #C4BCA8; word-break:break-all">{{ previewUrl }}</div>
+        <div style="display:flex; justify-content:flex-end; gap:8px"><button onClick="{{ closeModal }}" style="height:40px; padding:0 16px; border-radius:11px; border:1px solid #E8DFC9; background:transparent; font-size:13px; font-weight:600; cursor:pointer">Cancel</button><button onClick="{{ createCamp }}" style="height:40px; padding:0 18px; border-radius:11px; border:1px solid #191510; background:#F5C64A; font-size:13px; font-weight:700; cursor:pointer">Create campaign</button></div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { camps: null, sel: 0, modal: false, f: {}, seqs: null, seq: 0, toast: null };
+  componentDidMount() {
+    const init = () => this.setState({
+      camps: [['Lovkrav — Q4', 'Google Ads', 'Live', 18000, 12400, 2940, 62, '/lovkrav', '1 Oct – 31 Dec'], ['HR managers', 'LinkedIn', 'Live', 24000, 15800, 1810, 31, '/pris', '15 Sep – 15 Nov'], ['Verneombud webinar', 'Webinar', 'Ended', 6000, 6000, 640, 22, '/bruksomrader/verneombud', '2 Oct'], ['Newsletter October', 'Newsletter', 'Scheduled', 0, 0, 0, 0, '/artikler/medarbeiderundersokelse-mal', '8 Oct'], ['Retargeting — pricing visitors', 'Facebook', 'Paused', 8000, 3100, 720, 9, '/pris', '1 Sep – 30 Nov']].map(([n, ch, status, budget, spent, visits, signups, page, dates]) => ({ n, ch, status, budget, spent, visits, signups, page, dates })),
+      seqs: [
+        { n: 'Trial onboarding', state: 'Active', trigger: 'Account signs up for a trial', list: 'All trial users', exit: 'Account becomes paying', enrolled: 84, open: '61 %', steps: [['email', 'Velkommen — slik kommer dere i gang'], ['wait', 'Wait 2 days'], ['cond', 'If employee list is not uploaded'], ['email', 'Last opp ansattlisten på 2 minutter'], ['wait', 'Wait 3 days'], ['email', 'Send den første undersøkelsen'], ['task', 'Create task for the account owner: call']] },
+        { n: 'Trial ending', state: 'Active', trigger: 'Trial has 5 days left', list: 'All trial users', exit: 'Account becomes paying', enrolled: 22, open: '58 %', steps: [['email', 'Fem dager igjen av prøveperioden'], ['wait', 'Wait 3 days'], ['email', 'Velg plan — ingen binding']] },
+        { n: 'Webinar follow-up', state: 'Draft', trigger: 'Added to a list', list: 'Webinar attendees', exit: 'Contact replies or unsubscribes', enrolled: 0, open: '—', steps: [['email', 'Takk for at du var med — opptak og sjekkliste'], ['wait', 'Wait 4 days'], ['email', 'Book en gjennomgang']] },
+        { n: 'Win-back', state: 'Paused', trigger: 'Account cancels', list: 'Former customers', exit: 'Account becomes paying', enrolled: 14, open: '39 %', steps: [['wait', 'Wait 30 days'], ['email', 'Hva kunne vi gjort bedre?'], ['wait', 'Wait 14 days'], ['email', '3 måneder til halv pris']] },
+      ] });
+    if (window.SA) init(); else this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); init(); } }, 40);
+  }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2400); }
+  url(page, n, ch) { const slug = (x) => x.toLowerCase().replace(/[æ]/g, 'ae').replace(/[ø]/g, 'o').replace(/[å]/g, 'a').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); return 'https://orgpuls.com' + page + '?utm_source=' + slug(ch) + '&utm_medium=' + (ch === 'Newsletter' ? 'email' : ch === 'Webinar' ? 'event' : 'paid') + '&utm_campaign=' + slug(n || 'campaign'); }
+  setSeq(fn) { this.setState((s) => ({ seqs: s.seqs.map((q, i) => (i === s.seq ? fn({ ...q, steps: [...q.steps] }) : q)) })); }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D || !st.camps) return { v: {}, tot: {}, camps: [], cur: { stats: [] }, seqs: [], seq: {}, steps: [], triggers: [], listOpts: [], addBtns: [], f: {}, setF: {} };
+    const view = this.props.view || 'campaigns';
+    const tone = { Live: ['#CFE7E4', '#20431C'], Scheduled: ['#FBEBBE', '#5C4600'], Paused: ['#F2EAD6', '#5F5849'], Ended: ['rgba(25,21,16,.06)', '#5F5849'] };
+    const camps = st.camps.map((c, i) => ({ ...c, spentF: c.spent ? D.kr(c.spent) : '—', cps: c.signups && c.spent ? D.kr(c.spent / c.signups) : '—', sbg: tone[c.status][0], sc: tone[c.status][1], bg: st.sel === i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ sel: i }) }));
+    const sum = (k) => st.camps.reduce((a, c) => a + c[k], 0);
+    const tot = { spent: D.kr(sum('spent')), budget: D.kr(sum('budget')), visits: D.nb(sum('visits')), signups: sum('signups'), cps: D.kr(sum('spent') / Math.max(1, sum('signups'))) };
+    const c = st.camps[st.sel] || st.camps[0];
+    const cur = { ...c, url: this.url(c.page, c.n, c.ch), pct: c.budget ? Math.round((c.spent / c.budget) * 100) : 0, toggleLabel: c.status === 'Live' ? 'Pause' : c.status === 'Paused' ? 'Resume' : c.status === 'Scheduled' ? 'Launch now' : 'Duplicate', stats: [['Visits', D.nb(c.visits)], ['Signups', c.signups || '—'], ['Conversion', c.visits ? D.pct(c.signups / c.visits * 100) : '—'], ['Per signup', c.signups && c.spent ? D.kr(c.spent / c.signups) : '—']].map(([k, v]) => ({ k, v: String(v) })) };
+    const f = { n: '', ch: 'Google Ads', b: '10000', p: '/lovkrav', ...st.f };
+    const setF = Object.fromEntries(Object.keys(f).map((k) => [k, (e) => this.setState({ f: { ...f, [k]: e.target.value } })]));
+    // email
+    const S = st.seqs[st.seq] || st.seqs[0];
+    const seqs = st.seqs.map((q, i) => ({ ...q, steps: q.steps.length, sc: q.state === 'Active' ? '#2F5D2A' : q.state === 'Paused' ? '#8A6A00' : '#5F5849', bg: st.seq === i ? '#FBEBBE' : 'transparent', pick: () => this.setState({ seq: i }) }));
+    const K = { email: ['✉', '#CFE0F5', 'Email'], wait: ['◷', '#F3E2C9', 'Wait'], cond: ['⑂', '#E7DAF2', 'Condition'], task: ['✓', '#DCEBD3', 'Task for sales'] };
+    let ei = 0;
+    const steps = S.steps.map(([k, text], i) => { const isEmail = k === 'email'; const base = Math.max(0, S.enrolled - ei * 12); if (isEmail) ei++; return { i: i + 1, kind: K[k][2], g: K[k][0], ibg: K[k][1], text, isEmail, bc: isEmail ? '#E8DFC9' : '#F2EAD6', sent: base, open: base ? Math.round(base * 0.6) : 0, click: base ? Math.round(base * 0.18) : 0,
+      setText: (e) => this.setSeq((q) => { q.steps[i] = [k, e.target.value]; return q; }), del: () => this.setSeq((q) => { q.steps.splice(i, 1); return q; }),
+      up: () => this.setSeq((q) => { if (i > 0) [q.steps[i - 1], q.steps[i]] = [q.steps[i], q.steps[i - 1]]; return q; }), down: () => this.setSeq((q) => { if (i < q.steps.length - 1) [q.steps[i + 1], q.steps[i]] = [q.steps[i], q.steps[i + 1]]; return q; }) }; });
+    const addBtns = [['Email', 'email', 'Ny e-post'], ['Wait', 'wait', 'Wait 2 days'], ['Condition', 'cond', 'If the contact opened the last email'], ['Task for sales', 'task', 'Create task: follow up by phone']].map(([n, k, t]) => ({ n, add: () => this.setSeq((q) => { q.steps.push([k, t]); return q; }) }));
+    const active = S.state === 'Active';
+    return { v: { [view]: true }, tot, camps, cur, openNew: () => this.setState({ modal: true, f: {} }),
+      togglePause: () => { const next = c.status === 'Live' ? 'Paused' : c.status === 'Ended' ? null : 'Live'; if (next) { this.setState({ camps: st.camps.map((x, i) => (i === st.sel ? { ...x, status: next } : x)) }); this.flash(next === 'Live' ? 'Campaign live' : 'Campaign paused'); } else { this.setState({ camps: [...st.camps, { ...c, n: c.n + ' (copy)', status: 'Scheduled', spent: 0, visits: 0, signups: 0 }], sel: st.camps.length }); this.flash('Campaign duplicated'); } },
+      copyUrl: () => this.flash('Tracking link copied'), modal: st.modal, closeModal: () => this.setState({ modal: false }), stop: (e) => e.stopPropagation(), f, setF, previewUrl: this.url(f.p, f.n, f.ch),
+      createCamp: () => { this.setState({ camps: [...st.camps, { n: f.n || 'New campaign', ch: f.ch, status: 'Scheduled', budget: parseInt(String(f.b).replace(/\D/g, ''), 10) || 0, spent: 0, visits: 0, signups: 0, page: f.p, dates: 'Starts tomorrow' }], sel: st.camps.length, modal: false }); this.flash('Campaign created · tracking link ready'); },
+      seqs, seq: { ...S, btn: active ? 'Pause' : 'Activate', btnBg: active ? '#FFFDF6' : '#F5C64A' }, steps, addBtns,
+      triggers: ['Account signs up for a trial', 'Trial has 5 days left', 'Added to a list', 'Account cancels', 'Deal moves to Proposal sent', 'Contact fills in a form', 'Send once to the list now'],
+      listOpts: ['All trial users', 'All subscribed contacts', 'HR in trial accounts', 'Daglig ledere — customers', 'Former customers', 'Webinar attendees'],
+      setName: (e) => this.setSeq((q) => ({ ...q, n: e.target.value })), setTrigger: (e) => this.setSeq((q) => ({ ...q, trigger: e.target.value })), setList: (e) => this.setSeq((q) => ({ ...q, list: e.target.value })), setExit: (e) => this.setSeq((q) => ({ ...q, exit: e.target.value })),
+      toggleActive: () => { this.setSeq((q) => ({ ...q, state: active ? 'Paused' : 'Active' })); this.flash(active ? 'Paused · nobody new is enrolled' : 'Active · contacts enter when the trigger fires'); },
+      newSeq: () => this.setState({ seqs: [...st.seqs, { n: 'New email campaign', state: 'Draft', trigger: 'Added to a list', list: 'All subscribed contacts', exit: 'Contact replies or unsubscribes', enrolled: 0, open: '—', steps: [['email', 'Første e-post']] }], seq: st.seqs.length }), toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

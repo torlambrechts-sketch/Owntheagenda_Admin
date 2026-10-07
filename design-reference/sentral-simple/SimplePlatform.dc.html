@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="padding:22px 28px 60px; display:flex; flex-direction:column; gap:16px; color:#191510; font-size:14px">
+  <div style="display:flex; flex-wrap:wrap; gap:6px"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.pick }}" style="padding:8px 16px; border-radius:999px; font-size:13px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; color:{{ t.c }}; font-weight:{{ t.fw }}; white-space:nowrap; flex:none">{{ t.n }}</button></sc-for></div>
+
+  <sc-if value="{{ v.apps }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:12px">
+        <sc-for list="{{ apps }}" as="a" hint-placeholder-count="4">
+          <div style="display:flex; flex-direction:column; gap:10px; padding:16px 18px; border-radius:20px; border:1px solid {{ a.bc }}; background:#FFFDF6">
+            <div style="display:flex; gap:10px; align-items:center"><span style="width:38px; height:38px; border-radius:12px; background:{{ a.color }}; color:{{ a.ink }}; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:17px; font-weight:700; border:1px solid rgba(25,21,16,.1)">{{ a.ini }}</span><span style="flex:1; display:flex; flex-direction:column"><b style="font-size:14px">{{ a.name }}</b><span style="font-size:11.5px; color:#5F5849">{{ a.desc }}</span></span><span style="padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; background:{{ a.sbg }}; color:{{ a.sc }}">{{ a.status }}</span></div>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; font-size:11px; color:#5F5849"><span style="display:flex; flex-direction:column"><b style="font-size:14px; color:#191510">{{ a.orgs }}</b>accounts</span><span style="display:flex; flex-direction:column"><b style="font-size:14px; color:{{ a.latC }}">{{ a.lat }}</b>response</span><span style="display:flex; flex-direction:column"><b style="font-size:14px; color:{{ a.errC }}">{{ a.err }}</b>errors</span></div>
+            <div style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; color:#5F5849">{{ a.api }} · {{ a.version }}</div>
+            <div style="display:flex; gap:6px"><button onClick="{{ a.test }}" style="flex:1; height:32px; border-radius:9px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer">Test connection</button><button onClick="{{ a.toggleMaint }}" style="flex:1; height:32px; border-radius:9px; border:1px solid {{ a.mbc }}; background:{{ a.mbg }}; font-size:12px; font-weight:600; cursor:pointer">{{ a.maintLabel }}</button></div>
+          </div>
+        </sc-for>
+        <button onClick="{{ connect }}" style="min-height:180px; border-radius:20px; border:2px dashed #C4BCA8; background:transparent; font-size:13.5px; font-weight:700; cursor:pointer">＋ Connect an application</button>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:14px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:center"><b style="font-size:15px">Feature flags · {{ curName }}</b><span style="font-size:12px; color:#5F5849">On for every account</span></div>
+          <sc-for list="{{ flags }}" as="f"><div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:11px 18px; border-bottom:1px solid #E8DFC9"><span style="display:flex; flex-direction:column"><b style="font-size:13px">{{ f.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ f.d }}</span></span><button onClick="{{ f.toggle }}" aria-pressed="{{ f.on }}" style="position:relative; width:42px; height:24px; flex:none; border-radius:999px; border:none; background:{{ f.track }}; cursor:pointer; white-space:nowrap; flex:none"><span style="position:absolute; top:3px; left:{{ f.knob }}px; width:18px; height:18px; border-radius:999px; background:#FFFDF6"></span></button></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+          <b style="font-size:15px">API key</b>
+          <div style="display:flex; gap:8px; align-items:center"><span style="flex:1; font-family:ui-monospace,Menlo,monospace; font-size:12px; padding:10px 12px; border-radius:10px; background:#FCF6E9; border:1px solid #E8DFC9">{{ apiKey }}</span><button onClick="{{ rotate }}" style="height:36px; padding:0 12px; border-radius:10px; border:1px solid #191510; background:#FFFDF6; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">Rotate</button></div>
+          <span style="font-size:12px; color:#5F5849">Applications use this key to send accounts, usage and billing events to Sentral.</span>
+          <b style="font-size:15px; margin-top:6px">Status message</b>
+          <textarea value="{{ banner }}" onChange="{{ setBanner }}" placeholder="Shown at the top of the app for all users" style="min-height:70px; padding:10px 12px; border-radius:12px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></textarea>
+          <button onClick="{{ publishBanner }}" style="align-self:flex-start; height:34px; padding:0 13px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer">Publish to {{ curName }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.plans }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:12px">
+        <sc-for list="{{ plans }}" as="p"><div style="background:#FFFDF6; border:1px solid {{ p.bc }}; border-radius:20px; padding:18px; display:flex; flex-direction:column; gap:10px"><div style="display:flex; justify-content:space-between; align-items:baseline"><b style="font-size:15px">{{ p.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ p.count }} accounts</span></div><span style="font-size:12px; color:#5F5849">{{ p.band }} employees</span><label style="display:flex; align-items:center; gap:6px; font-size:12px; color:#5F5849"><input value="{{ p.price }}" onChange="{{ p.setPrice }}" style="width:90px; height:38px; padding:0 10px; border-radius:10px; border:1px solid #E8DFC9; background:#FCF6E9; font-family:'Playfair Display',serif; font-size:20px; font-weight:600; color:#191510"></input>kr / month</label><sc-for list="{{ p.inc }}" as="i"><span style="font-size:12px">✓ {{ i }}</span></sc-for></div></sc-for>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:center; background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:14px 18px">
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px">Trial length<select value="{{ trialDays }}" onChange="{{ setTrial }}" style="height:34px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; font-weight:700"><option>14</option><option>30</option><option>45</option></select>days</label>
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px">Annual discount<select value="{{ annual }}" onChange="{{ setAnnual }}" style="height:34px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px; font-weight:700"><option>2 months free</option><option>10 %</option><option>None</option></select></label>
+        <span style="flex:1"></span>
+        <button onClick="{{ savePlans }}" style="height:36px; padding:0 15px; border-radius:10px; border:1px solid #191510; background:#F5C64A; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">Save prices</button>
+      </div>
+      <span style="font-size:12px; color:#5F5849">New prices apply to new subscriptions. Existing accounts keep their price until you move them.</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.team }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; align-items:center; padding:12px 18px; border-bottom:1px solid #E8DFC9"><b style="font-size:15px">Team</b><span style="display:flex; gap:6px"><input value="{{ invite }}" onChange="{{ setInvite }}" placeholder="name@orgpuls.no" style="width:220px; height:34px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input><button onClick="{{ sendInvite }}" style="height:34px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">Invite</button></span></div>
+      <div style="display:grid; grid-template-columns:minmax(0,1.5fr) 160px 110px 90px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849"><span>Person</span><span>Role</span><span>Last active</span><span></span></div>
+      <sc-for list="{{ team }}" as="u"><div style="display:grid; grid-template-columns:minmax(0,1.5fr) 160px 110px 90px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:13px; opacity:{{ u.op }}"><span style="display:flex; flex-direction:column; min-width:0"><b>{{ u.name }}</b><span style="font-size:11.5px; color:#5F5849">{{ u.email }}</span></span><select value="{{ u.role }}" onChange="{{ u.setRole }}" style="height:32px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>Admin</option><option>Sales</option><option>Support</option><option>Marketing</option><option>Read-only</option></select><span style="color:#5F5849">{{ u.last }}</span><button onClick="{{ u.remove }}" style="height:28px; border-radius:9px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:12px; font-weight:600; cursor:pointer">{{ u.removeLabel }}</button></div></sc-for>
+      <div style="padding:12px 18px; font-size:12px; color:#5F5849">Admin: everything · Sales: CRM · Support: Customers and tickets · Marketing: Growth · Read-only: view only</div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: null, maint: {}, flags: {}, key: 'sk_live_4f8a…c21e', banner: '', prices: {}, trial: '30', annual: '2 months free', invite: '', roles: {}, removed: {}, extra: [], toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2400); }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { tabs: [], v: {}, apps: [], flags: [], plans: [], team: [] };
+    const tab = st.tab || (['plans', 'team'].includes(this.props.tab) ? this.props.tab : 'apps');
+    const product = this.props.product || 'orgpuls';
+    const pill = (on) => ({ bg: on ? '#191510' : 'transparent', c: on ? '#FCF6E9' : '#191510', bc: on ? '#191510' : '#C4BCA8', fw: on ? 700 : 500 });
+    const tabs = [['apps', 'Applications'], ['plans', 'Plans and prices'], ['team', 'Team and roles']].map(([k, n]) => ({ n, pick: () => this.setState({ tab: k }), ...pill(tab === k) }));
+    const apps = D.products.map((p) => { const m = !!st.maint[p.id]; const status = m ? 'Maintenance' : p.status; return { ...p, ini: p.name[0], status, orgs: D.orgs.filter((o) => o.products.includes(p.id)).length, lat: p.latency + ' ms', latC: p.latency > 500 ? '#A33A16' : '#191510', err: D.pct(p.err), errC: p.err > 1.5 ? '#A33A16' : '#191510',
+      sbg: m ? '#FBD5C4' : p.status === 'Degraded' ? '#F5DC96' : p.status === 'Beta' ? '#EFE6D2' : '#CFE7E4', sc: m ? '#6B240C' : p.status === 'Degraded' ? '#5C4600' : p.status === 'Beta' ? '#5F5849' : '#20431C', bc: p.id === product ? '#191510' : '#E8DFC9',
+      maintLabel: m ? 'End maintenance' : 'Maintenance mode', mbg: m ? '#FBD5C4' : 'transparent', mbc: m ? '#E38258' : '#E8DFC9',
+      test: () => this.flash(p.name + ' responded in ' + p.latency + ' ms'), toggleMaint: () => { this.setState({ maint: { ...st.maint, [p.id]: !m } }); this.flash(m ? p.name + ' is back online' : p.name + ' is in maintenance mode'); } }; });
+    const cur = D.productById[product];
+    const FL = [['New results dashboard', 'Redesigned results page'], ['Pulse surveys', 'Short recurring surveys'], ['AI comment screening', 'Flags names in free-text answers'], ['Nynorsk language', 'Pilot with 6 accounts'], ['Mobile app access', 'Sign in from the mobile app']];
+    const flags = FL.map(([n, d], i) => { const k = product + i; const on = st.flags[k] != null ? st.flags[k] : i !== 3; return { n, d, on, track: on ? '#191510' : '#C4BCA8', knob: on ? 21 : 3, toggle: () => this.setState({ flags: { ...st.flags, [k]: !on } }) }; });
+    const INC = [['Unlimited surveys', '1 admin'], ['Unlimited surveys', '3 admins', 'Pulse surveys'], ['Unlimited surveys', '10 admins', 'Pulse surveys', 'Reports for the board'], ['Everything', 'Unlimited admins', 'Priority support']];
+    const plans = D.bands.map((b, i) => ({ n: ['Small', 'Medium', 'Large', 'Enterprise'][i], band: b.label, count: D.orgs.filter((o) => o.band === b.label && o.products.includes(product)).length, price: st.prices[b.id] != null ? st.prices[b.id] : String(b.price), inc: INC[i], bc: i === 1 ? '#191510' : '#E8DFC9', setPrice: (e) => this.setState({ prices: { ...st.prices, [b.id]: e.target.value.replace(/[^\d]/g, '') } }) }));
+    const RM = { 'Super-admin': 'Admin', Sales: 'Sales', Support: 'Support', Finance: 'Read-only', Marketing: 'Marketing', Project: 'Sales', 'Read-only analyst': 'Read-only' };
+    const team = [...D.staff, ...st.extra].map((u) => { const off = !!st.removed[u.id]; return { ...u, role: st.roles[u.id] || RM[u.role] || u.role, last: off ? 'Removed' : u.last, op: off ? 0.45 : 1, removeLabel: off ? 'Restore' : 'Remove', setRole: (e) => { this.setState({ roles: { ...st.roles, [u.id]: e.target.value } }); this.flash(u.name + ' is now ' + e.target.value); }, remove: () => this.setState({ removed: { ...st.removed, [u.id]: !off } }) }; });
+    return { tabs, v: { [tab]: true }, apps, connect: () => this.flash('Add the base URL and API key of the new application'), curName: cur.name, flags,
+      apiKey: st.key, rotate: () => { this.setState({ key: 'sk_live_' + Math.random().toString(16).slice(2, 6) + '…' + Math.random().toString(16).slice(2, 6) }); this.flash('New key created · the old one stops working now'); },
+      banner: st.banner, setBanner: (e) => this.setState({ banner: e.target.value }), publishBanner: () => this.flash(st.banner.trim() ? 'Status message live in ' + cur.name : 'Write a message first'),
+      plans, trialDays: st.trial, setTrial: (e) => this.setState({ trial: e.target.value }), annual: st.annual, setAnnual: (e) => this.setState({ annual: e.target.value }), savePlans: () => this.flash('Prices saved for new subscriptions'),
+      team, invite: st.invite, setInvite: (e) => this.setState({ invite: e.target.value }), sendInvite: () => { const e = st.invite.trim(); if (!e.includes('@')) { this.flash('Enter an email address'); return; } this.setState({ extra: [...st.extra, { id: 'x' + st.extra.length, name: e.split('@')[0], email: e, role: 'Read-only', last: 'Invited' }], invite: '' }); this.flash('Invite sent to ' + e); }, toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

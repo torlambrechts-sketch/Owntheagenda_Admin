@@ -45,7 +45,8 @@ export function ticketReply(m: { lang: Lang; ref: string; subject: string; body:
   const subject = fill(t.ticketReply.subject, { ref: m.ref, subject: m.subject }).slice(0, 250)
   const sig = fill(t.ticketReply.signature, { agent: m.agent ?? m.fromName, from_name: m.fromName })
   const answer = fill(t.ticketReply.answer, { ref: m.ref })
-  const footer = fill(t.common.footer, { from_name: m.fromName })
+  // the customer hears from the application only; Sentral is not named to them
+  const footer = fill(t.ticketReply.footer, { from_name: m.fromName })
   return {
     subject,
     html: page([para(m.body), para(sig), para(answer, true)], footer),

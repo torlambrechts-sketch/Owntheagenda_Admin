@@ -75,11 +75,20 @@ select pg_temp.check((select last_error from app.mail_settings) = 'http_401', 'a
 select pg_temp.check((public.worker_email_provider_result(true, '{"account": {"plan": "free"}, "webhook_ok": true}') ->> 'status') = 'connected', 'a proven key connects');
 select pg_temp.check(app.connected('email') and (select webhook_ok from app.mail_settings), 'connected, with the webhook');
 select pg_temp.check(not app.mail_ready(), 'connected is not enough: no verified sender yet');
-insert into app.sender_domains (domain, stream, sends_here, from_name, from_local, reply_to, spf_ok, dkim_ok, dmarc_policy, verified_at)
-values ('mailtest.example', 'transactional', true, 'Sentral support', 'support', 'support@mailtest.example', true, true, 'none', now());
-select pg_temp.check(app.mail_ready() and (app.mail_sender()).domain = 'mailtest.example', 'a verified transactional sender makes mail ready');
+update app.sender_domains set verified_at = null, spf_ok = false where deleted_at is null;
+insert into app.sender_domains (domain, stream, sends_here, from_name, from_local, reply_to, spf_ok, dkim_ok, dmarc_policy, verified_at, product)
+values ('other.example', 'transactional', true, 'Other app', 'support', null, true, true, 'none', now(), (select key from app.products where key <> (select product from app.tickets where id = (select ticket from t_ids)) limit 1));
+select pg_temp.check(not app.mail_ready_for((select product from app.tickets where id = (select ticket from t_ids))),
+                     'another application''s sender never sends this application''s mail');
+insert into app.sender_domains (domain, stream, sends_here, from_name, from_local, reply_to, spf_ok, dkim_ok, dmarc_policy, verified_at, product)
+values ('mailtest.example', 'transactional', true, 'Orgpuls', 'support', 'support@mailtest.example', true, true, 'none', now(), (select product from app.tickets where id = (select ticket from t_ids)));
+select pg_temp.check(app.mail_ready() and app.mail_ready_for((select product from app.tickets where id = (select ticket from t_ids)))
+                     and (app.mail_sender_for((select product from app.tickets where id = (select ticket from t_ids)))).domain = 'mailtest.example',
+                     'the ticket''s own application''s verified sender makes its mail ready');
 
 select pg_temp.as_staff('hanna@orgpuls.no');
+select pg_temp.check((public.email_provider_get() -> 'ready_products') ? (select product from app.tickets where id = (select ticket from t_ids)),
+                     'the screens learn which applications can email their customers');
 select pg_temp.check((public.email_provider_get() ->> 'connected')::boolean and not (public.email_provider_get() ->> 'can_manage')::boolean
                      and public.email_provider_get() -> 'account' = '{}'::jsonb,
                      'staff see the state; the account details and management are for those with the right');
@@ -104,7 +113,7 @@ select pg_temp.check(((select r from t_note) ->> 'delivery') is null, 'a note is
 select pg_temp.as_service();
 create temp table t_claim as select public.worker_ticket_mail_claim(50) c;
 select pg_temp.check(exists (select 1 from jsonb_array_elements((select c from t_claim)) x where (x ->> 'id')::uuid = ((select r from t_reply) ->> 'id')::uuid
-                              and x ->> 'from' = 'support@mailtest.example' and x ->> 'reply_to' = 'support@svar.mailtest.example' and x ->> 'ref' like 'T-%' and x ->> 'to' is not null),
+                              and x ->> 'from' = 'support@mailtest.example' and x ->> 'from_name' = 'Orgpuls' and x ->> 'reply_to' = 'support@svar.mailtest.example' and x ->> 'ref' like 'T-%' and x ->> 'to' is not null),
                      'the worker claims it with the sender, the ticket''s reference and the requester''s address');
 select pg_temp.check(not exists (select 1 from jsonb_array_elements(public.worker_ticket_mail_claim(50)) x where (x ->> 'id')::uuid = ((select r from t_reply) ->> 'id')::uuid),
                      'a claimed reply is leased: a second run does not take it');

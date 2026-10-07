@@ -155,8 +155,6 @@
         "error": "Nøkkel avvist"
       },
       "intro": "Koble til Brevo så Sentral kan sende svar på saker, invitasjoner, sikkerhetsvarsler og kampanjer.",
-      "ready": "Sentral sender fra {address}.",
-      "noSender": "Brevo er tilkoblet, men ingen avsenderadresse er bekreftet ennå. Legg til en nedenfor og autentiser domenet i Brevo.",
       "key": "API-nøkkel",
       "keyStored": "Lagret i hvelvet",
       "keyMissing": "Ikke satt",
@@ -194,7 +192,7 @@
       "senders": "Avsenderadresser",
       "addSender": "+ Adresse",
       "noSenders": "Ingen avsenderadresse ennå.",
-      "sendersNote": "Autentiser domenet i Brevo (Senders, domains & dedicated IPs), og sjekk igjen. Transaksjonell e-post (saker, invitasjoner, varsler) går fra en transaksjonell adresse; kampanjer fra en markedsadresse.",
+      "sendersNote": "Hver applikasjon sender kundenes e-post fra sin egen adresse: Orgpuls-saker fra Orgpuls. Autentiser domenet i Brevo (Senders, domains & dedicated IPs), og sjekk igjen.",
       "verified": "Bekreftet",
       "authenticated": "Autentisert, ikke bekreftet",
       "notVerified": "Ikke bekreftet",
@@ -210,7 +208,8 @@
         "fromName": "Vises som",
         "replyTo": "Svar-til (valgfritt)",
         "stream": "Brukes til",
-        "postal": "Postadresse (markedsføring)"
+        "postal": "Postadresse (markedsføring)",
+        "app": "Applikasjon"
       },
       "codes": {
         "key_refused": "Brevo avviste nøkkelen ({code}).",
@@ -218,7 +217,10 @@
         "expired": "Skjemaet var åpent for lenge. Prøv igjen.",
         "no_sender": "Ingen bekreftet avsenderadresse ennå.",
         "other": "Det virket ikke ({code})."
-      }
+      },
+      "readyApp": "Kundene til {app} får e-post fra {address}.",
+      "noSenderApp": "Brevo er tilkoblet, men {app} har ingen bekreftet avsenderadresse ennå: svar på saker lagres, men sendes ikke. Legg til en nedenfor.",
+      "staffMail": "E-post til ansatte (invitasjoner, varsler)"
     }
   }
 }

@@ -74,13 +74,15 @@ export async function saveSender(input: unknown): Promise<Res> {
     replyTo: z.string().trim().toLowerCase().email().max(254).nullable(),
     stream: z.enum(['transactional', 'marketing']),
     postalAddress: z.string().trim().max(300).nullable(),
+    /** the application whose mail this address sends; null for staff mail (invitations, alerts) */
+    product: z.string().regex(/^[a-z][a-z0-9_]{1,30}$/).nullable(),
   }).safeParse(input)
   if (!p.success) return { ok: false, code: 'invalid', detail: String(p.error.issues[0]?.path[0] ?? 'values') }
   const v = p.data
   const r = await rpc('sender_domain_save', {
     p_id: null,
     p_values: { domain: v.domain, from_local: v.fromLocal, from_name: v.fromName, reply_to: v.replyTo || null, stream: v.stream, sends_here: true,
-                ...(v.postalAddress ? { postal_address: v.postalAddress } : {}) },
+                ...(v.postalAddress ? { postal_address: v.postalAddress } : {}), ...(v.product ? { product: v.product } : {}) },
   }, z.unknown())
   if (!r.ok) return r
   await mailRun('connect')

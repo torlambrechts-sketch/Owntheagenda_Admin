@@ -10,7 +10,7 @@ import { accessToken } from '@/lib/storage/server'
  * are parsed, never cast.
  */
 const Sender = z.object({ id: z.string(), domain: z.string(), stream: z.enum(['marketing', 'transactional']), sends_here: z.boolean(), address: z.string(),
-  name: z.string().nullable(), reply_to: z.string().nullable(), authenticated: z.boolean(), verified: z.boolean(), last_checked_at: z.string().nullable(), version: z.number() })
+  name: z.string().nullable(), reply_to: z.string().nullable(), product: z.string().nullable().optional(), authenticated: z.boolean(), verified: z.boolean(), last_checked_at: z.string().nullable(), version: z.number() })
 export const EmailProvider = z.object({
   provider: z.literal('brevo'),
   status: z.enum(['not_connected', 'connected', 'error']),
@@ -26,6 +26,8 @@ export const EmailProvider = z.object({
   last_error: z.string().nullable(),
   last_run_at: z.string().nullable(),
   ready: z.boolean(),
+  /** the applications whose customers get email now: a verified sending address of their own (0061) */
+  ready_products: z.array(z.string()).default([]),
   sender: z.object({ id: z.string(), address: z.string(), name: z.string().nullable(), reply_to: z.string().nullable(), stream: z.string() }).nullable(),
   senders: z.array(Sender),
   waiting: z.object({ tickets: z.number(), invites: z.number(), alerts: z.number(), jobs: z.number() }),

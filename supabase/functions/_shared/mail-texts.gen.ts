@@ -8,7 +8,8 @@ export const MAIL_TEXTS = {
     "ticketReply": {
       "subject": "Re: [{ref}] {subject}",
       "signature": "— {agent}, {from_name}",
-      "answer": "Reply to this email to answer. Your answer is added to {ref}."
+      "answer": "Reply to this email to answer. Your answer is added to {ref}.",
+      "footer": "Sent by {from_name}."
     },
     "invite": {
       "subject": "You are invited to Sentral",
@@ -65,7 +66,8 @@ export const MAIL_TEXTS = {
     "ticketReply": {
       "subject": "Sv: [{ref}] {subject}",
       "signature": "— {agent}, {from_name}",
-      "answer": "Svar på denne e-posten for å svare. Svaret ditt legges til {ref}."
+      "answer": "Svar på denne e-posten for å svare. Svaret ditt legges til {ref}.",
+      "footer": "Sendt av {from_name}."
     },
     "invite": {
       "subject": "Du er invitert til Sentral",

@@ -7,7 +7,8 @@
     "ticketReply": {
       "subject": "Re: [{ref}] {subject}",
       "signature": "— {agent}, {from_name}",
-      "answer": "Reply to this email to answer. Your answer is added to {ref}."
+      "answer": "Reply to this email to answer. Your answer is added to {ref}.",
+      "footer": "Sent by {from_name}."
     },
     "invite": {
       "subject": "You are invited to Sentral",

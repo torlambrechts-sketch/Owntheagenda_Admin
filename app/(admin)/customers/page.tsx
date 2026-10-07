@@ -81,7 +81,7 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
       canAccounts ? loadAccounts(product) : Promise.resolve(null),
       loadEmailProvider(),
     ])
-    const mailReady = mail.ok && mail.data.ready
+    const mailReady = mail.ok && mail.data.ready_products.includes(product)
     counts = { accounts: accounts ? accounts.rows.length : null, tickets: queue.counts.open }
     const selectedId = p.ticket ?? queue.rows[0]?.id ?? null
     const ticket = selectedId ? await loadTicket(selectedId) : null

@@ -15,7 +15,7 @@ const PILL = { connected: 'bg-ok-bg text-ok-ink', not_connected: 'bg-beige text-
  * sets the public address links open and the optional reply domain for customers' answers. Sending addresses are the
  * sender domains Brevo has authenticated.
  */
-export function EmailCard({ p }: { p: EmailProvider }) {
+export function EmailCard({ p, apps, current }: { p: EmailProvider; apps: { key: string; name: string }[]; current: string }) {
   const t = useTranslations('simplePlatform.email')
   const ago = useAgo()
   const router = useRouter()
@@ -50,7 +50,9 @@ export function EmailCard({ p }: { p: EmailProvider }) {
       </div>
 
       <p className="m-0 text-12.5 text-muted">
-        {p.ready ? t('ready', { address: p.sender?.address ?? '' }) : p.connected ? t('noSender') : t('intro')}
+        {!p.connected ? t('intro') : p.ready_products.includes(current)
+          ? t('readyApp', { app: apps.find((a) => a.key === current)?.name ?? current, address: p.senders.find((d) => d.product === current && d.verified)?.address ?? '' })
+          : t('noSenderApp', { app: apps.find((a) => a.key === current)?.name ?? current })}
       </p>
 
       <dl className="m-0 grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-[6px] text-12.5">
@@ -124,7 +126,7 @@ export function EmailCard({ p }: { p: EmailProvider }) {
               <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 text-12.5">
                 <span className="flex min-w-0 flex-col">
                   <b className={`${k.mono} text-12`}>{d.address}</b>
-                  <span className="text-11.5 text-muted">{d.name ?? '—'} · {t(`stream.${d.stream}`)}</span>
+                  <span className="text-11.5 text-muted">{d.name ?? '—'} · {d.product ? apps.find((a) => a.key === d.product)?.name ?? d.product : t('staffMail')} · {t(`stream.${d.stream}`)}</span>
                 </span>
                 <span className={`rounded-999 px-[9px] py-[2px] text-11 font-bold ${d.verified ? PILL.connected : d.authenticated ? 'bg-amber-bg text-amber-ink' : PILL.not_connected}`}>
                   {d.verified ? t('verified') : d.authenticated ? t('authenticated') : t('notVerified')}
@@ -133,26 +135,33 @@ export function EmailCard({ p }: { p: EmailProvider }) {
             ))}
           </ul>
         )}
-        {adding ? <SenderForm onDone={() => setAdding(false)} /> : null}
+        {adding ? <SenderForm apps={apps} current={current} onDone={() => setAdding(false)} /> : null}
         <span className={k.note}>{t('sendersNote')}</span>
       </div>
     </div>
   )
 }
 
-function SenderForm({ onDone }: { onDone: () => void }) {
+function SenderForm({ apps, current, onDone }: { apps: { key: string; name: string }[]; current: string; onDone: () => void }) {
   const t = useTranslations('simplePlatform.email')
   const router = useRouter()
   const { flash, errText } = useAct()
   const [pending, start] = useTransition()
-  const [v, setV] = useState({ domain: '', fromLocal: 'support', fromName: '', replyTo: '', stream: 'transactional' as 'transactional' | 'marketing', postalAddress: '' })
+  const [v, setV] = useState({ domain: '', fromLocal: 'support', fromName: apps.find((a) => a.key === current)?.name ?? '', replyTo: '',
+    stream: 'transactional' as 'transactional' | 'marketing', postalAddress: '', product: current })
   const set = (key: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setV((x) => ({ ...x, [key]: e.target.value }))
   const save = () => start(async () => {
-    const r = await saveSender({ ...v, replyTo: v.replyTo || null, postalAddress: v.postalAddress || null })
+    const r = await saveSender({ ...v, replyTo: v.replyTo || null, postalAddress: v.postalAddress || null, product: v.product || null })
     if (r.ok) { flash(t('senderSaved')); onDone(); router.refresh() } else flash(errText(r as never))
   })
   return (
     <div className="grid gap-2 rounded-12 border border-line p-3 [grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))]">
+      <label className={k.label}>{t('f.app')}
+        <select value={v.product} onChange={set('product')} className={k.input}>
+          {apps.map((a) => <option key={a.key} value={a.key}>{a.name}</option>)}
+          <option value="">{t('staffMail')}</option>
+        </select>
+      </label>
       <label className={k.label}>{t('f.domain')}<input value={v.domain} onChange={set('domain')} placeholder="orgpuls.no" className={k.input} /></label>
       <label className={k.label}>{t('f.fromLocal')}<input value={v.fromLocal} onChange={set('fromLocal')} className={k.input} /></label>
       <label className={k.label}>{t('f.fromName')}<input value={v.fromName} onChange={set('fromName')} placeholder="Orgpuls" className={k.input} /></label>

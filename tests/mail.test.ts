@@ -20,6 +20,11 @@ describe('mail rendering', () => {
     expect(m.html).toContain('Hei &lt;script&gt;<br>linje 2')
     expect(m.text).toContain('Svaret ditt legges til T-2329')
   })
+  it('a customer hears from the application, never from «Sentral»', () => {
+    const m = R.ticketReply({ lang: 'no', ref: 'T-1', subject: 's', body: 'b', agent: 'Sara', fromName: 'Orgpuls' })
+    expect(m.text).toContain('Sendt av Orgpuls.')
+    expect(`${m.subject}${m.html}${m.text}`).not.toContain('Sentral')
+  })
   it('links stay on the saved public address', () => {
     expect(R.safeLink('https://admin.example', '/velkommen?token_hash=a&type=invite')).toBe('https://admin.example/velkommen?token_hash=a&type=invite')
     expect(() => R.safeLink('https://admin.example', 'https://evil.example/x')).toThrow()

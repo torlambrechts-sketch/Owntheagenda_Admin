@@ -155,8 +155,6 @@
         "error": "Key refused"
       },
       "intro": "Connect Brevo so Sentral can send ticket replies, invitations, security alerts and campaigns.",
-      "ready": "Sentral sends from {address}.",
-      "noSender": "Brevo is connected, but no sending address is verified yet. Add one below and authenticate its domain in Brevo.",
       "key": "API key",
       "keyStored": "Stored in the vault",
       "keyMissing": "Not set",
@@ -194,7 +192,7 @@
       "senders": "Sending addresses",
       "addSender": "+ Address",
       "noSenders": "No sending address yet.",
-      "sendersNote": "Authenticate the domain in Brevo (Senders, domains & dedicated IPs), then check again. Transactional mail (tickets, invitations, alerts) goes from a transactional address; campaigns from a marketing one.",
+      "sendersNote": "Each application sends its customers' mail from its own address: Orgpuls tickets from Orgpuls. Authenticate the domain in Brevo (Senders, domains & dedicated IPs), then check again.",
       "verified": "Verified",
       "authenticated": "Authenticated, not verified",
       "notVerified": "Not verified",
@@ -210,7 +208,8 @@
         "fromName": "Shown as",
         "replyTo": "Reply-to (optional)",
         "stream": "Used for",
-        "postal": "Postal address (marketing)"
+        "postal": "Postal address (marketing)",
+        "app": "Application"
       },
       "codes": {
         "key_refused": "Brevo refused the key ({code}).",
@@ -218,7 +217,10 @@
         "expired": "The form was open too long. Try again.",
         "no_sender": "No verified sending address yet.",
         "other": "It did not work ({code})."
-      }
+      },
+      "readyApp": "{app}'s customers get email from {address}.",
+      "noSenderApp": "Brevo is connected, but {app} has no verified sending address yet: its ticket replies are stored, not emailed. Add one below.",
+      "staffMail": "Staff mail (invitations, alerts)"
     }
   }
 }

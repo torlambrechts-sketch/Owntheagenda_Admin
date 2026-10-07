@@ -73,7 +73,7 @@ export function AppsTab({ apps, current, name, notice, flags, canConfigure, owne
       <div className="grid items-start gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))]">
         <FlagsCard key={current} product={current} name={name} flags={flags} canConfigure={canConfigure} />
         <KeyAndNotice key={`${current}:${notice?.current?.id ?? ''}`} app={cur} product={current} name={name} notice={notice} canConfigure={canConfigure} />
-        {email ? <EmailCard p={email} /> : null}
+        {email ? <EmailCard p={email} apps={apps.map((a) => ({ key: a.key, name: a.name }))} current={current} /> : null}
       </div>
       {connect ? <ConnectDialog onClose={() => setConnect(false)} /> : null}
     </div>

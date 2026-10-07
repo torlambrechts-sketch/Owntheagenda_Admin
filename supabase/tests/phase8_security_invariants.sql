@@ -248,7 +248,12 @@ select pg_temp.check((public.staff_sessions_revoke_all((select tor from t_staff)
                      'log out of all devices ends one''s other sessions and keeps the current one');
 select pg_temp.check(not app.session_ok(null) and not app.session_ok(gen_random_uuid()), 'no session, or an unknown one past the grace window, is not good');
 insert into auth.sessions (id, user_id, created_at, updated_at, aal) select '00000000-0000-0000-0000-0000000005e5', id, now(), now(), 'aal2' from auth.users where email = 'tor@orgpuls.no';
-select pg_temp.check(app.session_ok('00000000-0000-0000-0000-0000000005e5'), 'an Auth session not yet reported is good within the two-minute grace window');
+select pg_temp.check(app.session_ok('00000000-0000-0000-0000-0000000005e5'), 'an Auth session not yet reported is good');
+-- 0047: and it stays good past two minutes while Auth has it (nothing reports sessions yet; app.me() refused everyone)
+update auth.sessions set created_at = now() - interval '3 hours' where id = '00000000-0000-0000-0000-0000000005e5';
+select pg_temp.check(app.session_ok('00000000-0000-0000-0000-0000000005e5'), 'an unreported Auth session three hours old is still good (R-SECURITY-04)');
+delete from auth.sessions where id = '00000000-0000-0000-0000-0000000005e5';
+select pg_temp.check(not app.session_ok('00000000-0000-0000-0000-0000000005e5'), 'once Auth drops the session it is not good');
 update app.staff_sessions set last_seen_at = now() - interval '31 minutes' where session_id = pg_temp.sid('magnus@orgpuls.no');
 select pg_temp.check(not app.session_ok(pg_temp.sid('magnus@orgpuls.no')), 'session_idle on_30: a session idle 31 minutes is not good');
 select public.setting_set('session_idle', 'off');

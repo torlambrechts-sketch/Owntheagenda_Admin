@@ -3,6 +3,9 @@
 \ir _helpers.psql
 begin;
 
+-- the roles this suite was written for (0057 folded Projects into Sales): emma keeps the Projects set, which still exists
+update app.admins set permission_set_id = (select id from app.permission_sets where key = 'project') where email = 'emma@orgpuls.no';
+
 -- the seed carries the design's platform fixtures (phase8-platform.mjs); this suite counts from an empty register
 delete from app.webhooks; delete from app.api_tokens; delete from app.oauth_apps; delete from app.installed_apps; delete from app.status_notices;
 delete from app.record_geo;  -- the mobile seed (phase8-mobile.mjs) places 46 organizations

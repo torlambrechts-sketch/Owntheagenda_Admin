@@ -4,6 +4,15 @@
 \ir _helpers.psql
 begin;
 
+-- the rights this suite was written for: 0057 gave Sales campaigns:see and campaigns:add (CRM › Lists); here Sales stands for a
+-- seller without any campaigns right
+update app.permission_sets set rights = array(select r from unnest(rights) r where r not in ('campaigns:see', 'campaigns:add')) where key = 'sales';
+
+-- the rights this suite was written for: 0057 gave Marketing campaigns:reports_others, campaigns:workflows, campaigns:delete and
+-- global:see (Simple's Growth and Platform); here Marketing keeps its earlier rights
+update app.permission_sets set rights = array(select r from unnest(rights) r
+  where r not in ('campaigns:reports_others', 'campaigns:workflows', 'campaigns:delete', 'global:see')) where key = 'marketing';
+
 -- expect_detail(sql, message, detail): the statement must raise with this message and this detail
 create or replace function pg_temp.expect_detail(p_sql text, p_message text, p_detail text, p_label text) returns void language plpgsql as $$
 declare v_msg text; v_det text;

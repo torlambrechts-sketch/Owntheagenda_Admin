@@ -3,6 +3,10 @@
 \ir _helpers.psql
 begin;
 
+-- the rights this suite was written for: 0057 gave Sales campaigns:see and campaigns:add (CRM › Lists); here Sales stands for a
+-- seller without any campaigns right
+update app.permission_sets set rights = array(select r from unnest(rights) r where r not in ('campaigns:see', 'campaigns:add')) where key = 'sales';
+
 -- expect_state(sql, sqlstate, label): the statement must fail with this SQLSTATE (a constraint, not a function's message)
 create or replace function pg_temp.expect_state(p_sql text, p_state text, p_label text) returns void language plpgsql as $$
 declare v text;

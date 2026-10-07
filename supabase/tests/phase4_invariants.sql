@@ -2,6 +2,11 @@
 \ir _helpers.psql
 begin;
 
+-- the rights this suite was written for: 0057 gave Marketing campaigns:reports_others, campaigns:workflows, campaigns:delete and
+-- global:see (Simple's Growth and Platform); here Marketing keeps its earlier rights
+update app.permission_sets set rights = array(select r from unnest(rights) r
+  where r not in ('campaigns:reports_others', 'campaigns:workflows', 'campaigns:delete', 'global:see')) where key = 'marketing';
+
 -- ---------------------------------------------------------------------------
 -- structure: the tracker stores a hash, never an address; worker functions are the service role's
 select pg_temp.check(not exists (select 1 from information_schema.columns where table_schema = 'app' and table_name like 'web\_%'

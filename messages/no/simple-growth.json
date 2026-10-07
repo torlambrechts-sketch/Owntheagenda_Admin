@@ -1,3 +1,293 @@
 {
-  "simpleGrowth": {}
+  "simpleGrowth": {
+    "noAccess": {
+      "title": "Ikke tilgjengelig for deg",
+      "body": "Denne delen av Vekst krever retten til å se kampanje- eller selskapsrapporter, eller Kampanjer › Se. Spør en administrator om du trenger den."
+    },
+    "tabs": {
+      "label": "Vekst",
+      "analytics": "Analyse",
+      "seo": "SEO",
+      "campaigns": "Markedsføringskampanjer",
+      "email": "E-post og automasjon"
+    },
+    "range": {
+      "label": "Periode",
+      "7d": "7 d",
+      "30d": "30 d",
+      "90d": "90 d"
+    },
+    "analytics": {
+      "kpi": {
+        "visitors": "Besøkende",
+        "signups": "Registreringer",
+        "visitSignup": "Besøk → registrering",
+        "trialPaid": "Prøve → betalende",
+        "trialPaidTip": "Prøveperioder startet i kohortmånedene som ble betalende innen 45 dager (som Analyse › Forretning).",
+        "cost": "Kostnad per kunde",
+        "costNone": "Det er ikke lagt inn markedsføringskostnader for denne perioden. Legg dem inn på en kampanje under Markedsføringskampanjer.",
+        "costTip": "Kostnader lagt inn fra {from} ÷ {customers} nye betalende kunder i de samme månedene. Kostnader legges inn per måned."
+      },
+      "tracker": {
+        "waiting": "Besøkende vises når nettstedssporingen kjører på {site}.",
+        "noSite": "Ingen offentlig nettside er registrert for {app}, så det finnes ingen besøkende å telle."
+      },
+      "chart": {
+        "title": "Besøkende og registreringer",
+        "visitors": "Besøkende",
+        "signupsScaled": "Registreringer (skalert)",
+        "signups": "Registreringer"
+      },
+      "funnel": {
+        "title": "Fra besøk til betalende kunde",
+        "visited": "Besøkte nettsiden",
+        "viewed_pricing": "Så prisene",
+        "started_signup": "Startet registrering",
+        "account_created": "Opprettet konto",
+        "survey_sent": "Sendte første undersøkelse",
+        "paying": "Ble betalende",
+        "topMissing": "Besøk, prisvisninger og påbegynte registreringer krever nettstedssporingen. De tre nederste trinnene følger kontoene som ble opprettet i perioden."
+      },
+      "sources": {
+        "title": "Hvor de besøkende kommer fra",
+        "source": "Kilde",
+        "visits": "Besøk",
+        "signups": "Registreringer",
+        "conv": "Konv.",
+        "empty": "Ingen registreringer i denne perioden.",
+        "visitsMissing": "Registreringer etter kanalen til det første besøket. Besøk vises når nettstedssporingen kjører."
+      },
+      "pages": {
+        "title": "Beste landingssider",
+        "sub": "Sider som gir registreringer",
+        "none": "Ingen besøk i denne perioden.",
+        "signupsMissing": "Et besøk kan ikke kobles til en registrering (sporingen lagrer ingen informasjonskapsel), så registreringer per side er ikke kjent."
+      },
+      "channels": {
+        "organic_search": "Organisk søk",
+        "paid_search": "Betalt søk",
+        "direct": "Direkte",
+        "social": "Sosiale medier",
+        "partner": "Henvisning",
+        "email": "E-post",
+        "paid_social": "Betalt sosialt"
+      }
+    },
+    "seo": {
+      "kpi": {
+        "clicks": "Organiske klikk",
+        "impressions": "Visninger",
+        "position": "Gjennomsnittlig posisjon"
+      },
+      "connect": {
+        "title": "Koble til Search Console",
+        "body": "Klikk, visninger og posisjoner for {site} hentes hver natt når Search Console er koblet til. Inntil da vises ingen tall.",
+        "noSite": "Ingen offentlig nettside er registrert for {app}, så det er ingenting å koble til.",
+        "button": "Koble til Search Console",
+        "reason": "Ikke tilgjengelig ennå: Google-innloggingen som kobler til Search Console, er ikke bygget."
+      },
+      "keywords": {
+        "title": "Sporede søkeord",
+        "placeholder": "Legg til et søkeord å spore",
+        "track": "Spor",
+        "cols": {
+          "keyword": "Søkeord",
+          "impressions": "Visninger",
+          "position": "Posisjon",
+          "change": "Endring",
+          "page": "Rangert side"
+        },
+        "notRanking": "Rangerer ikke ennå",
+        "remove": "Slutt å spore «{q}»",
+        "empty": "Ingen søkeord spores ennå.",
+        "noSite": "Ingen offentlig nettside er registrert for {app}.",
+        "duplicate": "Det søkeordet spores allerede.",
+        "limit": "200 søkeord spores allerede. Fjern ett først.",
+        "tracked": "Søkeordet spores · første posisjon i morgen",
+        "trackedNotConnected": "Søkeordet spores · posisjoner vises når Search Console er koblet til",
+        "removed": "Søkeordet spores ikke lenger"
+      }
+    },
+    "campaigns": {
+      "totals": {
+        "spent": "Brukt <b>{spent}</b> av {budget}",
+        "visits": "Besøk <b>{n}</b>",
+        "signups": "Registreringer <b>{n}</b>",
+        "cps": "Kostnad per registrering <b>{v}</b>"
+      },
+      "new": "＋ Ny kampanje",
+      "cols": {
+        "campaign": "Kampanje",
+        "status": "Status",
+        "spent": "Brukt",
+        "signups": "Registr.",
+        "cps": "Per registr."
+      },
+      "states": {
+        "scheduled": "Planlagt",
+        "live": "Aktiv",
+        "paused": "Pauset",
+        "ended": "Avsluttet"
+      },
+      "channels": {
+        "google_ads": "Google Ads",
+        "linkedin": "LinkedIn",
+        "facebook": "Facebook",
+        "newsletter": "Nyhetsbrev",
+        "webinar": "Webinar",
+        "other": "Annet"
+      },
+      "empty": "Ingen kampanjer ennå. ＋ Ny kampanje lager en med sporingslenke.",
+      "emptyNoRight": "Ingen kampanjer ennå.",
+      "dates": {
+        "from": "Fra {date}",
+        "until": "Til {date}",
+        "none": "Ingen datoer satt"
+      },
+      "copyName": "{name} (kopi)",
+      "stats": {
+        "visits": "Besøk",
+        "signups": "Registr.",
+        "conversion": "Konvertering",
+        "cps": "Per registr."
+      },
+      "budgetUsed": "Budsjett brukt",
+      "toggle": {
+        "pause": "Pause",
+        "resume": "Gjenoppta",
+        "launch": "Start nå",
+        "duplicate": "Dupliser",
+        "noRight": "Å endre en annens kampanje krever Kampanjer › Rediger andres.",
+        "recordOnly": "Pause, gjenoppta og start endrer bare statusen her. De pauser eller starter ikke annonsene på {channel}."
+      },
+      "spend": {
+        "title": "Kostnader",
+        "none": "Ingen kostnader lagt inn ennå.",
+        "month": "Måned",
+        "amount": "Kostnad (kr)",
+        "save": "Lagre kostnad",
+        "saved": "Kostnaden er lagret",
+        "removed": "Kostnaden er fjernet"
+      },
+      "link": {
+        "title": "Sporingslenke",
+        "copy": "Kopier lenke",
+        "copied": "Sporingslenken er kopiert",
+        "note": "Besøk og registreringer via denne lenken telles i Analyse under kampanjens kilde.",
+        "noSite": "Ingen offentlig nettside er registrert for {app}, så lenken kan ikke lages ennå."
+      },
+      "toast": {
+        "created": "Kampanjen er opprettet · sporingslenken er klar",
+        "duplicated": "Kampanjen er duplisert",
+        "live": "Merket som aktiv her · annonsene går bare hvis de er aktive på {channel}",
+        "paused": "Merket som pauset her · pause også annonsene på {channel}"
+      },
+      "modal": {
+        "title": "Ny markedsføringskampanje",
+        "name": "Navn",
+        "namePlaceholder": "f.eks. Lovkrav — Q4",
+        "channel": "Kanal",
+        "budget": "Budsjett (NOK)",
+        "starts": "Starter",
+        "ends": "Slutter",
+        "landing": "Landingsside",
+        "cancel": "Avbryt",
+        "create": "Opprett kampanje"
+      }
+    },
+    "email": {
+      "new": "＋ Ny e-postkampanje",
+      "row": "{steps, plural, one {# trinn} other {# trinn}} · {enrolled} påmeldt · åpninger {open}",
+      "states": {
+        "active": "Aktiv",
+        "paused": "Pauset",
+        "draft": "Utkast"
+      },
+      "empty": "Ingen e-postkampanjer ennå.",
+      "emptyEditor": "Lag en med ＋ Ny e-postkampanje.",
+      "emptyEditorNoRight": "Ingen e-postkampanje å vise.",
+      "name": "Navn",
+      "activate": "Aktiver",
+      "pause": "Pause",
+      "readOnly": "Du kan lese dette. Å endre det krever Avtaler › Administrer arbeidsflyter, Kampanjer › Administrer arbeidsflyter og Kampanjer › Legg til (og Global › Konfigurer for andres).",
+      "runningBlocked": "Kjører, men {reason}",
+      "blockers": {
+        "not_connected:email": "Aktiver er av: ingen e-postleverandør er koblet til, så ingenting kan sendes.",
+        "campaign_inactive": "Aktiver er av: e-postene er utkast til de aktiveres i Kampanjer.",
+        "sender_domain_unverified": "Aktiver er av: avsenderdomenet er ikke verifisert.",
+        "limit": "Aktiver er av: så mange aktive arbeidsflyter som tillatt kjører allerede.",
+        "other": "Aktiver er av: et trinn kan ikke kjøre ennå."
+      },
+      "trigger": "Starter når",
+      "list": "Send til liste",
+      "exit": "Stopper når",
+      "triggers": {
+        "trial_started": "Kontoen starter en prøveperiode",
+        "trial_ending": "Prøveperioden har 5 dager igjen",
+        "list_added": "Lagt til i en liste",
+        "account_cancels": "Kontoen sier opp",
+        "deal_stage": "Avtalen flyttes til {stage}",
+        "form_submitted": "Kontakten fyller ut et skjema",
+        "send_now": "Send én gang til listen nå"
+      },
+      "proposalSent": "Tilbud sendt",
+      "unavailable": "{name} — {reason}",
+      "triggerWhy": {
+        "trial_started": "ikke ennå: en konto har ingen enkelt kontakt å sende til",
+        "trial_ending": "ikke ennå: ingen utløser for slutten av prøveperioden",
+        "list_added": "ikke ennå: ingen utløser for nye i en liste",
+        "account_cancels": "ikke ennå: en konto har ingen enkelt kontakt å sende til",
+        "deal_stage": "ingen fase heter Proposal sent",
+        "form_submitted": "ikke tilgjengelig",
+        "send_now": "en engangsutsendelse er en kampanjeutsendelse"
+      },
+      "lists": {
+        "anyone": "Alle utløseren starter",
+        "unknown": "En liste du ikke kan se"
+      },
+      "exits": {
+        "reply_unsub": "Kontakten svarer eller melder seg av",
+        "paying": "Kontoen blir betalende",
+        "never": "Aldri"
+      },
+      "kinds": {
+        "email": "E-post",
+        "wait": "Vent",
+        "cond": "Betingelse",
+        "task": "Oppgave for salg"
+      },
+      "stepLabel": "Trinn {i} · {kind}",
+      "waitText": "Vent {n, plural, one {# dag} other {# dager}}",
+      "waitInvalid": "Skriv ventetiden som et antall dager, fra 1 til 365.",
+      "conditions": {
+        "not_paying": "Hvis kontoen ikke betaler ennå",
+        "employees_missing": "Hvis ansattlisten ikke er lastet opp",
+        "on_list": "Hvis kontakten er på listen",
+        "opened_last": "Hvis kontakten åpnet forrige e-post"
+      },
+      "conditionWhy": {
+        "on_list": "velg en liste først",
+        "opened_last": "ikke ennå: åpninger av e-post er ingen betingelse"
+      },
+      "emailStats": "Sendt {sent} · åpnet {open} · klikket {click}",
+      "up": "Flytt trinn {i} opp",
+      "down": "Flytt trinn {i} ned",
+      "remove": "Fjern trinn {i}",
+      "lastStep": "En kampanje har minst ett trinn.",
+      "nothingSends": "Ingenting sendes ennå: ingen e-postleverandør er koblet til. Hver e-post er et utkast i Kampanjer, der innholdet skrives.",
+      "defaults": {
+        "name": "Ny e-postkampanje",
+        "firstEmail": "Første e-post",
+        "newEmail": "Ny e-post",
+        "task": "Lag oppgave: følg opp på telefon"
+      },
+      "toast": {
+        "active": "Aktiv · kontakter kommer inn når utløseren slår til",
+        "paused": "Pauset · ingen nye meldes på"
+      },
+      "errors": {
+        "trigger": "Den starten er ikke tilgjengelig ennå."
+      }
+    }
+  }
 }

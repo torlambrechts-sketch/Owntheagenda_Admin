@@ -1,3 +1,184 @@
 {
-  "simpleCrm": {}
+  "simpleCrm": {
+    "tabs": {
+      "label": "CRM-visninger",
+      "deals": "Avtaler",
+      "lists": "Lister"
+    },
+    "newDeal": "＋ Ny avtale",
+    "newList": "＋ Ny liste",
+    "summary": {
+      "open": "Åpne <b>{count}</b> avtaler",
+      "value": "Verdi <b>{value}</b>",
+      "weighted": "Vektet <b>{value}</b>",
+      "won": "Vunnet denne måneden <b>{value}</b>",
+      "hint": "Dra et kort for å endre trinn"
+    },
+    "next": {
+      "overdue": "Forfalt",
+      "none": "Ingen neste steg",
+      "planned": "Planlagt"
+    },
+    "zone": {
+      "won": "Vunnet",
+      "lost": "Tapt",
+      "count": "{count} denne måneden"
+    },
+    "empty": {
+      "noPipeline": "Det finnes ingen pipeline ennå. Opprett en under Innstillinger › Pipelines og trinn.",
+      "moduleOff": "Avtalemodulen er slått av (Innstillinger › Moduler).",
+      "failed": "Tavlen kunne ikke lastes. Prøv igjen."
+    },
+    "drawer": {
+      "close": "Lukk",
+      "head": "{stage} · {status}",
+      "status": {
+        "open": "åpen",
+        "won": "vunnet",
+        "lost": "tapt"
+      },
+      "facts": {
+        "value": "Verdi",
+        "account": "Konto",
+        "contact": "Kontakt",
+        "owner": "Eier",
+        "close": "Forventet lukking",
+        "source": "Kilde"
+      },
+      "contact": "{name} · {title}",
+      "note": {
+        "heading": "Legg til et notat",
+        "placeholder": "f.eks. Ring torsdag om tilbudet",
+        "save": "Lagre"
+      },
+      "markWon": "Merk som vunnet",
+      "markLost": "Merk som tapt"
+    },
+    "flash": {
+      "moved": "Flyttet til {stage}",
+      "won": "Vunnet · {title}",
+      "lost": "Merket som tapt",
+      "created": "Avtale opprettet",
+      "saved": "Lagret",
+      "listSaved": "Liste lagret",
+      "exported": "{count, plural, one {# rad eksportert} other {# rader eksportert}}",
+      "viewOnly": "Kun visningsrett — du kan ikke endre denne avtalen",
+      "notYours": "Du kan bare flytte og lukke dine egne avtaler"
+    },
+    "modal": {
+      "deal": {
+        "title": "Ny avtale",
+        "dealTitle": "Avtalenavn",
+        "titlePh": "f.eks. Årsavtale for 3 lokasjoner",
+        "account": "Konto",
+        "value": "Verdi (NOK)",
+        "stage": "Trinn",
+        "cta": "Opprett avtale",
+        "fallback": "Ny avtale"
+      },
+      "list": {
+        "title": "Ny liste",
+        "name": "Listenavn",
+        "namePh": "f.eks. HR i prøvekontoer",
+        "role": "Rolle",
+        "anyRole": "Alle roller",
+        "status": "Kontostatus",
+        "anyStatus": "Alle statuser",
+        "preview": "{count} personer treffer nå",
+        "cta": "Lagre liste",
+        "fallback": "Ny liste"
+      },
+      "lost": {
+        "title": "Hvorfor ble den tapt?",
+        "text": "En årsak må oppgis før en avtale merkes som tapt (Innstillinger › Pipelines).",
+        "pick": "Velg en årsak.",
+        "none": "Ingen tapsårsaker er satt opp ennå (Innstillinger › Pipelines).",
+        "cta": "Merk som tapt"
+      },
+      "required": {
+        "title": "Før {stage}",
+        "text": "Disse feltene må fylles ut før avtalen kan flyttes til {stage}.",
+        "fill": "Fyll ut alle feltene.",
+        "unsupported": "«{field}» kan ikke fylles ut her.",
+        "cta": "Flytt"
+      }
+    },
+    "lists": {
+      "saved": "Lagrede lister",
+      "useInCampaign": "Bruk i e-postkampanje",
+      "export": "Eksporter CSV",
+      "exportNoRight": "Eksport krever retten til å eksportere poster.",
+      "whoIsIn": "Hvem er med",
+      "countLine": "{count} personer · {subs} kan motta markedsførings-e-post · oppdateres automatisk",
+      "cols": {
+        "person": "Person",
+        "account": "Konto",
+        "role": "Rolle",
+        "status": "E-poststatus"
+      },
+      "empty": "Ingen treffer disse betingelsene ennå.",
+      "membersFailed": "Personene i denne listen kunne ikke lastes.",
+      "more": "Viser de første {shown} av {total} personer. Eksporter CSV tar med alle.",
+      "noneYet": "Ingen lagrede lister ennå.",
+      "noneYetAdd": "Ingen lagrede lister ennå. Lag en med ＋ Ny liste.",
+      "noRight": "Lister er kampanjemålgrupper, og å se dem krever retten til å se kampanjer. Be en administrator om den.",
+      "moduleOff": "Lister er kampanjemålgrupper, og kampanjemodulen er slått av (Innstillinger › Moduler).",
+      "failed": "Listene kunne ikke lastes. Prøv igjen."
+    },
+    "consent": {
+      "subscribed": "Abonnerer",
+      "no_consent": "Uten samtykke",
+      "pending": "Venter på dobbel bekreftelse",
+      "unsubscribed": "Avmeldt",
+      "bounced": "Returnert",
+      "archived": "Arkivert"
+    },
+    "orgStatus": {
+      "trial": "Prøveperiode",
+      "active": "Aktiv",
+      "past_due": "Forfalt betaling",
+      "suspended": "Suspendert",
+      "free": "Gratis",
+      "cancelled": "Avsluttet",
+      "expired": "Utløpt"
+    },
+    "memberRole": {
+      "daglig_leder": "Daglig leder",
+      "avdelingsleder": "Avdelingsleder",
+      "verneombud": "Verneombud"
+    },
+    "field": {
+      "title": "Rolle",
+      "marketing_status": "E-poststatus",
+      "source": "Kilde",
+      "city": "Sted",
+      "fylke": "Fylke",
+      "organization_name": "Kontonavn",
+      "organization_employees": "Ansatte",
+      "organization_industry": "Bransje",
+      "organization_nace": "NACE-kode",
+      "organization_status": "Konto",
+      "organization_city": "Kontoens sted",
+      "organization_fylke": "Kontoens fylke",
+      "organization_postal_code": "Postnummer",
+      "member_role": "Brukerrolle",
+      "product_last_round_days": "Dager siden en måling åpnet",
+      "engagement_opened_days": "Dager siden siste åpning",
+      "engagement_clicked_days": "Dager siden siste klikk"
+    },
+    "cond": {
+      "eq": "{field} er {value}",
+      "neq": "{field} er ikke {value}",
+      "contains": "{field} inneholder {value}",
+      "in": "{field} er en av {value}",
+      "gte": "{field} er minst {value}",
+      "lte": "{field} er høyst {value}",
+      "between": "{field} er {from}–{to}",
+      "empty": "{field} er tom",
+      "noRound": "Ingen måling ennå",
+      "or": "eller {phrase}",
+      "everyone": "Alle",
+      "custom": "Betingelser satt i Kampanjer"
+    }
+  }
 }

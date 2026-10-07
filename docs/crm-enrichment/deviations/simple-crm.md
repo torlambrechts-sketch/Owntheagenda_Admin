@@ -1,0 +1,30 @@
+# Deviations — Sentral Simple › CRM (`/crm`)
+
+Design: `design-reference/sentral-simple/SimpleCRM.dc.html`. Built on the existing backend (0009 deals, 0035 board,
+0037 segments, 0040 filter fields, 0006 records); no migration (0059 left unused).
+
+| ID | Where | Design | Built | Why |
+|---|---|---|---|---|
+| V-SCR-01 | Deals › summary «Won this month» | Won value **+ 312 000** | Sum of the pipeline's won deals with `won_at` in the current calendar month (the staff member's time zone) | Never fabricate |
+| V-SCR-02 | Deals › Won / Lost zones | `won.length + 6`, `lost.length + 2` this month | Won / lost deals of the pipeline closed this month (`won_at` / `lost_at`), from the same board read (`deal_board` with closed deals) | Never fabricate |
+| V-SCR-03 | Deals › pipeline | `D.pipelines[0]`, deals of pipeline `new` | The first pipeline the person may see, in Settings' order (`pipelines_get`). No pipeline switch: Simple shows one board; deals in other pipelines are not on it (multiple pipelines are out of scope here; the full Deals screen keeps the switch) | Simple has one board by design |
+| V-SCR-04 | Drawer › «Add a note or next step» | Saving sets the card's next step to Planned | «Add a note»: `note_save` stores a note; the card's next step comes only from open activities (`app.deal_act`) | A note is not a planned activity; the card would claim a next step that does not exist |
+| V-SCR-05 | Drawer › notes | A hard-coded note «Ingrid Solberg · 28 Sep» on every deal | The deal's own notes (`notes_list`), newest first; none when there are none | Never fabricate |
+| V-SCR-06 | Drawer › facts | `od.close` text | Expected close as day and month (year when not this year), «—» when unset; contact «name · title», «—» when no contact | Real values |
+| V-SCR-07 | New deal › Account | First organization preselected; contact = the organization's first person | «—» first (no account); no contact is set | A default would tie the deal to an arbitrary account and person |
+| V-SCR-08 | New deal › Value | Prefilled `50000` | Empty; empty saves no value | A prefilled amount saved unchanged is an invented figure |
+| V-SCR-09 | Mark lost / Lost zone | Marks lost at once | Marks lost at once, unless Settings › `lost_reason_required` is on: then a small dialog with the configured lost reasons (`lost_reasons_get`) comes first | `deal_status` refuses a lost deal without a reason when required |
+| V-SCR-10 | Moving to a stage with required fields | — | A dialog asks for the fields `deal_move` reports missing and moves in the same call | The database refuses the move otherwise; a silent no-op would mislead |
+| V-SCR-11 | Deals › rights | Every card movable, every button live | A card the person may not change (not theirs without `deals:edit_others`, or read-only) says so when dragged; in its drawer the stage steps and Mark won / lost are disabled with a one-line reason; «＋ New deal» needs `deals:add`; read-only cannot add notes | `deal_move` / `deal_status` / `deal_create` refuse anyway |
+| V-SCR-12 | Lists › saved lists | Four hard-coded lists computed in the browser | The saved campaign segments (`segments_get`, `saved_views` kind `segment`), each with its rule written from its stored filter; a filter the words cannot express reads «Conditions set in Campaigns» | Real data |
+| V-SCR-13 | Lists › «Role» | `people.role` (Daglig leder, HR, Leder, Verneombud) | The person's title (`people.title`, filter `title eq`); the new-list options are the titles people actually have (`rec_group` on title). The product user's role (`member.role`) keeps its own name, «User role» | The design's roles are job titles, and the seeded lists filter on title |
+| V-SCR-14 | New list › Account status | Trial / Active / Cancelled | Every subscription status `app.filter_sql` knows: trial, active, past due, suspended, free, cancelled, expired | Real values |
+| V-SCR-15 | New list › defaults | HR and Trial preselected | Any role, Any status | A preset would narrow a list the person did not choose |
+| V-SCR-16 | Lists › «N can receive marketing email» | People with consent Subscribed | `receivable` from `app.segment_counts`: the distinct addresses a campaign would actually send to (subscribed, not suppressed, one per address) | The number that matters for a campaign |
+| V-SCR-17 | Lists › Export CSV | Toast «N rows exported», nothing exported | A CSV of every person in the list, in Contacts › Export's columns, formula cells neutralised, recorded with `export_log` (scope `segment`); disabled with a one-line reason without `deals:export` | Real effect; people are a deals-scope record |
+| V-SCR-18 | Lists › people table | Every member | The first 500 by name (`rec_list`'s limit) with a line when there are more; below ~520 px the four columns scroll inside the card | The function's limit; four columns cannot share a phone's width |
+| V-SCR-19 | Lists › access | — | Without `campaigns:see`, or with the campaigns module off, the tab shows an honest line instead of the lists; «＋ New list» needs `campaigns:add` | Lists are campaign audiences (0037) |
+| V-SCR-20 | Lists › sandbox | — | In sandbox mode the counts (`app.segment_sql`: `is_sample = sandbox`) count sample people only, while the people table (`rec_list`) shows real and sample people | The two existing functions differ; the seed has no sample people, so nothing differs today |
+| V-SCR-21 | «Use in email campaign» | Button calling `go('growth','email')` | A link to `/growth?tab=email` with the button's classes | Control substitution (V-01): the prototype has no router |
+| V-SCR-22 | Tabs and the chosen list | Buttons switching component state | The same buttons, which change the address (`?tab=lists`, `&list=<id>`, `?deal=<id>`), so the server loads only the shown tab and a list or a deal can be linked | Control kept; the address carries the state |
+| V-SCR-23 | Application picker | — | The CRM is not filtered by the chosen application, as in the design (its deals carry products and are shown regardless) | Design behaviour; people have no product |

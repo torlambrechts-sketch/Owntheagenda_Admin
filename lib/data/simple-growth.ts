@@ -6,7 +6,7 @@ import { loadSegments } from './campaigns'
 import { AdCampaigns, Overview, PROPOSAL_STAGE, RANGE_DAYS, Seo, Sequence, type GrowthRange } from './simple-growth-shared'
 
 /**
- * What Sentral Simple › Growth reads (0058, 0060). Every read is scoped to the application the shell names and parsed
+ * What Sentral Simple › Growth reads (0058, 0059). Every read is scoped to the application the shell names and parsed
  * here; a refusal comes back as its code so a tab can show its no-access state.
  */
 export const loadOverview = (product: string, range: GrowthRange) =>

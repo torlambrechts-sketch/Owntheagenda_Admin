@@ -43,13 +43,13 @@ available in Orgpuls yet».
 **S2 — CRM.** Deals board/drawer/modal and Lists from the existing deals and segment code, restyled to the design.
 
 **S3 — Platform.** Applications (cards, test, connect, flags, status message, secret presence), Plans and prices
-(read-only), Team and roles. Migration 0058 (roles part): the five roles Admin / Sales / Support / Marketing / Read-only
+(read-only), Team and roles. Migration 0057 (roles): the five roles Admin / Sales / Support / Marketing / Read-only
 mapped onto today's permission sets with patched rights; Finance/Project folded in. Edge: `product-command` and
 `orgpuls-events` log calls (latency/errors), status message pushed with `settings.set_notice`.
 
-**S4 — Growth.** Migration 0057: `growth_overview` (7/30/90 d), `ad_campaigns` (+ spend and UTM joins), `seo_keywords` +
+**S4 — Growth.** Migration 0058: `growth_overview` (7/30/90 d), `ad_campaigns` (+ spend and UTM joins), `seo_keywords` +
 `seo_get`. Analytics and Marketing campaigns with honest empty states; SEO as «Connect Search Console» until connected.
-Email and automation: the sequence editor compiled onto the workflow engine (0058 engine part), activation blocked until
+Email and automation: the sequence editor compiled onto the workflow engine (0059 engine part), activation blocked until
 email sends.
 
 **S5 — Hide the old interface.** The 24 old routes leave the rail. Kept but reachable from the account menu as «Settings

@@ -130,7 +130,7 @@ select public.seo_keyword_remove((select id from t_k));
 select pg_temp.check(not exists (select 1 from app.seo_keywords where id = (select id from t_k)), 'Edit others removes a colleague''s keyword');
 
 -- ---------------------------------------------------------------------------
--- email and automation (0060): the engine's new tests
+-- email and automation (0059): the engine's new tests
 select pg_temp.as_staff('tor@orgpuls.no');
 create temp table t_seg as select (public.segment_save(null, 'Subscribed (test)', '{"filters":[{"f":"marketing_status","op":"eq","v":"subscribed"}]}') ->> 'id')::uuid id;
 create temp table t_pp as select

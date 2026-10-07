@@ -3,7 +3,7 @@ import type { CHANNELS } from './analytics-calc'
 
 /**
  * Sentral Simple › Growth (SimpleGrowth.dc.html, GrowthMarketing.dc.html), shared by the server page and its client parts:
- * the tabs and ranges in the address, the shapes 0058/0060 return, and the pure helpers (tracking links, the email
+ * the tabs and ranges in the address, the shapes 0058/0059 return, and the pure helpers (tracking links, the email
  * editor's model). Nothing here invents a value; the database checks everything again.
  */
 
@@ -135,7 +135,7 @@ export function trackingUrl(host: string | null | undefined, path: string, utm: 
 }
 
 // ---------------------------------------------------------------------------
-// Email and automation (simple_sequences_get, simple_sequence_save; 0060)
+// Email and automation (simple_sequences_get, simple_sequence_save; 0059)
 export const TRIGGERS = ['trial_started', 'trial_ending', 'list_added', 'account_cancels', 'deal_stage', 'form_submitted', 'send_now'] as const
 export type TriggerKey = (typeof TRIGGERS)[number]
 /** What the engine can start a campaign on (a record with a person to email); the others are offered disabled. */

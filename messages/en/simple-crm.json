@@ -1,3 +1,184 @@
 {
-  "simpleCrm": {}
+  "simpleCrm": {
+    "tabs": {
+      "label": "CRM views",
+      "deals": "Deals",
+      "lists": "Lists"
+    },
+    "newDeal": "＋ New deal",
+    "newList": "＋ New list",
+    "summary": {
+      "open": "Open <b>{count}</b> deals",
+      "value": "Value <b>{value}</b>",
+      "weighted": "Weighted <b>{value}</b>",
+      "won": "Won this month <b>{value}</b>",
+      "hint": "Drag a card to change stage"
+    },
+    "next": {
+      "overdue": "Overdue",
+      "none": "No next step",
+      "planned": "Planned"
+    },
+    "zone": {
+      "won": "Won",
+      "lost": "Lost",
+      "count": "{count} this month"
+    },
+    "empty": {
+      "noPipeline": "No pipeline exists yet. Create one under Settings › Pipelines and stages.",
+      "moduleOff": "The deals module is switched off (Settings › Modules).",
+      "failed": "The board could not be loaded. Try again."
+    },
+    "drawer": {
+      "close": "Close",
+      "head": "{stage} · {status}",
+      "status": {
+        "open": "open",
+        "won": "won",
+        "lost": "lost"
+      },
+      "facts": {
+        "value": "Value",
+        "account": "Account",
+        "contact": "Contact",
+        "owner": "Owner",
+        "close": "Expected close",
+        "source": "Source"
+      },
+      "contact": "{name} · {title}",
+      "note": {
+        "heading": "Add a note",
+        "placeholder": "e.g. Call Thursday about the proposal",
+        "save": "Save"
+      },
+      "markWon": "Mark won",
+      "markLost": "Mark lost"
+    },
+    "flash": {
+      "moved": "Moved to {stage}",
+      "won": "Won · {title}",
+      "lost": "Marked lost",
+      "created": "Deal created",
+      "saved": "Saved",
+      "listSaved": "List saved",
+      "exported": "{count, plural, one {# row exported} other {# rows exported}}",
+      "viewOnly": "View rights only — you cannot change this deal",
+      "notYours": "You can move and close your own deals only"
+    },
+    "modal": {
+      "deal": {
+        "title": "New deal",
+        "dealTitle": "Deal title",
+        "titlePh": "e.g. Annual plan for 3 sites",
+        "account": "Account",
+        "value": "Value (NOK)",
+        "stage": "Stage",
+        "cta": "Create deal",
+        "fallback": "New deal"
+      },
+      "list": {
+        "title": "New list",
+        "name": "List name",
+        "namePh": "e.g. HR in trial accounts",
+        "role": "Role",
+        "anyRole": "Any role",
+        "status": "Account status",
+        "anyStatus": "Any status",
+        "preview": "{count} people match right now",
+        "cta": "Save list",
+        "fallback": "New list"
+      },
+      "lost": {
+        "title": "Why was it lost?",
+        "text": "A reason is required before a deal is marked lost (Settings › Pipelines).",
+        "pick": "Choose a reason.",
+        "none": "No lost reasons are set up yet (Settings › Pipelines).",
+        "cta": "Mark lost"
+      },
+      "required": {
+        "title": "Before {stage}",
+        "text": "These fields must be filled before the deal can move to {stage}.",
+        "fill": "Fill in every field.",
+        "unsupported": "«{field}» cannot be filled in here.",
+        "cta": "Move"
+      }
+    },
+    "lists": {
+      "saved": "Saved lists",
+      "useInCampaign": "Use in email campaign",
+      "export": "Export CSV",
+      "exportNoRight": "Exporting needs the right to export records.",
+      "whoIsIn": "Who is in it",
+      "countLine": "{count} people · {subs} can receive marketing email · updates automatically",
+      "cols": {
+        "person": "Person",
+        "account": "Account",
+        "role": "Role",
+        "status": "Email status"
+      },
+      "empty": "No one matches these conditions yet.",
+      "membersFailed": "The people in this list could not be loaded.",
+      "more": "Showing the first {shown} of {total} people. Export CSV carries them all.",
+      "noneYet": "No saved list yet.",
+      "noneYetAdd": "No saved list yet. Make one with ＋ New list.",
+      "noRight": "Lists are campaign audiences, and seeing them needs the right to see campaigns. Ask an administrator for it.",
+      "moduleOff": "Lists are campaign audiences, and the campaigns module is switched off (Settings › Modules).",
+      "failed": "The lists could not be loaded. Try again."
+    },
+    "consent": {
+      "subscribed": "Subscribed",
+      "no_consent": "No consent",
+      "pending": "Pending double opt-in",
+      "unsubscribed": "Unsubscribed",
+      "bounced": "Bounced",
+      "archived": "Archived"
+    },
+    "orgStatus": {
+      "trial": "Trial",
+      "active": "Active",
+      "past_due": "Past due",
+      "suspended": "Suspended",
+      "free": "Free",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    },
+    "memberRole": {
+      "daglig_leder": "Daglig leder",
+      "avdelingsleder": "Avdelingsleder",
+      "verneombud": "Verneombud"
+    },
+    "field": {
+      "title": "Role",
+      "marketing_status": "Email status",
+      "source": "Source",
+      "city": "City",
+      "fylke": "County",
+      "organization_name": "Account name",
+      "organization_employees": "Employees",
+      "organization_industry": "Industry",
+      "organization_nace": "NACE code",
+      "organization_status": "Account",
+      "organization_city": "Account city",
+      "organization_fylke": "Account county",
+      "organization_postal_code": "Postcode",
+      "member_role": "User role",
+      "product_last_round_days": "Days since a survey round opened",
+      "engagement_opened_days": "Days since last open",
+      "engagement_clicked_days": "Days since last click"
+    },
+    "cond": {
+      "eq": "{field} is {value}",
+      "neq": "{field} is not {value}",
+      "contains": "{field} contains {value}",
+      "in": "{field} is one of {value}",
+      "gte": "{field} is at least {value}",
+      "lte": "{field} is at most {value}",
+      "between": "{field} is {from}–{to}",
+      "empty": "{field} is empty",
+      "noRound": "No survey round yet",
+      "or": "or {phrase}",
+      "everyone": "Everyone",
+      "custom": "Conditions set in Campaigns"
+    }
+  }
 }

@@ -142,7 +142,17 @@
         "eyebrow": "Lydnotat · transkribering ikke tilkoblet",
         "t": "Opptak venter på fillagring",
         "s": "Lydnotater lagres på posten. Filopplasting er ikke tilkoblet ennå.",
-        "sOn": "Lydnotater lagres på posten ({record}). Filopplasting er ikke tilkoblet ennå."
+        "sOn": "Lydnotater lagres på posten ({record}). Filopplasting er ikke tilkoblet ennå.",
+        "eyebrowReady": "Lydnotat · transkribert",
+        "tReady": "Spill inn et lydnotat",
+        "sReady": "Lydnotater lagres på posten ({record}).",
+        "noDeal": "Lydnotater lagres på en avtale. Du har ingen åpen avtale å knytte det til.",
+        "attached": "{when} · knyttet til {record}",
+        "pending": "transkriberes",
+        "untranscribed": "ikke transkribert: transkripsjon er ikke tilkoblet",
+        "record": "Spill inn lydnotat",
+        "saved": "Lydnotatet er knyttet til {record} · transkripsjon er ikke tilkoblet",
+        "savedQueued": "Lydnotatet er knyttet til {record} · transkriberes"
       },
       "card": {
         "eyebrow": "Visittkort",
@@ -164,7 +174,13 @@
       "scan": {
         "eyebrow": "Skann notater",
         "t": "Håndskrevne notater → tekst",
-        "s": "Skanning krever AI-tjenesten og fillagring. Ingen av dem er tilkoblet."
+        "s": "Skanning krever AI-tjenesten og fillagring. Ingen av dem er tilkoblet.",
+        "sReady": "Bilder og skanninger lastes opp til {record}. Å lese håndskrift krever AI-tjenesten, som ikke er tilkoblet.",
+        "kept": "{n, plural, one {# bilde eller skanning} other {# bilder og skanninger}} på {record}. Å lese håndskrift krever AI-tjenesten, som ikke er tilkoblet.",
+        "noDeal": "Bilder og skanninger lagres på en avtale. Du har ingen åpen avtale å knytte dem til.",
+        "photo": "Ta bilde",
+        "scan": "Skann notat",
+        "saved": "Lagret på {record}"
       },
       "rule": "Kontaktregel: {rule} (innstilling) — {effect}",
       "rules": {
@@ -176,7 +192,8 @@
         "no_rule": "visittkort oppretter kontakter direkte",
         "source_and_basis": "et visittkort trenger et grunnlag for kontakt",
         "opt_in_only": "visittkort kan ikke opprette kontakter"
-      }
+      },
+      "sending": "Sender …"
     },
     "notifications": {
       "title": "Varsler",

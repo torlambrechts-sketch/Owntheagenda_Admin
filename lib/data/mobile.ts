@@ -1,7 +1,8 @@
 import 'server-only'
 import { z } from 'zod'
 import { rpc, type RpcResult } from '@/lib/rpc'
-import { PREF_KINDS, type Coords, type DealPreview, type Preview } from './mobile-shared'
+import { storageReady } from '@/lib/storage/server'
+import { CAPTURE_KINDS, PREF_KINDS, type Captures, type Coords, type DealPreview, type Preview } from './mobile-shared'
 
 /**
  * Mobile (Mobile.dc.html) reads through the 0044 functions (contract: docs/crm-enrichment/deviations/platform-schema.md,
@@ -125,9 +126,10 @@ export const loadPrefs = () => rpc('notification_prefs_get', {}, Prefs)
 export async function loadPreview(me: string, c: Coords | null): Promise<RpcResult<Preview>> {
   const focus = await loadFocus(c)
   if (!focus.ok) return focus
-  const [deal, notifications, push, prefs, types] = await Promise.all([
-    loadDealPreview(me), loadNotifications(), loadPush(), loadPrefs(), rpc('activity_types_get', {}, Types),
+  const [deal, notifications, push, prefs, types, storage] = await Promise.all([
+    loadDealPreview(me), loadNotifications(), loadPush(), loadPrefs(), rpc('activity_types_get', {}, Types), storageReady(),
   ])
+  const captures = deal ? await loadCaptures('deal', deal.id) : null
   const typeId = (k: string) => (types.ok ? (types.data.find((t) => t.key === k && t.active)?.id ?? null) : null)
   return {
     ok: true,
@@ -138,8 +140,20 @@ export async function loadPreview(me: string, c: Coords | null): Promise<RpcResu
       push: push.ok ? push.data : null,
       prefs: prefs.ok ? prefs.data : null,
       types: { call: typeId('call'), visit: typeId('visit') },
+      storage,
+      captures,
     },
   }
+}
+
+const CapturesSchema = z.object({
+  transcription: z.string(),
+  items: z.array(z.object({ id, kind: z.enum(CAPTURE_KINDS), filename: z.string(), mime: z.string(), created_at: z.string(), transcript: z.string().nullable() })),
+})
+/** What was captured on a record (captures_get: visibility checked; the transcript where the provider returned one). */
+export async function loadCaptures(entity: string, recordId: string): Promise<Captures | null> {
+  const r = await rpc('captures_get', { p_entity: entity, p_id: recordId }, CapturesSchema, { quiet: true })
+  return r.ok ? r.data : null
 }
 
 // ---------------------------------------------------------------------------

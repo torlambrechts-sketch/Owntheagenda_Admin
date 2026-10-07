@@ -6,7 +6,8 @@
 |---|---|
 | R-MOBILE-01 | Done in 0046 (`nearby` volatile); structure_invariants now refuses any non-volatile public function that writes |
 | R-MOBILE-02 | Done: `Permissions-Policy` allows `geolocation=(self)`; camera and microphone wait for capture uploads (R-MOBILE-04) |
-| R-MOBILE-03..06 | Open: push (VAPID reader, service worker, manifest), the record-files signer, coordinates and ids in the reads |
+| R-MOBILE-03, 05, 06 | Open: push (VAPID reader, service worker, manifest), coordinates and ids in the reads |
+| R-MOBILE-04 | Done in 0052 and `storage-sign`: audio notes, photos and scans upload to the deal and `capture_save` marks them (V-MOBILE-16). They use a file input with `capture`, so the Permissions-Policy keeps camera and microphone off. Open: deploying the function; transcription and the AI scanner |
 
 Database and shared-code changes the Mobile screen needs. Each names the deviation it would close.
 

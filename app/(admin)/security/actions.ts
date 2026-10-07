@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { rpc, type RpcCode } from '@/lib/rpc'
 import { createClient } from '@/lib/supabase/server'
+import { signForMe } from '@/lib/storage/server'
 import { FindResult, Preview, PreviewResult, Rule } from '@/lib/data/security'
 import { ALERT_MODES, cidrOk, SECURITY_SETTINGS, timeOk } from '@/lib/data/security-shared'
 
@@ -218,6 +219,19 @@ export async function privacyApprove(input: { job: string }): Promise<Result<{ r
   if (!p.success) return bad()
   const r = await call('privacy_approve', { p_job: p.data.job }, Erased)
   return r.ok ? { ok: true, rows: Object.values(r.data.counts).reduce((a, b) => a + b, 0) } : r
+}
+
+/**
+ * The access package's download (SF-15): privacy_export_url checks global:security and the package's 24 hours and audits
+ * the read; storage-sign (0052) then signs that path, in the private «privacy-exports» bucket, for one minute.
+ */
+export async function privacyDownload(input: { job: string }): Promise<Result<{ url: string }>> {
+  const p = z.object({ job: uuid }).safeParse(input)
+  if (!p.success) return bad()
+  const where = await rpc('privacy_export_url', { p_job: p.data.job }, z.object({ path: z.string().regex(/^privacy\/[0-9a-f-]{36}\/[A-Za-z0-9._-]{1,80}$/), expires_at: z.string() }))
+  if (!where.ok) return { ok: false, code: where.code, detail: where.detail }
+  const signed = await signForMe({ mode: 'download', bucket: 'privacy-exports', path: where.data.path })
+  return signed.ok ? { ok: true, url: signed.url } : { ok: false, code: signed.code, detail: signed.detail }
 }
 
 // ---------------------------------------------------------------------------

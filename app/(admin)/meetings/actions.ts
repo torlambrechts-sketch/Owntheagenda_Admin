@@ -3,6 +3,7 @@
 import { z } from 'zod'
 import { rpc, type RpcCode } from '@/lib/rpc'
 import { getShell } from '@/lib/shell'
+import { signForMe } from '@/lib/storage/server'
 import {
   loadControls, loadMailboxOptions, loadMeeting, loadMySettings, loadTranscript, loadWorkspace, searchLinkable,
   type Controls, type MailboxOption, type MeetingBundle, type MySettings, type Transcript, type Workspace,
@@ -206,4 +207,27 @@ export async function setRecordingSetting(input: unknown): Promise<Res> {
   const n = p.data.value === 'custom' ? p.data.number : null
   if (p.data.value === 'custom' && n === null) return bad
   return done(await rpc('setting_set', { p_key: p.data.key, p_value: p.data.value, p_scope_id: '', p_number: n }, any))
+}
+
+// ---------------------------------------------------------------------------
+// Upload transcript (MTG-06): meeting_transcript_upload_begin checks the type, the extension and the 5 MB and makes the new
+// unlinked meeting with a pending upload → storage-sign signs that upload's path (0052) → the browser sends the file →
+// meeting_transcript_upload_done queues it for the upload parser. The path never comes from the browser.
+const UploadBegun = z.object({ id: uuid, meeting_id: uuid, bucket: z.literal('meeting-files'), path: z.string().min(3).max(500), expires_in: z.number() })
+
+export async function transcriptUploadBegin(input: unknown): Promise<Res<{ id: string; meetingId: string; url: string }>> {
+  const p = z.object({ filename: z.string().trim().min(1).max(255), mime: z.string().min(3).max(120), size: z.number().int().min(1).max(5_242_880) }).safeParse(input)
+  if (!p.success) return bad
+  const begun = await rpc('meeting_transcript_upload_begin', { p_meeting: null, p_filename: p.data.filename, p_mime: p.data.mime, p_size: p.data.size }, UploadBegun)
+  if (!begun.ok) return fail(begun)
+  const signed = await signForMe({ mode: 'upload', bucket: 'meeting-files', path: begun.data.path })
+  if (!signed.ok) return { ok: false, code: signed.code, detail: signed.detail }
+  return { ok: true, id: begun.data.id, meetingId: begun.data.meeting_id, url: signed.url }
+}
+
+export async function transcriptUploadDone(input: unknown): Promise<Res<{ transcriptId: string }>> {
+  const p = uuid.safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('meeting_transcript_upload_done', { p_upload: p.data }, z.object({ id: uuid, transcript_id: uuid, state: z.string() }))
+  return r.ok ? { ok: true, transcriptId: r.data.transcript_id } : fail(r)
 }

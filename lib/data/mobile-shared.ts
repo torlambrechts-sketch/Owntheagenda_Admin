@@ -73,6 +73,17 @@ export type Preview = {
   prefs: Pref[] | null
   /** ids the client needs for offline mutations: the activity types it creates */
   types: { call: string | null; visit: string | null }
+  /** whether the storage signer runs (storage-sign, 0052): audio notes, photos and scans can be uploaded */
+  storage: boolean
+  /** what was captured on the deal (captures_get), newest first */
+  captures: Captures | null
+}
+
+export const CAPTURE_KINDS = ['photo', 'audio', 'scan', 'card'] as const
+export type CaptureKind = (typeof CAPTURE_KINDS)[number]
+export type Captures = {
+  transcription: string
+  items: { id: string; kind: CaptureKind; filename: string; mime: string; created_at: string; transcript: string | null }[]
 }
 
 // ---------------------------------------------------------------------------

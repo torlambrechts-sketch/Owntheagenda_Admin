@@ -5,9 +5,11 @@ import { useFormatter, useNow, useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import type { NumberFormat } from '@/lib/format'
 import type { CallOutcome, Coords, Mutation, NearbyRow, Pref, Preview, SyncResult } from '@/lib/data/mobile-shared'
-import { checkIn, fetchNearby, fetchPreview, logCall, moveStage, revokeDevice, saveCard, setPushPref, syncApply, syncChanges } from '../actions'
+import { checkIn, fetchNearby, fetchPreview, logCall, moveStage, revokeDevice, saveCapture, saveCard, setPushPref, syncApply, syncChanges } from '../actions'
+import { recordUploadAbandon, recordUploadBegin, recordUploadDone } from '@/lib/storage/actions'
+import { putSigned, RECORD_MAX_BYTES, RECORD_TYPES, typeFor } from '@/lib/storage/mime'
 import { Banner } from './kit'
-import { CapturePhone, DealPhone, ExtrasPhone, FocusPhone, NearbyPhone, NotificationsPhone, type CardValues, type Frame } from './phones'
+import { CapturePhone, DealPhone, ExtrasPhone, FocusPhone, NearbyPhone, NotificationsPhone, type CaptureUpload, type CardValues, type Frame } from './phones'
 import { DevicesPanel, PrefsPanel, SyncPanel, type Logged } from './panels'
 import { deviceId, loadCursor, loadOutbox, newId, saveCursor, saveOutbox, secondStep, type OutboxItem } from './outbox'
 
@@ -24,6 +26,7 @@ type Geo = 'idle' | 'asking' | 'denied' | 'blocked' | 'unavailable'
 export function MobileScreen({ staffId, numberFormat, initial }: { staffId: string; numberFormat: NumberFormat; initial: Preview }) {
   const t = useTranslations('mobile')
   const te = useTranslations('common.errors')
+  const ts = useTranslations('common.storage')
   const format = useFormatter()
   const now = useNow({ updateInterval: 30_000 })
   const flash = useToast()
@@ -239,6 +242,28 @@ export function MobileScreen({ staffId, numberFormat, initial }: { staffId: stri
     return null
   }
 
+  // Capture (MOB-06): the file goes to the deal through the storage signer (0052), then capture_save marks what it is
+  const onCapture = async (kind: CaptureUpload, file: File): Promise<boolean> => {
+    if (!deal) return false
+    const mime = typeFor(file.name, RECORD_TYPES)
+    if (!mime || (kind === 'audio') !== mime.startsWith('audio/') || (kind === 'photo' && !mime.startsWith('image/'))
+        || (kind === 'scan' && !mime.startsWith('image/') && mime !== 'application/pdf')) { flash(ts('type')); return false }
+    if (file.size > RECORD_MAX_BYTES) { flash(ts('tooLarge', { mb: 25 })); return false }
+    const why = (r: { code: string; detail?: string | null }) => (r.detail && ts.has(r.detail) ? ts(r.detail) : errorText(r.code))
+    const begun = await recordUploadBegin({ entity: 'deal', id: deal.id, filename: file.name, mime, size: file.size })
+    if (!begun.ok) { flash(why(begun)); return false }
+    if (!(await putSigned(begun.url, file, mime))) { await recordUploadAbandon(begun.id); flash(ts('sendFailed')); return false }
+    const done = await recordUploadDone(begun.id)
+    if (!done.ok) { flash(why(done)); return false }
+    const saved = await saveCapture({ entity: 'deal', id: deal.id, file: begun.id, kind })
+    if (!saved.ok) { flash(why(saved)); void reload(coords); return false }
+    flash(kind === 'audio'
+      ? t(saved.transcription === 'queued' ? 'capture.audio.savedQueued' : 'capture.audio.saved', { record: deal.title })
+      : t('capture.scan.saved', { record: deal.title }))
+    void reload(coords)
+    return true
+  }
+
   const onPref = async (kind: Pref['kind'], push: boolean) => {
     const before = preview.prefs
     setPreview({ ...preview, prefs: before?.map((p) => (p.kind === kind ? { ...p, channels: push ? ['in_app', 'push'] : ['in_app'] } : p)) ?? null })
@@ -291,7 +316,7 @@ export function MobileScreen({ staffId, numberFormat, initial }: { staffId: stri
         <NearbyPhone frame={frame} nf={nf} coords={coords} geo={geo} rows={nearby} failed={nearbyFailed} offline={offline} canCheckIn={!!preview.types.visit}
           onLocate={locate} onManual={typed} onForget={forget} onCheckIn={onCheckIn} />
         <DealPhone frame={frame} deal={deal} nf={nf} offline={offline} movePending={movePending} canCallOffline={!!preview.types.call} missing={missing} onMove={onMove} onCall={onCall} />
-        <CapturePhone frame={frame} rule={preview.focus.contact_rule} deal={deal} offline={offline} onSaveCard={onSaveCard} />
+        <CapturePhone frame={frame} rule={preview.focus.contact_rule} deal={deal} offline={offline} storage={preview.storage} captures={preview.captures} onSaveCard={onSaveCard} onCapture={onCapture} />
         <NotificationsPhone frame={frame} data={preview.notifications} pushReady={pushReady} />
         <ExtrasPhone frame={frame} focus={preview.focus} nf={nf} />
       </div>

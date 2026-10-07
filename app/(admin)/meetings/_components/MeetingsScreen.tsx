@@ -21,6 +21,8 @@ type Props = {
   initialMeetingError: RpcCode | null
   me: Me
   products: Record<string, string>
+  /** whether the storage signer runs (storage-sign, 0052): transcript upload follows it */
+  storage: boolean
 }
 
 export type Mine = { settings: MySettings; mailboxes: MailboxOption[] }
@@ -29,7 +31,7 @@ export type Mine = { settings: MySettings; mailboxes: MailboxOption[] }
 const pill = (on: boolean) =>
   `cursor-pointer rounded-999 border px-[14px] py-2 text-12.5 ${on ? 'border-ink bg-ink font-bold text-canvas' : 'border-line-strong bg-transparent font-medium text-ink'}`
 
-export function MeetingsScreen({ initialView, initialWorkspace, initialMeetingId, initialMeeting, initialMeetingError, me, products }: Props) {
+export function MeetingsScreen({ initialView, initialWorkspace, initialMeetingId, initialMeeting, initialMeetingError, me, products, storage }: Props) {
   const t = useTranslations('meetings')
   const flash = useToast()
   const fail = useFail()
@@ -110,9 +112,16 @@ export function MeetingsScreen({ initialView, initialWorkspace, initialMeetingId
           products={products}
         />
       ) : null}
-      {view === 'capture' ? <CaptureView ws={ws} mine={mine} onMineChanged={loadMine} onUpload={() => setUpload(true)} /> : null}
+      {view === 'capture' ? <CaptureView ws={ws} mine={mine} storage={storage} onMineChanged={loadMine} onUpload={() => setUpload(true)} /> : null}
       {view === 'controls' ? <ControlsView canConfigure={ws.can_configure} capabilities={ws.capabilities} mine={mine} onMineChanged={loadMine} /> : null}
-      {upload ? <UploadModal onClose={() => setUpload(false)} /> : null}
+      {upload ? (
+        <UploadModal storage={storage} onClose={() => setUpload(false)} onUploaded={(id) => {
+          setUpload(false)
+          setView('workspace')
+          void reloadWorkspace()
+          void open(id)
+        }} />
+      ) : null}
     </div>
   )
 }

@@ -375,7 +375,11 @@
       "ownerOnly": "only the owner",
       "groupSub": "{group} and its sub-groups",
       "sharedWith": "Shared with {who} · {followers}",
-      "sharedWithOnly": "Shared with {who}"
+      "sharedWithOnly": "Shared with {who}",
+      "download": "Download {name}",
+      "uploaded": "{name} uploaded",
+      "uploading": "Uploading …",
+      "limits": "PDF, Office, images, CSV, text or audio · up to 25 MB"
     },
     "details": {
       "title": "Details",

@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import type { FindResult, Incident, PreviewResult, PrivacyJob, RetentionRule, Subprocessor } from '@/lib/data/security'
 import { foundIn, intervalUnit } from '@/lib/data/security-shared'
-import { incidentSave, privacyApprove, privacyErase, privacyExport, privacyFind, privacyPreview, subprocessorSave } from '../actions'
+import { incidentSave, privacyApprove, privacyDownload, privacyErase, privacyExport, privacyFind, privacyPreview, subprocessorSave } from '../actions'
 import { Modal, dialogCancel, dialogDanger, dialogInput, sx, useErrorText, useGuarded, useWhen } from './kit'
 
 type Person = FindResult['people'][number]
@@ -16,20 +16,22 @@ type Person = FindResult['people'][number]
  * Only names, addresses and counts are shown — never message bodies, never respondent text. Then the retention rules
  * (each with the job that enforces it), the sub-processor register, the incident register and the privacy jobs.
  */
-export function PrivacyView({ retention, subprocessors, incidents, jobs, now, meName }: {
+export function PrivacyView({ retention, subprocessors, incidents, jobs, now, meName, storage }: {
   retention: RetentionRule[] | null
   subprocessors: Subprocessor[] | null
   incidents: Incident[] | null
   jobs: PrivacyJob[] | null
   now: string
   meName: string
+  /** whether the storage signer runs (storage-sign, 0052): a ready package can be downloaded */
+  storage: boolean
 }) {
   const t = useTranslations('security.privacy')
   return (
     <div className="grid items-start gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))]">
       <div className="flex flex-col gap-[14px]">
         <Finder />
-        {jobs && jobs.length ? <Jobs jobs={jobs} now={now} meName={meName} /> : null}
+        {jobs && jobs.length ? <Jobs jobs={jobs} now={now} meName={meName} storage={storage} /> : null}
       </div>
       <section className={sx.card} aria-label={t('retention.title')}>
         <div className={sx.headTitle}>{t('retention.title')}</div>
@@ -196,12 +198,27 @@ function EraseDialog({ person, preview, busy, onClose, onConfirm }: {
   )
 }
 
-function Jobs({ jobs, now, meName }: { jobs: PrivacyJob[]; now: string; meName: string }) {
+function Jobs({ jobs, now, meName, storage }: { jobs: PrivacyJob[]; now: string; meName: string; storage: boolean }) {
   const t = useTranslations('security.privacy.jobs')
   const c = useTranslations('security.privacy.counts')
+  const ts = useTranslations('common.storage')
   const when = useWhen(now)
   const flash = useToast()
+  const err = useErrorText()
   const { run, busy, dialog } = useGuarded()
+  const [fetching, setFetching] = useState<string | null>(null)
+  // the package link lives 24 hours (privacy_export_url); each download is signed for a minute and audited
+  const download = async (id: string) => {
+    setFetching(id)
+    try {
+      const r = await privacyDownload({ job: id })
+      if (r.ok) { window.location.assign(r.url); return }
+      flash(r.detail && r.detail !== 'expired' && ts.has(r.detail) ? ts(r.detail) : err(r))
+    } finally {
+      setFetching(null)
+    }
+  }
+  const live = (j: PrivacyJob) => !!j.url_expires_at && new Date(j.url_expires_at).getTime() > new Date(now).getTime()
   return (
     <section className={sx.card} aria-label={t('title')}>
       {dialog}
@@ -217,11 +234,18 @@ function Jobs({ jobs, now, meName }: { jobs: PrivacyJob[]; now: string; meName: 
             </div>
             <span className="text-12 text-muted">
               {t('rows', { n: total })}
-              {j.kind === 'export' && j.state === 'done' ? ` · ${t('downloadUnavailable')}` : ''}
+              {j.kind === 'export' && j.state === 'done' && !storage ? ` · ${t('downloadUnavailable')}` : ''}
+              {j.kind === 'export' && j.state === 'done' && storage && !live(j) ? ` · ${t('linkExpired')}` : ''}
+              {j.kind === 'export' && j.state === 'done' && storage && live(j) && j.url_expires_at ? ` · ${t('linkUntil', { when: when(j.url_expires_at) })}` : ''}
               {j.kind === 'export' && (j.state === 'approved' || j.state === 'running') ? ` · ${t('waitingWorker')}` : ''}
               {j.approved_by ? ` · ${t('approvedBy', { name: j.approved_by })}` : ''}
               {j.error ? ` · ${t('failedJob')}` : ''}
             </span>
+            {j.kind === 'export' && j.state === 'done' && storage && live(j) ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" className={sx.btn} disabled={fetching === j.id} onClick={() => void download(j.id)}>{t('download')}</button>
+              </div>
+            ) : null}
             {j.kind === 'erasure' && j.state === 'previewed' ? (
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-11.5 text-muted">{foundIn(j.preview).slice(0, 4).map((x) => c(x.key, { n: x.n })).join(', ')}</span>

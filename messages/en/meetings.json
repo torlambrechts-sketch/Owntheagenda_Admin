@@ -141,7 +141,8 @@
         "d": "Upload a transcript from a call recorded elsewhere to get the same recap and suggestions.",
         "s": ".vtt · .srt · .txt · .docx",
         "status": "File storage is not connected yet · uploads wait for it",
-        "cta": "Upload"
+        "cta": "Upload",
+        "statusReady": "Uploads are stored · reading them waits for the upload reader"
       }
     },
     "linkLabel": {
@@ -201,7 +202,11 @@
       "formatsHint": "Up to 5 MB · WebVTT voices, SRT timings, «Name: text» lines or Word paragraphs",
       "notConnected": "File storage is not connected yet, so no file can be sent. Nothing is created until it is.",
       "close": "Close",
-      "choose": "Choose file"
+      "choose": "Choose file",
+      "reader": "A new unlinked meeting is made for the file. Reading it into the meeting waits for the upload reader, which is not running yet.",
+      "sendFailed": "The file could not be sent. The new meeting has no transcript.",
+      "uploaded": "Transcript uploaded",
+      "sending": "Sending …"
     },
     "brief": {
       "since": "Since the last contact",
@@ -262,7 +267,7 @@
       "speakers": "{n, plural, one {# speaker} other {# speakers}}",
       "uploaded": "Uploaded · {file}",
       "processing": "Being transcribed …",
-      "processingUpload": "The file is being read …",
+      "processingUpload": "Waiting to be read …",
       "failed": "Transcription failed ({code}).",
       "failedUpload": "The file could not be read. Upload it again.",
       "retry": "Retry",

@@ -6,7 +6,7 @@
 
 | ID | Status |
 |---|---|
-| R-PROJECTS-01 | **Open.** Needs the private `record-files` bucket and the signing edge function (storage, not a migration). V-PROJECTS-19 stands |
+| R-PROJECTS-01 | **Done in 0052** (`record-files` bucket, `worker_storage_check`) and `supabase/functions/storage-sign` (`lib/storage/*`): «＋ Upload file» and opening a file work while the function runs (V-PROJECTS-19, V-STORAGE-*). Open: deploying the function to the hosted project |
 | R-PROJECTS-02 | **State done in 0040; the worker is open.** Provider `pdf` in `app.integration_connections` (row, not connected) and `project_pdf_status()` → `{pdf_connected}` (projects:see). «Create PDF» and «Draft with AI» in the status-report dialog follow it and call `project_status_report_request` when connected. The PDF worker itself (`project_status_report` → `worker_status_report_ready`) is an edge function and is not built (V-PROJECTS-16) |
 | R-PROJECTS-03 | **Open.** The AI worker (summary, brief, report draft) is an edge function with the AI provider. V-PROJECTS-15 stands |
 | R-PROJECTS-04 | **Done in 0040.** `preview[].day` is a task's start offset when it has one, else its due offset; a milestone's or activity's due offset (V-PROJECTS-12). The projects suite's preview assertion follows the new rule |

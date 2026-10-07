@@ -88,8 +88,10 @@ export const Detail = Row.extend({
 export type Detail = z.infer<typeof Detail>
 
 const Source = z.object({ entity: str, id }).nullable()
+// a meeting without a brief (an upload, say) answers state and quotes_state null, not «none»: 0042's meeting_brief tests FOUND
+// after a PERFORM, which sets it (R-MEETINGS-07). Null is read as the «none» the function meant.
 export const Brief = z.object({
-  state: str,
+  state: str.nullable().transform((v) => v ?? 'none'),
   generated_at: iso.nullish(),
   since_at: iso.nullish(),
   last_contact_at: iso.nullish(),
@@ -98,7 +100,7 @@ export const Brief = z.object({
   people: z.array(z.object({ person_id: id.nullable(), name: str, title: nstr, labels: z.array(str), first_meeting: z.boolean(), last_signed_in: iso.nullable(), source: Source })).default([]),
   facts: z.array(z.object({ key: str, ord: z.coerce.string(), params: z.record(z.string(), z.unknown()), source: Source })).default([]),
   quotes: z.array(z.object({ text: str, kind: z.enum(['segment', 'note']), seq: num.nullish(), meeting_id: id.nullish(), speaker: nstr, at: iso.nullable(), record: Source.optional() })).default([]),
-  quotes_state: str.default('none'),
+  quotes_state: str.nullish().transform((v) => v ?? 'none'),
   ai: z.boolean(),
   instructions_set: z.boolean().nullish(),
 })

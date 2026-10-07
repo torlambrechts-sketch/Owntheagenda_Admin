@@ -49,7 +49,8 @@ without the tickets scope, the toast's shadow, and the Overview failing for staf
 |---|---|---|
 | Campaigns R-CAMPAIGNS-01 | Image upload (bucket + signer) | Open: storage and an edge function |
 | Campaigns R-CAMPAIGNS-02..05 | Coupons, product-activity segment field, campaign language, template versions and restore | Done in 0040 · screen done |
-| Projects R-PROJECTS-01, 03 | record-files signer, AI worker | Open: edge functions |
+| Projects R-PROJECTS-01 | record-files signer | Done in 0052 + `storage-sign` (with R-MOBILE-04, R-MEETINGS-06, R-SECURITY-03's bucket and signer) · screens done; the function is not deployed |
+| Projects R-PROJECTS-03 | AI worker | Open: edge function |
 | Projects R-PROJECTS-02 | Whether the PDF worker runs | State done in 0040 (`pdf` provider, `project_pdf_status`) · screen done; the worker is open |
 | Projects R-PROJECTS-04 | Template line day = start offset | Done in 0040 · screen unchanged (reads `preview[].day`) |
 | Insights INS-01 / V-P6P-02 | Report entities project and campaign | Done in 0040 · screen done |

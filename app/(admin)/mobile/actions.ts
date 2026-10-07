@@ -121,3 +121,16 @@ export async function revokeDevice(input: unknown): Promise<Res> {
   const r = await rpc('push_device_revoke', { p_id: p.data }, z.object({ id: uuid }))
   return r.ok ? { ok: true } : fail(r)
 }
+
+/**
+ * A file uploaded to the record (lib/storage/actions: begin → signed upload → done) marked as what was captured (MOB-06):
+ * an audio note, a photo or a scanned note. capture_save checks that the file is the caller's own on that record and that its
+ * type fits the kind; an audio note is queued for transcription only while that provider is connected.
+ */
+export async function saveCapture(input: unknown): Promise<Res<{ transcription: string | null }>> {
+  const p = z.object({ entity: z.enum(['deal', 'person', 'organization', 'lead']), id: uuid, file: uuid, kind: z.enum(['photo', 'audio', 'scan']) }).safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('capture_save', { p_entity: p.data.entity, p_id: p.data.id, p_file_id: p.data.file, p_kind: p.data.kind },
+    z.object({ id: uuid, kind: z.string(), transcription: z.string().nullable().optional() }))
+  return r.ok ? { ok: true, transcription: r.data.transcription ?? null } : fail(r)
+}

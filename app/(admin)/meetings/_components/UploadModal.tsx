@@ -1,16 +1,45 @@
 'use client'
 
+import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { Modal, btnCancel, btnConfirm, quiet } from './kit'
+import { useToast } from '@/components/ui/Toast'
+import { acceptFor, putSigned, TRANSCRIPT_MAX_BYTES, TRANSCRIPT_TYPES, typeFor } from '@/lib/storage/mime'
+import { transcriptUploadBegin, transcriptUploadDone } from '../actions'
+import { Modal, btnCancel, btnConfirm, quiet, useFail } from './kit'
 
 /**
- * Upload transcript (MTG-06). The database takes the upload (meeting_transcript_upload_begin → a signed path in the
- * private «meeting-files» bucket → meeting_transcript_upload_done), but the edge function that signs the path is not
- * deployed, so nothing can be sent yet. Starting anyway would leave an empty meeting behind, so the dialog only says
- * what will be accepted and why it waits.
+ * Upload transcript (MTG-06): meeting_transcript_upload_begin (a new unlinked meeting and a pending upload in the private
+ * «meeting-files» bucket) → storage-sign signs that path (0052) → the browser sends the file → meeting_transcript_upload_done
+ * queues it for the upload parser. Without the signer nothing can be sent, and starting anyway would leave an empty meeting
+ * behind, so the dialog then only says what will be accepted and why it waits. The type sent is the extension's: browsers
+ * leave it empty for .srt and .vtt.
  */
-export function UploadModal({ onClose }: { onClose: () => void }) {
+export function UploadModal({ storage, onClose, onUploaded }: { storage: boolean; onClose: () => void; onUploaded: (meetingId: string) => void }) {
   const t = useTranslations('meetings.upload')
+  const ts = useTranslations('common.storage')
+  const flash = useToast()
+  const fail = useFail()
+  const picker = useRef<HTMLInputElement>(null)
+  const [busy, setBusy] = useState(false)
+
+  const send = async (file: File) => {
+    const mime = typeFor(file.name, TRANSCRIPT_TYPES)
+    if (!mime) { flash(ts('type')); return }
+    if (file.size > TRANSCRIPT_MAX_BYTES) { flash(ts('tooLarge', { mb: 5 })); return }
+    setBusy(true)
+    try {
+      const begun = await transcriptUploadBegin({ filename: file.name, mime, size: file.size })
+      if (!begun.ok) { if (begun.detail && ts.has(begun.detail)) flash(ts(begun.detail)); else fail(begun); return }
+      if (!(await putSigned(begun.url, file, mime))) { flash(t('sendFailed')); onUploaded(begun.meetingId); return }
+      const done = await transcriptUploadDone(begun.id)
+      if (!done.ok) { fail(done); onUploaded(begun.meetingId); return }
+      flash(t('uploaded'))
+      onUploaded(begun.meetingId)
+    } finally {
+      setBusy(false)
+    }
+  }
+
   return (
     <Modal eyebrow={t('eyebrow')} title={t('title')} onClose={onClose}>
       <p className="m-0 text-13 leading-[1.55] text-ink-2">{t('body')}</p>
@@ -18,10 +47,11 @@ export function UploadModal({ onClose }: { onClose: () => void }) {
         <b className="text-13">{t('formats')}</b>
         <span className="text-11.5 text-muted">{t('formatsHint')}</span>
       </div>
-      <p className={`m-0 ${quiet}`}>{t('notConnected')}</p>
+      <p className={`m-0 ${quiet}`}>{storage ? t('reader') : t('notConnected')}</p>
+      <input ref={picker} type="file" hidden accept={acceptFor(TRANSCRIPT_TYPES)} onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void send(f) }} />
       <div className="flex justify-end gap-2">
         <button type="button" onClick={onClose} className={btnCancel}>{t('close')}</button>
-        <button type="button" disabled className={btnConfirm}>{t('choose')}</button>
+        <button type="button" disabled={!storage || busy} onClick={() => picker.current?.click()} className={btnConfirm}>{busy ? t('sending') : t('choose')}</button>
       </div>
     </Modal>
   )

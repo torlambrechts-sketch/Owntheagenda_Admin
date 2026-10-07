@@ -796,3 +796,10 @@ rights, never from the browser. Proved by `supabase/tests/storage_invariants.sql
 | V-STORAGE-06 | Transcript upload that fails to send | — | The new unlinked meeting stays without a transcript (the dialog says so) | `meeting_transcript_upload_begin` makes the meeting before a path exists to sign, and there is no meeting delete. A record file whose send fails is removed again (`file_delete`) |
 | V-STORAGE-07 | Out of scope | — | The `documents`, `form-uploads`, `form-assets` and `email-assets` buckets are not made; `file_upload_done` does not check that the object landed (the signer refuses to sign a download for a missing object: «missing») | R-DOCUMENTS-03 and the public form upload need their own flows (a public signer, the PDF worker) |
 
+
+## Menu and route access (`lib/nav.ts` ACCESS / routeVisible, `app/(admin)/layout.tsx`)
+
+| ID | Where | Design | Built | Why |
+|---|---|---|---|---|
+| V-NAV-01 | Left menu | Every item for everyone | An item shows only when the person holds one of the rights that open its page (`ACCESS`, mirroring the page's main `app.require`), its module is on, and for Meetings their workspace. Automation, Insights, API, Settings, Security and Coverage stay for everyone: each has a view of one's own | The prototype has no permissions; a menu item that opens onto a refusal tells the person nothing |
+| V-NAV-02 | A route opened by address without the right | — | The layout shows «No access» (or «switched off» for a module) inside the shell instead of the page, so the page's reads never run. The middleware passes the path in `x-sentral-path` and always overwrites a client's own | Pages without their own guard answered with a server error (500) |

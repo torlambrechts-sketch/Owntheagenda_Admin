@@ -20,6 +20,9 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   if (PUBLIC.some((p) => path === p || path.startsWith(`${p}/`))) return NextResponse.next({ request })
 
+  // the admin layout decides access by route (lib/nav.ts routeVisible); this is the only writer, so a client's own header is overwritten
+  request.headers.set('x-sentral-path', path)
+
   const to = (pathname: string) => {
     const url = request.nextUrl.clone()
     url.pathname = pathname

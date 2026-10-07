@@ -87,6 +87,37 @@ export const MODULE_OF: Partial<Record<RouteKey, string>> = {
   leadgen: 'leadgen', visitors: 'visitors', mobile: 'mobile',
 }
 
+/**
+ * The rights that open a route: any one of them is enough; none listed is every staff member. Mirrors the guard of the
+ * page's main read (its `app.require`), so the menu offers only what the person can open — the database refuses anyway.
+ * Automation, Insights, API, Settings, Security and Coverage have a view for everyone (one's own workflows, dashboards,
+ * tokens, settings and sessions).
+ */
+export const ACCESS: Partial<Record<RouteKey, readonly `${'deals' | 'projects' | 'campaigns' | 'tickets' | 'global'}:${string}`[]>> = {
+  customers: ['deals:see'],
+  analytics: ['global:reports_others', 'campaigns:reports_others'],
+  tickets: ['tickets:see'],
+  feed: ['deals:see'], leads: ['deals:see'], deals: ['deals:see'], contacts: ['deals:see'], activities: ['deals:see'],
+  inbox: ['deals:see'], meetings: ['deals:see'], documents: ['deals:see'], mobile: ['deals:see'],
+  projects: ['projects:see'],
+  campaigns: ['campaigns:see'],
+  leadgen: ['campaigns:see', 'deals:see'],
+  visitors: ['campaigns:see', 'deals:see'],
+  apps: ['global:see'],
+}
+
+/** Is this route in the menu for this person: their rights, the module switch, and the meeting workspace. */
+export function routeVisible(
+  key: RouteKey,
+  who: { admin: boolean; rights: readonly string[]; modules: Record<string, boolean>; meetingsWorkspace?: boolean },
+): boolean {
+  const mod = MODULE_OF[key]
+  if (mod && who.modules[mod] === false) return false
+  if (key === 'meetings' && who.meetingsWorkspace === false) return false
+  const need = ACCESS[key]
+  return who.admin || !need || need.some((r) => who.rights.includes(r))
+}
+
 export function routeOf(pathname: string): RouteKey {
   const hit = (Object.entries(ROUTES) as [RouteKey, (typeof ROUTES)[RouteKey]][])
     .filter(([, r]) => r.path === '/' ? pathname === '/' : pathname === r.path || pathname.startsWith(`${r.path}/`))

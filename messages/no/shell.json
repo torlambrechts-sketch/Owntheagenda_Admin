@@ -470,6 +470,11 @@
       "idle": "Økten avsluttes etter 30 minutter uten aktivitet.",
       "settings": "Innstillinger",
       "signOut": "Logg ut"
+    },
+    "noAccess": {
+      "title": "Ingen tilgang",
+      "body": "Rettighetssettet ditt omfatter ikke dette området. En eier kan endre det under Innstillinger › Rettighetssett.",
+      "moduleOff": "Dette området er slått av under Innstillinger › Moduler."
     }
   }
 }

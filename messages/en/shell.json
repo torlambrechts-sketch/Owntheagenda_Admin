@@ -470,6 +470,11 @@
       "idle": "Session ends after 30 min idle.",
       "settings": "Settings",
       "signOut": "Sign out"
+    },
+    "noAccess": {
+      "title": "No access",
+      "body": "Your permission set does not include this area. An owner can change it under Settings › Permission sets.",
+      "moduleOff": "This area is switched off under Settings › Modules."
     }
   }
 }

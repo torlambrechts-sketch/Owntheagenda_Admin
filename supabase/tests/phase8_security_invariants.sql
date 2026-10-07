@@ -257,9 +257,14 @@ select pg_temp.check((public.staff_sessions_revoke_all((select tor from t_staff)
 select pg_temp.check(not app.session_ok(null) and not app.session_ok(gen_random_uuid()), 'no session, or an unknown one past the grace window, is not good');
 insert into auth.sessions (id, user_id, created_at, updated_at, aal) select '00000000-0000-0000-0000-0000000005e5', id, now(), now(), 'aal2' from auth.users where email = 'tor@orgpuls.no';
 select pg_temp.check(app.session_ok('00000000-0000-0000-0000-0000000005e5'), 'an Auth session not yet reported is good');
--- 0047: and it stays good past two minutes while Auth has it (nothing reports sessions yet; app.me() refused everyone)
-update auth.sessions set created_at = now() - interval '3 hours' where id = '00000000-0000-0000-0000-0000000005e5';
-select pg_temp.check(app.session_ok('00000000-0000-0000-0000-0000000005e5'), 'an unreported Auth session three hours old is still good (R-SECURITY-04)');
+-- 0055 (supersedes 0047): unreported, it is good for its first ten minutes only; the sign-in or the first page view reports it
+update auth.sessions set created_at = now() - interval '9 minutes' where id = '00000000-0000-0000-0000-0000000005e5';
+select pg_temp.check(app.session_ok('00000000-0000-0000-0000-0000000005e5'), 'an unreported Auth session nine minutes old is still good (0055)');
+update auth.sessions set created_at = now() - interval '11 minutes' where id = '00000000-0000-0000-0000-0000000005e5';
+select pg_temp.check(not app.session_ok('00000000-0000-0000-0000-0000000005e5'), 'an Auth session never reported is nobody after ten minutes (0055, V-SR-03)');
+insert into app.staff_sessions (session_id, staff_id, method) values ('00000000-0000-0000-0000-0000000005e5', (select tor from t_staff), 'password_totp');
+select pg_temp.check(app.session_ok('00000000-0000-0000-0000-0000000005e5'), 'once reported, the same session is good again');
+delete from app.staff_sessions where session_id = '00000000-0000-0000-0000-0000000005e5';
 delete from auth.sessions where id = '00000000-0000-0000-0000-0000000005e5';
 select pg_temp.check(not app.session_ok('00000000-0000-0000-0000-0000000005e5'), 'once Auth drops the session it is not good');
 update app.staff_sessions set last_seen_at = now() - interval '31 minutes' where session_id = pg_temp.sid('magnus@orgpuls.no');

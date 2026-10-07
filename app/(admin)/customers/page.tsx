@@ -1,5 +1,6 @@
 import { getNow, getTranslations } from 'next-intl/server'
 import { z } from 'zod'
+import { loadEmailProvider } from '@/lib/mail/provider'
 import { can, getShell } from '@/lib/shell'
 import { currentProduct } from '@/lib/product'
 import { formatNumber, money, type NumberFormat } from '@/lib/format'
@@ -73,12 +74,14 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
       />
     )
   } else {
-    const [queue, config, macros, accounts] = await Promise.all([
+    const [queue, config, macros, accounts, mail] = await Promise.all([
       loadQueue(product, p.queue),
       loadConfig(),
       loadMacros(),
       canAccounts ? loadAccounts(product) : Promise.resolve(null),
+      loadEmailProvider(),
     ])
+    const mailReady = mail.ok && mail.data.ready
     counts = { accounts: accounts ? accounts.rows.length : null, tickets: queue.counts.open }
     const selectedId = p.ticket ?? queue.rows[0]?.id ?? null
     const ticket = selectedId ? await loadTicket(selectedId) : null
@@ -115,6 +118,7 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
         assignees={assignees}
         canned={canned}
         me={{ name: shell.me.name }}
+        mailReady={mailReady}
       />
     )
   }
@@ -240,7 +244,7 @@ function ticketView(tk: SimpleTicketDetail, ctx: { t: T; age: (iso: string) => s
     }
     const kind = m.kind === 'customer' ? t('tickets.thread.customer', { channel: t(`tickets.thread.channels.${tk.channel}`) })
       : m.kind === 'note' ? t('tickets.thread.note')
-        : m.delivery_status === 'sent' ? t('tickets.thread.reply')
+        : m.delivery_status === 'sent' || m.delivery_status === 'delivered' ? t(m.delivery_status === 'delivered' ? 'tickets.thread.replyState.delivered' : 'tickets.thread.reply')
           : t(`tickets.thread.replyState.${m.delivery_status ?? 'not_configured'}`)
     return { id: m.id, who, kind, when: age(m.created_at), text: m.body, ini: initialsOf(who === '—' ? null : who), cust: m.kind === 'customer', note: m.kind === 'note' }
   })

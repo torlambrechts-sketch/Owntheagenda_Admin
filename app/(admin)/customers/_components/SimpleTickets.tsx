@@ -42,13 +42,15 @@ const fieldLabel = 'flex h-8 items-center gap-[6px] rounded-9 border border-line
 const fieldSelect = 'border-0 bg-transparent text-12.5 font-bold disabled:opacity-100'
 
 /** Customers › Tickets and requests (SimpleCustomers.dc.html, v.tickets): queues, the list, one ticket and the composer. */
-export function SimpleTickets({ queues, items, ticket, assignees, canned, me }: {
+export function SimpleTickets({ queues, items, ticket, assignees, canned, me, mailReady }: {
   queues: QueueChip[]
   items: TicketItem[]
   ticket: TicketView | null
   assignees: { id: string; name: string }[]
   canned: CannedReply[]
   me: { name: string }
+  /** a reply goes out by email now (0060: Brevo connected and a verified sender) */
+  mailReady: boolean
 }) {
   const t = useTranslations('simpleCustomers')
   return (
@@ -90,12 +92,12 @@ export function SimpleTickets({ queues, items, ticket, assignees, canned, me }: 
           {items.length === 0 ? <div className="p-[30px] text-center text-13 text-muted">{t('tickets.emptyQueue')}</div> : null}
         </div>
       </div>
-      {ticket ? <Detail key={ticket.id} ticket={ticket} assignees={assignees} canned={canned} me={me} /> : null}
+      {ticket ? <Detail key={ticket.id} ticket={ticket} assignees={assignees} canned={canned} me={me} mailReady={mailReady} /> : null}
     </div>
   )
 }
 
-function Detail({ ticket: tk, assignees, canned, me }: { ticket: TicketView; assignees: { id: string; name: string }[]; canned: CannedReply[]; me: { name: string } }) {
+function Detail({ ticket: tk, assignees, canned, me, mailReady }: { ticket: TicketView; assignees: { id: string; name: string }[]; canned: CannedReply[]; me: { name: string }; mailReady: boolean }) {
   const t = useTranslations('simpleCustomers')
   const err = useErrorText()
   const flash = useToast()
@@ -129,7 +131,7 @@ function Detail({ ticket: tk, assignees, canned, me }: { ticket: TicketView; ass
     setBusy(true)
     const r = await approveRequest({ ticketId: tk.id })
     setBusy(false)
-    flash(r.ok ? t('tickets.request.done') : err(r.code.startsWith('http_') ? 'unreachable' : r.code))
+    flash(r.ok ? t(mailReady ? 'tickets.request.doneMail' : 'tickets.request.done') : err(r.code.startsWith('http_') ? 'unreachable' : r.code))
     router.refresh()
   }
   function decline() {
@@ -153,7 +155,7 @@ function Detail({ ticket: tk, assignees, canned, me }: { ticket: TicketView; ass
     if (!r.ok) { flash(err(r.code)); return }
     setDraft('')
     setMacroId(null)
-    flash(t(note ? 'tickets.composer.saved' : 'tickets.composer.sent'))
+    flash(t(note ? 'tickets.composer.saved' : mailReady ? 'tickets.composer.sentMail' : 'tickets.composer.sent'))
     router.refresh()
   }
 
@@ -254,7 +256,8 @@ function Detail({ ticket: tk, assignees, canned, me }: { ticket: TicketView; ass
           disabled={!tk.canWrite}
           aria-label={t(`tickets.composer.${mode}`)}
           placeholder={!tk.canWrite ? t('tickets.composer.locked') : note ? t('tickets.composer.phNote')
-            : tk.person.name ? t('tickets.composer.phReply', { name: tk.person.name }) : t('tickets.composer.phReplyNoName')}
+            : tk.person.name ? t(mailReady ? 'tickets.composer.phReplyMail' : 'tickets.composer.phReply', { name: tk.person.name })
+              : t(mailReady ? 'tickets.composer.phReplyMailNoName' : 'tickets.composer.phReplyNoName')}
           className="block min-h-[110px] w-full resize-y border-0 bg-transparent px-[14px] py-3 text-13 leading-[1.55] outline-none"
         />
         <div className="flex flex-wrap items-center justify-end gap-2 border-t border-line px-[10px] py-2">

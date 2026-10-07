@@ -137,7 +137,8 @@
       "actionFailedNoOrg": "{action} forsøkt av {name} og avvist av produktet. Begrunnelse: {ref}. Skrevet til revisjonsloggen.",
       "actions": {
         "billing_extend_trial": "Forleng prøveperioden 14 dager"
-      }
+      },
+      "bounced": "E-posten ble avvist: adressen tok ikke imot den"
     },
     "composer": {
       "reply": "Svar",

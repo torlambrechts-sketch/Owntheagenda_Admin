@@ -109,6 +109,9 @@ const TeamMemberZ = Staff.extend({
   owner: z.boolean(),
   /** null without global:security, as the address and the last activity */
   login: z.boolean().nullable(),
+  /** the invitation email (0060): queued, sent or failed; null without global:security or when none was asked for */
+  invite_state: z.enum(['queued', 'sent', 'failed']).nullable().optional(),
+  invite_sent_at: z.string().nullable().optional(),
 })
 export type TeamMember = z.infer<typeof TeamMemberZ>
 

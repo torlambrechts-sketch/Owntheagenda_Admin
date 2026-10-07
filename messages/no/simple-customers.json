@@ -223,7 +223,8 @@
           "noRight": "tillatelsessettet ditt gir ikke denne retten"
         },
         "done": "Godkjent — prøveperioden er forlenget i Orgpuls. Kunden får ikke beskjed: e-postutsending er ikke koblet til ennå.",
-        "declineDraft": "Hei {first},\n\nDessverre kan vi ikke gjøre dette nå, fordi …\n\nVennlig hilsen\n{agent}"
+        "declineDraft": "Hei {first},\n\nDessverre kan vi ikke gjøre dette nå, fordi …\n\nVennlig hilsen\n{agent}",
+        "doneMail": "Godkjent — prøveperioden er forlenget i Orgpuls. Send et svar for å si fra til kunden."
       },
       "thread": {
         "customer": "Kunde · {channel}",
@@ -238,7 +239,10 @@
         "replyState": {
           "not_configured": "Svar · ikke sendt på e-post",
           "queued": "Svar · i kø for e-post",
-          "failed": "Svar · e-post feilet"
+          "failed": "Svar · e-post feilet",
+          "delivered": "Svar · levert",
+          "bounced": "Svar · avvist, ikke levert",
+          "sent": "Svar · sendt"
         },
         "system": "System",
         "action": "Handling",
@@ -272,7 +276,10 @@
         "save": "Lagre notat",
         "sent": "Lagret — e-postutsending er ikke koblet til ennå",
         "saved": "Notat lagret",
-        "placeholders": "Fyll inn før du sender: {fields}"
+        "placeholders": "Fyll inn før du sender: {fields}",
+        "phReplyMail": "Svar til {name} — sendes på e-post fra Sentral",
+        "phReplyMailNoName": "Svar — sendes på e-post fra Sentral",
+        "sentMail": "Sendt — svaret går ut på e-post"
       }
     }
   }

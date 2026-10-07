@@ -69,7 +69,7 @@ export const TicketDetail = TicketRow.extend({
     body: z.string(),
     author: z.string().nullable(),
     created_at: z.string(),
-    delivery_status: z.enum(['queued', 'sent', 'failed', 'not_configured']).nullable(),
+    delivery_status: z.enum(['queued', 'sent', 'delivered', 'bounced', 'failed', 'not_configured']).nullable(),
   })),
   links: z.array(z.object({ kind: z.enum(LINK_KINDS), ref: z.string(), label: z.string().nullable() })),
   privacy: z.object({ id, kind: z.string(), due_at: z.string(), status: z.string() }).nullable(),

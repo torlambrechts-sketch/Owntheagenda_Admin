@@ -14,7 +14,9 @@ import { DEVICE_COOKIE, SEEN_COOKIE, originOf, report, sessionOf } from '@/lib/s
  * stop the request: the database checks every session itself on every call (app.session_ok).
  */
 const SEEN_EVERY_S = 60
-const PUBLIC = ['/login', '/ingen-tilgang']
+// /u: the unsubscribe page every campaign email links to (its token is the authority, noindex); /velkommen: an invitation's
+// password step (the one-time token from the email signs the person in; /mfa follows). Neither shows anything without a token.
+const PUBLIC = ['/login', '/ingen-tilgang', '/u', '/velkommen']
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname

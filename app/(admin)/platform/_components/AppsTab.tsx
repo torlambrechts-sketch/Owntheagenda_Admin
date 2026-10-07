@@ -13,6 +13,8 @@ import { testConnection } from '../../applications/actions'
 import { ConnectDialog } from '../../applications/_components/AppsView'
 import { Dialog, useAct, useAgo, useErrorText } from '../../applications/_components/kit'
 import { fetchProductFlags, publishNotice, setProductFlag, type ProductFlag } from '../actions'
+import type { EmailProvider } from '@/lib/mail/provider'
+import { EmailCard } from './EmailCard'
 
 /** The design's status pill per health (Operational, Degraded, Beta, Maintenance colours of SimplePlatform.dc.html). */
 const PILL: Record<Health, string> = {
@@ -30,7 +32,7 @@ const mono = 'font-[ui-monospace,Menlo,monospace]'
  * Maintenance mode; «＋ Connect an application»; the chosen application's feature flags, its secrets and its status message.
  * Response and errors are «—» until calls are logged (V-SPL-02); maintenance has no product command (V-SPL-03).
  */
-export function AppsTab({ apps, current, name, notice, flags, canConfigure, owner, nf }: {
+export function AppsTab({ apps, current, name, notice, flags, canConfigure, owner, nf, email }: {
   apps: SimpleApp[]
   current: string
   name: string
@@ -39,6 +41,8 @@ export function AppsTab({ apps, current, name, notice, flags, canConfigure, owne
   canConfigure: boolean
   owner: boolean
   nf: NumberFormat
+  /** the mail provider (Brevo, 0060); null when it could not be read */
+  email: EmailProvider | null
 }) {
   const t = useTranslations('simplePlatform.apps')
   const [connect, setConnect] = useState(false)
@@ -69,6 +73,7 @@ export function AppsTab({ apps, current, name, notice, flags, canConfigure, owne
       <div className="grid items-start gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))]">
         <FlagsCard key={current} product={current} name={name} flags={flags} canConfigure={canConfigure} />
         <KeyAndNotice key={`${current}:${notice?.current?.id ?? ''}`} app={cur} product={current} name={name} notice={notice} canConfigure={canConfigure} />
+        {email ? <EmailCard p={email} /> : null}
       </div>
       {connect ? <ConnectDialog onClose={() => setConnect(false)} /> : null}
     </div>

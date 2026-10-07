@@ -238,9 +238,9 @@ function Thread({ ticket: tk, now }: { ticket: TicketDetail; now: Date }) {
                 <span className="whitespace-nowrap">{when(m.created_at)}</span>
               </div>
               <div className="whitespace-pre-wrap text-13 leading-[1.6]">{m.kind === 'admin_action' ? actionLine(m.body, m.author) : m.body}</div>
-              {m.kind === 'reply' && m.delivery_status && m.delivery_status !== 'sent' ? (
-                <div className={`mt-2 text-11.5 ${m.delivery_status === 'failed' ? 'text-danger' : 'text-faint'}`}>
-                  {t(m.delivery_status === 'not_configured' ? 'thread.notConfigured' : m.delivery_status === 'queued' ? 'thread.queued' : 'thread.failed')}
+              {m.kind === 'reply' && m.delivery_status && m.delivery_status !== 'sent' && m.delivery_status !== 'delivered' ? (
+                <div className={`mt-2 text-11.5 ${m.delivery_status === 'failed' || m.delivery_status === 'bounced' ? 'text-danger' : 'text-faint'}`}>
+                  {t(m.delivery_status === 'not_configured' ? 'thread.notConfigured' : m.delivery_status === 'queued' ? 'thread.queued' : m.delivery_status === 'bounced' ? 'thread.bounced' : 'thread.failed')}
                 </div>
               ) : null}
             </div>

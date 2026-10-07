@@ -7,6 +7,7 @@ import { currentProduct } from '@/lib/product'
 import { SIMPLE_PLATFORM_TABS, loadAppsTab, loadPlansTab, loadTeamTab, type SimplePlatformTab } from '@/lib/data/simple-platform'
 import { NowProvider } from '../applications/_components/kit'
 import { AppsTab } from './_components/AppsTab'
+import { loadEmailProvider } from '@/lib/mail/provider'
 import { PlansTab } from './_components/PlansTab'
 import { TeamTab } from './_components/TeamTab'
 
@@ -43,7 +44,7 @@ export default async function PlatformPage({ searchParams }: { searchParams: Pro
   } else if (tab === 'plans') {
     body = <PlansTab plans={await loadPlansTab(product)} name={name} nf={nf} />
   } else {
-    const { apps, notice, flags } = await loadAppsTab(product)
+    const [{ apps, notice, flags }, email] = await Promise.all([loadAppsTab(product), loadEmailProvider()])
     body = (
       <AppsTab
         apps={apps}
@@ -54,6 +55,7 @@ export default async function PlatformPage({ searchParams }: { searchParams: Pro
         canConfigure={can(shell, 'global', 'configure')}
         owner={shell.me.owner}
         nf={nf}
+        email={email.ok ? email.data : null}
       />
     )
   }

@@ -223,7 +223,8 @@
           "noRight": "your permission set does not include this"
         },
         "done": "Approved — the trial is extended in Orgpuls. The customer is not told: email delivery is not connected yet.",
-        "declineDraft": "Hi {first},\n\nUnfortunately we cannot do this right now, because …\n\nKind regards\n{agent}"
+        "declineDraft": "Hi {first},\n\nUnfortunately we cannot do this right now, because …\n\nKind regards\n{agent}",
+        "doneMail": "Approved — the trial is extended in Orgpuls. Send a reply to let the customer know."
       },
       "thread": {
         "customer": "Customer · {channel}",
@@ -238,7 +239,10 @@
         "replyState": {
           "not_configured": "Reply · not emailed",
           "queued": "Reply · queued for email",
-          "failed": "Reply · email failed"
+          "failed": "Reply · email failed",
+          "delivered": "Reply · delivered",
+          "bounced": "Reply · bounced, not delivered",
+          "sent": "Reply · sent"
         },
         "system": "System",
         "action": "Action",
@@ -272,7 +276,10 @@
         "save": "Save note",
         "sent": "Saved — email delivery is not connected yet",
         "saved": "Note saved",
-        "placeholders": "Fill in before sending: {fields}"
+        "placeholders": "Fill in before sending: {fields}",
+        "phReplyMail": "Reply to {name} — sent by email from Sentral",
+        "phReplyMailNoName": "Reply — sent by email from Sentral",
+        "sentMail": "Sent — the reply goes out by email"
       }
     }
   }

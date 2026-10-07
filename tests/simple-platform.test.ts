@@ -101,8 +101,12 @@ describe('the status message', () => {
 describe('invite', () => {
   it('creates the staff row with the address only, lower-cased', async () => {
     rpc.mockResolvedValue({ ok: true, data: { id: '6f1c2f0e-6d43-4b8e-9a4c-2f9c1d3e5a10' } })
-    expect(await inviteStaff(' Kari.Nordmann@Orgpuls.no ')).toEqual({ ok: true })
+    expect(await inviteStaff(' Kari.Nordmann@Orgpuls.no ')).toEqual({ ok: true, invite: null })
     expect(rpc.mock.calls[0]?.slice(0, 2)).toEqual(['staff_save', { p_id: null, p_values: { email: 'kari.nordmann@orgpuls.no' } }])
     expect(await inviteStaff('not an address')).toEqual({ ok: false, code: 'invalid', detail: 'email' })
+  })
+  it('says whether the invitation email was queued (0060)', async () => {
+    rpc.mockResolvedValue({ ok: true, data: { id: '6f1c2f0e-6d43-4b8e-9a4c-2f9c1d3e5a10', invite: 'queued' } })
+    expect(await inviteStaff('kari@orgpuls.no')).toEqual({ ok: true, invite: 'queued' })
   })
 })

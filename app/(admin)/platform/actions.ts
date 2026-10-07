@@ -104,12 +104,13 @@ export async function setProductFlag(input: unknown): Promise<Res> {
 // ---------------------------------------------------------------------------
 // team
 /**
- * Invite: a staff row on Read-only with the address only (staff_save; Settings' saveStaff wants a name, and none is made up
- * from the address). No Auth user and no e-mail are created: the owner still creates the login (V-SPL-12).
+ * Invite: a staff row on Read-only with the address only (staff_save; no name is made up from the address). With Brevo
+ * connected and a verified sender (0060) the invitation email goes out with a one-time link: the person chooses a password
+ * and the second factor. Without it the row exists and the screen says no email went (V-SPL-12).
  */
-export async function inviteStaff(input: unknown): Promise<Res> {
+export async function inviteStaff(input: unknown): Promise<Res<{ invite: string | null }>> {
   const p = z.string().trim().toLowerCase().email().max(200).safeParse(input)
   if (!p.success) return { ok: false, code: 'invalid', detail: 'email' }
-  const r = await rpc('staff_save', { p_id: null, p_values: { email: p.data } }, z.object({ id: z.string().uuid() }))
-  return r.ok ? { ok: true } : { ok: false, code: r.code, detail: r.detail }
+  const r = await rpc('staff_save', { p_id: null, p_values: { email: p.data } }, z.object({ id: z.string().uuid(), invite: z.string().optional() }))
+  return r.ok ? { ok: true, invite: r.data.invite ?? null } : { ok: false, code: r.code, detail: r.detail }
 }

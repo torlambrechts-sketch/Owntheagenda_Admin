@@ -6,6 +6,7 @@ import type { Role, TeamMember } from '@/lib/data/simple-platform'
 import { saveStaff } from '../../settings/actions'
 import { useAct, useAgo } from '../../applications/_components/kit'
 import { inviteStaff } from '../actions'
+import { sendInvite as resendInvite } from '../mail-actions'
 
 /** The design's five roles in its order; a custom set made in Settings follows by name. */
 const ROLE_ORDER = ['admin', 'sales', 'support', 'marketing', 'analyst']
@@ -31,7 +32,7 @@ export function TeamTab({ team, roles, me, canSecurity }: { team: TeamMember[]; 
     const email = invite.trim().toLowerCase()
     if (!email.includes('@')) { flash(t('needEmail')); return }
     if (team.some((m) => m.email?.toLowerCase() === email)) { flash(t('already', { email })); return }
-    run(() => inviteStaff(email), () => { setInvite(''); flash(t('invited', { email })) })
+    run(() => inviteStaff(email), (r) => { setInvite(''); flash(t(r.ok && r.invite === 'queued' ? 'invitedMail' : 'invited', { email })) })
   }
 
   return (
@@ -62,7 +63,11 @@ export function TeamTab({ team, roles, me, canSecurity }: { team: TeamMember[]; 
         const self = u.id === me
         const locked = !canSecurity || self || u.owner || pending
         const current = roles.find((r) => r.id === u.permission_set_id)
-        const last = !u.active ? t('removed') : u.login === false ? t('noLogin') : u.last_seen_at ? ago(u.last_seen_at) : '—'
+        const last = !u.active ? t('removed')
+          : u.login === false ? (u.invite_state === 'sent' ? t('inviteSent', { when: ago(u.invite_sent_at ?? null) }) : u.invite_state === 'queued' ? t('inviteQueued')
+            : u.invite_state === 'failed' ? t('inviteFailed') : t('noLogin'))
+          : u.last_seen_at ? ago(u.last_seen_at) : '—'
+        const canResend = canSecurity && u.active && u.login === false && !u.is_sample
         return (
           <div key={u.id} className={`grid items-center gap-[10px] border-b border-line px-[18px] py-[10px] text-13 ${COLS}`} style={{ opacity: u.active ? 1 : 0.45 }}>
             <span className="flex min-w-0 flex-col">
@@ -87,7 +92,15 @@ export function TeamTab({ team, roles, me, canSecurity }: { team: TeamMember[]; 
                 </>
               )}
             </select>
-            <span className="text-muted max-sm:hidden">{last}</span>
+            <span className="flex flex-col text-muted max-sm:hidden">
+              {last}
+              {canResend ? (
+                <button type="button" disabled={pending} onClick={() => run(() => resendInvite(u.id), () => flash(t('inviteResent', { email: u.email ?? u.name })))}
+                  className="w-fit cursor-pointer border-none bg-transparent p-0 text-left text-11.5 font-semibold text-ink underline disabled:cursor-default disabled:opacity-60">
+                  {t('resend')}
+                </button>
+              ) : null}
+            </span>
             <button
               type="button"
               disabled={locked}

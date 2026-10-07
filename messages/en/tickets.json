@@ -137,7 +137,8 @@
       "actionFailedNoOrg": "{action} attempted by {name} and refused by the product. Reason: {ref}. Written to the audit trail.",
       "actions": {
         "billing_extend_trial": "Extend trial 14 days"
-      }
+      },
+      "bounced": "E-mail bounced: the address did not accept it"
     },
     "composer": {
       "reply": "Reply",

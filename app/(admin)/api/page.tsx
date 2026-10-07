@@ -1,5 +1,6 @@
-import { Pending } from '@/components/ui/Pending'
+import { PlatformPage } from '../applications/_components/PlatformPage'
 
-export default function Page() {
-  return <Pending phase={8} />
+/** Platform › API and integrations (Platform.dc.html, tab «api»); also Webhooks, Integration catalog and AI connector. */
+export default function ApiPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <PlatformPage route="api" searchParams={searchParams} />
 }

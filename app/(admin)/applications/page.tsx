@@ -1,5 +1,6 @@
-import { Pending } from '@/components/ui/Pending'
+import { PlatformPage } from './_components/PlatformPage'
 
-export default function Page() {
-  return <Pending phase={8} />
+/** Platform › Applications (Platform.dc.html, tab «apps»); also the Job monitor, Feature flags and Content tabs. */
+export default function ApplicationsPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <PlatformPage route="applications" searchParams={searchParams} />
 }

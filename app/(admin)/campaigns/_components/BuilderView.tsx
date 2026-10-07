@@ -571,7 +571,8 @@ function CampaignFields(p: BuilderProps & { form: Form; set: <K extends keyof Fo
       <label className={label}>{t('fields.sender')}
         <select value={form.sender_domain_id ?? ''} disabled={!ed} onChange={(e) => set('sender_domain_id', e.target.value || null)} className={field}>
           <option value="">{t('fields.noSender')}</option>
-          {p.domains.map((d) => <option key={d.id} value={d.id}>{d.from_local}@{d.domain}</option>)}
+          {/* each address with its application: a campaign is the application's whose address sends it (0062) */}
+          {p.domains.map((d) => <option key={d.id} value={d.id}>{d.from_local}@{d.domain}{d.product ? ` · ${p.products.find((x) => x.key === d.product)?.name ?? d.product}` : ''}</option>)}
         </select>
         {p.domain ? (
           <span className={`text-11.5 ${p.domain.authenticated ? 'text-muted' : 'text-danger'}`}>

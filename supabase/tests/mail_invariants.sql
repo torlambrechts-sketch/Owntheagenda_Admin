@@ -86,6 +86,20 @@ select pg_temp.check(app.mail_ready() and app.mail_ready_for((select product fro
                      and (app.mail_sender_for((select product from app.tickets where id = (select ticket from t_ids)))).domain = 'mailtest.example',
                      'the ticket''s own application''s verified sender makes its mail ready');
 
+-- a campaign belongs to the application whose address sends it (0062)
+insert into app.sender_domains (domain, stream, sends_here, from_name, from_local, spf_ok, dkim_ok, dmarc_policy, verified_at, product, postal_address)
+values ('news.mailtest.example', 'marketing', true, 'Orgpuls', 'nyheter', true, true, 'none', now(), (select product from app.tickets where id = (select ticket from t_ids)), 'Gate 1, 0150 Oslo'),
+       ('news.staff.example', 'marketing', true, 'Staff', 'nyheter', true, true, 'none', now(), null, 'Gate 1, 0150 Oslo');
+select pg_temp.check((app.mail_sender()).stream = 'transactional', 'staff mail never goes from a marketing address');
+insert into app.campaigns (name, type, utm_campaign, product, sender_domain_id)
+values ('Mail test campaign', 'newsletter', 'mail_test_campaign', (select key from app.products where key <> (select product from app.tickets where id = (select ticket from t_ids)) limit 1),
+        (select id from app.sender_domains where domain = 'news.mailtest.example'));
+select pg_temp.check((select product from app.campaigns where utm_campaign = 'mail_test_campaign') = (select product from app.tickets where id = (select ticket from t_ids)),
+                     'a campaign sent from an application''s address is that application''s campaign');
+update app.campaigns set sender_domain_id = (select id from app.sender_domains where domain = 'news.staff.example') where utm_campaign = 'mail_test_campaign';
+select pg_temp.check((select product from app.campaigns where utm_campaign = 'mail_test_campaign') = (select product from app.tickets where id = (select ticket from t_ids)),
+                     'an address with no application leaves the campaign''s application as it was');
+
 select pg_temp.as_staff('hanna@orgpuls.no');
 select pg_temp.check((public.email_provider_get() -> 'ready_products') ? (select product from app.tickets where id = (select ticket from t_ids)),
                      'the screens learn which applications can email their customers');

@@ -6,6 +6,8 @@ import { rpc } from '@/lib/rpc'
 import { getShell } from '@/lib/shell'
 import { runCommand } from '@/lib/platform/command'
 import { loadCustomer, settingValue } from '@/lib/data/customers'
+import { loadTicket } from '@/lib/data/simple-customers'
+import { approvalBlock, requestDays } from '@/lib/data/simple-customers-shared'
 
 /**
  * The Customers screen's writes. Each parses its input, calls one database function (or one product
@@ -156,4 +158,30 @@ export async function runCustomerAction(input: { org: string; action: 'trial' | 
   if (!ok) return fail((inner.success ? inner.data.error : reply.error) ?? 'failed')
   if (!logged.ok) return fail(logged.code)
   return { ok: true }
+}
+
+/**
+ * Sentral Simple › Tickets and requests › «Approve and apply»: a service request whose kind a product command applies.
+ * Today that is a trial extension (Orgpuls' billing.extend_trial through runCustomerAction, with the request's days and
+ * the T-number as the reason). The outcome becomes a line in the thread (ticket_action_note, accepted only after the
+ * audit row), and a request that was applied is resolved. The customer is not told: no mail provider is connected.
+ */
+export async function approveRequest(input: { ticketId: string }): Promise<Result<{ resolved: boolean }>> {
+  const p = z.object({ ticketId: id }).safeParse(input)
+  if (!p.success) return fail('invalid')
+  const t = await loadTicket(p.data.ticketId)
+  if (!t) return fail('not_found')
+  if (t.type !== 'service_request' || t.status === 'resolved' || t.status === 'closed') return fail('invalid')
+  const block = approvalBlock({ request: t.request, product: t.product, organizationId: t.organization_id, subscriptionStatus: t.subscription?.status ?? null }, true)
+  if (block || !t.organization_id) return fail(block === 'notTrial' ? 'not_in_trial' : 'invalid')
+  const r = await runCustomerAction({ org: t.organization_id, action: 'trial', days: requestDays(t.request), reason: t.ref })
+  // the thread line; refused when nothing reached the audit (the command never ran), which leaves the thread as it was
+  await rpc('ticket_action_note', { p_id: t.id, p_action: 'billing.extend_trial', p_ok: r.ok }, z.object({ id }), { quiet: true })
+  if (!r.ok) {
+    done()
+    return r
+  }
+  const saved = await rpc('rec_save', { p_entity: 'ticket', p_id: t.id, p_values: { status: 'resolved' } }, z.object({ id: z.string(), version: z.number() }), { quiet: true })
+  done()
+  return { ok: true, resolved: saved.ok }
 }

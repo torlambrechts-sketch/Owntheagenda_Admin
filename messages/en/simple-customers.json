@@ -1,3 +1,279 @@
 {
-  "simpleCustomers": {}
+  "simpleCustomers": {
+    "tabs": {
+      "accounts": "Accounts",
+      "tickets": "Tickets and requests"
+    },
+    "kpi": {
+      "mrr": "MRR",
+      "arr": "ARR {value}",
+      "paying": "Paying accounts",
+      "payingSub": "Active and past due",
+      "trials": "Trials",
+      "conversion": "Trial → paid {pct} %",
+      "conversionNone": "Trial → paid —",
+      "open": "Open tickets",
+      "firstReply": "Median first reply {value}",
+      "firstReplyNone": "Median first reply —"
+    },
+    "dur": {
+      "min": "{n} min",
+      "h": "{n} h"
+    },
+    "search": "Search name or org.nr",
+    "filters": {
+      "all": "All",
+      "trial": "Trial",
+      "active": "Active",
+      "past_due": "Past due",
+      "suspended": "Suspended"
+    },
+    "cols": {
+      "account": "Account",
+      "status": "Status",
+      "plan": "Plan",
+      "mrr": "MRR"
+    },
+    "row": {
+      "sub": "{orgnr} · {n} employees"
+    },
+    "status": {
+      "trial": "Trial",
+      "active": "Active",
+      "past_due": "Past due",
+      "suspended": "Suspended",
+      "cancelled": "Cancelled",
+      "expired": "Expired",
+      "free": "Free"
+    },
+    "noMatch": "No account matches.",
+    "noAccounts": "No accounts use {product} yet.",
+    "detail": {
+      "plan": "Plan",
+      "mrr": "MRR",
+      "health": "Health",
+      "contact": "Admin contact",
+      "actions": "Actions",
+      "recent": "Recent",
+      "recentEmpty": "Nothing recorded yet.",
+      "forbidden": "You may not open this account.",
+      "unavailable": "This account could not be loaded."
+    },
+    "actions": {
+      "trial": "Extend trial 14 days",
+      "plan": "Change plan",
+      "login": "Send login link",
+      "suspend": "Suspend",
+      "reactivate": "Reactivate",
+      "reason": "Extended from Sentral",
+      "done": "Trial extended by 14 days · written to the account log",
+      "why": {
+        "notYet": "Not available in Orgpuls yet",
+        "noOrgpuls": "This account has no Orgpuls subscription",
+        "otherProduct": "Only Orgpuls takes commands from Sentral yet",
+        "noRight": "Your permission set does not include this"
+      },
+      "whyLine": "{names}: {reason}"
+    },
+    "age": {
+      "now": "Just now",
+      "min": "{n} min ago",
+      "h": "{n} h ago",
+      "d": "{n} d ago",
+      "w": "{n} w ago",
+      "mo": "{n} mo ago",
+      "y": "{n} y ago"
+    },
+    "recent": {
+      "ticket": "Ticket {ref} opened",
+      "failed": "{what} · failed",
+      "adminOther": "Admin action",
+      "eventOther": "Product event",
+      "admin": {
+        "customer": {
+          "extend_trial": "Trial extended",
+          "resync": "Re-synced from Orgpuls",
+          "delete": "Deletion sent to Orgpuls"
+        },
+        "billing": {
+          "extend_trial": "Trial extension sent to Orgpuls"
+        },
+        "record": {
+          "created": "Account created",
+          "updated": "Account details changed",
+          "deleted": "Account deleted",
+          "restored": "Account restored",
+          "merged": "Duplicate merged",
+          "exported": "Exported"
+        },
+        "note": {
+          "saved": "Note added",
+          "deleted": "Note deleted"
+        },
+        "support_access": {
+          "requested": "Support access requested"
+        },
+        "ticket": {
+          "replied": "Ticket reply saved",
+          "noted": "Internal note on a ticket",
+          "created": "Ticket created"
+        },
+        "consent": {
+          "changed": "Consent changed"
+        },
+        "organization": {
+          "related": "Related organization linked"
+        }
+      },
+      "adminFailed": {
+        "customer": {
+          "extend_trial": "Trial extension failed",
+          "resync": "Re-sync failed",
+          "delete": "Deletion failed"
+        },
+        "billing": {
+          "extend_trial": "Orgpuls refused the trial extension"
+        }
+      },
+      "events": {
+        "org": {
+          "created": "Signed up",
+          "deleted": "Deleted in the product",
+          "attribution": "Signup source recorded"
+        },
+        "billing": {
+          "changed": "Subscription changed"
+        },
+        "member": {
+          "joined": "User joined",
+          "left": "User left",
+          "state": "User state updated"
+        },
+        "usage": {
+          "daily": "Daily counts received"
+        },
+        "survey": {
+          "round": "Survey round updated"
+        },
+        "counts": {
+          "updated": "Counts updated"
+        },
+        "milestone": {
+          "reached": "Activation milestone reached"
+        },
+        "logins": {
+          "daily": "Logins reported"
+        }
+      }
+    },
+    "tickets": {
+      "queues": {
+        "open": "Open",
+        "unassigned": "Unassigned",
+        "requests": "Requests",
+        "closed": "Resolved"
+      },
+      "emptyQueue": "Nothing waiting in this queue.",
+      "types": {
+        "question": "Question",
+        "service_request": "Request",
+        "incident": "Incident",
+        "problem": "Problem"
+      },
+      "statuses": {
+        "new": "New",
+        "open": "Open",
+        "waiting_customer": "Waiting on customer",
+        "waiting_us": "Waiting on us",
+        "resolved": "Resolved",
+        "closed": "Closed"
+      },
+      "priorities": {
+        "urgent": "Urgent",
+        "high": "High",
+        "normal": "Normal",
+        "low": "Low"
+      },
+      "fields": {
+        "status": "Status",
+        "priority": "Priority",
+        "assignee": "Assignee",
+        "unassigned": "Unassigned"
+      },
+      "request": {
+        "label": "Request:",
+        "approve": "Approve and apply",
+        "decline": "Decline",
+        "kinds": {
+          "extend_trial": "Extend the trial by {days} days",
+          "change_plan": "Change plan to {plan}",
+          "change_plan_any": "Change plan",
+          "suspend": "Suspend the account",
+          "reactivate": "Reactivate the account",
+          "cancel": "Cancel the subscription"
+        },
+        "line": "{what} — {why}",
+        "applies": "approving applies it in Orgpuls",
+        "why": {
+          "noAction": "it names no action Sentral can apply; answer it in the thread",
+          "noCommand": "Orgpuls has no command for this yet",
+          "notOrgpuls": "only Orgpuls takes commands from Sentral yet",
+          "noOrg": "the ticket has no account",
+          "notTrial": "the account is not in a trial",
+          "noRight": "your permission set does not include this"
+        },
+        "done": "Approved — the trial is extended in Orgpuls. The customer is not told: email delivery is not connected yet.",
+        "declineDraft": "Hi {first},\n\nUnfortunately we cannot do this right now, because …\n\nKind regards\n{agent}"
+      },
+      "thread": {
+        "customer": "Customer · {channel}",
+        "channels": {
+          "in_app": "in-app help",
+          "email": "email",
+          "contact_form": "contact form",
+          "staff": "staff"
+        },
+        "note": "Internal note",
+        "reply": "Reply",
+        "replyState": {
+          "not_configured": "Reply · not emailed",
+          "queued": "Reply · queued for email",
+          "failed": "Reply · email failed"
+        },
+        "system": "System",
+        "action": "Action",
+        "actions": {
+          "billing_extend_trial": {
+            "ok": "Trial extended in Orgpuls",
+            "failed": "Orgpuls did not extend the trial"
+          }
+        },
+        "actionOther": "{action} · {outcome}",
+        "outcome": {
+          "ok": "done",
+          "failed": "failed"
+        }
+      },
+      "composer": {
+        "reply": "Reply",
+        "note": "Internal note",
+        "canned": "Canned reply …",
+        "phReply": "Reply to {name} — saved in the thread; email delivery is not connected yet",
+        "phReplyNoName": "Reply — saved in the thread; email delivery is not connected yet",
+        "phNote": "Internal note — only staff see this",
+        "locked": "Only the ticket’s owner, its assignee or someone who may edit others’ tickets can write here",
+        "after": {
+          "waiting_customer": "then Waiting on customer",
+          "resolved": "then Resolved",
+          "keep": "keep status"
+        },
+        "afterLabel": "Status after saving",
+        "send": "Send reply",
+        "save": "Save note",
+        "sent": "Saved — email delivery is not connected yet",
+        "saved": "Note saved",
+        "placeholders": "Fill in before sending: {fields}"
+      }
+    }
+  }
 }

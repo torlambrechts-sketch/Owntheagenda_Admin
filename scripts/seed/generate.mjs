@@ -250,6 +250,7 @@ insert into app.ticket_messages (ticket_id, kind, author_staff_id, body, created
 sql(`select setval(pg_get_serial_sequence('app.tickets', 'number'), (select max(number) from app.tickets));`)
 for (const t of D.tickets.filter((x) => x.problem)) sql(`update app.tickets set problem_id = ${q(uid('ticket', t.problem))} where id = ${q(uid('ticket', t.id))};`)
 sql(`update app.tickets set root_cause = 'The mail provider greylists first-time senders on several @kommune.no domains (451).', workaround = 'Ask IT to allow varsler@orgpuls.no as a sender; resend from Oppsett → Invitasjoner.' where number = 2316;`)
+;(await import('./simple-customers.mjs')).seedSimpleCustomers({ sql, q }) // Simple › Customers: the service requests' structured request (0056)
 
 // ---- macros (Tickets.dc.html) — the group-threshold macro states the real rule: the organisation's threshold, never under three
 const macros = [['Invitasjoner — sjekk søppelpost og domene', 'survey_delivery', 'Hei [fornavn],\n\nTakk for at du sier fra. Vi ser at [antall] invitasjoner ikke er levert til [domene]. Det skyldes oftest at e-postserveren deres holder igjen meldinger fra nye avsendere.\n\nBe IT legge til varsler@orgpuls.no som godkjent avsender. Vi sender invitasjonene på nytt så snart det er gjort.\n\nVennlig hilsen\n[agent]'],

@@ -159,6 +159,8 @@ const TimelineItem = z.object({
   reason: z.string().nullable().optional(),
   ref: z.string().nullable().optional(),
   status: z.string().nullable().optional(),
+  // an admin row's outcome (0056); absent on product events and tickets
+  ok: z.boolean().nullable().optional(),
 })
 export type TimelineItem = z.infer<typeof TimelineItem>
 export const loadTimeline = (id: string) => rpc('customer_timeline', { p_org: id }, z.array(TimelineItem))

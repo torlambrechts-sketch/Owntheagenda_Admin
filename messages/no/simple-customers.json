@@ -1,3 +1,279 @@
 {
-  "simpleCustomers": {}
+  "simpleCustomers": {
+    "tabs": {
+      "accounts": "Kontoer",
+      "tickets": "Saker og forespørsler"
+    },
+    "kpi": {
+      "mrr": "MRR",
+      "arr": "ARR {value}",
+      "paying": "Betalende kontoer",
+      "payingSub": "Aktive og forfalte",
+      "trials": "Prøveperioder",
+      "conversion": "Prøve → betalt {pct} %",
+      "conversionNone": "Prøve → betalt —",
+      "open": "Åpne saker",
+      "firstReply": "Median første svar {value}",
+      "firstReplyNone": "Median første svar —"
+    },
+    "dur": {
+      "min": "{n} min",
+      "h": "{n} t"
+    },
+    "search": "Søk på navn eller org.nr",
+    "filters": {
+      "all": "Alle",
+      "trial": "Prøve",
+      "active": "Aktiv",
+      "past_due": "Forfalt",
+      "suspended": "Suspendert"
+    },
+    "cols": {
+      "account": "Konto",
+      "status": "Status",
+      "plan": "Plan",
+      "mrr": "MRR"
+    },
+    "row": {
+      "sub": "{orgnr} · {n} ansatte"
+    },
+    "status": {
+      "trial": "Prøve",
+      "active": "Aktiv",
+      "past_due": "Forfalt",
+      "suspended": "Suspendert",
+      "cancelled": "Avsluttet",
+      "expired": "Utløpt",
+      "free": "Gratis"
+    },
+    "noMatch": "Ingen konto passer.",
+    "noAccounts": "Ingen kontoer bruker {product} ennå.",
+    "detail": {
+      "plan": "Plan",
+      "mrr": "MRR",
+      "health": "Helse",
+      "contact": "Administrator",
+      "actions": "Handlinger",
+      "recent": "Siste",
+      "recentEmpty": "Ingenting registrert ennå.",
+      "forbidden": "Du har ikke tilgang til denne kontoen.",
+      "unavailable": "Kontoen kunne ikke lastes."
+    },
+    "actions": {
+      "trial": "Forleng prøven 14 dager",
+      "plan": "Bytt plan",
+      "login": "Send innloggingslenke",
+      "suspend": "Suspender",
+      "reactivate": "Aktiver igjen",
+      "reason": "Forlenget fra Sentral",
+      "done": "Prøveperioden er forlenget med 14 dager · skrevet i kontologgen",
+      "why": {
+        "notYet": "Ikke tilgjengelig i Orgpuls ennå",
+        "noOrgpuls": "Kontoen har ikke noe Orgpuls-abonnement",
+        "otherProduct": "Bare Orgpuls tar imot kommandoer fra Sentral ennå",
+        "noRight": "Tillatelsessettet ditt gir ikke denne retten"
+      },
+      "whyLine": "{names}: {reason}"
+    },
+    "age": {
+      "now": "Akkurat nå",
+      "min": "{n} min siden",
+      "h": "{n} t siden",
+      "d": "{n} d siden",
+      "w": "{n} u siden",
+      "mo": "{n} md siden",
+      "y": "{n} år siden"
+    },
+    "recent": {
+      "ticket": "Sak {ref} opprettet",
+      "failed": "{what} · mislyktes",
+      "adminOther": "Administratorhandling",
+      "eventOther": "Hendelse fra produktet",
+      "admin": {
+        "customer": {
+          "extend_trial": "Prøveperioden forlenget",
+          "resync": "Synkronisert fra Orgpuls",
+          "delete": "Sletting sendt til Orgpuls"
+        },
+        "billing": {
+          "extend_trial": "Forlengelse sendt til Orgpuls"
+        },
+        "record": {
+          "created": "Konto opprettet",
+          "updated": "Kontoopplysninger endret",
+          "deleted": "Konto slettet",
+          "restored": "Konto gjenopprettet",
+          "merged": "Duplikat slått sammen",
+          "exported": "Eksportert"
+        },
+        "note": {
+          "saved": "Notat lagt til",
+          "deleted": "Notat slettet"
+        },
+        "support_access": {
+          "requested": "Støttetilgang bedt om"
+        },
+        "ticket": {
+          "replied": "Svar på sak lagret",
+          "noted": "Internt notat på en sak",
+          "created": "Sak opprettet"
+        },
+        "consent": {
+          "changed": "Samtykke endret"
+        },
+        "organization": {
+          "related": "Tilknyttet organisasjon koblet"
+        }
+      },
+      "adminFailed": {
+        "customer": {
+          "extend_trial": "Forlengelsen mislyktes",
+          "resync": "Synkroniseringen mislyktes",
+          "delete": "Slettingen mislyktes"
+        },
+        "billing": {
+          "extend_trial": "Orgpuls avviste forlengelsen"
+        }
+      },
+      "events": {
+        "org": {
+          "created": "Registrert",
+          "deleted": "Slettet i produktet",
+          "attribution": "Registreringskilde lagret"
+        },
+        "billing": {
+          "changed": "Abonnement endret"
+        },
+        "member": {
+          "joined": "Bruker lagt til",
+          "left": "Bruker fjernet",
+          "state": "Brukerstatus oppdatert"
+        },
+        "usage": {
+          "daily": "Daglige tall mottatt"
+        },
+        "survey": {
+          "round": "Undersøkelsesrunde oppdatert"
+        },
+        "counts": {
+          "updated": "Tall oppdatert"
+        },
+        "milestone": {
+          "reached": "Aktiveringsmilepæl nådd"
+        },
+        "logins": {
+          "daily": "Innlogginger rapportert"
+        }
+      }
+    },
+    "tickets": {
+      "queues": {
+        "open": "Åpne",
+        "unassigned": "Ufordelte",
+        "requests": "Forespørsler",
+        "closed": "Løste"
+      },
+      "emptyQueue": "Ingenting venter i denne køen.",
+      "types": {
+        "question": "Spørsmål",
+        "service_request": "Forespørsel",
+        "incident": "Hendelse",
+        "problem": "Problem"
+      },
+      "statuses": {
+        "new": "Ny",
+        "open": "Åpen",
+        "waiting_customer": "Venter på kunden",
+        "waiting_us": "Venter på oss",
+        "resolved": "Løst",
+        "closed": "Lukket"
+      },
+      "priorities": {
+        "urgent": "Haster",
+        "high": "Høy",
+        "normal": "Normal",
+        "low": "Lav"
+      },
+      "fields": {
+        "status": "Status",
+        "priority": "Prioritet",
+        "assignee": "Ansvarlig",
+        "unassigned": "Ufordelt"
+      },
+      "request": {
+        "label": "Forespørsel:",
+        "approve": "Godkjenn og utfør",
+        "decline": "Avslå",
+        "kinds": {
+          "extend_trial": "Forleng prøveperioden med {days} dager",
+          "change_plan": "Bytt plan til {plan}",
+          "change_plan_any": "Bytt plan",
+          "suspend": "Suspender kontoen",
+          "reactivate": "Aktiver kontoen igjen",
+          "cancel": "Avslutt abonnementet"
+        },
+        "line": "{what} — {why}",
+        "applies": "godkjenning utfører det i Orgpuls",
+        "why": {
+          "noAction": "den nevner ingen handling Sentral kan utføre; svar i tråden",
+          "noCommand": "Orgpuls har ingen kommando for dette ennå",
+          "notOrgpuls": "bare Orgpuls tar imot kommandoer fra Sentral ennå",
+          "noOrg": "saken har ingen konto",
+          "notTrial": "kontoen er ikke i en prøveperiode",
+          "noRight": "tillatelsessettet ditt gir ikke denne retten"
+        },
+        "done": "Godkjent — prøveperioden er forlenget i Orgpuls. Kunden får ikke beskjed: e-postutsending er ikke koblet til ennå.",
+        "declineDraft": "Hei {first},\n\nDessverre kan vi ikke gjøre dette nå, fordi …\n\nVennlig hilsen\n{agent}"
+      },
+      "thread": {
+        "customer": "Kunde · {channel}",
+        "channels": {
+          "in_app": "hjelp i appen",
+          "email": "e-post",
+          "contact_form": "kontaktskjema",
+          "staff": "ansatt"
+        },
+        "note": "Internt notat",
+        "reply": "Svar",
+        "replyState": {
+          "not_configured": "Svar · ikke sendt på e-post",
+          "queued": "Svar · i kø for e-post",
+          "failed": "Svar · e-post feilet"
+        },
+        "system": "System",
+        "action": "Handling",
+        "actions": {
+          "billing_extend_trial": {
+            "ok": "Prøveperioden forlenget i Orgpuls",
+            "failed": "Orgpuls forlenget ikke prøveperioden"
+          }
+        },
+        "actionOther": "{action} · {outcome}",
+        "outcome": {
+          "ok": "utført",
+          "failed": "mislyktes"
+        }
+      },
+      "composer": {
+        "reply": "Svar",
+        "note": "Internt notat",
+        "canned": "Ferdig svar …",
+        "phReply": "Svar til {name} — lagres i tråden; e-postutsending er ikke koblet til ennå",
+        "phReplyNoName": "Svar — lagres i tråden; e-postutsending er ikke koblet til ennå",
+        "phNote": "Internt notat — bare ansatte ser dette",
+        "locked": "Bare sakens eier, den ansvarlige eller den som kan redigere andres saker, kan skrive her",
+        "after": {
+          "waiting_customer": "deretter Venter på kunden",
+          "resolved": "deretter Løst",
+          "keep": "behold status"
+        },
+        "afterLabel": "Status etter lagring",
+        "send": "Send svar",
+        "save": "Lagre notat",
+        "sent": "Lagret — e-postutsending er ikke koblet til ennå",
+        "saved": "Notat lagret",
+        "placeholders": "Fyll inn før du sender: {fields}"
+      }
+    }
+  }
 }

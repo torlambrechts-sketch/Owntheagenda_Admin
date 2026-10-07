@@ -1762,6 +1762,11 @@ update app.tickets set problem_id = 'bc9345fe-eeb7-4358-ac24-4f4094f41dbf' where
 update app.tickets set problem_id = 'bc9345fe-eeb7-4358-ac24-4f4094f41dbf' where id = '24b1ccfb-fb92-4324-ab6b-12ea3393c910';
 update app.tickets set problem_id = 'bc9345fe-eeb7-4358-ac24-4f4094f41dbf' where id = '1752041c-b629-46cb-aac7-79e0bf2f6e0f';
 update app.tickets set root_cause = 'The mail provider greylists first-time senders on several @kommune.no domains (451).', workaround = 'Ask IT to allow varsler@orgpuls.no as a sender; resend from Oppsett → Invitasjoner.' where number = 2316;
+update app.tickets set request = '{"kind":"extend_trial","args":{"days":14}}'::jsonb where number = 2312 and type = 'service_request';
+update app.tickets set request = '{"kind":"change_plan","args":{"plan":"26–100"}}'::jsonb where number = 2321 and type = 'service_request';
+update app.tickets set request = '{"kind":"other","args":{}}'::jsonb where number = 2315 and type = 'service_request';
+update app.tickets set request = '{"kind":"other","args":{}}'::jsonb where number = 2324 and type = 'service_request';
+update app.tickets set request = '{"kind":"other","args":{}}'::jsonb where number = 2333 and type = 'service_request';
 insert into app.ticket_macros (id, name, category_key) values ('7a8cfe45-9886-472b-a157-7d3613c8f75a', 'Invitasjoner — sjekk søppelpost og domene', 'survey_delivery');
 insert into app.ticket_macro_versions (macro_id, locale, version, body) values ('7a8cfe45-9886-472b-a157-7d3613c8f75a', 'nb', 1, 'Hei [fornavn],
 

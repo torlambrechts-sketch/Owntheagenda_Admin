@@ -5,6 +5,8 @@ import { z } from 'zod'
 import { rpc, type RpcCode } from '@/lib/rpc'
 import { createClient } from '@/lib/supabase/server'
 import { signForMe } from '@/lib/storage/server'
+import { runJobForMe } from '@/lib/jobs/server'
+import type { JobRun } from '@/lib/jobs/run'
 import { FindResult, Preview, PreviewResult, Rule } from '@/lib/data/security'
 import { ALERT_MODES, cidrOk, SECURITY_SETTINGS, timeOk } from '@/lib/data/security-shared'
 
@@ -203,10 +205,28 @@ export async function privacyPreview(input: { subject: z.input<typeof Subject> }
 /** The personvern request an export or an erasure answers (privacy_requests_get), or none; the job closes it when done. */
 const request = uuid.nullable().default(null)
 
-export async function privacyExport(input: { subject: z.input<typeof Subject>; request?: string | null; reason?: string | null }): Promise<Result> {
+/**
+ * An access request (SF-15): privacy_export makes the job approved, then jobs-run writes the package right away (0054) with
+ * the staff member's own token. A runner that cannot be reached does not undo the request: the job waits in the list, and
+ * «Write package now» asks again.
+ */
+export async function privacyExport(input: { subject: z.input<typeof Subject>; request?: string | null; reason?: string | null }): Promise<Result<{ job: JobRun }>> {
   const p = z.object({ subject: Subject, request, reason }).safeParse(input)
   if (!p.success) return bad('subject')
-  return strip(await call('privacy_export', { p_subject: p.data.subject, p_request: p.data.request, p_reason: p.data.reason }, z.object({ job: uuid, state: z.string() })))
+  const r = await call('privacy_export', { p_subject: p.data.subject, p_request: p.data.request, p_reason: p.data.reason }, z.object({ job: uuid, state: z.string() }))
+  if (!r.ok) return r
+  const job = await runJobForMe({ kind: 'privacy', id: r.data.job })
+  done()
+  return { ok: true, job }
+}
+
+/** «Write package now»: an export still waiting is built again (the database checks the right and that it is the caller's). */
+export async function privacyBuild(input: { job: string }): Promise<Result<{ job: JobRun }>> {
+  const p = z.object({ job: uuid }).safeParse(input)
+  if (!p.success) return bad()
+  const job = await runJobForMe({ kind: 'privacy', id: p.data.job })
+  done()
+  return { ok: true, job }
 }
 
 const Erased = z.object({ job: uuid, state: z.enum(['done', 'previewed']), approval: z.literal('required').optional(), counts: z.record(z.string(), z.coerce.number()) })

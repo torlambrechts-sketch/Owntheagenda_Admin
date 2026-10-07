@@ -100,8 +100,11 @@ try {
   const mu = sql(`select meeting_id || '|' || storage_path || '|' || state from app.meeting_uploads where filename = 'browser-e2e.vtt' order by created_at desc limit 1`)
   const [mid, mpath, mstate] = mu.split('|')
   cleanup.push(async () => { await svc.storage.from('meeting-files').remove([mpath]); sql(`delete from app.meetings where id = '${mid}'`) })
-  check(mstate === 'uploaded' && sql(`select count(*) from storage.objects where bucket_id = 'meeting-files' and name = '${mpath}'`) === '1', 'Meetings: the file is in meeting-files and the upload is confirmed (queued for the parser)')
-  check(await page.getByText(/Waiting to be read/).count() > 0 || (await page.waitForTimeout(1500), await page.getByText(/Waiting to be read/).count()) > 0, 'Meetings: the new meeting opens and says the file waits to be read')
+  // with jobs-run behind the proxy (0054) the file is read at once and its original deleted; without it, it waits
+  check((mstate === 'uploaded' && sql(`select count(*) from storage.objects where bucket_id = 'meeting-files' and name = '${mpath}'`) === '1') || mstate === 'parsed',
+    `Meetings: the file landed in meeting-files and the upload is confirmed (${mstate})`)
+  const shown = async () => (await page.getByText(mstate === 'parsed' ? /Hei fra nettleseren\./ : /Waiting to be read/).count()) > 0
+  check(await shown() || (await page.waitForTimeout(1500), await shown()), `Meetings: the new meeting opens and shows ${mstate === 'parsed' ? 'the transcript' : 'that the file waits to be read'}`)
 
   // 4. Security › Privacy: a package the worker wrote downloads
   // the export as privacy_export makes it (the Finder's «Export» calls the same function), the worker's part by the service role

@@ -9,8 +9,10 @@ import { Modal, btnCancel, btnConfirm, quiet, useFail } from './kit'
 
 /**
  * Upload transcript (MTG-06): meeting_transcript_upload_begin (a new unlinked meeting and a pending upload in the private
- * «meeting-files» bucket) → storage-sign signs that path (0052) → the browser sends the file → meeting_transcript_upload_done
- * queues it for the upload parser. Without the signer nothing can be sent, and starting anyway would leave an empty meeting
+ * «meeting-files» bucket) → storage-sign signs that path (0052) → the browser sends the file → meeting_transcript_upload_done,
+ * and jobs-run reads it into the meeting at once (0054). The toast says whether it was read, could not be read, or waits
+ * (the reader could not be reached; «Read now» on the transcript asks again). Without the signer nothing can be sent, and
+ * starting anyway would leave an empty meeting
  * behind, so the dialog then only says what will be accepted and why it waits. The type sent is the extension's: browsers
  * leave it empty for .srt and .vtt.
  */
@@ -33,7 +35,7 @@ export function UploadModal({ storage, onClose, onUploaded }: { storage: boolean
       if (!(await putSigned(begun.url, file, mime))) { flash(t('sendFailed')); onUploaded(begun.meetingId); return }
       const done = await transcriptUploadDone(begun.id)
       if (!done.ok) { fail(done); onUploaded(begun.meetingId); return }
-      flash(t('uploaded'))
+      flash(done.job.state === 'ready' ? t('read') : done.job.state === 'failed' ? t('readFailed') : t('readPending'))
       onUploaded(begun.meetingId)
     } finally {
       setBusy(false)

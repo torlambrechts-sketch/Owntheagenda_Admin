@@ -13,7 +13,7 @@ Database and shared-code changes the Meetings screen needs. Each names the devia
 | R-MEETINGS-03 | **Done in 0050.** `app.mtg_brief_build`: `health:<product>` params carry `organization`; `applications` is one line per organisation with `organization`, cited to it. The brief adds the name only when two lines would read the same. Briefs built before 0050 show it after their next build (V-MEETINGS-10) |
 | R-MEETINGS-04 | **Done in 0050.** `meeting_suggestions[].currency`: the deal's or lead's currency when the field is `value`, else null; the table writes «120 000 kr» (V-MEETINGS-15) |
 | R-MEETINGS-05 | **Done in 0050.** `meeting_transcript.speakers[].email` (left out for a person the caller may not see); the Speakers card keeps an address mapping selected and names the guest (V-MEETINGS-13) |
-| R-MEETINGS-06 | **Open.** Storage bucket and signer, not a migration (V-MEETINGS-07) |
+| R-MEETINGS-06 | **Done** (0052 bucket and signer; 0054 reader: `jobs-run` reads the upload right after «done»). Open: deploying the functions (V-JOBS-10) |
 
 | ID | Request | Why | Closes |
 |---|---|---|---|
@@ -22,5 +22,5 @@ Database and shared-code changes the Meetings screen needs. Each names the devia
 | R-MEETINGS-03 | Brief facts `health:<product>` (and `applications`) carry the organisation's name in `params` | Two organisations with the same product give two identical «Health · Orgpuls» lines | V-MEETINGS-10 |
 | R-MEETINGS-04 | `meeting_suggestions` rows carry the target's `currency` when the field is a money column (`value` on deals and leads) | The design writes «120 000 kr»; the screen cannot know the currency | V-MEETINGS-15 |
 | R-MEETINGS-05 | `meeting_transcript.speakers[]` includes `email` | A label mapped to an address only (a guest unknown to the CRM) reads «Not mapped» again after the save, because the speaker row has no field that shows the mapping | V-MEETINGS-13 |
-| R-MEETINGS-06 | **Done in 0052** (`meeting-files` bucket, `worker_storage_check`) and `storage-sign`: the upload lands and is queued for the parser. Open: deploying the function; the upload parser (`meeting_upload_parse` → `worker_upload_parsed`) | Transcript upload cannot land without them | V-MEETINGS-07 |
+| R-MEETINGS-06 | **Done in 0052** (`meeting-files` bucket, `worker_storage_check`) and `storage-sign`, and **0054** (`jobs-run`, `worker_jobs_claim`, `worker_upload_failed`): the upload lands and is read into the meeting at once (.vtt, .srt, .txt, .docx), or fails with a reason. Open: deploying the functions (V-JOBS-10) | Transcript upload cannot land without them | V-MEETINGS-07 |
 | R-MEETINGS-07 | **Done in 0053.** `meeting_brief` (0042) tests `FOUND` after `perform app.log(…)`, which sets it, so a meeting without a brief (every upload) answers `state` and `quotes_state` null instead of `{state: 'none', …}`. Move the log after the check | The screen reads null as «none» (`lib/data/meetings.ts`) | — |

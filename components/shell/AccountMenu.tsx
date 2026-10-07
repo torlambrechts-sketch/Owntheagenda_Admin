@@ -4,7 +4,7 @@ import { useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { setLocale } from '@/app/(admin)/shell-actions'
+import { setLocale, setSandbox } from '@/app/(admin)/shell-actions'
 import { signOut } from '@/app/login/actions'
 import { formatNumber } from '@/lib/format'
 import type { ShellData } from './types'
@@ -12,11 +12,7 @@ import type { ShellData } from './types'
 /** The initials button and its card: who I am, language, time zone, number format, settings, sign out. */
 export function AccountMenu({ shell, open, toggle, close }: { shell: ShellData; open: boolean; toggle: () => void; close: () => void }) {
   const t = useTranslations('shell.account')
-  const router = useRouter()
-  const [pending, start] = useTransition()
   const me = shell.me
-  const initials = me.initials ?? me.name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase()
-  const pill = (sel: boolean) => `cursor-pointer rounded-999 border-none px-[9px] py-1 text-11.5 ${sel ? 'bg-highlight font-bold' : 'bg-transparent text-muted'}`
 
   return (
     <div className="relative">
@@ -27,11 +23,24 @@ export function AccountMenu({ shell, open, toggle, close }: { shell: ShellData; 
         aria-expanded={open}
         className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-999 border border-ink bg-highlight text-12 font-bold"
       >
-        {initials}
+        {initialsOf(me)}
       </button>
-      {open ? (
-        <div className="absolute right-0 top-11 z-[60] w-[290px] rounded-18 border border-line bg-surface p-2 shadow-pop">
-          <div className="border-b border-line px-3 pb-3 pt-2">
+      {open ? <AccountCard shell={shell} close={close} className="absolute right-0 top-11 z-[60] w-[290px] rounded-18 border border-line bg-surface p-2 shadow-pop" /> : null}
+    </div>
+  )
+}
+
+/** Who I am, language, time zone, number format, sandbox, settings and security, sign out (the account card). */
+export function AccountCard({ shell, close, className }: { shell: ShellData; close: () => void; className: string }) {
+  const t = useTranslations('shell.account')
+  const ts = useTranslations('shell.sandbox')
+  const router = useRouter()
+  const [pending, start] = useTransition()
+  const me = shell.me
+  const pill = (sel: boolean) => `cursor-pointer rounded-999 border-none px-[9px] py-1 text-11.5 ${sel ? 'bg-highlight font-bold' : 'bg-transparent text-muted'}`
+  return (
+    <div className={className}>
+      <div className="border-b border-line px-3 pb-3 pt-2">
             <div className="text-14 font-bold">{me.name}</div>
             <div className="mt-[2px] text-12.5 text-muted">{me.email}</div>
             <div className="mt-2 text-12 font-semibold text-muted">
@@ -64,6 +73,19 @@ export function AccountMenu({ shell, open, toggle, close }: { shell: ShellData; 
               <span className="font-semibold">{t('numberFormat')}</span>
               <span className="text-muted">{formatNumber(12345.67, me.number_format, 2)}</span>
             </div>
+            <div className="flex items-center justify-between px-3 py-2">
+              <span className="font-semibold">{ts('toggle')}</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={me.sandbox}
+                disabled={pending}
+                onClick={() => start(async () => { await setSandbox(!me.sandbox); router.refresh() })}
+                className={`relative h-[18px] w-[30px] cursor-pointer rounded-999 border-none p-0 ${me.sandbox ? 'bg-ink' : 'bg-line-strong'}`}
+              >
+                <span className="absolute top-[2px] h-[14px] w-[14px] rounded-999 border border-[rgba(25,21,16,.15)] bg-surface" style={{ left: me.sandbox ? 14 : 2 }} />
+              </button>
+            </div>
             {shell.settings.session_idle === 'on_30' ? <div className="px-3 py-2 text-12 text-muted">{t('idle')}</div> : null}
             <Link
               href="/settings"
@@ -78,8 +100,8 @@ export function AccountMenu({ shell, open, toggle, close }: { shell: ShellData; 
               </button>
             </form>
           </div>
-        </div>
-      ) : null}
     </div>
   )
 }
+
+export const initialsOf = (me: ShellData['me']) => me.initials ?? me.name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase()

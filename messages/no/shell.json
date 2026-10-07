@@ -1,7 +1,7 @@
 {
   "shell": {
     "brand": "Sentral",
-    "brandSub": "Plattformadmin",
+    "brandSub": "SaaS-admin",
     "mainMenu": "Hovedmeny",
     "openMenu": "Åpne meny",
     "residency": "Data i EU · Frankfurt",
@@ -38,11 +38,11 @@
       "automation": "Automatisering",
       "insights": "Innsikt",
       "apps": "Applikasjoner",
-      "platform": "API og integrasjoner",
       "settings": "Innstillinger",
       "security": "Sikkerhet og personvern",
       "mobile": "Mobilapp",
-      "coverage": "Spesifikasjonsdekning"
+      "coverage": "Spesifikasjonsdekning",
+      "api": "API og integrasjoner"
     },
     "title": {
       "home": "Oversikt",
@@ -64,11 +64,11 @@
       "automation": "Automatisering",
       "insights": "Innsikt",
       "apps": "Applikasjoner",
-      "platform": "API og integrasjoner",
       "settings": "Innstillinger",
       "security": "Sikkerhet og personvern",
       "mobile": "Mobilapp",
-      "coverage": "Spesifikasjonsdekning"
+      "coverage": "Spesifikasjonsdekning",
+      "api": "API og integrasjoner"
     },
     "products": {
       "all": "Alle applikasjoner",
@@ -475,6 +475,33 @@
       "title": "Ingen tilgang",
       "body": "Rettighetssettet ditt omfatter ikke dette området. En eier kan endre det under Innstillinger › Rettighetssett.",
       "moduleOff": "Dette området er slått av under Innstillinger › Moduler."
+    },
+    "application": "Applikasjon",
+    "section": {
+      "customers": {
+        "label": "Kunder",
+        "sub": "Kontoer, saker"
+      },
+      "crm": {
+        "label": "CRM",
+        "sub": "Avtaler, lister"
+      },
+      "growth": {
+        "label": "Vekst",
+        "sub": "Analyse, SEO, e-post"
+      },
+      "platform": {
+        "label": "Plattform",
+        "sub": "Apper, planer, team"
+      }
+    },
+    "apiStatus": {
+      "operational": "API i drift",
+      "degraded": "API ustabilt",
+      "unreachable": "API utilgjengelig",
+      "no_data": "Ingen API-data ennå",
+      "not_installed": "Ikke koblet til",
+      "disabled": "Deaktivert"
     }
   }
 }

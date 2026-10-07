@@ -1,7 +1,7 @@
 {
   "shell": {
     "brand": "Sentral",
-    "brandSub": "Platform admin",
+    "brandSub": "SaaS admin",
     "mainMenu": "Main menu",
     "openMenu": "Open menu",
     "residency": "EU residency · Frankfurt",
@@ -38,11 +38,11 @@
       "automation": "Automation",
       "insights": "Insights",
       "apps": "Applications",
-      "platform": "API and integrations",
       "settings": "Settings",
       "security": "Security and privacy",
       "mobile": "Mobile app",
-      "coverage": "Spec coverage"
+      "coverage": "Spec coverage",
+      "api": "API and integrations"
     },
     "title": {
       "home": "Overview",
@@ -64,11 +64,11 @@
       "automation": "Automation",
       "insights": "Insights",
       "apps": "Applications",
-      "platform": "API and integrations",
       "settings": "Settings",
       "security": "Security and privacy",
       "mobile": "Mobile app",
-      "coverage": "Specification coverage"
+      "coverage": "Specification coverage",
+      "api": "API and integrations"
     },
     "products": {
       "all": "All applications",
@@ -475,6 +475,33 @@
       "title": "No access",
       "body": "Your permission set does not include this area. An owner can change it under Settings › Permission sets.",
       "moduleOff": "This area is switched off under Settings › Modules."
+    },
+    "application": "Application",
+    "section": {
+      "customers": {
+        "label": "Customers",
+        "sub": "Accounts, tickets"
+      },
+      "crm": {
+        "label": "CRM",
+        "sub": "Deals, lists"
+      },
+      "growth": {
+        "label": "Growth",
+        "sub": "Analytics, SEO, email"
+      },
+      "platform": {
+        "label": "Platform",
+        "sub": "Apps, plans, team"
+      }
+    },
+    "apiStatus": {
+      "operational": "API operational",
+      "degraded": "API degraded",
+      "unreachable": "API unreachable",
+      "no_data": "No API data yet",
+      "not_installed": "Not connected",
+      "disabled": "Disabled"
     }
   }
 }

@@ -40,14 +40,19 @@ export const ICON = {
 } as const
 
 export type RouteKey =
+  | 'crm' | 'growth' | 'platform'
   | 'home' | 'customers' | 'analytics' | 'tickets' | 'feed' | 'leads' | 'deals' | 'contacts' | 'activities' | 'inbox' | 'meetings'
-  | 'projects' | 'documents' | 'campaigns' | 'leadgen' | 'visitors' | 'automation' | 'insights' | 'apps' | 'platform' | 'settings'
-  | 'security' | 'mobile' | 'coverage'
+  | 'projects' | 'documents' | 'campaigns' | 'leadgen' | 'visitors' | 'automation' | 'insights' | 'apps' | 'settings'
+  | 'security' | 'mobile' | 'coverage' | 'api'
 
 export type Group = 'all' | 'customers' | 'crm' | 'growth' | 'platform'
 
 export const ROUTES: Record<RouteKey, { path: string; group: Group; icon: keyof typeof ICON }> = {
-  home: { path: '/', group: 'all', icon: 'dashboard' },
+  // the four sections of Sentral Simple (design-reference/sentral-simple); customers below is the first of them
+  crm: { path: '/crm', group: 'crm', icon: 'kanban' },
+  growth: { path: '/growth', group: 'growth', icon: 'chart' },
+  platform: { path: '/platform', group: 'platform', icon: 'puzzle' },
+  home: { path: '/overview', group: 'all', icon: 'dashboard' },
   customers: { path: '/customers', group: 'customers', icon: 'building' },
   analytics: { path: '/analytics', group: 'customers', icon: 'chart' },
   tickets: { path: '/tickets', group: 'customers', icon: 'ticket' },
@@ -66,19 +71,32 @@ export const ROUTES: Record<RouteKey, { path: string; group: Group; icon: keyof 
   automation: { path: '/automation', group: 'growth', icon: 'bolt' },
   insights: { path: '/insights', group: 'growth', icon: 'activity' },
   apps: { path: '/applications', group: 'platform', icon: 'puzzle' },
-  platform: { path: '/api', group: 'platform', icon: 'redirect' },
+  api: { path: '/api', group: 'platform', icon: 'redirect' },
   settings: { path: '/settings', group: 'platform', icon: 'sliders' },
   security: { path: '/security', group: 'platform', icon: 'shield' },
   mobile: { path: '/mobile', group: 'platform', icon: 'phone' },
   coverage: { path: '/coverage', group: 'platform', icon: 'list' },
 }
 
+/**
+ * Sentral Simple's rail («Sentral Simple.dc.html»): four sections, each a label and a sub-label (shell.section.<key>) and
+ * the design's own icon. Every other route stays reachable by address (and from the account menu) but is not in the rail.
+ */
+export type SectionKey = 'customers' | 'crm' | 'growth' | 'platform'
+export const SECTIONS: { key: SectionKey; icon: string }[] = [
+  { key: 'customers', icon: 'M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M20 20v-1.5a3.5 3.5 0 0 0-2.5-3.35M15.5 4.2a3.5 3.5 0 0 1 0 6.6' },
+  { key: 'crm', icon: 'M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v6h-4z' },
+  { key: 'growth', icon: 'M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6' },
+  { key: 'platform', icon: 'M9 4h4v2a1.5 1.5 0 0 0 3 0V4h4v4h-2a1.5 1.5 0 0 0 0 3h2v4h-4v-2a1.5 1.5 0 0 0-3 0v2H9v-4H7a1.5 1.5 0 0 1 0-3h2z' },
+]
+
+/** The full interface's navigation, kept for the routes the rail no longer lists (titles, access). */
 export const NAV: { group: Group | null; items: RouteKey[] }[] = [
   { group: null, items: ['home'] },
   { group: 'customers', items: ['customers', 'analytics', 'tickets'] },
   { group: 'crm', items: ['feed', 'leads', 'deals', 'contacts', 'activities', 'inbox', 'meetings', 'projects', 'documents'] },
   { group: 'growth', items: ['campaigns', 'leadgen', 'visitors', 'automation', 'insights'] },
-  { group: 'platform', items: ['apps', 'platform', 'settings', 'security', 'mobile', 'coverage'] },
+  { group: 'platform', items: ['apps', 'api', 'settings', 'security', 'mobile', 'coverage'] },
 ]
 
 /** The module switch that hides a route (Settings › Modules). */
@@ -90,11 +108,14 @@ export const MODULE_OF: Partial<Record<RouteKey, string>> = {
 /**
  * The rights that open a route: any one of them is enough; none listed is every staff member. Mirrors the guard of the
  * page's main read (its `app.require`), so the menu offers only what the person can open — the database refuses anyway.
- * Automation, Insights, API, Settings, Security and Coverage have a view for everyone (one's own workflows, dashboards,
+ * Platform, Automation, Insights, API, Settings, Security and Coverage have a view for everyone (team list, one's own workflows, dashboards,
  * tokens, settings and sessions).
  */
 export const ACCESS: Partial<Record<RouteKey, readonly `${'deals' | 'projects' | 'campaigns' | 'tickets' | 'global'}:${string}`[]>> = {
-  customers: ['deals:see'],
+  // Simple: Customers holds accounts and tickets; Growth opens with either reports right or the campaigns right
+  customers: ['deals:see', 'tickets:see'],
+  crm: ['deals:see'],
+  growth: ['global:reports_others', 'campaigns:reports_others', 'campaigns:see'],
   analytics: ['global:reports_others', 'campaigns:reports_others'],
   tickets: ['tickets:see'],
   feed: ['deals:see'], leads: ['deals:see'], deals: ['deals:see'], contacts: ['deals:see'], activities: ['deals:see'],

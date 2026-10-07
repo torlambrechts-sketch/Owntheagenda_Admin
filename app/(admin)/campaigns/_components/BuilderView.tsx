@@ -10,11 +10,11 @@ import { Switch } from '@/components/ui/Switch'
 import { formatNumber, type NumberFormat } from '@/lib/format'
 import { footerProblems, renderEmail } from '@/lib/data/campaigns-render'
 import {
-  BACKGROUNDS, BLANK_DESIGN, CAMPAIGN_TYPES, HTML_STARTER, PADDINGS, PALETTE, addRow, canEdit, isFixed, itemHref, itemLabel, moveRow, patchRow, removeRow, toLocalInput,
-  type Background, type Border, type CampaignDetail, type CampaignRow, type CampaignType, type Design, type Item, type Preview, type Row, type Segment,
+  BACKGROUNDS, BLANK_DESIGN, CAMPAIGN_LANGUAGES, CAMPAIGN_TYPES, HTML_STARTER, PADDINGS, PALETTE, addRow, canEdit, isFixed, itemHref, itemLabel, moveRow, patchRow, removeRow, toLocalInput,
+  type Background, type Border, type CampaignDetail, type CampaignLanguage, type CampaignRow, type CampaignType, type Design, type Item, type Preview, type Row, type Segment,
   type SenderDomain, type Template,
 } from '@/lib/data/campaigns-shared'
-import { createCampaign, deleteTemplate, previewCampaign, saveCampaign, saveTemplate, scheduleCampaign, testSendCampaign } from '../actions'
+import { createCampaign, deleteTemplate, previewCampaign, restoreTemplate, saveCampaign, saveTemplate, scheduleCampaign, testSendCampaign } from '../actions'
 import { Canvas, type Brand } from './Canvas'
 import { card, danger, dark, ghost, label, primary, small } from './bits'
 import { useErr, useGo } from './hooks'
@@ -23,6 +23,7 @@ import type { Can } from './CampaignsView'
 type Coupon = { code: string; description: string | null; percent: number | null; months: number | null }
 type Product = { key: string; name: string; color: string }
 type Person = { id: string; name: string; email: string | null }
+type Version = { version: number; subject: string; created_at: string; by: string | null }
 
 export type BuilderProps = {
   campaign: CampaignDetail | null
@@ -32,7 +33,9 @@ export type BuilderProps = {
   segments: Segment[]
   domains: SenderDomain[]
   providerConnected: boolean
-  coupons: Coupon[] | null
+  coupons: Coupon[]
+  /** the open template's saved versions, newest first (null when none is open or they could not be read) */
+  versions: Version[] | null
   people: Person[]
   products: Product[]
   can: Can
@@ -141,7 +144,7 @@ type Form = {
   name: string; type: CampaignType; segment_id: string | null; sender_domain_id: string | null; subject_a: string; subject_b: string; preheader: string
   ab_percent: number; ab_metric: 'opens' | 'clicks'; ab_wait_hours: number; coupon_code: string | null
   utm_source: string; utm_medium: string; utm_campaign: string; tracking: boolean; notify_owners: boolean
-  scope: 'private' | 'shared'; category: string
+  scope: 'private' | 'shared'; category: string; language: CampaignLanguage
 }
 
 function initial(p: BuilderProps, mode: 'campaign' | 'template'): { form: Form; design: Design; html: string | null } {
@@ -152,7 +155,7 @@ function initial(p: BuilderProps, mode: 'campaign' | 'template'): { form: Form; 
       form: {
         name: tp.name, type: 'newsletter', segment_id: null, sender_domain_id: null, subject_a: tp.subject ?? '', subject_b: '', preheader: '', ab_percent: 20, ab_metric: 'clicks',
         ab_wait_hours: 4, coupon_code: null, utm_source: '', utm_medium: '', utm_campaign: '', tracking: true, notify_owners: false,
-        scope: tp.scope === 'shared' ? 'shared' : 'private', category: tp.category ?? '',
+        scope: tp.scope === 'shared' ? 'shared' : 'private', category: tp.category ?? '', language: 'nb',
       },
       design: tp.design ?? BLANK_DESIGN, html: tp.html,
     }
@@ -162,7 +165,7 @@ function initial(p: BuilderProps, mode: 'campaign' | 'template'): { form: Form; 
       name: c!.name, type: c!.type, segment_id: c!.segment?.id ?? null, sender_domain_id: c!.sender_domain_id, subject_a: c!.subject_a, subject_b: c!.subject_b ?? '',
       preheader: c!.preheader ?? '', ab_percent: c!.ab?.percent ?? 20, ab_metric: c!.ab?.metric === 'opens' ? 'opens' : 'clicks', ab_wait_hours: c!.ab?.wait_hours ?? 4,
       coupon_code: c!.coupon_code, utm_source: c!.utm.source, utm_medium: c!.utm.medium, utm_campaign: c!.utm.campaign, tracking: c!.tracking,
-      notify_owners: c!.notify_owners, scope: 'private', category: '',
+      notify_owners: c!.notify_owners, scope: 'private', category: '', language: c!.language,
     },
     design: c!.design.rows.length ? c!.design : BLANK_DESIGN, html: c!.html,
   }
@@ -206,6 +209,7 @@ function Editor(p: BuilderProps & { mode: 'campaign' | 'template' }) {
     design: html !== null ? null : design, html, preheader: form.preheader,
     sender: { name: domain?.from_name ?? brand.name, postalAddress: domain?.postal_address ?? null }, brand: brand.name || (domain?.from_name ?? ''),
     utm: p.mode === 'campaign' ? { source: form.utm_source, medium: form.utm_medium, campaign: form.utm_campaign } : null,
+    lang: form.language,
   })
 
   const values = () => {
@@ -213,7 +217,7 @@ function Editor(p: BuilderProps & { mode: 'campaign' | 'template' }) {
       name: form.name.trim(), type: form.type, segment_id: form.segment_id, sender_domain_id: form.sender_domain_id, subject_a: form.subject_a,
       subject_b: automated ? null : form.subject_b.trim() || null, preheader: form.preheader.trim() || null,
       coupon_code: form.type === 'promotion' ? form.coupon_code : null, utm_source: form.utm_source, utm_medium: form.utm_medium, utm_campaign: form.utm_campaign,
-      tracking: form.tracking, notify_owners: form.notify_owners,
+      tracking: form.tracking, notify_owners: form.notify_owners, language: form.language,
     }
     if (!automated && form.subject_b.trim()) Object.assign(v, { ab_percent: form.ab_percent, ab_metric: form.ab_metric, ab_wait_hours: form.ab_wait_hours })
     if (html !== null) v.html = html
@@ -258,7 +262,7 @@ function Editor(p: BuilderProps & { mode: 'campaign' | 'template' }) {
   const [localPreview, setLocalPreview] = useState<string | null>(null)
   const loadPreview = (person: string | null) => start(async () => {
     if (p.mode === 'template') { setLocalPreview(renderNow()); return }
-    const r = await previewCampaign({ id: c!.id, person, draft: c!.status === 'draft' ? { design: html !== null ? null : design, html, preheader: form.preheader || null, sender_domain_id: form.sender_domain_id } : null })
+    const r = await previewCampaign({ id: c!.id, person, draft: c!.status === 'draft' ? { design: html !== null ? null : design, html, preheader: form.preheader || null, sender_domain_id: form.sender_domain_id, language: form.language } : null })
     if (!r.ok) { flash(err(r.code, r.detail)); return }
     setPreview(r.preview)
   })
@@ -378,7 +382,7 @@ function Editor(p: BuilderProps & { mode: 'campaign' | 'template' }) {
           <HtmlEditor html={html} onChange={setHtml} editable={editable} width={width} postal={domain?.postal_address ?? null} isTemplate={p.mode === 'template'} />
         ) : (
           <Canvas design={design} selected={sel} onPick={setSel} width={width} brand={brand} readOnly={!editable}
-            footer={{ address: domain?.postal_address ?? null, sender: domain?.from_name ?? brand.name, stream: domain?.stream ?? (p.mode === 'campaign' ? null : 'marketing') }} />
+            footer={{ address: domain?.postal_address ?? null, sender: domain?.from_name ?? brand.name, stream: domain?.stream ?? (p.mode === 'campaign' ? null : 'marketing'), lang: form.language }} />
         )}
       </div>
 
@@ -404,6 +408,7 @@ function Editor(p: BuilderProps & { mode: 'campaign' | 'template' }) {
         {p.mode === 'campaign' && p.can.add ? (
           <SaveAs open={panel === 'saveAs'} onToggle={() => setPanel(panel === 'saveAs' ? 'none' : 'saveAs')} subject={form.subject_a} design={design} html={html} />
         ) : null}
+        {p.mode === 'template' && p.versions ? <Versions tp={tp!} versions={p.versions} editable={editable} busy={busy} /> : null}
         {p.mode === 'template' && editable && p.can.del ? (
           <DeleteTemplate id={tp!.id} />
         ) : null}
@@ -540,6 +545,10 @@ function CampaignFields(p: BuilderProps & { form: Form; set: <K extends keyof Fo
   const [utmOpen, setUtmOpen] = useState(false)
   const automated = form.type === 'automated'
   const trackingForced = c.tracking_rule === 'on' || c.tracking_rule === 'off'
+  const coupon = p.coupons.find((x) => x.code === form.coupon_code) ?? null
+  // a coupon's terms as the register holds them: only the parts it has
+  const couponTerms = (x: Coupon) => [x.description, x.percent !== null ? t('fields.couponPercent', { n: formatNumber(x.percent, p.nf, Number.isInteger(x.percent) ? 0 : 2) }) : null,
+    x.months !== null ? t('fields.couponMonths', { n: x.months }) : null].filter(Boolean).join(' · ')
   return (
     <>
       <label className={label}>{t('fields.name')}<input value={form.name} disabled={!ed} onChange={(e) => set('name', e.target.value)} maxLength={120} className={field} /></label>
@@ -571,6 +580,11 @@ function CampaignFields(p: BuilderProps & { form: Form; set: <K extends keyof Fo
           </span>
         ) : p.domains.length === 0 ? <span className="text-11.5">{t('fields.noDomains')}</span> : null}
       </label>
+      <label className={row}>{t('fields.language')}
+        <select value={form.language} disabled={!ed} onChange={(e) => set('language', e.target.value as CampaignLanguage)} className="h-[30px] rounded-8 border border-line bg-canvas text-12">
+          {CAMPAIGN_LANGUAGES.map((k) => <option key={k} value={k}>{t(`languages.${k}`)}</option>)}
+        </select>
+      </label>
       <label className={label}>{t('fields.subjectA')}<input value={form.subject_a} disabled={!ed} onChange={(e) => set('subject_a', e.target.value)} maxLength={200} className={field} /></label>
       {!automated ? (
         <label className={label}>{t('fields.subjectB')}<input value={form.subject_b} disabled={!ed} onChange={(e) => set('subject_b', e.target.value)} maxLength={200} className={field} /></label>
@@ -591,12 +605,13 @@ function CampaignFields(p: BuilderProps & { form: Form; set: <K extends keyof Fo
         <label className={row}>{t('fields.coupon')}
           <select value={form.coupon_code ?? ''} disabled={!ed} onChange={(e) => set('coupon_code', e.target.value || null)} className="h-[30px] rounded-8 border border-line bg-canvas text-12">
             <option value="">{t('fields.none')}</option>
-            {form.coupon_code && !(p.coupons ?? []).some((x) => x.code === form.coupon_code) ? <option value={form.coupon_code}>{form.coupon_code}</option> : null}
-            {(p.coupons ?? []).map((x) => <option key={x.code} value={x.code}>{x.code}</option>)}
+            {form.coupon_code && !p.coupons.some((x) => x.code === form.coupon_code) ? <option value={form.coupon_code}>{form.coupon_code}</option> : null}
+            {p.coupons.map((x) => <option key={x.code} value={x.code}>{x.code}</option>)}
           </select>
         </label>
       ) : null}
-      {form.type === 'promotion' && p.coupons === null ? <span className="text-11.5 text-faint">{t('fields.couponsUnknown')}</span> : null}
+      {form.type === 'promotion' && coupon ? <span className="text-11.5 text-muted">{couponTerms(coupon)}</span> : null}
+      {form.type === 'promotion' && p.coupons.length === 0 ? <span className="text-11.5 text-faint">{t('fields.noCoupons')}</span> : null}
       <span className="text-muted">
         UTM: utm_source={form.utm_source} · utm_campaign={form.utm_campaign}
         {ed ? <button type="button" onClick={() => setUtmOpen((x) => !x)} className="ml-1 cursor-pointer border-none bg-transparent p-0 text-12 text-link underline">{t('fields.edit')}</button> : null}
@@ -670,6 +685,42 @@ function SaveAs({ open, onToggle, subject, design, html }: { open: boolean; onTo
           <button type="button" disabled={busy || !name.trim()} onClick={save} className={dark}>{t('builder.saveTemplateNew')}</button>
         </>
       ) : null}
+    </div>
+  )
+}
+
+/** A template's saved versions (R-CAMPAIGNS-05): each save is one; restoring saves the chosen one as the next. */
+function Versions({ tp, versions, editable, busy: outerBusy }: { tp: Template; versions: Version[]; editable: boolean; busy: boolean }) {
+  const t = useTranslations('campaigns')
+  const fmt = useFormatter()
+  const err = useErr()
+  const flash = useToast()
+  const router = useRouter()
+  const [busy, start] = useTransition()
+  const restore = (v: number) => start(async () => {
+    const r = await restoreTemplate({ id: tp.id, version: v })
+    if (!r.ok) { flash(err(r.code, r.detail)); return }
+    flash(t('builder.versionRestored', { from: v, v: r.current }))
+    router.refresh()
+  })
+  return (
+    <div className={`${box} flex flex-col gap-[6px] p-[14px] text-12`}>
+      <span className={eyebrow}>{t('builder.versions')}</span>
+      {versions.map((x) => (
+        <div key={x.version} className="flex items-center justify-between gap-2 border-0 border-b border-solid border-tile py-[3px]">
+          <span className="min-w-0">
+            <b>v{x.version}</b>
+            <span className="text-muted"> · {fmt.dateTime(new Date(x.created_at), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}{x.by ? ` · ${x.by}` : ''}</span>
+            {x.subject ? <span className="block overflow-hidden text-ellipsis whitespace-nowrap text-faint">{x.subject}</span> : null}
+          </span>
+          {x.version === tp.current_version ? <span className="flex-none text-11.5 text-muted">{t('builder.currentVersion')}</span>
+            : editable ? (
+              <button type="button" disabled={busy || outerBusy} onClick={() => restore(x.version)} className="h-[26px] flex-none cursor-pointer rounded-8 border border-line bg-transparent px-2 text-11.5 font-semibold disabled:cursor-default disabled:opacity-50">
+                {t('builder.restore')}
+              </button>
+            ) : null}
+        </div>
+      ))}
     </div>
   )
 }

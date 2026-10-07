@@ -29,7 +29,8 @@ export function seedCampaigns({ sql, q, uid }) {
   }
 
   // ---- saved segments (CMP-03), shared by sales and marketing, in the design's order. «Customers without a pulse in
-  // 90 days» needs a product-activity filter the people filter does not have (R-CAMPAIGNS-03), so it is left out.
+  // 90 days»: people of active customers whose tenants have not opened a survey round in 90 days, or never have
+  // (product.last_round_days, 0040: tenant-level dates only, D-19).
   const segments = [
     ['hr-trial', 'HR in organizations with 26–100 employees on trial', null, [
       { f: 'title', op: 'eq', v: 'HR' },
@@ -40,6 +41,10 @@ export function seedCampaigns({ sql, q, uid }) {
     ]],
     ['all-subscribed', 'All subscribed', null, [{ f: 'marketing_status', op: 'eq', v: 'subscribed' }]],
     ['daglig-ledere', 'All daglig ledere', null, [{ f: 'title', op: 'eq', v: 'Daglig leder' }]],
+    ['no-pulse-90', 'Customers without a pulse in 90 days', 'Active customers whose tenants have not opened a survey round in 90 days', [
+      { f: 'organization.status', op: 'eq', v: 'active' },
+      { or: [[{ f: 'product.last_round_days', op: 'gte', v: 90 }], [{ f: 'product.last_round_days', op: 'empty' }]] },
+    ]],
     ['verneombud', 'Verneombud users', 'People who are verneombud users of a product', [{ f: 'member.role', op: 'eq', v: 'verneombud' }]],
     ['health', 'Industry = Health and care', null, [{ f: 'organization.industry', op: 'eq', v: 'Health and care' }]],
     ['win-back', 'Former customers (win-back)', null, [{ f: 'organization.status', op: 'eq', v: 'cancelled' }]],

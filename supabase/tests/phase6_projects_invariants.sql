@@ -412,9 +412,9 @@ create temp table t_tpl as select (public.project_template_save(null, jsonb_buil
     jsonb_build_object('key', 'i3', 'group', 'g2', 'name', 'Schedule baseline', 'start_offset_days', 30, 'due_offset_days', 32)),
   'dependencies', jsonb_build_array(jsonb_build_object('pred', 'i2', 'succ', 'm1'), jsonb_build_object('pred', 'm1', 'succ', 'i3', 'lag_days', 1)))) ->> 'id')::uuid id;
 select pg_temp.check((select (x ->> 'groups')::int = 2 and (x ->> 'tasks')::int = 4 and (x ->> 'milestones')::int = 1 and (x ->> 'activities')::int = 1 and (x ->> 'dependencies')::int = 2
-                             and (select array_agg((y ->> 'day')::int) from jsonb_array_elements(x -> 'preview') y) = array[2, 5, 8, 11, 14] and (x ->> 'can_edit')::boolean
+                             and (select array_agg((y ->> 'day')::int) from jsonb_array_elements(x -> 'preview') y) = array[0, 3, 5, 11, 14] and (x ->> 'can_edit')::boolean
                       from jsonb_array_elements(public.project_templates_get()) x where x ->> 'id' = (select id::text from t_tpl)),
-                     'a template card counts its groups, tasks, milestones, activities and dependencies, and previews five items as «Day N»');
+                     'a template card counts its groups, tasks, milestones, activities and dependencies, and previews five items as «Day N» (the day each starts, 0040)');
 select pg_temp.expect_detail($$select public.project_template_save(null, '{"name":"kundeoppstart p6"}')$$, 'invalid', 'name', 'template names are unique');
 select pg_temp.expect_detail($$select public.project_template_save(null, '{"name":"T2","items":[{"key":"a","kind":"activity","name":"Call","activity_type":"call"}]}')$$,
                              'invalid', 'items[0].activity_time', 'an activity in a template has a time of day');

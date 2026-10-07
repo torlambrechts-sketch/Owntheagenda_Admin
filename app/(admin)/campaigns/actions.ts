@@ -6,7 +6,7 @@ import { rpc, type RpcCode } from '@/lib/rpc'
 import { getShell } from '@/lib/shell'
 import { renderEmail } from '@/lib/data/campaigns-render'
 import {
-  BORDERS, CAMPAIGN_TYPES, CampaignDetail, Counts, Design, Preview, ROW_KINDS, SenderDomain, cleanDesign, type CampaignDetail as Detail,
+  BORDERS, CAMPAIGN_LANGUAGES, CAMPAIGN_TYPES, CampaignDetail, Counts, Design, Preview, ROW_KINDS, SenderDomain, cleanDesign, type CampaignDetail as Detail,
 } from '@/lib/data/campaigns-shared'
 
 /** Server actions of the Campaigns route: each parses its input and answers `{ ok } | { ok: false, code, detail }`. */
@@ -41,6 +41,7 @@ async function render(c: Detail, html?: string | null): Promise<string> {
     sender: { name: c.from_name ?? product ?? '', postalAddress: c.postal_address },
     brand: product ?? c.from_name ?? '',
     utm: c.utm,
+    lang: c.language,
   })
 }
 
@@ -84,6 +85,7 @@ const Values = z.object({
   utm_campaign: z.string().regex(/^[a-z0-9_-]{1,60}$/).optional(),
   tracking: z.boolean().optional(),
   notify_owners: z.boolean().optional(),
+  language: z.enum(CAMPAIGN_LANGUAGES).optional(),
 })
 const SaveInput = z.object({ id: uuid, version: z.number().int(), values: Values })
 export async function saveCampaign(input: z.input<typeof SaveInput>): Promise<Result<{ version: number }>> {
@@ -140,7 +142,10 @@ export async function pauseCampaign(input: { id: string; paused: boolean }): Pro
 const PreviewInput = z.object({
   id: uuid,
   person: uuid.nullable().optional(),
-  draft: z.object({ design: DesignIn.nullable(), html: z.string().max(500000).nullable(), preheader: z.string().max(200).nullable(), sender_domain_id: uuid.nullable() }).nullable(),
+  draft: z.object({
+    design: DesignIn.nullable(), html: z.string().max(500000).nullable(), preheader: z.string().max(200).nullable(), sender_domain_id: uuid.nullable(),
+    language: z.enum(CAMPAIGN_LANGUAGES).optional(),
+  }).nullable(),
 })
 export async function previewCampaign(input: z.input<typeof PreviewInput>): Promise<Result<{ preview: Preview }>> {
   const p = PreviewInput.safeParse(input)
@@ -156,7 +161,7 @@ export async function previewCampaign(input: z.input<typeof PreviewInput>): Prom
       const dom = ds.ok ? ds.data.rows.find((x) => x.id === d.sender_domain_id) : null
       if (dom) sender = { from_name: dom.from_name, postal_address: dom.postal_address }
     }
-    html = await render({ ...c.data, design: d.design ? cleanDesign(d.design) : c.data.design, html: d.html, preheader: d.preheader, ...sender })
+    html = await render({ ...c.data, design: d.design ? cleanDesign(d.design) : c.data.design, html: d.html, preheader: d.preheader, language: d.language ?? c.data.language, ...sender })
   }
   const r = await rpc('campaign_preview', { p_id: p.data.id, p_person: p.data.person ?? null, p_html: html }, Preview)
   if (!r.ok) return fail(r)
@@ -218,6 +223,17 @@ export async function saveTemplate(input: { id: string | null; version: number |
   if (!r.ok) return fail(r)
   done()
   return { ok: true, id: r.data.id, version: r.data.version, current: r.data.current_version }
+}
+
+/** Restores a template version: saved as the next version, under the same rights as saving (R-CAMPAIGNS-05). */
+export async function restoreTemplate(input: { id: string; version: number }): Promise<Result<{ current: number }>> {
+  const p = z.object({ id: uuid, version: z.number().int().min(1) }).safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('marketing_template_restore', { p_id: p.data.id, p_version: p.data.version },
+    z.object({ id: uuid, version: z.coerce.number(), current_version: z.coerce.number() }))
+  if (!r.ok) return fail(r)
+  done()
+  return { ok: true, current: r.data.current_version }
 }
 
 export async function deleteTemplate(input: { id: string }): Promise<Result> {

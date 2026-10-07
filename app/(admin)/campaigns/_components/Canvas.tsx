@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { EMAIL_WORDS } from '@/lib/data/campaigns-render'
+import { EMAIL_WORDS, type EmailLang } from '@/lib/data/campaigns-render'
 import { BG_HEX, itemHref, itemLabel, type Design, type Row } from '@/lib/data/campaigns-shared'
 
 export type Brand = { name: string; color: string | null; mark: boolean }
@@ -19,7 +19,7 @@ export function Canvas({ design, selected, onPick, width, brand, footer, readOnl
   onPick: (i: number) => void
   width: number
   brand: Brand
-  footer: { address: string | null; sender: string; stream: string | null }
+  footer: { address: string | null; sender: string; stream: string | null; lang?: EmailLang }
   readOnly?: boolean
 }) {
   return (
@@ -54,7 +54,7 @@ function Empty({ children }: { children: React.ReactNode }) {
   return <span className="text-faint">{children}</span>
 }
 
-function Block({ r, brand, footer }: { r: Row; brand: Brand; footer: { address: string | null; sender: string; stream: string | null } }) {
+function Block({ r, brand, footer }: { r: Row; brand: Brand; footer: { address: string | null; sender: string; stream: string | null; lang?: EmailLang } }) {
   const t = useTranslations('campaigns.builder.canvas')
   const items = (r.items ?? []).filter((x) => itemLabel(x).trim())
   switch (r.kind) {
@@ -118,9 +118,9 @@ function Block({ r, brand, footer }: { r: Row; brand: Brand; footer: { address: 
       return (
         <div className="text-center text-11 leading-[1.6] text-muted">
           {footer.address ? <>{footer.address} · </> : <span className="font-bold text-danger">{t('noAddress')} · </span>}
-          {EMAIL_WORDS.nb.reason.replace('{name}', footer.sender || '—')}
+          {EMAIL_WORDS[footer.lang ?? 'nb'].reason.replace('{name}', footer.sender || '—')}
           <br />
-          <u>{EMAIL_WORDS.nb.unsubscribe}</u>{footer.stream ? <> · {t(`footerStream.${footer.stream}`)}</> : null}
+          <u>{EMAIL_WORDS[footer.lang ?? 'nb'].unsubscribe}</u>{footer.stream ? <> · {t(`footerStream.${footer.stream}`)}</> : null}
         </div>
       )
   }

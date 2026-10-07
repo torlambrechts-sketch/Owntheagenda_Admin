@@ -590,7 +590,8 @@
       },
       "cancel": "Close",
       "draftAi": "Draft with AI",
-      "create": "Create PDF"
+      "create": "Create PDF",
+      "requested": "Status report requested · it appears under Earlier reports when the PDF is ready"
     },
     "saveTemplate": {
       "eyebrow": "Template",

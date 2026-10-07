@@ -1,4 +1,4 @@
-import type { Background, Design, Item, Row } from '@/lib/data/campaigns-shared'
+import type { Background, CampaignLanguage, Design, Item, Row } from '@/lib/data/campaigns-shared'
 
 /**
  * The one email renderer (V-P6C-01, SF-39): the stored design → email HTML, used by the builder's preview, the
@@ -22,17 +22,22 @@ export type RenderInput = {
   brand: string
   /** appended to every http(s) link of the design's rows (spec: «The renderer appends the UTM to every tracked link») */
   utm?: { source: string; medium: string; campaign: string } | null
-  /** the language of the email's own words (the footer); nb unless the content says otherwise */
-  lang?: 'nb' | 'en'
+  /** the language of the email's own words (the footer, the video link): the campaign's language (R-CAMPAIGNS-04); nb by default */
+  lang?: EmailLang
 }
 
 export const UNSUBSCRIBE = '[Unsubscribe]'
 
-/** The words the email itself prints (email content, not UI; V-CAMPAIGNS-07). */
-export const EMAIL_WORDS = {
+/** The languages a campaign is written in (campaigns.language, 0040). */
+export type EmailLang = CampaignLanguage
+
+/** The words the email itself prints, in the campaign's language (email content, not UI; V-CAMPAIGNS-07). */
+export const EMAIL_WORDS: Record<EmailLang, { reason: string; unsubscribe: string; play: string }> = {
   nb: { reason: 'Du får denne e-posten fra {name}.', unsubscribe: 'Meld deg av med ett klikk', play: 'Se videoen' },
+  nn: { reason: 'Du får denne e-posten frå {name}.', unsubscribe: 'Meld deg av med eitt klikk', play: 'Sjå videoen' },
   en: { reason: 'You receive this email from {name}.', unsubscribe: 'Unsubscribe with one click', play: 'Watch the video' },
-} as const
+  sv: { reason: 'Du får det här mejlet från {name}.', unsubscribe: 'Avsluta prenumerationen med ett klick', play: 'Se videon' },
+}
 const WORDS = EMAIL_WORDS
 
 const BG: Record<Background, string> = { card: '#FFFDF6', soft_yellow: '#FBEBBE', mint: '#CFE7E4', cream: '#FCF6E9' }

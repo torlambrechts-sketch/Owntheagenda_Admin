@@ -135,7 +135,7 @@ export function ProjectDrawer({ bundle, base, boards, rights, onClose, onChanged
         <History bundle={bundle} base={base} allPhases={allPhases} />
       </div>
 
-      {modal === 'report' ? <StatusReportModal bundle={bundle} onClose={() => setModal(null)} /> : null}
+      {modal === 'report' ? <StatusReportModal bundle={bundle} onClose={() => setModal(null)} onAfter={after} /> : null}
       {modal === 'template' ? <SaveTemplate projectId={d.id} name={d.name} onClose={() => setModal(null)} /> : null}
       {modal === 'delete' ? (
         <Modal eyebrow={t('deleteEyebrow')} title={t('deleteTitle', { name: d.name })} onClose={() => setModal(null)}>

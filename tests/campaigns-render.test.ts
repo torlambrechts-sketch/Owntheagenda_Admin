@@ -134,6 +134,10 @@ describe('campaign email renderer (V-P6C-01)', () => {
     expect(renderEmail(base)).toContain('display:none;max-height:0')
     expect(renderEmail(base)).toContain('Meld deg av med ett klikk')
     expect(renderEmail({ ...base, lang: 'en' })).toContain('Unsubscribe with one click')
+    expect(renderEmail({ ...base, lang: 'nn' })).toContain('Meld deg av med eitt klikk')
+    expect(renderEmail({ ...base, lang: 'sv' })).toContain('Avsluta prenumerationen med ett klick')
+    expect(renderEmail({ ...base, lang: 'sv' })).toContain('<html lang="sv">')
+    expect(unsafe(renderEmail({ ...base, lang: 'nn' }))).toBe(false)
   })
 
   it('escapes like app.html_escape', () => {
@@ -188,6 +192,17 @@ describe('segment conditions', () => {
   })
   it('leaves half-typed conditions out of the query', () => {
     expect(toQuery([{ join: 'and', f: 'organization.employees', op: 'between', v: '26', v2: '' }, { join: 'and', f: 'title', op: 'eq', v: ' ' }])).toEqual({ filters: [] })
+  })
+  it('keeps product activity (days since the last survey round), «never» included, as the seed stores it', () => {
+    const pulse = { filters: [{ f: 'organization.status', op: 'eq', v: 'active' },
+      { or: [[{ f: 'product.last_round_days', op: 'gte', v: 90 }], [{ f: 'product.last_round_days', op: 'empty' }]] }] }
+    const back = fromQuery(pulse)
+    expect(back).toEqual([
+      { join: 'and', f: 'organization.status', op: 'eq', v: 'active' },
+      { join: 'and', f: 'product.last_round_days', op: 'gte', v: '90' },
+      { join: 'or', f: 'product.last_round_days', op: 'empty', v: '' },
+    ])
+    expect(toQuery(back!)).toEqual(pulse)
   })
   it('refuses a filter the editor cannot show', () => {
     expect(fromQuery({ filters: [{ f: 'owner_id', op: 'eq', v: 'x' }] })).toBeNull()

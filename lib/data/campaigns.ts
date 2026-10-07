@@ -29,14 +29,13 @@ export const loadConsentLog = (before: number | null) => rpcOrThrow('consent_log
 export const loadSuppressions = (q: string | null) => rpc('suppressions_get', { p_q: q }, z.array(Suppression), { quiet: true })
 
 const Coupon = z.object({ code: z.string(), description: z.string().nullable(), percent: z.coerce.number().nullable(), months: z.coerce.number().nullable() })
-/**
- * The active coupons a promotion may carry. The only read of coupons is billing_overview (global:see); without
- * that right the list is unknown (null) and the builder says so (R-CAMPAIGNS-02).
- */
-export async function loadCoupons() {
-  const r = await rpc('billing_overview', { p_product: 'all' }, z.object({ coupons: z.array(Coupon) }).passthrough(), { quiet: true })
-  return r.ok ? r.data.coupons : null
-}
+/** The active coupons a promotion may carry (campaign_coupons, campaigns:see; R-CAMPAIGNS-02). */
+export const loadCoupons = () => rpcOrThrow('campaign_coupons', {}, z.array(Coupon))
+
+const TemplateVersion = z.object({ version: z.coerce.number(), subject: z.string(), created_at: z.string(), by: z.string().nullable() })
+export type TemplateVersion = z.infer<typeof TemplateVersion>
+/** A marketing template's saved versions, newest first (R-CAMPAIGNS-05). */
+export const loadTemplateVersions = (id: string) => rpc('marketing_template_versions', { p_id: id }, z.array(TemplateVersion), { quiet: true })
 
 const PersonOption = z.object({ id: z.string().uuid(), name: z.string(), email: z.string().nullable() })
 export type PersonOption = z.infer<typeof PersonOption>

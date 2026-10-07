@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import type { NumberFormat } from '@/lib/format'
 import {
-  BOOL_COLS, DIMS, FILTER_COLS, FIXED_ROWS, NUMERIC_COLS, segmentOf, toDefinition,
+  BOOL_COLS, DIMS, FILTER_COLS, FIXED_ROWS, NAMED_MEASURES, NUMERIC_COLS, segmentOf, toDefinition,
   type BuilderState, type Cond, type Entity, type Fields, type Op, type ReportResult, type ResultRow,
 } from '@/lib/data/insights-shared'
 import { fieldsAction, runReportAction, saveReportAction } from '../actions'
@@ -44,7 +44,11 @@ export function Builder({ state, setState, initialFields, rights, pickers, nf, t
   const [saving, setSaving] = useState(false)
   const seq = useRef(0)
   const f = fields[state.entity]
-  const { dim, cond } = useLabels(f?.custom ?? [])
+  const { dim: baseDim, cond } = useLabels(f?.custom ?? [])
+  // a campaign's «type» is the campaign type, not an activity type
+  const dim = (k: string | null | undefined) => (state.entity === 'campaign' && k === 'type' ? t('dims.campaignType') : baseDim(k))
+  // «See reports of others» in the record type's own scope
+  const others = state.entity === 'project' ? rights.projectsOthers : state.entity === 'campaign' ? rights.campaignsOthers : rights.others
 
   useEffect(() => {
     if (fields[state.entity]) return
@@ -63,9 +67,10 @@ export function Builder({ state, setState, initialFields, rights, pickers, nf, t
     const out: { key: string; label: string }[] = [{ key: 'count', label: t('measures.count') }]
     if (f?.numeric.includes('value')) out.push({ key: 'sum', label: t('measures.sum') }, { key: 'avg', label: t('measures.avg') })
     for (const c of f?.custom ?? []) if (c.type === 'numerical') out.push({ key: `avg:${c.key}`, label: t('measures.avgCustom', { label: c.label }) })
-    if (state.entity === 'deal') out.push({ key: 'weighted', label: t('measures.weighted') })
+    // the record type's own measures (report_fields.measures): weighted value for deals, duration for projects, a campaign's figures
+    for (const m of f?.measures ?? []) if (NAMED_MEASURES.has(m)) out.push({ key: m, label: t(`measures.${m}` as 'measures.weighted') })
     return out
-  }, [f, state.entity, state.type, t])
+  }, [f, state.type, t])
   const filterCols = useMemo(() => !f ? [] : [
     ...FILTER_COLS.filter((c) => f.dimensions.includes(c) || f.numeric.includes(c)),
     ...f.custom.filter((c) => ['text', 'numerical', 'single_option', 'large_text'].includes(c.type)).map((c) => c.key),
@@ -128,8 +133,11 @@ export function Builder({ state, setState, initialFields, rights, pickers, nf, t
     onDrill({ def, segment: segmentOf(row), title: t('drill.title', { report: sentence(title), segment: label }) })
   }
 
+  // projects and campaigns need their own scope's «see» (and their module); revenue has no report entity yet
+  const scoped = { project: rights.projects, campaign: rights.campaigns } as const
   const entityOpts = [...(['deal', 'activity', 'lead', 'person', 'organization'] as const).map((e) => ({ v: e, n: t(`entities.${e}`), off: false })),
-    ...(['campaign', 'project', 'revenue'] as const).map((e) => ({ v: e, n: t('builder.notYet', { name: t(`entities.${e}`) }), off: true }))]
+    ...(['campaign', 'project'] as const).map((e) => ({ v: e, n: scoped[e] ? t(`entities.${e}`) : t('builder.noRight', { name: t(`entities.${e}`) }), off: !scoped[e] })),
+    { v: 'revenue', n: t('builder.notYet', { name: t('entities.revenue') }), off: true }]
   const typeOpts = [
     { v: 'performance', n: t('types.performance'), off: false },
     { v: 'conversion', n: t('types.conversion'), off: state.entity !== 'deal' },
@@ -213,7 +221,7 @@ export function Builder({ state, setState, initialFields, rights, pickers, nf, t
         {def && !result && !error ? <div className="flex h-[220px] items-center justify-center text-12.5 text-muted">{t('loading')}</div> : null}
         {def && result ? <ReportChart def={def} result={result} nf={nf} variant="preview" onDrill={drill} /> : null}
         {result?.excluded_currency ? <span className="text-11.5 text-muted">{t('tile.excluded', { count: result.excluded_currency })}</span> : null}
-        {!rights.others ? <span className="text-11.5 text-muted">{t('builder.own')}</span> : null}
+        {!others ? <span className="text-11.5 text-muted">{t(state.entity === 'project' || state.entity === 'campaign' ? `builder.own_${state.entity}` : 'builder.own')}</span> : null}
         <div className="text-11.5 text-faint">{t('builder.footnote')}</div>
       </div>
     </div>

@@ -70,7 +70,11 @@
       "city": "City",
       "country": "Country",
       "currency": "Currency",
-      "custom": "{label} (custom)"
+      "custom": "{label} (custom)",
+      "board": "Board",
+      "phase": "Phase",
+      "health": "Health",
+      "campaignType": "Campaign type"
     },
     "cols": {
       "value": "Value",
@@ -124,7 +128,11 @@
       "lines": "Count of lines",
       "quantity": "Sum of quantity",
       "lineValue": "Sum of line value",
-      "dealsMoved": "Deals moved forward"
+      "dealsMoved": "Deals moved forward",
+      "duration_days": "Average duration (days)",
+      "sent": "Emails sent",
+      "open_rate": "Open rate",
+      "click_rate": "Click rate"
     },
     "types": {
       "performance": "Performance",
@@ -166,7 +174,10 @@
       "titleProducts": "{measure} by product · {period}",
       "allPipelines": "All pipelines",
       "byStage": "Stage reached",
-      "byProduct": "Catalog item"
+      "byProduct": "Catalog item",
+      "noRight": "{name} — not in your permission set",
+      "own_project": "Your projects only · your permission set does not include See reports of others",
+      "own_campaign": "Your campaigns only · your permission set does not include See reports of others"
     },
     "conv": {
       "step": "{from} → {to}",
@@ -338,6 +349,36 @@
       "my_activities_month": "My activities this month",
       "leads_by_source_90": "Leads by source · 90 d",
       "stage_conversion": "Stage conversion"
+    },
+    "values": {
+      "project_status": {
+        "open": "Open",
+        "done": "Done",
+        "canceled": "Cancelled"
+      },
+      "project_health": {
+        "on_track": "On track",
+        "at_risk": "At risk",
+        "off_track": "Off track",
+        "on_hold": "On hold",
+        "none": "Not set"
+      },
+      "campaign_status": {
+        "draft": "Draft",
+        "scheduled": "Scheduled",
+        "sending": "Sending",
+        "sent": "Sent",
+        "active": "Active",
+        "paused": "Paused",
+        "canceled": "Canceled"
+      },
+      "campaign_type": {
+        "newsletter": "Newsletter",
+        "one_off": "One-off campaign",
+        "promotion": "Promotion",
+        "product_announcement": "Product announcement",
+        "automated": "Automated"
+      }
     }
   }
 }

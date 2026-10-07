@@ -1,5 +1,18 @@
 # Requests: Projects (Phase 6 screen build)
 
+## Status
+
+«0040» is `supabase/migrations/0040_phase6_requests.sql`, proved by `supabase/tests/phase6_requests_invariants.sql`.
+
+| ID | Status |
+|---|---|
+| R-PROJECTS-01 | **Open.** Needs the private `record-files` bucket and the signing edge function (storage, not a migration). V-PROJECTS-19 stands |
+| R-PROJECTS-02 | **State done in 0040; the worker is open.** Provider `pdf` in `app.integration_connections` (row, not connected) and `project_pdf_status()` → `{pdf_connected}` (projects:see). «Create PDF» and «Draft with AI» in the status-report dialog follow it and call `project_status_report_request` when connected. The PDF worker itself (`project_status_report` → `worker_status_report_ready`) is an edge function and is not built (V-PROJECTS-16) |
+| R-PROJECTS-03 | **Open.** The AI worker (summary, brief, report draft) is an edge function with the AI provider. V-PROJECTS-15 stands |
+| R-PROJECTS-04 | **Done in 0040.** `preview[].day` is a task's start offset when it has one, else its due offset; a milestone's or activity's due offset (V-PROJECTS-12). The projects suite's preview assertion follows the new rule |
+| INS-01 (V-P6P-02) | **Done in 0040.** Report entities `project` (dimensions board, phase, status, health, owner; measure `duration_days`; a Duration report is the average duration) and `campaign` (type, status, owner; measures `sent`, `open_rate`, `click_rate` from `app.campaign_stats`, rates pooled over tracked campaigns, null without any). The Insights builder offers both |
+
+
 What the Projects screen needs beyond `0038_projects.sql` and `0039_phase6_engine_wiring.sql`. None of it blocks the screen:
 each item is left out or shown in its honest state until the change exists (`deviations/projects.md`).
 

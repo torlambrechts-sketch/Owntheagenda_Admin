@@ -248,17 +248,24 @@ export const loadTemplate = (tid: string) => rpc('project_template_get', { p_id:
 export const loadReports = (board: string | null, from: string | null, to: string | null) =>
   rpc('project_reports', { p_board: board, p_from: from, p_to: to }, Reports)
 
-/** The drawer: the project, its history and its files (files_list carries who uploaded and may delete). */
+/**
+ * The drawer: the project, its history, its files (files_list carries who uploaded and may delete) and whether the PDF
+ * worker runs (project_pdf_status, provider «pdf», 0040): «Create PDF» follows it.
+ */
 export async function loadProject(pid: string) {
   const detail = await rpc('project_detail', { p_id: pid }, Detail)
   if (!detail.ok) return detail
-  const [history, files] = await Promise.all([
+  const [history, files, pdf] = await Promise.all([
     rpc('rec_history', { p_entity: 'project', p_id: pid, p_limit: 100 }, z.array(HistoryRow)),
     rpc('files_list', { p_entity: 'project', p_id: pid }, z.array(FileRow)),
+    rpc('project_pdf_status', {}, z.object({ pdf_connected: z.boolean() }), { quiet: true }),
   ])
-  return { ok: true as const, data: { detail: detail.data, history: history.ok ? history.data : [], files: files.ok ? files.data : [] } }
+  return {
+    ok: true as const,
+    data: { detail: detail.data, history: history.ok ? history.data : [], files: files.ok ? files.data : [], pdfConnected: pdf.ok && pdf.data.pdf_connected },
+  }
 }
-export type ProjectBundle = { detail: Detail; history: HistoryRow[]; files: FileRow[] }
+export type ProjectBundle = { detail: Detail; history: HistoryRow[]; files: FileRow[]; pdfConnected: boolean }
 
 /** A deal's title for «Create project from deal» opened by address (rec_get checks deals:see and visibility). */
 export const loadDealTitle = (dealId: string) => rpc('rec_get', { p_entity: 'deal', p_id: dealId }, z.object({ id, title: z.string() }))

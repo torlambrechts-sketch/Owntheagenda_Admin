@@ -397,6 +397,24 @@ export async function requestSummary(input: unknown): Promise<Res> {
   return done(await rpc('project_ai_summary_request', { p_id: p.data }, okish))
 }
 
+/**
+ * A status report (PRJ-07): the sections, «done since», notes and summary go to the PDF worker; the screen offers it only
+ * while the worker is connected (project_pdf_status). An AI draft also needs the AI (the database checks both).
+ */
+export async function requestStatusReport(input: unknown): Promise<Res> {
+  const p = z.object({
+    id: uuid,
+    sections: z.object({
+      summary: z.boolean(), milestones: z.boolean(), open_overdue: z.boolean(), upcoming: z.boolean(),
+      done_since: day.optional(), note_ids: z.array(uuid).max(50).optional(),
+    }).strict(),
+    summary: z.string().max(4000).optional(),
+    aiDraft: z.boolean(),
+  }).safeParse(input)
+  if (!p.success) return bad
+  return done(await rpc('project_status_report_request', { p_id: p.data.id, p_sections: p.data.sections, p_summary: p.data.summary?.trim() || null, p_ai_draft: p.data.aiDraft }, okish))
+}
+
 export async function requestBrief(input: unknown): Promise<Res> {
   const p = uuid.safeParse(input)
   if (!p.success) return bad

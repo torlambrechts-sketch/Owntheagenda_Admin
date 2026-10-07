@@ -8,7 +8,7 @@ Migration `supabase/migrations/0038_projects.sql`, proved by `supabase/tests/pha
 | ID | Where | Spec | Built | Reason |
 |---|---|---|---|---|
 | V-P6P-01 | Engine: `project_action` | `wf_validate` validates it, `wf_blockers` drops `not_available:projects`, `wf_step` executes it (§3.1, §6, §9.13) | The step is built as `app.wf_project_validate(key, config)`, `app.wf_project_blocker(config)` and `app.wf_project_action(run, workflow, config)`, and tested by calling them directly. `wf_validate`, `wf_blockers` and `wf_step` are **not** redefined, so activating a workflow with a project step still fails with `not_available:projects`, and the Reports tab's hooks say `actions_available: false` (`app.project_actions_wired()` looks for the call in `wf_step`) | 0037 (campaigns) is written in parallel and redefines exactly these three functions for `campaign_action`. Redefining them here would let whichever migration runs last erase the other's step. The merge adds three lines (below) |
-| V-P6P-02 | INS-01: `report_run` entity `project` | `report_check` whitelist, dimensions board, phase, health, status, owner, and a duration measure (§1.4, §9.14) | Not wired. The Reports tab has its own RPC (`project_reports`) with the two measures the screen shows | 0037 adds `campaign` to the same whitelist (`app.report_check`, plus `report_dim`). The merge adds `project` together with it (below) |
+| V-P6P-02 | INS-01: `report_run` entity `project` | `report_check` whitelist, dimensions board, phase, health, status, owner, and a duration measure (§1.4, §9.14) | Not wired. The Reports tab has its own RPC (`project_reports`) with the two measures the screen shows | 0037 adds `campaign` to the same whitelist (`app.report_check`, plus `report_dim`). The merge adds `project` together with it (below). **Resolved by 0040** (both entities) |
 | V-P6P-03 | LLM connection | A new provider row `llm` (§3.2, Q16) | The existing `ai` row of `app.integration_connections` (0029, R-INBOX-03) | That row already is «the AI provider»; a second row for the same key would split one connection in two. `not_connected` carries detail `ai` |
 | V-P6P-04 | `project_ai_summaries.ai_call_id` | References `ai_calls` | Left out | `ai_calls` is Phase 7 (§3.2). The column comes with it |
 | V-P6P-05 | `record_files` | No pending state | `ready_at`: `file_upload_begin` makes a pending row, `file_upload_done` makes it ready; only ready rows are listed; `app.files_purge()` (nightly) drops pending rows after a day and removed ones after 30 days, queuing the storage deletes | An upload signed but never confirmed must not appear as a file |
@@ -129,6 +129,12 @@ All `security definer`, `search_path = ''`, granted to `authenticated` (workers:
 - `worker_status_report_ready(p_report uuid, p_storage_path text, p_size bigint)` — path `project/<project_id>/….pdf`, null = failed → `{ok, file_id}`.
 
 ## Left open
-- The merge snippet above (V-P6P-01, V-P6P-02) once 0037 is in.
+- (The merge snippet: V-P6P-01 resolved by 0039, V-P6P-02 by 0040.)
 - The edge functions: the upload/download signer for `record-files`, the PDF worker, the AI worker, the `files_purge` consumer.
 - No seed: no boards, projects or templates are seeded; the screen starts in its «no boards yet» state until a seed module is added (`scripts/seed/…` is outside this task).
+
+## Added by 0040 (Phase 6 requests)
+
+- `project_templates_get` / `project_template_get`: `preview[].day` is a task's start offset when it has one, else its due offset; a milestone's or activity's due offset.
+- Provider `pdf` in `app.integration_connections`; `project_pdf_status()` (see) → `{pdf_connected}`.
+- `report_run` entity `project`: dimensions `board`, `phase`, plus `status`, `health`, `owner`; measure `{fn: 'duration_days'}` (unit `days`); type `duration` = the average duration. `report_fields('project').measures = ['duration_days']`.

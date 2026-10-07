@@ -40,3 +40,16 @@ What the Phase 1 screen builders asked for, and what happened to each. «0023» 
 
 Shared code the builders reported, fixed in the same change: the 2 px overflow at 390 px (V-15), `can()`
 without the tickets scope, the toast's shadow, and the Overview failing for staff without Global › See.
+
+## Phase 6 (0040)
+
+«0040» is `supabase/migrations/0040_phase6_requests.sql`, proved by `supabase/tests/phase6_requests_invariants.sql`.
+
+| Request | What | Status |
+|---|---|---|
+| Campaigns R-CAMPAIGNS-01 | Image upload (bucket + signer) | Open: storage and an edge function |
+| Campaigns R-CAMPAIGNS-02..05 | Coupons, product-activity segment field, campaign language, template versions and restore | Done in 0040 · screen done |
+| Projects R-PROJECTS-01, 03 | record-files signer, AI worker | Open: edge functions |
+| Projects R-PROJECTS-02 | Whether the PDF worker runs | State done in 0040 (`pdf` provider, `project_pdf_status`) · screen done; the worker is open |
+| Projects R-PROJECTS-04 | Template line day = start offset | Done in 0040 · screen unchanged (reads `preview[].day`) |
+| Insights INS-01 / V-P6P-02 | Report entities project and campaign | Done in 0040 · screen done |

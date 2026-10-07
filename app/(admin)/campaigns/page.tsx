@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { getTranslations } from 'next-intl/server'
 import { can, getShell } from '@/lib/shell'
 import {
-  loadCampaign, loadCampaigns, loadCompare, loadConsentLog, loadCoupons, loadDomains, loadHygiene, loadPeopleOptions, loadReasonRequired, loadRecipients,
+  loadCampaign, loadCampaigns, loadCompare, loadConsentLog, loadCoupons, loadDomains, loadHygiene, loadPeopleOptions, loadReasonRequired, loadRecipients, loadTemplateVersions,
   loadRecommendations, loadSegments, loadStatusSummary, loadSuppressions, loadTemplates,
 } from '@/lib/data/campaigns'
 import { CAMPAIGN_TABS, CAMPAIGN_TYPES, RECIPIENT_STATES, TAB_PILL, type CampaignTab } from '@/lib/data/campaigns-shared'
@@ -87,7 +87,7 @@ export default async function CampaignsPage({ searchParams }: { searchParams: Pr
       />
     )
   } else if (tab === 'builder') {
-    const [detail, templates, list, segments, domains, coupons, people] = await Promise.all([
+    const [detail, templates, list, segments, domains, coupons, people, versions] = await Promise.all([
       p.campaign && !p.template ? loadCampaign(p.campaign) : null,
       loadTemplates(),
       loadCampaigns(null),
@@ -95,6 +95,7 @@ export default async function CampaignsPage({ searchParams }: { searchParams: Pr
       loadDomains(),
       loadCoupons(),
       loadPeopleOptions(),
+      p.template ? loadTemplateVersions(p.template) : null,
     ])
     body = (
       <BuilderView
@@ -106,6 +107,7 @@ export default async function CampaignsPage({ searchParams }: { searchParams: Pr
         domains={domains.rows}
         providerConnected={domains.provider_connected}
         coupons={coupons}
+        versions={versions && versions.ok ? versions.data : null}
         people={people}
         products={products}
         can={canDo}

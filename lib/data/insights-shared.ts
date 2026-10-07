@@ -10,13 +10,17 @@ import { formatNumber, money, percent, thousands, type NumberFormat } from '@/li
 export const TABS = ['dash', 'builder', 'goals', 'forecast', 'ai'] as const
 export type Tab = (typeof TABS)[number]
 
-export const ENTITIES = ['deal', 'activity', 'lead', 'person', 'organization'] as const
+export const ENTITIES = ['deal', 'activity', 'lead', 'person', 'organization', 'project', 'campaign'] as const
 export type Entity = (typeof ENTITIES)[number]
 export const TYPES = ['performance', 'conversion', 'duration', 'progress', 'products'] as const
 export const CHARTS = ['column', 'bar', 'pie', 'scorecard', 'table', 'stacked'] as const
 export type Chart = (typeof CHARTS)[number]
 export const PERIODS = ['month', 'quarter', 'year', 'last_30', 'last_90', 'last_365', 'custom', 'all'] as const
 export type PeriodKind = (typeof PERIODS)[number]
+/** Measures: count, sum and avg over a field, and the ones a record type adds (report_fields.measures; 0040: project, campaign). */
+export const MEASURE_FNS = ['count', 'sum', 'avg', 'weighted', 'cycle_days', 'duration_days', 'sent', 'open_rate', 'click_rate'] as const
+/** The record-type measures the builder offers by name (a message key insights.measures.<fn>). */
+export const NAMED_MEASURES = new Set<string>(['weighted', 'duration_days', 'sent', 'open_rate', 'click_rate'])
 export const OPS = ['eq', 'neq', 'in', 'contains', 'ncontains', 'gt', 'gte', 'lt', 'lte', 'empty', 'notempty'] as const
 export type Op = (typeof OPS)[number]
 
@@ -31,7 +35,7 @@ export type Filter = z.infer<typeof Filter>
 export const Definition = z.object({
   entity: z.enum(ENTITIES),
   type: z.enum(TYPES).optional(),
-  measure: z.object({ fn: z.enum(['count', 'sum', 'avg', 'weighted', 'cycle_days']), field: col.optional() }).optional(),
+  measure: z.object({ fn: z.enum(MEASURE_FNS), field: col.optional() }).optional(),
   group_by: col.nullable().optional(),
   segment_by: col.nullable().optional(),
   filters: z.array(Filter).max(20).optional(),
@@ -97,6 +101,7 @@ export const Fields = z.object({
   numeric: z.array(z.string()),
   dates: z.array(z.string()),
   custom: z.array(z.object({ key: z.string(), label: z.string(), type: z.string() })),
+  measures: z.array(z.string()).default([]),
 })
 export type Fields = z.infer<typeof Fields>
 
@@ -106,10 +111,10 @@ export const VIZ = ['#F5C64A', '#DCEBD3', '#CFE0F5', '#F6D9C6', '#E7DAF2', '#F3E
 export const palette = (color?: string) => (color && /^#[0-9A-Fa-f]{6}$/.test(color) ? [color, ...VIZ.slice(1)] : VIZ)
 
 /** The dimensions the builder offers, in its order, each with a message key (others in the registry are not offered). */
-export const DIMS = ['owner', 'stage', 'source', 'lost_reason', 'label', 'pipeline', 'type', 'status', 'product', 'created_month', 'won_month',
+export const DIMS = ['owner', 'stage', 'board', 'phase', 'source', 'lost_reason', 'label', 'pipeline', 'type', 'status', 'health', 'product', 'created_month', 'won_month',
   'close_month', 'done_month', 'priority', 'contact_type', 'marketing_status', 'industry', 'fylke', 'city', 'country', 'currency'] as const
 /** Columns a filter can test, with a message key: text and numbers (references need a picker the design does not draw). */
-export const FILTER_COLS = ['status', 'source', 'lost_reason', 'product', 'currency', 'value', 'score', 'priority', 'done', 'contact_type',
+export const FILTER_COLS = ['status', 'health', 'source', 'lost_reason', 'product', 'currency', 'value', 'score', 'priority', 'done', 'contact_type',
   'marketing_status', 'industry', 'fylke', 'city', 'country', 'employees', 'duration_min', 'title', 'name', 'subject'] as const
 export const NUMERIC_COLS = new Set(['value', 'score', 'employees', 'duration_min'])
 export const BOOL_COLS = new Set(['done'])
@@ -167,8 +172,10 @@ export const FIXED_ROWS = new Set(['conversion', 'progress', 'products'])
 /** The definition the state describes, or null while a custom range is incomplete. */
 export function toDefinition(s: BuilderState): Definition | null {
   if (s.period === 'custom' && (!s.from || !s.to || s.from > s.to)) return null
-  // the period runs on the created date; on the won date for Duration and Products; Progress on the stage change
-  const field = s.type === 'duration' || s.type === 'products' ? 'won_at' : 'created_at'
+  // the period runs on the created date; on the won date for Duration and Products; Progress on the stage change; a
+  // campaign's figures on the day it was sent (sent, open and click rates)
+  const sentFigures = s.entity === 'campaign' && ['sent', 'open_rate', 'click_rate'].includes(s.measure)
+  const field = s.type === 'duration' || s.type === 'products' ? 'won_at' : sentFigures ? 'sent_at' : 'created_at'
   const period = { kind: s.period, ...(s.type === 'progress' ? {} : { field }), ...(s.period === 'custom' ? { from: s.from, to: s.to } : {}) }
   const color = /^#[0-9A-Fa-f]{6}$/.test(s.color) && s.color.toUpperCase() !== DEFAULT_COLOR ? { color: s.color } : {}
   if (s.type === 'conversion') {
@@ -185,6 +192,7 @@ export function toDefinition(s: BuilderState): Definition | null {
   const measure = s.type === 'duration' ? { fn: 'cycle_days' as const }
     : s.measure === 'count' ? { fn: 'count' as const }
     : s.measure === 'weighted' ? { fn: 'weighted' as const }
+    : NAMED_MEASURES.has(s.measure) ? { fn: s.measure as 'duration_days' | 'sent' | 'open_rate' | 'click_rate' }
     : s.measure.startsWith('avg:') ? { fn: 'avg' as const, field: s.measure.slice(4) }
     : { fn: s.measure as 'sum' | 'avg', field: 'value' }
   return { entity: s.entity, type: s.type, measure, group_by: s.group, period, chart: s.chart, filters: s.filters, ...color }

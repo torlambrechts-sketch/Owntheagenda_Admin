@@ -11,6 +11,10 @@ export type Rights = {
   meName: string
   see: boolean // Deals › See records: reports, goals and forecasts read deal-scope records
   others: boolean // Deals › See reports of others; without it a report counts the staff member's own records
+  projects: boolean // Projects › See records, with the module on: the report entity «project» (INS-01)
+  projectsOthers: boolean // Projects › See reports of others
+  campaigns: boolean // Campaigns › See records, with the module on: the report entity «campaign» (INS-01)
+  campaignsOthers: boolean // Campaigns › See reports of others
   exportRows: boolean
   configure: boolean // goals for a team or the company
   global: boolean // Global › See records: the product forecast reads subscriptions
@@ -41,7 +45,7 @@ export function useTileSub(rights: Rights, pickers: Pickers) {
   const t = useTranslations('insights')
   const { dim } = useLabels()
   return (def: StoredDefinition) => {
-    const entity = (['deal', 'activity', 'lead', 'person', 'organization'] as const).find((e) => e === def.entity)
+    const entity = (['deal', 'activity', 'lead', 'person', 'organization', 'project', 'campaign'] as const).find((e) => e === def.entity)
     const parts: string[] = [entity ? t(`entities.${entity}`) : def.entity]
     if (def.type === 'conversion' || (def.type === 'progress' && def.pipeline_id)) {
       const p = pickers.pipelines.find((x) => x.id === def.pipeline_id)
@@ -52,8 +56,9 @@ export function useTileSub(rights: Rights, pickers: Pickers) {
     parts.push(kind && kind !== 'all' ? t(`sub.${kind}` as 'sub.month') : open ? t('sub.open') : t('sub.all'))
     if (def.type === 'progress') parts.push(t('sub.byStageReached'))
     else if (def.type === 'products') parts.push(t('sub.byProduct'))
-    else if (def.group_by && def.type !== 'conversion') parts.push(t('sub.by', { dim: dim(def.group_by).toLowerCase() }))
-    if (rights.see && !rights.others) parts.push(t('sub.own'))
+    else if (def.group_by && def.type !== 'conversion') parts.push(t('sub.by', { dim: (def.entity === 'campaign' && def.group_by === 'type' ? t('dims.campaignType') : dim(def.group_by)).toLowerCase() }))
+    const others = def.entity === 'project' ? rights.projectsOthers : def.entity === 'campaign' ? rights.campaignsOthers : rights.others
+    if (rights.see && !others) parts.push(t('sub.own'))
     return parts.join(' · ')
   }
 }

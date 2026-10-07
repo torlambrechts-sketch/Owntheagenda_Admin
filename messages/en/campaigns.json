@@ -299,7 +299,11 @@
           "marketing": "sent from the marketing stream, separate from notifications",
           "transactional": "sent from the transactional stream"
         }
-      }
+      },
+      "versions": "Versions",
+      "currentVersion": "current",
+      "restore": "Restore",
+      "versionRestored": "Version {from} restored as version {v}"
     },
     "fields": {
       "name": "Name",
@@ -324,7 +328,6 @@
       "preheader": "Preheader",
       "coupon": "Promotion coupon",
       "none": "None",
-      "couponsUnknown": "The coupon list needs the right to see billing.",
       "edit": "Edit",
       "tracking": "Track opens and clicks",
       "trackingRule": {
@@ -338,7 +341,11 @@
       "scopeShared": "Everyone",
       "layoutNote": "A starting layout, shared with everyone.",
       "category": "Category",
-      "version": "Version {v} · saved {at} · {by}"
+      "version": "Version {v} · saved {at} · {by}",
+      "language": "Email language",
+      "noCoupons": "No active coupons.",
+      "couponPercent": "{n} % off",
+      "couponMonths": "{n, plural, one {# month} other {# months}}"
     },
     "schedule": {
       "title": "Schedule",
@@ -411,7 +418,8 @@
         "location": "Location",
         "organization": "Organization",
         "product": "Product user",
-        "engagement": "Engagement"
+        "engagement": "Engagement",
+        "activity": "Product activity"
       },
       "fields": {
         "title": "title",
@@ -429,7 +437,8 @@
         "organization_postal_code": "postal code",
         "member_role": "role",
         "engagement_opened_days": "opened any campaign within",
-        "engagement_clicked_days": "clicked within"
+        "engagement_clicked_days": "clicked within",
+        "product_last_round_days": "days since the last survey round"
       },
       "values": {
         "subscribed": "Subscribed",
@@ -463,8 +472,12 @@
         "inText": "{field} is {v}",
         "gteText": "{field} at least {v}",
         "lteText": "{field} at most {v}",
-        "betweenText": "{field} between {a} and {b}"
-      }
+        "betweenText": "{field} between {a} and {b}",
+        "empty": "never ran one"
+      },
+      "roundWithin": "a survey round in the last {n} days",
+      "roundNotWithin": "no survey round in the last {n} days",
+      "roundNever": "never ran a survey round"
     },
     "consent": {
       "statusTitle": "Marketing status of all addresses",
@@ -647,7 +660,16 @@
       "forbidden_campaigns_delete": "This needs the right to delete campaigns.",
       "forbidden_campaigns_export": "Exporting needs the right to export campaigns.",
       "forbidden_campaigns_reports_others": "This needs the right to see others’ reports.",
-      "forbidden_campaigns_add": "This needs the right to add campaigns."
+      "forbidden_campaigns_add": "This needs the right to add campaigns.",
+      "invalid_language": "Choose bokmål, nynorsk, English or Swedish.",
+      "invalid_version": "That is already the current version.",
+      "not_found_version": "That version no longer exists."
+    },
+    "languages": {
+      "nb": "Norwegian (bokmål)",
+      "nn": "Norwegian (nynorsk)",
+      "en": "English",
+      "sv": "Swedish"
     }
   }
 }

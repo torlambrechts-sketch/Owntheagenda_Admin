@@ -590,7 +590,8 @@
       },
       "cancel": "Lukk",
       "draftAi": "Lag utkast med KI",
-      "create": "Lag PDF"
+      "create": "Lag PDF",
+      "requested": "Statusrapport bestilt · den vises under Tidligere rapporter når PDF-en er klar"
     },
     "saveTemplate": {
       "eyebrow": "Mal",

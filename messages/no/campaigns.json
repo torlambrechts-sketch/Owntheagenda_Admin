@@ -299,7 +299,11 @@
           "marketing": "sendt fra markedsstrømmen, adskilt fra varsler",
           "transactional": "sendt fra transaksjonsstrømmen"
         }
-      }
+      },
+      "versions": "Versjoner",
+      "currentVersion": "gjeldende",
+      "restore": "Gjenopprett",
+      "versionRestored": "Versjon {from} gjenopprettet som versjon {v}"
     },
     "fields": {
       "name": "Navn",
@@ -324,7 +328,6 @@
       "preheader": "Forhåndstekst",
       "coupon": "Kampanjekode",
       "none": "Ingen",
-      "couponsUnknown": "Kodelisten krever retten til å se fakturering.",
       "edit": "Endre",
       "tracking": "Spor åpninger og klikk",
       "trackingRule": {
@@ -338,7 +341,11 @@
       "scopeShared": "Alle",
       "layoutNote": "Et startoppsett, delt med alle.",
       "category": "Kategori",
-      "version": "Versjon {v} · lagret {at} · {by}"
+      "version": "Versjon {v} · lagret {at} · {by}",
+      "language": "E-postens språk",
+      "noCoupons": "Ingen aktive kuponger.",
+      "couponPercent": "{n} % rabatt",
+      "couponMonths": "{n, plural, one {# måned} other {# måneder}}"
     },
     "schedule": {
       "title": "Planlegg",
@@ -411,7 +418,8 @@
         "location": "Sted",
         "organization": "Organisasjon",
         "product": "Produktbruker",
-        "engagement": "Engasjement"
+        "engagement": "Engasjement",
+        "activity": "Produktaktivitet"
       },
       "fields": {
         "title": "tittel",
@@ -429,7 +437,8 @@
         "organization_postal_code": "postnummer",
         "member_role": "rolle",
         "engagement_opened_days": "åpnet en kampanje innen",
-        "engagement_clicked_days": "klikket innen"
+        "engagement_clicked_days": "klikket innen",
+        "product_last_round_days": "dager siden siste kartleggingsrunde"
       },
       "values": {
         "subscribed": "Abonnent",
@@ -463,8 +472,12 @@
         "inText": "{field} er {v}",
         "gteText": "{field} minst {v}",
         "lteText": "{field} høyst {v}",
-        "betweenText": "{field} mellom {a} og {b}"
-      }
+        "betweenText": "{field} mellom {a} og {b}",
+        "empty": "aldri kjørt en"
+      },
+      "roundWithin": "en kartleggingsrunde de siste {n} dagene",
+      "roundNotWithin": "ingen kartleggingsrunde de siste {n} dagene",
+      "roundNever": "har aldri kjørt en kartleggingsrunde"
     },
     "consent": {
       "statusTitle": "Markedsføringsstatus for alle adresser",
@@ -647,7 +660,16 @@
       "forbidden_campaigns_delete": "Dette krever retten til å slette kampanjer.",
       "forbidden_campaigns_export": "Eksport krever retten til å eksportere kampanjer.",
       "forbidden_campaigns_reports_others": "Dette krever retten til å se andres rapporter.",
-      "forbidden_campaigns_add": "Dette krever retten til å legge til kampanjer."
+      "forbidden_campaigns_add": "Dette krever retten til å legge til kampanjer.",
+      "invalid_language": "Velg bokmål, nynorsk, engelsk eller svensk.",
+      "invalid_version": "Det er allerede gjeldende versjon.",
+      "not_found_version": "Den versjonen finnes ikke lenger."
+    },
+    "languages": {
+      "nb": "Norsk (bokmål)",
+      "nn": "Norsk (nynorsk)",
+      "en": "Engelsk",
+      "sv": "Svensk"
     }
   }
 }

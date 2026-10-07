@@ -16,7 +16,11 @@ export function useRowLabel() {
     let l = r.label
     if (l && dim === 'owner') l = l.split(' ')[0] ?? l
     if (l && /_month$/.test(dim) && /^\d{4}-\d{2}$/.test(l)) l = format.dateTime(new Date(`${l}-15T12:00:00Z`), { month: 'short', year: 'numeric' })
-    if (l && dim === 'status' && ['open', 'won', 'lost'].includes(l)) l = t(`status.${l}` as 'status.open')
+    if (l && dim === 'status' && def.entity !== 'project' && def.entity !== 'campaign' && ['open', 'won', 'lost'].includes(l)) l = t(`status.${l}` as 'status.open')
+    // a project's or campaign's enumerations in the staff member's language (0040)
+    const values = def.entity === 'project' && (dim === 'status' || dim === 'health') ? `values.project_${dim}` : def.entity === 'campaign' && (dim === 'status' || dim === 'type') ? `values.campaign_${dim}` : null
+    if (l && values && t.has(`${values}.${l}`)) l = t(`${values}.${l}` as 'values.project_status.open')
+    if (!l && def.entity === 'project' && dim === 'health') l = t('values.project_health.none')
     const base = l ?? (def.type === 'products' && r.key === null ? t('noItem') : t('none'))
     return r.segment_label ? `${base} · ${r.segment_label}` : base
   }

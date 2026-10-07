@@ -70,7 +70,11 @@
       "city": "Sted",
       "country": "Land",
       "currency": "Valuta",
-      "custom": "{label} (egendefinert)"
+      "custom": "{label} (egendefinert)",
+      "board": "Tavle",
+      "phase": "Fase",
+      "health": "Helse",
+      "campaignType": "Kampanjetype"
     },
     "cols": {
       "value": "Verdi",
@@ -124,7 +128,11 @@
       "lines": "Antall linjer",
       "quantity": "Sum av antall",
       "lineValue": "Sum av linjeverdi",
-      "dealsMoved": "Avtaler flyttet videre"
+      "dealsMoved": "Avtaler flyttet videre",
+      "duration_days": "Gjennomsnittlig varighet (dager)",
+      "sent": "E-poster sendt",
+      "open_rate": "Åpningsrate",
+      "click_rate": "Klikkrate"
     },
     "types": {
       "performance": "Resultater",
@@ -166,7 +174,10 @@
       "titleProducts": "{measure} per produkt · {period}",
       "allPipelines": "Alle pipelines",
       "byStage": "Trinn nådd",
-      "byProduct": "Katalogvare"
+      "byProduct": "Katalogvare",
+      "noRight": "{name} — ikke i rettighetssettet ditt",
+      "own_project": "Bare dine prosjekter · rettighetssettet ditt gir ikke Se andres rapporter",
+      "own_campaign": "Bare dine kampanjer · rettighetssettet ditt gir ikke Se andres rapporter"
     },
     "conv": {
       "step": "{from} → {to}",
@@ -338,6 +349,36 @@
       "my_activities_month": "Mine aktiviteter denne måneden",
       "leads_by_source_90": "Leads per kilde · 90 d",
       "stage_conversion": "Trinnkonvertering"
+    },
+    "values": {
+      "project_status": {
+        "open": "Åpen",
+        "done": "Fullført",
+        "canceled": "Avlyst"
+      },
+      "project_health": {
+        "on_track": "I rute",
+        "at_risk": "I faresonen",
+        "off_track": "Ute av kurs",
+        "on_hold": "På vent",
+        "none": "Ikke satt"
+      },
+      "campaign_status": {
+        "draft": "Utkast",
+        "scheduled": "Planlagt",
+        "sending": "Sendes",
+        "sent": "Sendt",
+        "active": "Aktiv",
+        "paused": "Pauset",
+        "canceled": "Avbrutt"
+      },
+      "campaign_type": {
+        "newsletter": "Nyhetsbrev",
+        "one_off": "Enkeltkampanje",
+        "promotion": "Kampanjetilbud",
+        "product_announcement": "Produktnyhet",
+        "automated": "Automatisert"
+      }
     }
   }
 }

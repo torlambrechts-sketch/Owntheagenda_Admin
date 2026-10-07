@@ -20,6 +20,9 @@ export const CAMPAIGN_TYPES = ['newsletter', 'one_off', 'promotion', 'product_an
 export type CampaignType = (typeof CAMPAIGN_TYPES)[number]
 export const CAMPAIGN_STATUSES = ['draft', 'scheduled', 'sending', 'sent', 'active', 'paused', 'canceled'] as const
 export type CampaignStatus = (typeof CAMPAIGN_STATUSES)[number]
+/** The language an email is written in: its own words (the footer) follow it (campaigns.language, 0040). */
+export const CAMPAIGN_LANGUAGES = ['nb', 'nn', 'en', 'sv'] as const
+export type CampaignLanguage = (typeof CAMPAIGN_LANGUAGES)[number]
 export const HOLD_REASONS = ['not_connected:email', 'sender_domain', 'audience'] as const
 export const RECIPIENT_STATES = ['queued', 'sent', 'delivered', 'soft_bounced', 'bounced', 'complained', 'failed', 'skipped'] as const
 export type RecipientState = (typeof RECIPIENT_STATES)[number]
@@ -200,6 +203,7 @@ export const CampaignDetail = CampaignRow.extend({
   postal_address: z.string().nullable(),
   product: z.string().nullable(),
   coupon_code: z.string().nullable(),
+  language: z.enum(CAMPAIGN_LANGUAGES),
   utm: z.object({ source: z.string(), medium: z.string(), campaign: z.string() }),
   tracking: z.boolean(),
   tracking_rule: z.string().nullable(),
@@ -300,8 +304,8 @@ export type Suppression = z.infer<typeof Suppression>
 
 // ---------------------------------------------------------------------------
 // the segment editor: conditions in the design's Where / AND / OR list, stored as the people filter (0023, 0037)
-export type FieldKind = 'text' | 'number' | 'enum' | 'days'
-export type FieldDef = { f: string; group: 'person' | 'location' | 'organization' | 'product' | 'engagement'; kind: FieldKind; options?: readonly string[] }
+export type FieldKind = 'text' | 'number' | 'enum' | 'days' | 'since'
+export type FieldDef = { f: string; group: 'person' | 'location' | 'organization' | 'product' | 'activity' | 'engagement'; kind: FieldKind; options?: readonly string[] }
 export const ORG_STATUSES = ['trial', 'active', 'past_due', 'suspended', 'free', 'cancelled', 'expired'] as const
 export const MEMBER_ROLES = ['daglig_leder', 'avdelingsleder', 'verneombud'] as const
 export const SEGMENT_FIELDS: FieldDef[] = [
@@ -319,6 +323,8 @@ export const SEGMENT_FIELDS: FieldDef[] = [
   { f: 'organization.fylke', group: 'organization', kind: 'text' },
   { f: 'organization.postal_code', group: 'organization', kind: 'text' },
   { f: 'member.role', group: 'product', kind: 'enum', options: MEMBER_ROLES },
+  // days since a survey round last opened in the person's tenants: tenant-level dates only (D-19; 0040, R-CAMPAIGNS-03)
+  { f: 'product.last_round_days', group: 'activity', kind: 'since' },
   { f: 'engagement.opened_days', group: 'engagement', kind: 'days' },
   { f: 'engagement.clicked_days', group: 'engagement', kind: 'days' },
 ]
@@ -329,8 +335,9 @@ export const OPS_BY_KIND: Record<FieldKind, readonly Op[]> = {
   number: ['between', 'gte', 'lte', 'eq'],
   enum: ['eq', 'neq', 'in'],
   days: ['lte'],
+  since: ['gte', 'lte', 'empty'],
 }
-export type Op = 'eq' | 'neq' | 'contains' | 'in' | 'gte' | 'lte' | 'between'
+export type Op = 'eq' | 'neq' | 'contains' | 'in' | 'gte' | 'lte' | 'between' | 'empty'
 export type Cond = { join: 'and' | 'or'; f: string; op: Op; v: string; v2?: string }
 type Filter = { f: string; op: string; v?: unknown }
 
@@ -338,8 +345,9 @@ const listOf = (s: string) => s.split(',').map((x) => x.trim()).filter(Boolean)
 
 function condFilters(c: Cond): Filter[] {
   const def = fieldDef(c.f)
-  const num = def?.kind === 'number' || def?.kind === 'days'
+  const num = def?.kind === 'number' || def?.kind === 'days' || def?.kind === 'since'
   const val = (s: string) => (num ? Number(s) : s.trim())
+  if (c.op === 'empty') return [{ f: c.f, op: 'empty' }]
   if (c.op === 'between') return [{ f: c.f, op: 'gte', v: Number(c.v) }, { f: c.f, op: 'lte', v: Number(c.v2 ?? '') }]
   if (c.op === 'in') return [{ f: c.f, op: 'in', v: listOf(c.v).map((x) => (num ? Number(x) : x)) }]
   return [{ f: c.f, op: c.op, v: val(c.v) }]
@@ -349,7 +357,8 @@ function condFilters(c: Cond): Filter[] {
 export function condReady(c: Cond): boolean {
   const def = fieldDef(c.f)
   if (!def || !OPS_BY_KIND[def.kind].includes(c.op)) return false
-  const num = def.kind === 'number' || def.kind === 'days'
+  if (c.op === 'empty') return true
+  const num = def.kind === 'number' || def.kind === 'days' || def.kind === 'since'
   const okNum = (s: string | undefined) => s !== undefined && s.trim() !== '' && Number.isFinite(Number(s))
   if (c.op === 'between') return okNum(c.v) && okNum(c.v2)
   if (c.op === 'in') return listOf(c.v).length > 0 && (!num || listOf(c.v).every((x) => Number.isFinite(Number(x))))
@@ -408,7 +417,8 @@ export function fromQuery(q: unknown): Cond[] | null {
     }
     if (!isFilter(x)) return null
     const next = filters[i + 1]
-    if (x.op === 'gte' && isFilter(next) && next.f === x.f && next.op === 'lte') {
+    const between = OPS_BY_KIND[fieldDef(x.f)?.kind ?? 'text'].includes('between')
+    if (between && x.op === 'gte' && isFilter(next) && next.f === x.f && next.op === 'lte') {
       const c = filterToCond([x, next], 'and')
       if (!c) return null
       out.push(c)

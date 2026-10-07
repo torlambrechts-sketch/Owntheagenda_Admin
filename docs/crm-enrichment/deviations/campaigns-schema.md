@@ -26,7 +26,7 @@ Spec: `docs/crm-enrichment/specs/marketing-documents.md` §1 (Campaigns, Email b
 | V-P6C-14 | Extra and widened RPCs | — | `worker_campaign_failed`, `sender_domain_delete`; `segment_save(..., p_shared)`; `campaigns_compare(p_ids, p_type)`; `campaign_export` returns `{filename, mime, rows, content}` (CSV only); `worker_unsubscribe(p_token, p_scope, p_method)` | A refused send needs a state; a domain needs removing; the compare default follows the type filter; SQL cannot write a file |
 | V-P6C-15 | Workflow blockers | `not_connected:email`, `sender_domain_unverified` | Also `campaign_inactive` (draft or deleted campaign); at run time a draft campaign fails the step with `campaign_inactive`, an organization subject is skipped `no_email` | Same pattern as 0026's `sequence_inactive` |
 | V-P6C-16 | Subscriber allowance | «Pending upgrade» row, skip `over_allowance` | Not derived; `over_allowance` stays a check value only | No allowance number exists in the register (`plan_gates` has none, `count_limits` does not apply to CMP-05); nothing sold (D-17); never fabricated |
-| V-P6C-17 | Insights and Automation | Report entity `campaign` (INS-01); segment as a workflow condition | Not added | Out of the campaign schema's reach; CMP-09 is `campaigns_compare`. Left open below |
+| V-P6C-17 | Insights and Automation | Report entity `campaign` (INS-01); segment as a workflow condition | Not added | Out of the campaign schema's reach; CMP-09 is `campaigns_compare`. The report entity is added by 0040 (type, status, owner; sent, open rate, click rate); the segment as a workflow condition stays open |
 | V-P6C-18 | Starting layouts | Seeded rows | Seeded in the migration (`Newsletter`, `Product announcement`, structure only, no product claims, Q18) | Configuration, not demo data; the demo «Saved: Webinar invite» belongs in the seed script |
 | V-P6C-19 | Figures of others' campaigns | `campaigns:reports_others` | Own campaigns, or `reports_others`, or `edit_others` | The Marketing preset has `edit_others` but not `reports_others`; it would edit colleagues' campaigns without seeing their figures |
 | V-P6C-20 | Audience resolution | — | Resolved as the campaign's owner sees people (D-09); the frozen `audience_count` equals the owner's `segment_count.receivable` | Visibility is enforced in the definer functions; a private person of another owner is never mailed through someone else's campaign |
@@ -106,7 +106,14 @@ Stats (`null` until there are recipients; open/click fields `null` while untrack
 
 ## Left open
 
-- Insights report entity `campaign` (INS-01) and the segment as a workflow condition (§1 «usable as a condition in workflows»).
+- The segment as a workflow condition (the Insights report entity `campaign` came with 0040) (§1 «usable as a condition in workflows»).
 - The edge workers themselves (send, provider webhooks, DNS-over-HTTPS check, unsubscribe page on go.owntheagenda.com) and the TypeScript renderer.
 - Seed: the design's campaigns, segments and domains for the demo belong in a seed module; none is in the migration except the two layouts.
 - The subscriber allowance («Pending upgrade») waits for a number in the register (Q2).
+
+## Added by 0040 (Phase 6 requests)
+
+- `campaign_coupons()` (see) → `[{code, description, percent, months}]`, active coupons only.
+- `campaign_save` key `language` (`nb | nn | en | sv`, default `nb`; error detail `language`); the detail returns `language`; frozen with the content; copied by `campaign_duplicate`.
+- People filter field `product.last_round_days` (numeric days; null when no tenant of the person ever opened a round).
+- `marketing_template_versions(p_id)` (see) → `[{version, subject, created_at, by}]`, newest first; `marketing_template_restore(p_id, p_version)` (add; others' edit_others; layouts configure) → `{id, version, current_version}`; errors `not_found` (detail `version`), `invalid` (detail `version` for the current one).

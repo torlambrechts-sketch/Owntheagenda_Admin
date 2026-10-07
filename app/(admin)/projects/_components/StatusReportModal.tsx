@@ -1,19 +1,27 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
+import type { RpcCode } from '@/lib/rpc'
 import type { ProjectBundle } from '@/lib/data/projects'
+import { requestStatusReport } from '../actions'
 import { btnCancel, btnConfirm, field, fieldInput, Modal, note } from './kit'
+
+type R = { ok: true } | { ok: false; code: RpcCode; detail?: string | null }
 
 const SECTIONS = ['summary', 'milestones', 'open_overdue', 'upcoming'] as const
 
 /**
  * «AI status report (PDF)» (PRJ-07, D-41): the sender chooses what goes in — sections, a «done since» date, notes —
- * and writes or (with the AI) drafts the summary. The PDF is rendered by a worker that is not connected yet, so the
- * report cannot be produced; the dialog says so instead of pretending (D-41), and the AI draft is offered only while
- * the AI is connected.
+ * and writes or (with the AI) drafts the summary. The PDF is rendered by a worker; «Create PDF» follows whether it is
+ * connected (project_pdf_status, 0040), so a report is never requested that nothing will produce. While it is not, the
+ * dialog says so (D-41). The AI draft is offered only while both the worker and the AI are available.
  */
-export function StatusReportModal({ bundle, onClose }: { bundle: ProjectBundle; onClose: () => void }) {
+export function StatusReportModal({ bundle, onClose, onAfter }: {
+  bundle: ProjectBundle
+  onClose: () => void
+  onAfter: (p: R | Promise<R>, msg?: string) => Promise<boolean>
+}) {
   const t = useTranslations('projects.report')
   const format = useFormatter()
   const d = bundle.detail
@@ -23,6 +31,18 @@ export function StatusReportModal({ bundle, onClose }: { bundle: ProjectBundle; 
   const [summary, setSummary] = useState('')
   const noteRows = d.timeline.filter((x) => x.kind === 'note')
   const ai = d.ai
+  const pdf = bundle.pdfConnected
+  const [busy, start] = useTransition()
+  // the database refuses a report that includes nothing
+  const something = Object.values(on).some(Boolean) || since !== '' || notes.length > 0
+  const create = (aiDraft: boolean) => start(async () => {
+    const ok = await onAfter(requestStatusReport({
+      id: d.id, aiDraft, summary,
+      sections: { summary: !!on.summary, milestones: !!on.milestones, open_overdue: !!on.open_overdue, upcoming: !!on.upcoming,
+        ...(since ? { done_since: since } : {}), ...(notes.length ? { note_ids: notes } : {}) },
+    }), t('requested'))
+    if (ok) onClose()
+  })
 
   return (
     <Modal eyebrow={t('eyebrow')} title={t('title', { name: d.name })} onClose={onClose} width={560}>
@@ -55,7 +75,7 @@ export function StatusReportModal({ bundle, onClose }: { bundle: ProjectBundle; 
         <textarea value={summary} onChange={(e) => setSummary(e.target.value)} maxLength={4000} rows={4} className={`${fieldInput} h-auto py-2`} />
       </label>
       <span className="text-11.5 text-faint">{ai.enabled ? t('aiReady') : t(ai.reason === 'forbidden:projects:ai' ? 'aiForbidden' : ai.reason === 'forbidden:setting:project_ai' ? 'aiOff' : 'aiNotConnected')}</span>
-      <div className={note}>{t('pdfOff')}</div>
+      {pdf ? null : <div className={note}>{t('pdfOff')}</div>}
       {d.status_reports.length ? (
         <div className="flex flex-col gap-1 text-12">
           <span className="font-semibold text-muted">{t('earlier')}</span>
@@ -69,8 +89,9 @@ export function StatusReportModal({ bundle, onClose }: { bundle: ProjectBundle; 
       ) : null}
       <div className="flex flex-wrap justify-end gap-2">
         <button type="button" onClick={onClose} className={btnCancel}>{t('cancel')}</button>
-        <button type="button" disabled title={ai.enabled ? t('pdfOff') : t('aiNotConnected')} className={btnCancel + ' cursor-default opacity-60'}>{t('draftAi')}</button>
-        <button type="button" disabled title={t('pdfOff')} className={btnConfirm}>{t('create')}</button>
+        <button type="button" disabled={!pdf || !ai.enabled || !something || busy} onClick={() => create(true)} title={!pdf ? t('pdfOff') : ai.enabled ? undefined : t('aiNotConnected')}
+          className={btnCancel + ' disabled:cursor-default disabled:opacity-60'}>{t('draftAi')}</button>
+        <button type="button" disabled={!pdf || !something || busy} onClick={() => create(false)} title={pdf ? undefined : t('pdfOff')} className={btnConfirm}>{t('create')}</button>
       </div>
     </Modal>
   )

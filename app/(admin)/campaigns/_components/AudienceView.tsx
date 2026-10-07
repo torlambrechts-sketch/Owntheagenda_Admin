@@ -54,6 +54,7 @@ function useCondText() {
     const field = t(`fields.${c.f.replace('.', '_')}`)
     const val = (v: string) => (def.kind === 'enum' || c.op === 'in' ? v.split(',').map((x) => x.trim()).filter(Boolean).map((x) => (def.kind === 'enum' && t.has(`values.${x}`) ? t(`values.${x}`) : x)).join(t('or')) : v)
     if (def.kind === 'days') return `${group} · ${t(c.f === 'engagement.opened_days' ? 'openedWithin' : 'clickedWithin', { n: c.v || '…' })}`
+    if (def.kind === 'since') return `${group} · ${c.op === 'empty' ? t('roundNever') : t(c.op === 'gte' ? 'roundNotWithin' : 'roundWithin', { n: c.v || '…' })}`
     if (c.op === 'between') return `${group} · ${t('ops.betweenText', { field, a: c.v || '…', b: c.v2 || '…' })}`
     return `${group} · ${t(`ops.${c.op}Text`, { field, v: val(c.v) || '…' })}`
   }
@@ -154,8 +155,8 @@ function SegmentEditor(p: AudienceProps) {
                       {def.options!.map((o) => <option key={o} value={o}>{t.has(`values.${o}`) ? t(`values.${o}`) : o}</option>)}
                     </select>
                   </label>
-                ) : (
-                  <label className={label}>{def.kind === 'days' ? t('days') : c.op === 'in' ? t('valueList') : c.op === 'between' ? t('from') : t('value')}
+                ) : c.op === 'empty' ? null : (
+                  <label className={label}>{def.kind === 'days' || def.kind === 'since' ? t('days') : c.op === 'in' ? t('valueList') : c.op === 'between' ? t('from') : t('value')}
                     <input value={c.v} onChange={(e) => patch(i, { v: e.target.value })} inputMode={def.kind === 'text' || c.op === 'in' ? undefined : 'numeric'} className={`${small} w-[150px]`} />
                   </label>
                 )}

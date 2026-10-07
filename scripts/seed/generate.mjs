@@ -469,6 +469,7 @@ sql(`select app.feed_checks();`)
 sql(`select app.snapshot_pipeline();`)
 sql(`select app.snapshot_mrr_tenants();`)
 sql(`select app.health_nightly();`)
+;(await import('./phase7-meetings.mjs')).seedMeetings({ sql, q, uid, D }) // meetings fixtures (Phase 7), after the nightly jobs: briefs read scores and health
 
 sql(`
 commit;

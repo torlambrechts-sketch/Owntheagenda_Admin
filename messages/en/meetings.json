@@ -1,3 +1,614 @@
 {
-  "meetings": {}
+  "meetings": {
+    "dash": "—",
+    "loading": "Loading …",
+    "today": "Today",
+    "noAccess": {
+      "title": "Meetings",
+      "body": "Your permission set does not include the meeting workspace (it needs «See» in deals).",
+      "moduleOff": "The Meetings module is switched off in Settings › Modules.",
+      "disabled": "The meeting workspace is switched off for you. An administrator can switch it on in Meetings › Workspace and controls."
+    },
+    "views": {
+      "label": "Meetings views",
+      "workspace": "Workspace",
+      "capture": "Ways to capture",
+      "controls": "Workspace and controls"
+    },
+    "toolbar": {
+      "adhoc": "● Record unscheduled call",
+      "adhocUnavailable": "Unscheduled calls are recorded from the desktop app, which is not available yet",
+      "upload": "Upload transcript"
+    },
+    "groups": {
+      "upcoming": "Upcoming",
+      "review": "Needs your review",
+      "history": "History",
+      "older": "Show older meetings",
+      "empty": {
+        "upcoming": "No upcoming meetings",
+        "review": "Nothing to review",
+        "history": "No earlier meetings"
+      }
+    },
+    "list": {
+      "notLinked": "Not linked"
+    },
+    "empty": {
+      "title": "No meetings yet",
+      "noCalendar": "Meetings come from your calendar: those with a video link or a guest from outside appear here. No calendar is connected yet.",
+      "connected": "Meetings with a video link or a guest from outside appear here after the next calendar scan.",
+      "connect": "Connect calendar in Activities › Reminders and sync →",
+      "choose": "Choose a meeting on the left."
+    },
+    "errors": {
+      "open_not_found": "This meeting no longer exists or is not visible to you.",
+      "open_failed": "The meeting could not be opened. Try again.",
+      "not_connected_ai": "The AI provider is not connected.",
+      "not_connected_meeting_bot": "The meeting bot is not connected.",
+      "not_connected_transcription": "Transcription is not connected.",
+      "not_connected_calendar": "No calendar is connected.",
+      "not_connected_email": "The email provider is not connected.",
+      "forbidden_deals_see": "The meeting workspace needs «See» in deals.",
+      "forbidden_deals_add": "Creating an activity needs «Add» in deals.",
+      "forbidden_deals_edit_others": "Only the meeting's owner, or someone who may edit others' deals, can do this.",
+      "forbidden_global_configure": "Workspace and controls need «Configure» in global settings.",
+      "forbidden_meetings_disabled": "The meeting workspace is switched off for you.",
+      "forbidden_setting_contact_rule": "The contact rule in Settings allows new contacts only with opt-in."
+    },
+    "rel": {
+      "today": "today",
+      "tomorrow": "tomorrow"
+    },
+    "state": {
+      "none": "Not recorded",
+      "uploaded": "Transcript uploaded",
+      "cancelled": "Cancelled",
+      "recording_blocked": "Recording blocked: {reason}",
+      "recording_blocked_short": "Recording blocked",
+      "notice_due": "Notice due {day}",
+      "bot_joins": "Bot joins",
+      "bot_in_call": "Bot in the call",
+      "processing": "Processing",
+      "transcription_failed": "Transcription failed",
+      "suggestions": "{n, plural, one {# suggestion} other {# suggestions}}",
+      "recap_saved": "Recap saved",
+      "recap_ready": "Recap ready",
+      "transcript_ready": "Transcript ready"
+    },
+    "reason": {
+      "notice_not_sent": "the notice to guests could not be sent",
+      "opted_out": "a guest has opted out",
+      "not_connected": "the meeting bot is not connected",
+      "no_link": "the meeting has no link",
+      "disabled": "recording is switched off",
+      "internal_only": "only colleagues are invited",
+      "other": "a recording rule was not met"
+    },
+    "conference": {
+      "meet": "Google Meet",
+      "teams": "Teams",
+      "zoom": "Zoom",
+      "phone": "phone",
+      "in_person": "in person",
+      "other": "video call"
+    },
+    "via": {
+      "bot": "notetaker",
+      "desktop": "desktop capture",
+      "upload": "transcript upload"
+    },
+    "capture": {
+      "dash": "—",
+      "close": "Close",
+      "autoJoin": {
+        "external": "Auto-join: meetings with external guests",
+        "all": "Auto-join: every meeting with a link",
+        "off": "Auto-join: off"
+      },
+      "autoJoinHint": {
+        "external": "The default: meetings with only colleagues are never recorded",
+        "all": "Internal meetings too — recording colleagues needs an objective reason and their information beforehand",
+        "off": "The notetaker never joins on its own"
+      },
+      "autoJoinTitle": "When the notetaker joins your meetings",
+      "autoJoinSaved": "Auto-join choice saved",
+      "autoJoinNote": "The choice applies to meetings from your calendar; a meeting's own choice wins.",
+      "autoJoinNoteOff": "Your choice is saved. The meeting bot is not connected, so no bot joins any meeting until it is.",
+      "bot": {
+        "n": "Notetaker bot",
+        "d": "Joins Google Meet, Zoom or Microsoft Teams from the calendar as a visible participant and records.",
+        "cta": "Configure",
+        "connected": "Connected",
+        "notConnected": "Not connected · no bot joins a meeting until a meeting bot provider is connected"
+      },
+      "desktop": {
+        "n": "Desktop capture",
+        "d": "Records the computer’s audio with no bot in the call — VoIP, phone and in-person meetings.",
+        "s": "macOS and Windows app",
+        "status": "Not available yet · the desktop app is decided with meeting intelligence",
+        "cta": "Download app"
+      },
+      "adhoc": {
+        "n": "Unscheduled calls",
+        "d": "Start an ad hoc recording from the desktop app when there is no calendar event.",
+        "s": "Linked afterwards to a deal or person",
+        "status": "Needs the desktop app, which is not available yet",
+        "cta": "Start recording"
+      },
+      "upload": {
+        "n": "Transcript upload",
+        "d": "Upload a transcript from a call recorded elsewhere to get the same recap and suggestions.",
+        "s": ".vtt · .srt · .txt · .docx",
+        "status": "File storage is not connected yet · uploads wait for it",
+        "cta": "Upload"
+      }
+    },
+    "linkLabel": {
+      "lead": "Lead L-{seq} · {title}"
+    },
+    "header": {
+      "others": "{n, plural, one {# other} other {# others}}",
+      "linkedTo": "Linked to",
+      "linkedHidden": "Linked to a record you cannot see",
+      "notLinked": "Not linked",
+      "linkTo": "Link to deal…",
+      "changeLink": "Change link"
+    },
+    "notice": {
+      "cancelled": "The meeting was cancelled",
+      "recapSaved": "Recap saved as note",
+      "sentHours": "Recording notice sent {hours} h before",
+      "sent": "Recording notice sent {at}",
+      "pending": "Notice goes out {at}",
+      "blocked": "The notice could not be sent · the bot stays out",
+      "off": "No notice email · the bot is still visible in the call",
+      "noGuests": "No guests to notify",
+      "desktop": "Recorded without a bot",
+      "upload": "Transcript uploaded · no recording",
+      "none": "Nothing records this meeting",
+      "noneNotConnected": "Nothing records this meeting · the meeting bot is not connected"
+    },
+    "tabs": {
+      "label": "Meeting",
+      "brief": "Pre-call brief",
+      "transcript": "Transcript and recap",
+      "suggest": "CRM update suggestions"
+    },
+    "link": {
+      "eyebrow": "Link meeting",
+      "search": "Search …",
+      "noHits": "No match",
+      "linked": "Meeting linked",
+      "unlinked": "Link removed",
+      "remove": "Remove",
+      "none": "The meeting is not linked to anything yet.",
+      "to": "Link to",
+      "hint": "A linked meeting appears in the record's history as a meeting activity, and its recap can be saved there.",
+      "close": "Close",
+      "entity": {
+        "deal": "Deal",
+        "lead": "Lead",
+        "person": "Person",
+        "organization": "Organization"
+      }
+    },
+    "upload": {
+      "eyebrow": "Upload transcript",
+      "title": "A transcript from a call recorded elsewhere",
+      "body": "An uploaded transcript is read into the meeting with its speakers and times. The original file is deleted once it has been read.",
+      "formats": ".vtt · .srt · .txt · .docx",
+      "formatsHint": "Up to 5 MB · WebVTT voices, SRT timings, «Name: text» lines or Word paragraphs",
+      "notConnected": "File storage is not connected yet, so no file can be sent. Nothing is created until it is.",
+      "close": "Close",
+      "choose": "Choose file"
+    },
+    "brief": {
+      "since": "Since the last contact",
+      "who": "Who you meet",
+      "facts": "Deal and organization",
+      "earlier": "From earlier conversations",
+      "source": "Open the source",
+      "regenerate": "Regenerate brief",
+      "regenerated": "Brief rebuilt from the records",
+      "prepare": "Prepare brief",
+      "generated": "Built {at} from the records",
+      "sinceAt": "changes since {date}",
+      "noChanges": "Nothing has changed on the linked records.",
+      "noChangesSince": "Nothing has changed since the last contact on {date}.",
+      "noPeople": "No guests from outside.",
+      "noFacts": "No deal or organization facts to show.",
+      "noFactsUnlinked": "Link the meeting to a deal, lead, person or organization to see its facts.",
+      "firstMeeting": "first meeting",
+      "lastSignedIn": "last signed in {date}",
+      "notInCrm": "not in the CRM",
+      "none": {
+        "title": "No brief yet",
+        "body": "A brief is built from the records 24 hours before the meeting and refreshed an hour before.",
+        "unlinked": "This meeting has no link and no guest from outside, so a brief has nothing to draw on."
+      },
+      "quotes": {
+        "not_connected": "Not available — AI not connected",
+        "requested": "Being found in earlier transcripts and notes …",
+        "failed": "Could not be prepared this time.",
+        "none": "No earlier conversations to quote."
+      },
+      "entity": {
+        "deal": "Deal",
+        "lead": "Lead",
+        "person": "Person",
+        "organization": "Organization"
+      },
+      "change": {
+        "field_changed": "{entity} · {field}: {old} → {new}",
+        "email_engagement": "{person} opened your email {opens, plural, one {once} other {# times}} and clicked {clicks, plural, =0 {no links} one {one link} other {# links}}",
+        "ticket_resolved": "Ticket T-{number} resolved on {date}",
+        "ticket_resolved_csat": "Ticket T-{number} resolved on {date} with CSAT {csat}",
+        "participant_added": "{person} joined as a participant",
+        "count_changed": "{product} · {metric} went from {from} to {to}",
+        "other": "A change on a linked record"
+      },
+      "fact": {
+        "deal": "Deal",
+        "lead": "Lead",
+        "score": "Score",
+        "health": "Health · {product}",
+        "applications": "Applications"
+      }
+    },
+    "transcript": {
+      "title": "Transcript",
+      "minutes": "{n} min",
+      "speakers": "{n, plural, one {# speaker} other {# speakers}}",
+      "uploaded": "Uploaded · {file}",
+      "processing": "Being transcribed …",
+      "processingUpload": "The file is being read …",
+      "failed": "Transcription failed ({code}).",
+      "failedUpload": "The file could not be read. Upload it again.",
+      "retry": "Retry",
+      "retryNotConnected": "Transcription is not connected, so a retry cannot be sent yet. The recording is kept.",
+      "unknownSpeaker": "Speaker",
+      "redacted": "[removed]",
+      "more": "Show more",
+      "reason": {
+        "notice_not_sent": "the notice to guests could not be sent",
+        "opted_out": "a guest has opted out",
+        "not_connected": "the meeting bot is not connected",
+        "no_link": "the meeting has no link",
+        "disabled": "recording is switched off",
+        "internal_only": "only colleagues are invited",
+        "other": "a recording rule was not met"
+      },
+      "none": {
+        "title": "No recording",
+        "blockedTitle": "Recording blocked",
+        "blocked": "The bot did not join: {reason}.",
+        "upcoming": "The transcript appears here after the meeting, when it is recorded or a transcript is uploaded.",
+        "notRecorded": "Nothing recorded this meeting.",
+        "notConnected": "Nothing recorded this meeting: the meeting bot and the desktop app are not available yet.",
+        "upload": "A transcript of a call recorded elsewhere can be uploaded once file storage is connected."
+      },
+      "recording": {
+        "recording": "Recording …",
+        "processing": "The recording is being processed.",
+        "ready": "A recording is kept.",
+        "failed": "The recording failed."
+      }
+    },
+    "recap": {
+      "title": "Recap",
+      "takeaways": "Key takeaways",
+      "nextSteps": "Next steps",
+      "dash": "—",
+      "save": "Save recap as note",
+      "saved": "✓ Saved as note on the {entity}",
+      "savedToast": "Recap saved as a note on the {entity}",
+      "saveNeedsLink": "Link the meeting to a record to save the recap there.",
+      "regenerate": "Regenerate recap",
+      "requestedToast": "Recap requested",
+      "aiNotConnected": "The AI provider is not connected, so a recap cannot be regenerated and a follow-up cannot be drafted.",
+      "waiting": "The recap follows when the transcript is ready.",
+      "notConnected": "Not available — AI not connected. The transcript stays readable.",
+      "requested": "The recap is being prepared …",
+      "failed": "The recap could not be made this time.",
+      "plan": "Plan",
+      "planned": "✓ Activity planned",
+      "draft": "Draft follow-up",
+      "draftNotConnected": "Drafting a follow-up email is not available yet: it needs the email writer and a connected mailbox.",
+      "entity": {
+        "deal": "deal",
+        "lead": "lead",
+        "person": "person",
+        "organization": "organization"
+      }
+    },
+    "plan": {
+      "eyebrow": "Plan next activity",
+      "type": "Type",
+      "date": "Date",
+      "time": "Time",
+      "hint": "The activity is linked like the meeting: its deal, lead, person and organization.",
+      "cancel": "Cancel",
+      "save": "Create activity",
+      "done": "Activity created",
+      "types": {
+        "task": "Task",
+        "call": "Call",
+        "email": "Email",
+        "meeting": "Meeting"
+      }
+    },
+    "speakers": {
+      "title": "Speakers",
+      "colleague": "colleague",
+      "notInCrm": "not in the CRM",
+      "unmapped": "Not mapped · shown as written in the file",
+      "hidden": "A person you cannot see",
+      "mapLabel": "Who is {label}",
+      "none": "Not mapped",
+      "hint": "Map each label to a colleague or a guest, so the transcript names them and the brief can quote them."
+    },
+    "suggest": {
+      "title": "Proposed CRM updates from the call",
+      "acceptAll": "Accept all remaining",
+      "accept": "Accept",
+      "reject": "Reject",
+      "dash": "—",
+      "footer": "Nothing is written without your approval · changelog source: meeting intelligence",
+      "written": "{n, plural, one {# update written} other {# updates written}} · changelog source: meeting intelligence",
+      "staleToast": "{n, plural, one {The record changed since the proposal; nothing was written} other {# records changed since the proposal; nothing was written}}",
+      "failedToast": "{n, plural, one {A rule refused the update} other {Rules refused # updates}}",
+      "staleNow": "The record changed since this was proposed. Accepting marks it stale and writes nothing.",
+      "staleDone": "The record had changed, so nothing was overwritten.",
+      "failedRule": "A rule refused the write.",
+      "failedContactRule": "The contact rule allows new contacts only with opt-in.",
+      "col": {
+        "record": "Record",
+        "field": "Field",
+        "current": "Current",
+        "proposed": "Proposed"
+      },
+      "entity": {
+        "deal": "Deal",
+        "lead": "Lead",
+        "person": "Person",
+        "organization": "Organization",
+        "new": "New contact"
+      },
+      "state": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected",
+        "stale": "Stale",
+        "failed": "Failed"
+      },
+      "field": {
+        "value": "Value",
+        "title": "role",
+        "employees": "Employees",
+        "labels": "Labels",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "city": "City",
+        "industry": "Industry"
+      },
+      "empty": {
+        "noTranscript": "Suggestions come from the recap of a transcript, and this meeting has none.",
+        "notConnected": "The AI provider is not connected, so no suggestions are made from the transcript.",
+        "none": "The recap proposed no changes to the records.",
+        "waiting": "Suggestions follow with the recap."
+      }
+    },
+    "consent": {
+      "title": "Recording and consent",
+      "capture": "Capture",
+      "botLabel": "Notetaker",
+      "noticeLabel": "Recording notice",
+      "recordingLabel": "Recording",
+      "attendees": "Attendees",
+      "guest": "guest",
+      "colleague": "colleague",
+      "noticeSent": "notice sent {at}",
+      "optedOut": "Opted out of recording",
+      "object": "Record an objection",
+      "objectionSaved": "Objection recorded · the bot stays out",
+      "noAttendees": "No attendees are listed.",
+      "rules": "Fixed rules: the notetaker's name says it records, it posts an opt-out link when it joins, and the owner can remove it at once. It never joins when a guest has opted out, or when a required notice could not be sent.",
+      "captureSet": "Capture choice saved",
+      "useBot": "Use the notetaker",
+      "noBot": "Do not record",
+      "botNotConnected": "The meeting bot is not connected.",
+      "removeBot": "Remove bot",
+      "botRemoved": "Bot removed",
+      "deleteRecording": "Stop and delete recording",
+      "deleteTranscript": "Delete transcript",
+      "deleted": "Deleted",
+      "captureValue": {
+        "bot": "Notetaker bot",
+        "desktop": "Desktop capture",
+        "upload": "Transcript upload",
+        "none": "Not recorded"
+      },
+      "bot": {
+        "blocked": "Blocked: {reason}",
+        "notChosen": "Not chosen for this meeting",
+        "notConnected": "Not connected · no bot joins",
+        "none": "Not planned",
+        "scheduled": "Joins about two minutes before the start",
+        "joining": "Joining the call",
+        "in_call": "In the call, as a visible participant",
+        "removed": "Removed",
+        "left": "Left the call",
+        "failed": "Could not join"
+      },
+      "reason": {
+        "notice_not_sent": "the notice to guests could not be sent",
+        "opted_out": "a guest has opted out",
+        "not_connected": "the meeting bot is not connected",
+        "no_link": "the meeting has no link",
+        "disabled": "recording is switched off",
+        "internal_only": "only colleagues are invited",
+        "other": "a recording rule was not met"
+      },
+      "notice": {
+        "setting24": "setting: 24 hours before",
+        "settingCustom": "setting: {hours} h before",
+        "settingOff": "setting: off",
+        "sent": "Sent {at}",
+        "pending": "Goes out {at}",
+        "blocked": "Could not be sent · the bot stays out",
+        "notRequired": "Not needed: nothing records this meeting",
+        "notRequiredNoGuests": "Not needed: no guests from outside, or notices are off"
+      },
+      "recording": {
+        "kept": "{state} · audio kept until {until}",
+        "forever": "it is deleted",
+        "upload": "No recording · the transcript was uploaded",
+        "none": "No recording",
+        "state": {
+          "recording": "Recording",
+          "processing": "Processing",
+          "ready": "Ready",
+          "failed": "Failed"
+        }
+      },
+      "response": {
+        "needs_action": "no answer",
+        "accepted": "accepted",
+        "tentative": "maybe",
+        "declined": "declined"
+      },
+      "objection": {
+        "eyebrow": "Objection to recording",
+        "body": "Record that this guest objects to being recorded (art. 21). The notetaker will not join this meeting, and leaves at once if it is in the call.",
+        "always": "Never record this address in any meeting",
+        "note": "Only a hash of the address is kept for «never». An objection does not delete a recording already made: use «Stop and delete recording» for that.",
+        "cancel": "Cancel",
+        "save": "Record objection"
+      },
+      "delete": {
+        "eyebrow": "Delete",
+        "titleRecording": "Stop and delete the recording",
+        "titleTranscript": "Delete the transcript",
+        "bodyRecording": "The audio is deleted from storage now. If the bot is in the call it leaves.",
+        "bodyTranscript": "The transcript, its recap and its suggestions are deleted, and quotes from it leave every brief.",
+        "withTranscript": "Also delete the transcript, its recap and its suggestions",
+        "note": "A recap already saved as a note stays on its record. This cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      }
+    },
+    "controls": {
+      "loading": "Loading …",
+      "saved": "Setting saved",
+      "firewall": "The notetaker joins as a visible participant. Transcripts are CRM data only — survey content is never part of a brief, recap or AI context.",
+      "userOff": "Meeting workspace switched off for {name}",
+      "userOn": "Meeting workspace switched on for {name}",
+      "adminOnly": {
+        "title": "Workspace and controls",
+        "body": "The per-user switch, the recording notice and how long audio is kept are set by an administrator (global «Configure»). Your own choices are beside this."
+      },
+      "users": {
+        "title": "Meeting workspace per user",
+        "hint": "On by default · one permission covers all features",
+        "switch": "Meeting workspace for {name}",
+        "none": "No staff member has the deals permission."
+      },
+      "mailbox": {
+        "line": "mailbox {mailbox}",
+        "own": "own",
+        "none": "none",
+        "reauth": "(re-auth)",
+        "notConnected": "(not connected)"
+      },
+      "notice": {
+        "title": "Recording consent notices to attendees",
+        "hours": "Hours before the start (0 = as soon as the meeting is known)",
+        "useCustom": "Use custom timing",
+        "on_24h": {
+          "n": "On with 24 hours’ notice",
+          "s": "Default, as in the source"
+        },
+        "custom": {
+          "n": "Custom timing",
+          "s": "e.g. 48 hours or at invite time",
+          "current": "{n, plural, =0 {As soon as the meeting is known} one {# hour before the start} other {# hours before the start}}"
+        },
+        "off": {
+          "n": "Off",
+          "s": "No notice email — the bot is still visible in the call"
+        }
+      },
+      "preview": {
+        "title": "What guests receive",
+        "subject": "Recording notice: [meeting] on [date]",
+        "body": "[Organiser] at [company] will record [meeting] with a notetaker that joins the call as a visible participant marked «(recording)». The recording becomes a transcript and a summary in our customer records. This email goes out {timing}. The audio is kept {retention}; the transcript stays with our records of the conversation. You can say no with the link below — for this meeting, or for every meeting with your address — and the notetaker will not join. [Opt-out link]",
+        "off": "No notice email is sent. Guests learn of the recording from the notetaker in the call, whose name says it records and which posts an opt-out link when it joins.",
+        "hoursBefore": "{n, plural, one {# hour} other {# hours}} before the meeting",
+        "whenKnown": "as soon as the meeting is known",
+        "months": "for {n, plural, one {# month} other {# months}}",
+        "keep": "until someone deletes it",
+        "emailConnected": "The notice goes out through the transactional email stream; if it cannot be sent, the bot stays out.",
+        "emailNotConnected": "The email provider is not connected, so no notice can go out: a meeting that needs one keeps the bot out."
+      },
+      "retention": {
+        "title": "How long audio is kept",
+        "saved": "Retention saved",
+        "months": "Months",
+        "useCustom": "Use custom months",
+        "note": "Audio only. Transcripts stay with the meeting as long as its linked records do.",
+        "12_months": {
+          "n": "12 months",
+          "s": "Default"
+        },
+        "custom": {
+          "n": "Custom",
+          "s": "From 1 to 120 months",
+          "current": "{n, plural, one {# month} other {# months}}"
+        },
+        "keep": {
+          "n": "Keep",
+          "s": "Until a recording is deleted by hand"
+        }
+      },
+      "mine": {
+        "title": "My settings",
+        "loading": "Loading …",
+        "saved": "Saved",
+        "autoJoin": "The notetaker joins my meetings",
+        "autoJoinOption": {
+          "external": {
+            "n": "With external guests",
+            "s": "The default: meetings with only colleagues are never recorded"
+          },
+          "all": {
+            "n": "Every meeting with a link",
+            "s": "Internal meetings too — colleagues must be told beforehand"
+          },
+          "off": {
+            "n": "Never on its own",
+            "s": "I choose per meeting"
+          }
+        },
+        "mailbox": "Mailbox my briefs read",
+        "mailboxOwn": "My own mailbox",
+        "mailboxConnected": "Briefs read email from {address}.",
+        "mailboxNotConnected": "{address} is not connected, so briefs hold no email items yet.",
+        "mailboxNone": "No mailbox: briefs hold no email items.",
+        "instructions": "Brief instructions",
+        "instructionsPlaceholder": "e.g. Keep it short; always mention open tickets",
+        "instructionsNote": "Passed to the AI step of the brief only (the quotes). The AI provider is not connected yet.",
+        "saveInstructions": "Save instructions",
+        "status": {
+          "connecting": "connecting",
+          "syncing": "syncing",
+          "synced": "synced",
+          "reauth": "re-auth",
+          "error": "error",
+          "disconnected": "not connected"
+        }
+      }
+    }
+  }
 }

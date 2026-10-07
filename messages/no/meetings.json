@@ -1,3 +1,614 @@
 {
-  "meetings": {}
+  "meetings": {
+    "dash": "—",
+    "loading": "Laster …",
+    "today": "I dag",
+    "noAccess": {
+      "title": "Møter",
+      "body": "Tilgangssettet ditt gir ikke møtearbeidsflaten (den krever «Se» i salg).",
+      "moduleOff": "Møtemodulen er slått av i Innstillinger › Moduler.",
+      "disabled": "Møtearbeidsflaten er slått av for deg. En administrator kan slå den på i Møter › Arbeidsflate og kontroller."
+    },
+    "views": {
+      "label": "Møtevisninger",
+      "workspace": "Arbeidsflate",
+      "capture": "Måter å ta opp på",
+      "controls": "Arbeidsflate og kontroller"
+    },
+    "toolbar": {
+      "adhoc": "● Ta opp uplanlagt samtale",
+      "adhocUnavailable": "Uplanlagte samtaler tas opp fra skrivebordsappen, som ikke er tilgjengelig ennå",
+      "upload": "Last opp transkripsjon"
+    },
+    "groups": {
+      "upcoming": "Kommende",
+      "review": "Trenger din gjennomgang",
+      "history": "Historikk",
+      "older": "Vis eldre møter",
+      "empty": {
+        "upcoming": "Ingen kommende møter",
+        "review": "Ingenting å gå gjennom",
+        "history": "Ingen tidligere møter"
+      }
+    },
+    "list": {
+      "notLinked": "Ikke koblet"
+    },
+    "empty": {
+      "title": "Ingen møter ennå",
+      "noCalendar": "Møter kommer fra kalenderen din: de med videolenke eller en gjest utenfra vises her. Ingen kalender er koblet til ennå.",
+      "connected": "Møter med videolenke eller en gjest utenfra vises her etter neste kalenderskanning.",
+      "connect": "Koble til kalender i Aktiviteter › Påminnelser og synk →",
+      "choose": "Velg et møte til venstre."
+    },
+    "errors": {
+      "open_not_found": "Møtet finnes ikke lenger eller er ikke synlig for deg.",
+      "open_failed": "Møtet kunne ikke åpnes. Prøv igjen.",
+      "not_connected_ai": "AI-leverandøren er ikke koblet til.",
+      "not_connected_meeting_bot": "Møteboten er ikke koblet til.",
+      "not_connected_transcription": "Transkribering er ikke koblet til.",
+      "not_connected_calendar": "Ingen kalender er koblet til.",
+      "not_connected_email": "E-postleverandøren er ikke koblet til.",
+      "forbidden_deals_see": "Møtearbeidsflaten krever «Se» i salg.",
+      "forbidden_deals_add": "Å opprette en aktivitet krever «Legge til» i salg.",
+      "forbidden_deals_edit_others": "Bare møtets eier, eller den som kan redigere andres salgsmuligheter, kan gjøre dette.",
+      "forbidden_global_configure": "Arbeidsflate og kontroller krever «Konfigurere» i globale innstillinger.",
+      "forbidden_meetings_disabled": "Møtearbeidsflaten er slått av for deg.",
+      "forbidden_setting_contact_rule": "Kontaktregelen i Innstillinger tillater nye kontakter bare med samtykke."
+    },
+    "rel": {
+      "today": "i dag",
+      "tomorrow": "i morgen"
+    },
+    "state": {
+      "none": "Ikke tatt opp",
+      "uploaded": "Transkripsjon lastet opp",
+      "cancelled": "Avlyst",
+      "recording_blocked": "Opptak blokkert: {reason}",
+      "recording_blocked_short": "Opptak blokkert",
+      "notice_due": "Varsel går ut {day}",
+      "bot_joins": "Boten blir med",
+      "bot_in_call": "Boten er i samtalen",
+      "processing": "Behandles",
+      "transcription_failed": "Transkribering feilet",
+      "suggestions": "{n, plural, one {# forslag} other {# forslag}}",
+      "recap_saved": "Oppsummering lagret",
+      "recap_ready": "Oppsummering klar",
+      "transcript_ready": "Transkripsjon klar"
+    },
+    "reason": {
+      "notice_not_sent": "varselet til gjestene kunne ikke sendes",
+      "opted_out": "en gjest har reservert seg",
+      "not_connected": "møteboten er ikke koblet til",
+      "no_link": "møtet har ingen lenke",
+      "disabled": "opptak er slått av",
+      "internal_only": "bare kolleger er invitert",
+      "other": "en opptaksregel var ikke oppfylt"
+    },
+    "conference": {
+      "meet": "Google Meet",
+      "teams": "Teams",
+      "zoom": "Zoom",
+      "phone": "telefon",
+      "in_person": "fysisk møte",
+      "other": "videosamtale"
+    },
+    "via": {
+      "bot": "notatbot",
+      "desktop": "skrivebordsopptak",
+      "upload": "opplastet transkripsjon"
+    },
+    "capture": {
+      "dash": "—",
+      "close": "Lukk",
+      "autoJoin": {
+        "external": "Blir med automatisk: møter med eksterne gjester",
+        "all": "Blir med automatisk: alle møter med lenke",
+        "off": "Blir med automatisk: av"
+      },
+      "autoJoinHint": {
+        "external": "Standard: møter med bare kolleger tas aldri opp",
+        "all": "Også interne møter — å ta opp kolleger krever saklig grunn og informasjon på forhånd",
+        "off": "Notatboten blir aldri med av seg selv"
+      },
+      "autoJoinTitle": "Når notatboten blir med i møtene dine",
+      "autoJoinSaved": "Valget er lagret",
+      "autoJoinNote": "Valget gjelder møter fra kalenderen din; møtets eget valg går foran.",
+      "autoJoinNoteOff": "Valget er lagret. Møteboten er ikke koblet til, så ingen bot blir med i noe møte før den er det.",
+      "bot": {
+        "n": "Notatbot",
+        "d": "Blir med i Google Meet, Zoom eller Microsoft Teams fra kalenderen som synlig deltaker og tar opp.",
+        "cta": "Konfigurer",
+        "connected": "Koblet til",
+        "notConnected": "Ikke koblet til · ingen bot blir med i et møte før en møtebot-leverandør er koblet til"
+      },
+      "desktop": {
+        "n": "Skrivebordsopptak",
+        "d": "Tar opp lyden på datamaskinen uten bot i samtalen — VoIP, telefon og fysiske møter.",
+        "s": "App for macOS og Windows",
+        "status": "Ikke tilgjengelig ennå · skrivebordsappen avgjøres sammen med møteinnsikt",
+        "cta": "Last ned app"
+      },
+      "adhoc": {
+        "n": "Uplanlagte samtaler",
+        "d": "Start et ad hoc-opptak fra skrivebordsappen når det ikke finnes noen kalenderhendelse.",
+        "s": "Kobles etterpå til en salgsmulighet eller person",
+        "status": "Krever skrivebordsappen, som ikke er tilgjengelig ennå",
+        "cta": "Start opptak"
+      },
+      "upload": {
+        "n": "Opplasting av transkripsjon",
+        "d": "Last opp en transkripsjon fra en samtale tatt opp et annet sted for å få samme oppsummering og forslag.",
+        "s": ".vtt · .srt · .txt · .docx",
+        "status": "Fillagring er ikke koblet til ennå · opplasting venter på den",
+        "cta": "Last opp"
+      }
+    },
+    "linkLabel": {
+      "lead": "Lead L-{seq} · {title}"
+    },
+    "header": {
+      "others": "{n, plural, one {# annen} other {# andre}}",
+      "linkedTo": "Koblet til",
+      "linkedHidden": "Koblet til en post du ikke kan se",
+      "notLinked": "Ikke koblet",
+      "linkTo": "Koble til salgsmulighet…",
+      "changeLink": "Endre kobling"
+    },
+    "notice": {
+      "cancelled": "Møtet ble avlyst",
+      "recapSaved": "Oppsummering lagret som notat",
+      "sentHours": "Opptaksvarsel sendt {hours} t før",
+      "sent": "Opptaksvarsel sendt {at}",
+      "pending": "Varsel går ut {at}",
+      "blocked": "Varselet kunne ikke sendes · boten holdes ute",
+      "off": "Ingen varsel-e-post · boten er fortsatt synlig i samtalen",
+      "noGuests": "Ingen gjester å varsle",
+      "desktop": "Tatt opp uten bot",
+      "upload": "Transkripsjon lastet opp · intet opptak",
+      "none": "Ingenting tar opp dette møtet",
+      "noneNotConnected": "Ingenting tar opp dette møtet · møteboten er ikke koblet til"
+    },
+    "tabs": {
+      "label": "Møte",
+      "brief": "Brief før møtet",
+      "transcript": "Transkripsjon og oppsummering",
+      "suggest": "Forslag til CRM-oppdateringer"
+    },
+    "link": {
+      "eyebrow": "Koble møte",
+      "search": "Søk …",
+      "noHits": "Ingen treff",
+      "linked": "Møtet er koblet",
+      "unlinked": "Koblingen er fjernet",
+      "remove": "Fjern",
+      "none": "Møtet er ikke koblet til noe ennå.",
+      "to": "Koble til",
+      "hint": "Et koblet møte vises i postens historikk som en møteaktivitet, og oppsummeringen kan lagres der.",
+      "close": "Lukk",
+      "entity": {
+        "deal": "Salgsmulighet",
+        "lead": "Lead",
+        "person": "Person",
+        "organization": "Organisasjon"
+      }
+    },
+    "upload": {
+      "eyebrow": "Last opp transkripsjon",
+      "title": "En transkripsjon fra en samtale tatt opp et annet sted",
+      "body": "En opplastet transkripsjon leses inn i møtet med talere og tider. Originalfilen slettes når den er lest.",
+      "formats": ".vtt · .srt · .txt · .docx",
+      "formatsHint": "Opptil 5 MB · WebVTT-stemmer, SRT-tider, «Navn: tekst»-linjer eller Word-avsnitt",
+      "notConnected": "Fillagring er ikke koblet til ennå, så ingen fil kan sendes. Ingenting opprettes før den er det.",
+      "close": "Lukk",
+      "choose": "Velg fil"
+    },
+    "brief": {
+      "since": "Siden siste kontakt",
+      "who": "Hvem du møter",
+      "facts": "Salgsmulighet og organisasjon",
+      "earlier": "Fra tidligere samtaler",
+      "source": "Åpne kilden",
+      "regenerate": "Lag brief på nytt",
+      "regenerated": "Briefen er bygget på nytt fra postene",
+      "prepare": "Lag brief",
+      "generated": "Bygget {at} fra postene",
+      "sinceAt": "endringer siden {date}",
+      "noChanges": "Ingenting er endret på de koblede postene.",
+      "noChangesSince": "Ingenting er endret siden siste kontakt {date}.",
+      "noPeople": "Ingen gjester utenfra.",
+      "noFacts": "Ingen fakta om salgsmulighet eller organisasjon å vise.",
+      "noFactsUnlinked": "Koble møtet til en salgsmulighet, lead, person eller organisasjon for å se fakta.",
+      "firstMeeting": "første møte",
+      "lastSignedIn": "sist innlogget {date}",
+      "notInCrm": "ikke i CRM",
+      "none": {
+        "title": "Ingen brief ennå",
+        "body": "En brief bygges fra postene 24 timer før møtet og oppdateres en time før.",
+        "unlinked": "Dette møtet har ingen kobling og ingen gjest utenfra, så en brief har ingenting å bygge på."
+      },
+      "quotes": {
+        "not_connected": "Ikke tilgjengelig — AI er ikke koblet til",
+        "requested": "Hentes fra tidligere transkripsjoner og notater …",
+        "failed": "Kunne ikke lages denne gangen.",
+        "none": "Ingen tidligere samtaler å sitere."
+      },
+      "entity": {
+        "deal": "Salgsmulighet",
+        "lead": "Lead",
+        "person": "Person",
+        "organization": "Organisasjon"
+      },
+      "change": {
+        "field_changed": "{entity} · {field}: {old} → {new}",
+        "email_engagement": "{person} åpnet e-posten din {opens, plural, one {én gang} other {# ganger}} og klikket på {clicks, plural, =0 {ingen lenker} one {én lenke} other {# lenker}}",
+        "ticket_resolved": "Sak T-{number} løst {date}",
+        "ticket_resolved_csat": "Sak T-{number} løst {date} med CSAT {csat}",
+        "participant_added": "{person} ble med som deltaker",
+        "count_changed": "{product} · {metric} gikk fra {from} til {to}",
+        "other": "En endring på en koblet post"
+      },
+      "fact": {
+        "deal": "Salgsmulighet",
+        "lead": "Lead",
+        "score": "Score",
+        "health": "Helse · {product}",
+        "applications": "Applikasjoner"
+      }
+    },
+    "transcript": {
+      "title": "Transkripsjon",
+      "minutes": "{n} min",
+      "speakers": "{n, plural, one {# taler} other {# talere}}",
+      "uploaded": "Lastet opp · {file}",
+      "processing": "Transkriberes …",
+      "processingUpload": "Filen leses …",
+      "failed": "Transkriberingen feilet ({code}).",
+      "failedUpload": "Filen kunne ikke leses. Last den opp på nytt.",
+      "retry": "Prøv igjen",
+      "retryNotConnected": "Transkribering er ikke koblet til, så et nytt forsøk kan ikke sendes ennå. Opptaket beholdes.",
+      "unknownSpeaker": "Taler",
+      "redacted": "[fjernet]",
+      "more": "Vis mer",
+      "reason": {
+        "notice_not_sent": "varselet til gjestene kunne ikke sendes",
+        "opted_out": "en gjest har reservert seg",
+        "not_connected": "møteboten er ikke koblet til",
+        "no_link": "møtet har ingen lenke",
+        "disabled": "opptak er slått av",
+        "internal_only": "bare kolleger er invitert",
+        "other": "en opptaksregel var ikke oppfylt"
+      },
+      "none": {
+        "title": "Intet opptak",
+        "blockedTitle": "Opptak blokkert",
+        "blocked": "Boten ble ikke med: {reason}.",
+        "upcoming": "Transkripsjonen vises her etter møtet, når det er tatt opp eller en transkripsjon er lastet opp.",
+        "notRecorded": "Ingenting tok opp dette møtet.",
+        "notConnected": "Ingenting tok opp dette møtet: møteboten og skrivebordsappen er ikke tilgjengelige ennå.",
+        "upload": "En transkripsjon fra en samtale tatt opp et annet sted kan lastes opp når fillagring er koblet til."
+      },
+      "recording": {
+        "recording": "Tar opp …",
+        "processing": "Opptaket behandles.",
+        "ready": "Et opptak er lagret.",
+        "failed": "Opptaket feilet."
+      }
+    },
+    "recap": {
+      "title": "Oppsummering",
+      "takeaways": "Hovedpunkter",
+      "nextSteps": "Neste steg",
+      "dash": "—",
+      "save": "Lagre oppsummering som notat",
+      "saved": "✓ Lagret som notat på {entity}",
+      "savedToast": "Oppsummeringen er lagret som notat på {entity}",
+      "saveNeedsLink": "Koble møtet til en post for å lagre oppsummeringen der.",
+      "regenerate": "Lag oppsummering på nytt",
+      "requestedToast": "Oppsummering bestilt",
+      "aiNotConnected": "AI-leverandøren er ikke koblet til, så oppsummeringen kan ikke lages på nytt og en oppfølging kan ikke skrives.",
+      "waiting": "Oppsummeringen kommer når transkripsjonen er klar.",
+      "notConnected": "Ikke tilgjengelig — AI er ikke koblet til. Transkripsjonen kan fortsatt leses.",
+      "requested": "Oppsummeringen lages …",
+      "failed": "Oppsummeringen kunne ikke lages denne gangen.",
+      "plan": "Planlegg",
+      "planned": "✓ Aktivitet planlagt",
+      "draft": "Skriv oppfølging",
+      "draftNotConnected": "Å skrive en oppfølgings-e-post er ikke tilgjengelig ennå: det krever e-postskriveren og en tilkoblet postkasse.",
+      "entity": {
+        "deal": "salgsmuligheten",
+        "lead": "leaden",
+        "person": "personen",
+        "organization": "organisasjonen"
+      }
+    },
+    "plan": {
+      "eyebrow": "Planlegg neste aktivitet",
+      "type": "Type",
+      "date": "Dato",
+      "time": "Tid",
+      "hint": "Aktiviteten kobles som møtet: salgsmulighet, lead, person og organisasjon.",
+      "cancel": "Avbryt",
+      "save": "Opprett aktivitet",
+      "done": "Aktivitet opprettet",
+      "types": {
+        "task": "Oppgave",
+        "call": "Samtale",
+        "email": "E-post",
+        "meeting": "Møte"
+      }
+    },
+    "speakers": {
+      "title": "Talere",
+      "colleague": "kollega",
+      "notInCrm": "ikke i CRM",
+      "unmapped": "Ikke koblet · vises slik det står i filen",
+      "hidden": "En person du ikke kan se",
+      "mapLabel": "Hvem er {label}",
+      "none": "Ikke koblet",
+      "hint": "Koble hver etikett til en kollega eller gjest, så transkripsjonen navngir dem og briefen kan sitere dem."
+    },
+    "suggest": {
+      "title": "Foreslåtte CRM-oppdateringer fra samtalen",
+      "acceptAll": "Godta alle gjenstående",
+      "accept": "Godta",
+      "reject": "Avvis",
+      "dash": "—",
+      "footer": "Ingenting skrives uten din godkjenning · endringskilde: møteinnsikt",
+      "written": "{n, plural, one {# oppdatering skrevet} other {# oppdateringer skrevet}} · endringskilde: møteinnsikt",
+      "staleToast": "{n, plural, one {Posten er endret siden forslaget; ingenting ble skrevet} other {# poster er endret siden forslaget; ingenting ble skrevet}}",
+      "failedToast": "{n, plural, one {En regel avviste oppdateringen} other {Regler avviste # oppdateringer}}",
+      "staleNow": "Posten er endret siden dette ble foreslått. Godtar du, merkes det som utdatert og ingenting skrives.",
+      "staleDone": "Posten var endret, så ingenting ble overskrevet.",
+      "failedRule": "En regel avviste skrivingen.",
+      "failedContactRule": "Kontaktregelen tillater nye kontakter bare med samtykke.",
+      "col": {
+        "record": "Post",
+        "field": "Felt",
+        "current": "Nå",
+        "proposed": "Foreslått"
+      },
+      "entity": {
+        "deal": "Salgsmulighet",
+        "lead": "Lead",
+        "person": "Person",
+        "organization": "Organisasjon",
+        "new": "Ny kontakt"
+      },
+      "state": {
+        "pending": "Venter",
+        "accepted": "Godtatt",
+        "rejected": "Avvist",
+        "stale": "Utdatert",
+        "failed": "Feilet"
+      },
+      "field": {
+        "value": "Verdi",
+        "title": "rolle",
+        "employees": "Ansatte",
+        "labels": "Etiketter",
+        "name": "Navn",
+        "email": "E-post",
+        "phone": "Telefon",
+        "city": "Sted",
+        "industry": "Bransje"
+      },
+      "empty": {
+        "noTranscript": "Forslag kommer fra oppsummeringen av en transkripsjon, og dette møtet har ingen.",
+        "notConnected": "AI-leverandøren er ikke koblet til, så det lages ingen forslag fra transkripsjonen.",
+        "none": "Oppsummeringen foreslo ingen endringer i postene.",
+        "waiting": "Forslagene kommer med oppsummeringen."
+      }
+    },
+    "consent": {
+      "title": "Opptak og samtykke",
+      "capture": "Opptak",
+      "botLabel": "Notatbot",
+      "noticeLabel": "Opptaksvarsel",
+      "recordingLabel": "Lydopptak",
+      "attendees": "Deltakere",
+      "guest": "gjest",
+      "colleague": "kollega",
+      "noticeSent": "varsel sendt {at}",
+      "optedOut": "Reservert mot opptak",
+      "object": "Registrer en innsigelse",
+      "objectionSaved": "Innsigelse registrert · boten holdes ute",
+      "noAttendees": "Ingen deltakere er oppført.",
+      "rules": "Faste regler: notatbotens navn sier at den tar opp, den legger ut en reservasjonslenke når den blir med, og eieren kan fjerne den med en gang. Den blir aldri med når en gjest har reservert seg, eller når et påkrevd varsel ikke kunne sendes.",
+      "captureSet": "Opptaksvalget er lagret",
+      "useBot": "Bruk notatboten",
+      "noBot": "Ikke ta opp",
+      "botNotConnected": "Møteboten er ikke koblet til.",
+      "removeBot": "Fjern bot",
+      "botRemoved": "Boten er fjernet",
+      "deleteRecording": "Stopp og slett opptak",
+      "deleteTranscript": "Slett transkripsjon",
+      "deleted": "Slettet",
+      "captureValue": {
+        "bot": "Notatbot",
+        "desktop": "Skrivebordsopptak",
+        "upload": "Opplastet transkripsjon",
+        "none": "Ikke tatt opp"
+      },
+      "bot": {
+        "blocked": "Blokkert: {reason}",
+        "notChosen": "Ikke valgt for dette møtet",
+        "notConnected": "Ikke koblet til · ingen bot blir med",
+        "none": "Ikke planlagt",
+        "scheduled": "Blir med omtrent to minutter før start",
+        "joining": "Blir med i samtalen",
+        "in_call": "I samtalen, som synlig deltaker",
+        "removed": "Fjernet",
+        "left": "Forlot samtalen",
+        "failed": "Kunne ikke bli med"
+      },
+      "reason": {
+        "notice_not_sent": "varselet til gjestene kunne ikke sendes",
+        "opted_out": "en gjest har reservert seg",
+        "not_connected": "møteboten er ikke koblet til",
+        "no_link": "møtet har ingen lenke",
+        "disabled": "opptak er slått av",
+        "internal_only": "bare kolleger er invitert",
+        "other": "en opptaksregel var ikke oppfylt"
+      },
+      "notice": {
+        "setting24": "innstilling: 24 timer før",
+        "settingCustom": "innstilling: {hours} t før",
+        "settingOff": "innstilling: av",
+        "sent": "Sendt {at}",
+        "pending": "Går ut {at}",
+        "blocked": "Kunne ikke sendes · boten holdes ute",
+        "notRequired": "Ikke nødvendig: ingenting tar opp dette møtet",
+        "notRequiredNoGuests": "Ikke nødvendig: ingen gjester utenfra, eller varsler er av"
+      },
+      "recording": {
+        "kept": "{state} · lyden beholdes til {until}",
+        "forever": "den slettes",
+        "upload": "Intet opptak · transkripsjonen ble lastet opp",
+        "none": "Intet opptak",
+        "state": {
+          "recording": "Tar opp",
+          "processing": "Behandles",
+          "ready": "Klar",
+          "failed": "Feilet"
+        }
+      },
+      "response": {
+        "needs_action": "ikke svart",
+        "accepted": "godtatt",
+        "tentative": "kanskje",
+        "declined": "avslått"
+      },
+      "objection": {
+        "eyebrow": "Innsigelse mot opptak",
+        "body": "Registrer at denne gjesten protesterer mot å bli tatt opp (art. 21). Notatboten blir ikke med i dette møtet, og forlater samtalen med en gang hvis den er der.",
+        "always": "Ta aldri opp denne adressen i noe møte",
+        "note": "Bare en hash av adressen lagres for «aldri». En innsigelse sletter ikke et opptak som alt er gjort: bruk «Stopp og slett opptak» til det.",
+        "cancel": "Avbryt",
+        "save": "Registrer innsigelse"
+      },
+      "delete": {
+        "eyebrow": "Slett",
+        "titleRecording": "Stopp og slett opptaket",
+        "titleTranscript": "Slett transkripsjonen",
+        "bodyRecording": "Lyden slettes fra lagringen nå. Er boten i samtalen, forlater den den.",
+        "bodyTranscript": "Transkripsjonen, oppsummeringen og forslagene slettes, og sitater fra den fjernes fra alle briefer.",
+        "withTranscript": "Slett også transkripsjonen, oppsummeringen og forslagene",
+        "note": "En oppsummering som alt er lagret som notat, blir stående på posten. Dette kan ikke angres.",
+        "cancel": "Avbryt",
+        "confirm": "Slett"
+      }
+    },
+    "controls": {
+      "loading": "Laster …",
+      "saved": "Innstillingen er lagret",
+      "firewall": "Notatboten blir med som synlig deltaker. Transkripsjoner er bare CRM-data — innhold fra undersøkelser er aldri del av en brief, en oppsummering eller AI-kontekst.",
+      "userOff": "Møtearbeidsflaten er slått av for {name}",
+      "userOn": "Møtearbeidsflaten er slått på for {name}",
+      "adminOnly": {
+        "title": "Arbeidsflate og kontroller",
+        "body": "Bryteren per bruker, opptaksvarselet og hvor lenge lyd beholdes settes av en administrator (global «Konfigurere»). Dine egne valg står ved siden av."
+      },
+      "users": {
+        "title": "Møtearbeidsflate per bruker",
+        "hint": "På som standard · én tilgang dekker alle funksjoner",
+        "switch": "Møtearbeidsflate for {name}",
+        "none": "Ingen ansatte har salgstilgang."
+      },
+      "mailbox": {
+        "line": "postkasse {mailbox}",
+        "own": "egen",
+        "none": "ingen",
+        "reauth": "(logg inn på nytt)",
+        "notConnected": "(ikke koblet til)"
+      },
+      "notice": {
+        "title": "Varsel om opptak til deltakere",
+        "hours": "Timer før start (0 = så snart møtet er kjent)",
+        "useCustom": "Bruk egen tidsangivelse",
+        "on_24h": {
+          "n": "På, 24 timer i forveien",
+          "s": "Standard, som i kilden"
+        },
+        "custom": {
+          "n": "Egen tidsangivelse",
+          "s": "f.eks. 48 timer eller ved invitasjon",
+          "current": "{n, plural, =0 {Så snart møtet er kjent} one {# time før start} other {# timer før start}}"
+        },
+        "off": {
+          "n": "Av",
+          "s": "Ingen varsel-e-post — boten er fortsatt synlig i samtalen"
+        }
+      },
+      "preview": {
+        "title": "Det gjestene mottar",
+        "subject": "Varsel om opptak: [møte] [dato]",
+        "body": "[Arrangør] i [selskap] vil ta opp [møte] med en notatbot som blir med i samtalen som synlig deltaker merket «(opptak)». Opptaket blir en transkripsjon og en oppsummering i kunderegisteret vårt. Denne e-posten sendes {timing}. Lyden beholdes {retention}; transkripsjonen følger våre opplysninger om samtalen. Du kan si nei med lenken nedenfor — for dette møtet, eller for alle møter med adressen din — og notatboten blir ikke med. [Reservasjonslenke]",
+        "off": "Ingen varsel-e-post sendes. Gjestene får vite om opptaket fra notatboten i samtalen, som sier i navnet at den tar opp og legger ut en reservasjonslenke når den blir med.",
+        "hoursBefore": "{n, plural, one {# time} other {# timer}} før møtet",
+        "whenKnown": "så snart møtet er kjent",
+        "months": "i {n, plural, one {# måned} other {# måneder}}",
+        "keep": "til noen sletter den",
+        "emailConnected": "Varselet sendes gjennom den transaksjonelle e-poststrømmen; kan det ikke sendes, holdes boten ute.",
+        "emailNotConnected": "E-postleverandøren er ikke koblet til, så ingen varsler kan gå ut: et møte som krever varsel, holder boten ute."
+      },
+      "retention": {
+        "title": "Hvor lenge lyd beholdes",
+        "saved": "Lagringstiden er lagret",
+        "months": "Måneder",
+        "useCustom": "Bruk eget antall måneder",
+        "note": "Gjelder bare lyd. Transkripsjoner følger møtet så lenge de koblede postene finnes.",
+        "12_months": {
+          "n": "12 måneder",
+          "s": "Standard"
+        },
+        "custom": {
+          "n": "Egendefinert",
+          "s": "Fra 1 til 120 måneder",
+          "current": "{n, plural, one {# måned} other {# måneder}}"
+        },
+        "keep": {
+          "n": "Behold",
+          "s": "Til et opptak slettes manuelt"
+        }
+      },
+      "mine": {
+        "title": "Mine innstillinger",
+        "loading": "Laster …",
+        "saved": "Lagret",
+        "autoJoin": "Notatboten blir med i møtene mine",
+        "autoJoinOption": {
+          "external": {
+            "n": "Med eksterne gjester",
+            "s": "Standard: møter med bare kolleger tas aldri opp"
+          },
+          "all": {
+            "n": "Alle møter med lenke",
+            "s": "Også interne møter — kolleger må informeres på forhånd"
+          },
+          "off": {
+            "n": "Aldri av seg selv",
+            "s": "Jeg velger per møte"
+          }
+        },
+        "mailbox": "Postkassen briefene mine leser",
+        "mailboxOwn": "Min egen postkasse",
+        "mailboxConnected": "Briefer leser e-post fra {address}.",
+        "mailboxNotConnected": "{address} er ikke koblet til, så briefer har ingen e-postpunkter ennå.",
+        "mailboxNone": "Ingen postkasse: briefer har ingen e-postpunkter.",
+        "instructions": "Instruksjoner for briefen",
+        "instructionsPlaceholder": "f.eks. Hold det kort; nevn alltid åpne saker",
+        "instructionsNote": "Sendes bare til AI-steget i briefen (sitatene). AI-leverandøren er ikke koblet til ennå.",
+        "saveInstructions": "Lagre instruksjoner",
+        "status": {
+          "connecting": "kobler til",
+          "syncing": "synkroniserer",
+          "synced": "synkronisert",
+          "reauth": "logg inn på nytt",
+          "error": "feil",
+          "disconnected": "ikke koblet til"
+        }
+      }
+    }
+  }
 }

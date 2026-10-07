@@ -5,16 +5,16 @@
  *   node scripts/functions.mjs           type-check and deploy
  *
  * Deploys through the Management API with SB_MCP_PAT (or SUPABASE_ACCESS_TOKEN) from the environment.
- * `verify_jwt` is off for all three: orgpuls-events checks Orgpuls' HMAC signature, product-command checks
- * the caller itself (an aal2 admin through admin_whoami, or the service role), and secret-intake needs a
- * live one-time number.
+ * `verify_jwt` is off for all four: orgpuls-events checks Orgpuls' HMAC signature, product-command checks
+ * the caller itself (an aal2 admin through admin_whoami, or the service role), secret-intake needs a
+ * live one-time number, and session-report checks the caller's own token with Auth (and the report key).
  */
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 
 const REF = process.env.PLATFORM_PROJECT_REF ?? 'zuvqbaejoktpekfsiyyr'
 const TOKEN = process.env.SB_MCP_PAT ?? process.env.SUPABASE_ACCESS_TOKEN
-const FUNCTIONS = ['orgpuls-events', 'product-command', 'secret-intake']
+const FUNCTIONS = ['orgpuls-events', 'product-command', 'secret-intake', 'session-report']
 const SHARED = ['_shared/signing.ts', '_shared/orgpuls.ts', '_shared/secrets.ts']
 const ROOT = 'supabase/functions'
 

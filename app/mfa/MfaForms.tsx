@@ -17,7 +17,7 @@ function CodeForm({ factorId }: { factorId: string }) {
       </label>
       {state.problem ? (
         <p role="alert" className={authAlert}>
-          {t('failed')}
+          {t(state.problem)}
         </p>
       ) : null}
       <button type="submit" disabled={pending} className={authButton}>

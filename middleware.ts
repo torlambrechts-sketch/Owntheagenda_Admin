@@ -1,12 +1,19 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { boundedFetch, supabaseEnv } from '@/lib/supabase/env'
+import { DEVICE_COOKIE, SEEN_COOKIE, originOf, report, sessionOf } from '@/lib/supabase/report'
 
 /**
  * Every page but the sign-in needs a session, and a session needs its second factor: an admin tool
  * is not reachable with a password alone. Whether the account is an admin's at all is the page's
  * question (public.admin_whoami); this only refreshes the session and sends the visitor to the step
  * they are missing. It fails closed: no settings, or a failed check, is the sign-in page.
+ *
+ * At most once a minute per session it also tells the session register the session is still in use, and from
+ * where (session-report, R-SECURITY-04). A session the register has ended (revoked, idle, outside the IP rules
+ * or the sign-in hours, a deactivated account) is signed out here. A report that cannot be delivered does not
+ * stop the request: the database checks every session itself on every call (app.session_ok).
  */
+const SEEN_EVERY_S = 60
 const PUBLIC = ['/login', '/ingen-tilgang']
 
 export async function middleware(request: NextRequest) {
@@ -43,6 +50,24 @@ export async function middleware(request: NextRequest) {
     if (path !== '/mfa') {
       const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
       if (aal?.currentLevel !== 'aal2') return to('/mfa')
+      const token = (await supabase.auth.getSession()).data.session?.access_token
+      const session = token ? sessionOf(token) : null
+      const now = Math.floor(Date.now() / 1000)
+      const [seenFor, seenAt] = (request.cookies.get(SEEN_COOKIE)?.value ?? '').split('.')
+      if (token && session && !(seenFor === session && now - Number(seenAt) < SEEN_EVERY_S)) {
+        const reply = await report({ kind: 'seen', token, origin: originOf(request.headers), device: request.cookies.get(DEVICE_COOKIE)?.value ?? null })
+        if (reply && !reply.ok) {
+          await supabase.auth.signOut({ scope: 'local' })
+          const url = request.nextUrl.clone()
+          url.pathname = '/login'
+          url.search = `?ended=${encodeURIComponent(reply.reason ?? 'ended')}`
+          const out = NextResponse.redirect(url)
+          response.cookies.getAll().forEach((c) => out.cookies.set(c))
+          out.cookies.delete(SEEN_COOKIE)
+          return out
+        }
+        if (reply) response.cookies.set(SEEN_COOKIE, `${session}.${now}`, { httpOnly: true, secure: true, sameSite: 'lax', path: '/' })
+      }
     }
     return response
   } catch (error) {

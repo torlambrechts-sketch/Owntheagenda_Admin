@@ -760,3 +760,19 @@ Kept with each schema as the screen builders' contract: `deviations/security-sch
 triggers off (the seed, a restore) still passes 0043's check. Open: V-P8P-28 (who may create a webhook — the spec lets
 any staff member send what they can see to a public https URL), Realtime broadcast (MOB-01), `app_extensions`
 (INT-10), and every edge worker (API gateway, webhook sender, OAuth, push, geocoding, alert mail, SSO).
+
+## Session reports (R-SECURITY-04: `supabase/functions/session-report`, `lib/supabase/report.ts`, 0047–0048)
+
+The sign-in, the second factor and the middleware now report to the session register through the `session-report`
+edge function. The function holds the service role, so the app still holds none. The app sends the person's own
+token, and the function takes the session from that token's claim and the address from the account, never from the
+body. Signing out ends the row as «signed out» (0048 `session_sign_out`, called with the person's JWT).
+
+| ID | Where | Spec / contract | Built | Why |
+|---|---|---|---|---|
+| V-SR-01 | Origin of a report (IP, city, country) | «Trusted IP from `x-vercel-forwarded-for` / `x-real-ip`» (R-SECURITY-04) | Believed only when the call carries `SESSION_REPORT_KEY` (Vercel env), checked against the Vault secret `session_report_token_secret`. Without the key it is recorded as unknown | Without a secret only the app's server holds, anyone with their own token could call the function with an IP of their choosing. An unknown IP never passes an IP rule, and the rules' self-lockout guard (`my_ip()` is null) refuses to turn the allowlist on, so the allowlist stays unusable rather than spoofable until the key is set |
+| V-SR-02 | Failed password | Logged with the address (SF-27) | Logged only by the keyed server. Without the key a failed password is not logged (no failure streak, no `failed_logins` alert) | A failed password has no session to vouch for it. An unkeyed report could fill anyone's log and fire alerts for any address |
+| V-SR-03 | An unreported session | 0043: refused two minutes after sign-in | Still good while Auth has it (0047). The middleware enters an unknown session at the next page view (the function makes it a sign-in) | 0047's lockout was caused by a missing reporter. Tightening `session_ok` again waits until reports are seen arriving in production; a session that only ever calls the API directly is still not in the register until then |
+| V-SR-04 | `must_change_password` (password expiry) | The sign-in sends the person to change their password | Returned by the function and not acted on | There is no password-change page in the app yet; the setting's effect is open (with R-SECURITY's password requests) |
+| V-SR-05 | Login method | password_totp, Google/Microsoft + TOTP, recovery code | Always `password_totp` | The only way to sign in that is built (SSO and recovery codes have no sign-in path yet) |
+| V-SR-06 | Report frequency | «At most once a minute per session» | An `ota_seen` cookie (session id and time, httpOnly) skips a report within 60 s | The cookie is the person's own; dropping it only makes more reports. A report that cannot be delivered does not stop the request, because the database checks the session on every call |

@@ -761,4 +761,25 @@ set local session_replication_role = origin;
 select pg_temp.check((select source is not null and principal_kind is not null from app.audit where action = 'test.replica_insert' order by id desc limit 1),
                      'a direct audit insert with triggers off is stamped by the column defaults');
 
+-- ---------------------------------------------------------------------------
+-- 0048: signing out ends one's own session in the register as «signed out»; nobody else's, and never twice
+create temp table t_out as select (pg_temp.signin('hanna@orgpuls.no', '84.208.12.41', 'hanna-sign-out') ->> 'session_id')::uuid sid;
+select pg_temp.as_s('tor@orgpuls.no', (select sid from t_out));
+select pg_temp.check((public.session_sign_out() ->> 'ended')::boolean = false
+                     and exists (select 1 from app.staff_sessions where session_id = (select sid from t_out) and ended_at is null),
+                     'a JWT naming somebody else''s session does not end it (0048)');
+select pg_temp.as_s('hanna@orgpuls.no', (select sid from t_out));
+create temp table t_out_r as select public.session_sign_out() r;
+select pg_temp.check((select (r ->> 'ended')::boolean from t_out_r)
+                     and (select end_reason = 'signed_out' and ended_by = (select hanna from t_staff) from app.staff_sessions where session_id = (select sid from t_out))
+                     and not exists (select 1 from auth.sessions where id = (select sid from t_out)) and not app.session_ok((select sid from t_out)),
+                     'session_sign_out ends one''s own session as signed_out and Auth forgets it (0048)');
+select pg_temp.check((public.session_sign_out() ->> 'ended')::boolean = false, 'signing out twice ends nothing more');
+select pg_temp.as_s('hanna@orgpuls.no', null);
+select pg_temp.check((public.session_sign_out() ->> 'ended')::boolean = false, 'a JWT without a session claim ends nothing');
+select pg_temp.as_nobody();
+select pg_temp.check((public.session_sign_out() ->> 'ended')::boolean = false, 'nobody ends nothing');
+select pg_temp.check(not has_function_privilege('anon', 'public.session_sign_out()', 'execute')
+                     and has_function_privilege('authenticated', 'public.session_sign_out()', 'execute'), 'session_sign_out is for signed-in callers');
+
 rollback;

@@ -1,3 +1,145 @@
 {
-  "simplePlatform": {}
+  "simplePlatform": {
+    "tabs": {
+      "label": "Platform",
+      "apps": "Applications",
+      "plans": "Plans and prices",
+      "team": "Team and roles"
+    },
+    "noAccess": {
+      "title": "You cannot open this tab",
+      "body": "Applications and plans need Global › See records. Ask an admin for the right."
+    },
+    "apps": {
+      "connect": "＋ Connect an application",
+      "connectOwner": "Only the owner can connect an application.",
+      "accounts": "accounts",
+      "response": "response",
+      "errors": "errors",
+      "test": "Test connection",
+      "testOk": "{name} responded in {ms} ms",
+      "testFailed": "{name} did not answer ({code})",
+      "maintenance": "Maintenance mode",
+      "status": {
+        "operational": "Operational",
+        "degraded": "Degraded",
+        "unreachable": "Unreachable",
+        "no_data": "No data yet",
+        "disabled": "Disabled",
+        "not_installed": "Not connected"
+      },
+      "notes": {
+        "latency": "Response and errors show «—» until Sentral logs its calls to each application.",
+        "maintenance": "Maintenance mode needs an application command that does not exist yet.",
+        "test": "Test connection reaches Orgpuls only; the other applications have no command path from Sentral yet."
+      }
+    },
+    "flags": {
+      "title": "Feature flags · {name}",
+      "everyAccount": "On for every account",
+      "noCommand": "{name} has no feature flag command yet, so its flags cannot be read from here.",
+      "noSetCommand": "{name} has no command to switch them.",
+      "loading": "Reading the modules from {name} …",
+      "unreachable": "{name} did not answer ({code}). Its feature flags are not shown.",
+      "retry": "Try again",
+      "none": "{name} has no modules.",
+      "readOnly": "Switching a flag needs the right to configure.",
+      "status": {
+        "draft": "Draft",
+        "published": "Published",
+        "retired": "Retired"
+      },
+      "items": "{count, plural, one {# item} other {# items}}",
+      "pilots": "{count, plural, one {pilot in # account} other {pilot in # accounts}}",
+      "dialog": {
+        "publishTitle": "Publish {name}?",
+        "retireTitle": "Retire {name}?",
+        "publishBody": "Every account can use it once it is published. It can be retired later, but not taken back to draft.",
+        "retireBody": "Accounts can no longer choose it. A retired version cannot be published again.",
+        "reason": "Reason (kept in Orgpuls' audit, at least five characters)",
+        "cancel": "Cancel",
+        "publish": "Publish",
+        "retire": "Retire",
+        "published": "{name} is published",
+        "retired": "{name} is retired",
+        "failed": "Orgpuls refused or did not answer ({code})."
+      }
+    },
+    "key": {
+      "title": "API key",
+      "notConnected": "Not connected",
+      "presence": "token secret {token} · webhook secret {webhook}",
+      "rotate": "Rotate",
+      "body": "Applications use this key to send accounts, usage and billing events to Sentral.",
+      "rotation": "The secrets stay in Sentral's vault and are never shown. To replace them, the owner opens a one-time intake number (15 minutes) and the application posts its new secrets with it."
+    },
+    "notice": {
+      "title": "Status message",
+      "placeholder": "Shown at the top of the app for all users",
+      "publish": "Publish to {name}",
+      "clear": "Clear",
+      "empty": "Write a message first",
+      "live": "Status message live in {name}",
+      "saved": "Saved in Sentral — not delivered to {name} ({code})",
+      "clearedLive": "Status message removed from {name}",
+      "clearedSaved": "Cleared in Sentral — not delivered to {name} ({code})",
+      "since": "Published {ago}",
+      "delivered": "delivered to {name} {ago}",
+      "notDelivered": "not delivered to {name} ({code})",
+      "notDeliveredYet": "not delivered to {name} yet",
+      "problem": "Linked to problem T-{number}: it clears when the problem is resolved.",
+      "noCommand": "{name} has no status message command yet.",
+      "readOnly": "Publishing needs the right to configure.",
+      "readFailed": "The current status message could not be read."
+    },
+    "plans": {
+      "none": "There are no plans for {name} in the plan catalogue.",
+      "band": "{band} employees",
+      "accounts": "{count, plural, one {# account} other {# accounts}}",
+      "annual": "{price} kr / year",
+      "noAnnual": "No annual price",
+      "perMonth": "kr / month",
+      "trial": "Trial length",
+      "days": "days",
+      "discount": "Annual discount",
+      "discountVaries": "Varies by plan",
+      "discountNone": "None",
+      "monthsFree": "{count, plural, one {# month free} other {# months free}}",
+      "percentOff": "{percent} %",
+      "save": "Save prices",
+      "readOnly": "Prices, trial length and the annual discount are set in Orgpuls, which runs checkout. Sentral reads the plan catalogue (the trial length is not reported to it) and has no command to change them yet.",
+      "since": "Current prices valid from {date}."
+    },
+    "team": {
+      "title": "Team",
+      "invite": "Invite",
+      "inviteLabel": "Invite by email address",
+      "needEmail": "Enter an email address",
+      "already": "{email} is already on the team",
+      "invited": "Invited {email} · no email is sent: they sign in with this address once an owner has created their login",
+      "readOnly": "You can see the team. Changing roles, inviting and removing need the security right.",
+      "col": {
+        "person": "Person",
+        "role": "Role",
+        "last": "Last active"
+      },
+      "roles": {
+        "admin": "Admin",
+        "sales": "Sales",
+        "support": "Support",
+        "marketing": "Marketing",
+        "analyst": "Read-only"
+      },
+      "owner": "Admin (owner)",
+      "roleOf": "Role of {name}",
+      "nowRole": "{name} is now {role}",
+      "removed": "Removed",
+      "noLogin": "No login yet",
+      "remove": "Remove",
+      "restore": "Restore",
+      "selfNote": "You cannot change your own role or remove yourself.",
+      "ownerNote": "The owner stays Admin.",
+      "legend": "Admin: everything · Sales: CRM · Support: Customers and tickets · Marketing: Growth · Read-only: view only"
+    }
+  }
 }

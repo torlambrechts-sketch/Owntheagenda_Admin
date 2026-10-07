@@ -208,7 +208,8 @@ function Detail({ d, nf }: { d: AppDetail; nf: NumberFormat }) {
   )
 }
 
-function ConnectDialog({ onClose }: { onClose: () => void }) {
+/** Exported for Sentral Simple › Platform's «＋ Connect an application» (the same owner-only, fresh-second-factor flow). */
+export function ConnectDialog({ onClose }: { onClose: () => void }) {
   const t = useTranslations('platform.connect')
   const { call, pending, mfa, alert, blocked } = useSensitive()
   const [v, setV] = useState({ name: '', api_url: 'https://', key: '', public_key: '', region: '', description: '', stage: 'ga' as 'ga' | 'beta' })

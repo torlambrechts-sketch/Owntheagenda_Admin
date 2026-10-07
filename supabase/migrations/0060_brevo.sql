@@ -27,6 +27,9 @@ create table app.mail_settings (
   functions_url  text not null default 'https://zuvqbaejoktpekfsiyyr.supabase.co' check (functions_url ~ '^https?://[A-Za-z0-9._-]+(:\d+)?$'),
   -- the public address unsubscribe and invitation links open (the app's own host, set by the owner when connecting)
   public_base    text check (public_base is null or public_base ~ '^https://[a-z0-9.-]+(:\d+)?$'),
+  -- the domain whose MX points to Brevo's inbound parsing: customers answer support@<it>, and the answer lands on the ticket
+  inbound_domain text check (inbound_domain is null or inbound_domain ~ '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$'),
+  inbound_ok     boolean not null default false,
   account        jsonb not null default '{}'::jsonb check (jsonb_typeof(account) = 'object'),
   webhook_ok     boolean not null default false,
   last_check_at  timestamptz,
@@ -155,6 +158,8 @@ begin
     'connected_at', c.connected_at,
     'key_stored', exists (select 1 from vault.secrets where name = 'brevo_api_key'),
     'public_base', s.public_base,
+    'inbound_domain', s.inbound_domain,
+    'inbound_ok', s.inbound_ok,
     'account', case when app.can('global', 'configure') then s.account else '{}'::jsonb end,
     'webhook_ok', s.webhook_ok,
     'last_check_at', s.last_check_at,
@@ -191,16 +196,22 @@ begin
   return jsonb_build_object('intake_code', v, 'expires_in', 900);
 end $fn$;
 
--- the owner: the public address links in mail open (unsubscribe, invitations)
-create function public.email_provider_settings(p_public_base text) returns jsonb
+-- the owner: the public address links in mail open (unsubscribe, invitations), and the reply domain (optional)
+create function public.email_provider_settings(p_public_base text, p_inbound_domain text default null) returns jsonb
   language plpgsql volatile security definer set search_path = ''
 as $fn$
 declare v_me uuid := app.require_owner(); v text := lower(rtrim(btrim(coalesce(p_public_base, '')), '/'));
+        v_in text := nullif(lower(btrim(coalesce(p_inbound_domain, ''))), '');
 begin
   if v !~ '^https://[a-z0-9.-]+(:\d+)?$' then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'public_base'; end if;
-  update app.mail_settings set public_base = v, updated_by = v_me, updated_at = now();
-  perform app.log('email_provider.settings', 'integration', 'email', jsonb_build_object('fields', jsonb_build_array('public_base')));
-  return jsonb_build_object('public_base', v);
+  if v_in is not null and v_in !~ '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$' then
+    raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'inbound_domain';
+  end if;
+  update app.mail_settings set public_base = v,
+    inbound_ok = case when inbound_domain is distinct from v_in then false else inbound_ok end, inbound_domain = v_in,
+    updated_by = v_me, updated_at = now();
+  perform app.log('email_provider.settings', 'integration', 'email', jsonb_build_object('fields', jsonb_build_array('public_base', 'inbound_domain')));
+  return jsonb_build_object('public_base', v, 'inbound_domain', v_in);
 end $fn$;
 
 -- the owner: disconnect. The key stays in Vault until replaced; nothing sends while disconnected.
@@ -235,6 +246,7 @@ begin
   update app.mail_settings set
     account = case when p_ok and jsonb_typeof(p_info -> 'account') = 'object' then p_info -> 'account' else account end,
     webhook_ok = coalesce((p_info ->> 'webhook_ok')::boolean, webhook_ok),
+    inbound_ok = coalesce((p_info ->> 'inbound_ok')::boolean, inbound_ok),
     last_check_at = now(), last_error = case when p_ok then null else coalesce(v_code, 'failed') end, updated_at = now();
   if p_ok and v_was is distinct from 'connected' then
     perform app.log('email_provider.connected', 'integration', 'email', '{}'::jsonb);
@@ -248,14 +260,15 @@ begin
   return jsonb_build_object('status', (select status from app.integration_connections where provider = 'email'));
 end $fn$;
 
--- the owner asks for a check now (after pasting the key): mail-run is called with the owner's own token by the app, this
--- only says whether a key is there to check
+-- the owner asks mail-run for a check or a test with their own token: this is how mail-run knows the caller is the owner,
+-- and whom a test goes to
 create function public.email_provider_check_ready() returns jsonb
   language plpgsql stable security definer set search_path = ''
 as $fn$
+declare v_me uuid := app.require_owner();
 begin
-  perform app.require_owner();
-  return jsonb_build_object('key_stored', exists (select 1 from vault.secrets where name = 'brevo_api_key'));
+  return jsonb_build_object('key_stored', exists (select 1 from vault.secrets where name = 'brevo_api_key'), 'me', v_me,
+                            'email', (select email from app.admins where id = v_me), 'locale', (select locale from app.admins where id = v_me));
 end $fn$;
 
 -- ===========================================================================
@@ -389,7 +402,9 @@ begin
       'id', m.id, 'ref', 'T-' || t.number, 'subject', t.subject, 'body', m.body,
       'to', v_to, 'to_name', (select p.name from app.people p where p.id = t.person_id),
       'agent', (select coalesce(a.name, a.email) from app.admins a where a.id = m.author_staff_id),
-      'from', d.from_local || '@' || d.domain, 'from_name', d.from_name, 'reply_to', coalesce(d.reply_to, d.from_local || '@' || d.domain),
+      'from', d.from_local || '@' || d.domain, 'from_name', d.from_name,
+      'reply_to', coalesce((select 'support@' || s.inbound_domain from app.mail_settings s where s.inbound_ok and s.inbound_domain is not null),
+                           d.reply_to, d.from_local || '@' || d.domain),
       'locale', coalesce((select a.locale from app.admins a where a.id = m.author_staff_id), 'no')));
   end loop;
   return out;
@@ -672,6 +687,11 @@ as $fn$
   select coalesce(jsonb_agg(jsonb_build_object('id', d.id, 'domain', d.domain)), '[]'::jsonb) from app.sender_domains d where d.deleted_at is null
 $fn$;
 
+-- what mail-run needs to register Brevo's webhooks: the reply domain, if any
+create function public.worker_mail_config() returns jsonb
+  language sql stable security definer set search_path = ''
+as $fn$ select jsonb_build_object('inbound_domain', s.inbound_domain, 'public_base', s.public_base, 'functions_url', s.functions_url) from app.mail_settings s $fn$;
+
 -- the unsubscribe page shows who the mail came from before the person confirms (it changes nothing)
 create function public.worker_unsubscribe_peek(p_token text) returns jsonb
   language plpgsql stable security definer set search_path = ''
@@ -721,11 +741,11 @@ revoke all on function app.mail_tick() from public, anon, authenticated;
 
 revoke all on function public.email_provider_get() from public, anon;
 revoke all on function public.email_provider_intake() from public, anon;
-revoke all on function public.email_provider_settings(text) from public, anon;
+revoke all on function public.email_provider_settings(text, text) from public, anon;
 revoke all on function public.email_provider_disconnect() from public, anon;
 revoke all on function public.email_provider_check_ready() from public, anon;
 revoke all on function public.staff_invite_send(uuid) from public, anon;
-grant execute on function public.email_provider_get(), public.email_provider_intake(), public.email_provider_settings(text),
+grant execute on function public.email_provider_get(), public.email_provider_intake(), public.email_provider_settings(text, text),
   public.email_provider_disconnect(), public.email_provider_check_ready(), public.staff_invite_send(uuid) to authenticated;
 revoke all on function public.ticket_message(uuid, text, text, text, uuid, uuid[]) from public, anon;
 grant execute on function public.ticket_message(uuid, text, text, text, uuid, uuid[]) to authenticated;
@@ -744,7 +764,7 @@ begin
     'public.worker_staff_mail(uuid, uuid)', 'public.worker_ticket_mail_claim(int)', 'public.worker_ticket_mail_done(uuid, text, text, boolean)',
     'public.worker_ticket_mail_event(text, text)', 'public.worker_ticket_inbound(text, text, text, text)', 'public.worker_invite_claim(int)',
     'public.worker_invite_done(uuid, text)', 'public.worker_alert_mail_claim(int)', 'public.worker_alert_mail_done(bigint, uuid, boolean)',
-    'public.worker_mail_sender()', 'public.worker_sender_domains()', 'public.worker_unsubscribe_peek(text)'] loop
+    'public.worker_mail_sender()', 'public.worker_sender_domains()', 'public.worker_mail_config()', 'public.worker_unsubscribe_peek(text)'] loop
     execute format('revoke all on function %s from public, anon, authenticated', f);
     execute format('grant execute on function %s to service_role', f);
   end loop;

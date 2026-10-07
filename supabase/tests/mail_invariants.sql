@@ -87,6 +87,11 @@ select pg_temp.expect_detail($$select public.email_provider_settings('https://x.
 select pg_temp.as_staff('tor@orgpuls.no');
 select pg_temp.expect_detail($$select public.email_provider_settings('http://x.example')$$, 'invalid', 'public_base', 'the public address is https');
 select pg_temp.check((public.email_provider_settings('https://Admin.Example/') ->> 'public_base') = 'https://admin.example', 'the address is kept tidy');
+select pg_temp.expect_detail($$select public.email_provider_settings('https://admin.example', 'not a domain')$$, 'invalid', 'inbound_domain', 'a reply domain is a domain');
+select pg_temp.check((public.email_provider_settings('https://admin.example', 'Svar.Mailtest.Example') ->> 'inbound_domain') = 'svar.mailtest.example', 'the reply domain is kept');
+select pg_temp.as_service();
+select public.worker_email_provider_result(true, '{"inbound_ok": true}');
+select pg_temp.as_staff('tor@orgpuls.no');
 
 -- ---------------------------------------------------------------------------
 -- ticket replies
@@ -99,7 +104,7 @@ select pg_temp.check(((select r from t_note) ->> 'delivery') is null, 'a note is
 select pg_temp.as_service();
 create temp table t_claim as select public.worker_ticket_mail_claim(50) c;
 select pg_temp.check(exists (select 1 from jsonb_array_elements((select c from t_claim)) x where (x ->> 'id')::uuid = ((select r from t_reply) ->> 'id')::uuid
-                              and x ->> 'from' = 'support@mailtest.example' and x ->> 'ref' like 'T-%' and x ->> 'to' is not null),
+                              and x ->> 'from' = 'support@mailtest.example' and x ->> 'reply_to' = 'support@svar.mailtest.example' and x ->> 'ref' like 'T-%' and x ->> 'to' is not null),
                      'the worker claims it with the sender, the ticket''s reference and the requester''s address');
 select pg_temp.check(not exists (select 1 from jsonb_array_elements(public.worker_ticket_mail_claim(50)) x where (x ->> 'id')::uuid = ((select r from t_reply) ->> 'id')::uuid),
                      'a claimed reply is leased: a second run does not take it');

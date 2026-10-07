@@ -1,0 +1,59 @@
+{
+  "mail": {
+    "common": {
+      "footer": "Sent by {from_name} through Sentral.",
+      "open": "Open Sentral"
+    },
+    "ticketReply": {
+      "subject": "Re: [{ref}] {subject}",
+      "signature": "— {agent}, {from_name}",
+      "answer": "Reply to this email to answer. Your answer is added to {ref}."
+    },
+    "invite": {
+      "subject": "You are invited to Sentral",
+      "lead": "{by} has invited you to Sentral.",
+      "leadNoName": "You have been invited to Sentral.",
+      "body": "Set your password, then turn on two-factor sign-in with an authenticator app. You need both to sign in.",
+      "button": "Accept the invitation",
+      "expiry": "The link works once and stops working after 24 hours. If it has expired, ask for a new invitation."
+    },
+    "mfa": {
+      "subject": "Turn on two-factor sign-in in Sentral",
+      "lead": "{by} asked you to turn on two-factor sign-in.",
+      "leadNoName": "You are asked to turn on two-factor sign-in.",
+      "body": "Sign in to Sentral and follow the steps to add an authenticator app.",
+      "button": "Sign in"
+    },
+    "alert": {
+      "subject": "Security alert in Sentral: {title}",
+      "lead": "{title}",
+      "about": "It concerns {staff}.",
+      "when": "Time: {at}",
+      "body": "Open Security in Sentral to see the details and decide what to do.",
+      "button": "Open Security",
+      "kinds": {
+        "new_device": "A sign-in from a new device",
+        "new_location": "A sign-in from a new place",
+        "failed_logins": "Several failed sign-ins",
+        "account_locked": "An account was locked",
+        "user_invited": "A staff member was invited",
+        "password_reset": "A password was reset",
+        "large_export": "A large export was made",
+        "large_delete": "Many records were deleted",
+        "session_revoked": "A session was ended",
+        "mfa_reset": "Two-factor sign-in was reset",
+        "ip_blocked": "A sign-in from a blocked address",
+        "time_blocked": "A sign-in outside the allowed hours",
+        "api_token_old": "An API token is old",
+        "webhook_banned": "A webhook was switched off",
+        "incident_logged": "A security incident was logged",
+        "admin_login": "An account with full rights signed in"
+      }
+    },
+    "test": {
+      "subject": "Test from Sentral",
+      "body": "Email from Sentral works. This message was sent through Brevo from {from}.",
+      "note": "You do not need to do anything with it."
+    }
+  }
+}

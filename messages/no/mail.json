@@ -1,0 +1,59 @@
+{
+  "mail": {
+    "common": {
+      "footer": "Sendt av {from_name} gjennom Sentral.",
+      "open": "Åpne Sentral"
+    },
+    "ticketReply": {
+      "subject": "Sv: [{ref}] {subject}",
+      "signature": "— {agent}, {from_name}",
+      "answer": "Svar på denne e-posten for å svare. Svaret ditt legges til {ref}."
+    },
+    "invite": {
+      "subject": "Du er invitert til Sentral",
+      "lead": "{by} har invitert deg til Sentral.",
+      "leadNoName": "Du er invitert til Sentral.",
+      "body": "Velg et passord, og slå deretter på totrinnsinnlogging med en autentiseringsapp. Du trenger begge for å logge inn.",
+      "button": "Godta invitasjonen",
+      "expiry": "Lenken virker én gang og slutter å virke etter 24 timer. Har den gått ut, be om en ny invitasjon."
+    },
+    "mfa": {
+      "subject": "Slå på totrinnsinnlogging i Sentral",
+      "lead": "{by} ber deg slå på totrinnsinnlogging.",
+      "leadNoName": "Du blir bedt om å slå på totrinnsinnlogging.",
+      "body": "Logg inn i Sentral og følg stegene for å legge til en autentiseringsapp.",
+      "button": "Logg inn"
+    },
+    "alert": {
+      "subject": "Sikkerhetsvarsel i Sentral: {title}",
+      "lead": "{title}",
+      "about": "Det gjelder {staff}.",
+      "when": "Tidspunkt: {at}",
+      "body": "Åpne Sikkerhet i Sentral for å se detaljene og bestemme hva som skal gjøres.",
+      "button": "Åpne Sikkerhet",
+      "kinds": {
+        "new_device": "En innlogging fra en ny enhet",
+        "new_location": "En innlogging fra et nytt sted",
+        "failed_logins": "Flere mislykkede innlogginger",
+        "account_locked": "En konto ble låst",
+        "user_invited": "En ansatt ble invitert",
+        "password_reset": "Et passord ble tilbakestilt",
+        "large_export": "En stor eksport ble gjort",
+        "large_delete": "Mange poster ble slettet",
+        "session_revoked": "En økt ble avsluttet",
+        "mfa_reset": "Totrinnsinnlogging ble tilbakestilt",
+        "ip_blocked": "En innlogging fra en blokkert adresse",
+        "time_blocked": "En innlogging utenfor tillatte tider",
+        "api_token_old": "En API-nøkkel er gammel",
+        "webhook_banned": "En webhook ble slått av",
+        "incident_logged": "En sikkerhetshendelse ble registrert",
+        "admin_login": "En konto med fulle rettigheter logget inn"
+      }
+    },
+    "test": {
+      "subject": "Test fra Sentral",
+      "body": "E-post fra Sentral virker. Denne meldingen ble sendt gjennom Brevo fra {from}.",
+      "note": "Du trenger ikke gjøre noe med den."
+    }
+  }
+}

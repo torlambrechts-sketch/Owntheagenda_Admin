@@ -2,6 +2,9 @@
 \ir _helpers.psql
 begin;
 
+-- the roles this suite was written for (0057 folded Projects into Sales): emma keeps the Projects set, which still exists
+update app.admins set permission_set_id = (select id from app.permission_sets where key = 'project') where email = 'emma@orgpuls.no';
+
 -- expect_detail(sql, message, detail): the statement must raise with this message and this detail
 create or replace function pg_temp.expect_detail(p_sql text, p_message text, p_detail text, p_label text) returns void language plpgsql as $$
 declare v_msg text; v_det text;

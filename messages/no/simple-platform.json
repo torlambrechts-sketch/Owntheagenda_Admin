@@ -1,3 +1,145 @@
 {
-  "simplePlatform": {}
+  "simplePlatform": {
+    "tabs": {
+      "label": "Plattform",
+      "apps": "Applikasjoner",
+      "plans": "Planer og priser",
+      "team": "Team og roller"
+    },
+    "noAccess": {
+      "title": "Du kan ikke åpne denne fanen",
+      "body": "Applikasjoner og planer krever Global › Se poster. Be en administrator om rettigheten."
+    },
+    "apps": {
+      "connect": "＋ Koble til en applikasjon",
+      "connectOwner": "Bare eieren kan koble til en applikasjon.",
+      "accounts": "kontoer",
+      "response": "responstid",
+      "errors": "feil",
+      "test": "Test tilkoblingen",
+      "testOk": "{name} svarte på {ms} ms",
+      "testFailed": "{name} svarte ikke ({code})",
+      "maintenance": "Vedlikeholdsmodus",
+      "status": {
+        "operational": "I drift",
+        "degraded": "Redusert",
+        "unreachable": "Svarer ikke",
+        "no_data": "Ingen data ennå",
+        "disabled": "Slått av",
+        "not_installed": "Ikke tilkoblet"
+      },
+      "notes": {
+        "latency": "Responstid og feil viser «—» til Sentral logger kallene sine til hver applikasjon.",
+        "maintenance": "Vedlikeholdsmodus krever en applikasjonskommando som ikke finnes ennå.",
+        "test": "Test tilkoblingen når bare Orgpuls; de andre applikasjonene har ingen kommandovei fra Sentral ennå."
+      }
+    },
+    "flags": {
+      "title": "Funksjonsflagg · {name}",
+      "everyAccount": "På for alle kontoer",
+      "noCommand": "{name} har ingen kommando for funksjonsflagg ennå, så flaggene kan ikke leses herfra.",
+      "noSetCommand": "{name} har ingen kommando for å slå dem av og på.",
+      "loading": "Leser modulene fra {name} …",
+      "unreachable": "{name} svarte ikke ({code}). Funksjonsflaggene vises ikke.",
+      "retry": "Prøv igjen",
+      "none": "{name} har ingen moduler.",
+      "readOnly": "Å slå et flagg av eller på krever rettigheten til å konfigurere.",
+      "status": {
+        "draft": "Utkast",
+        "published": "Publisert",
+        "retired": "Trukket tilbake"
+      },
+      "items": "{count, plural, one {# spørsmål} other {# spørsmål}}",
+      "pilots": "{count, plural, one {pilot hos # konto} other {pilot hos # kontoer}}",
+      "dialog": {
+        "publishTitle": "Publisere {name}?",
+        "retireTitle": "Trekke tilbake {name}?",
+        "publishBody": "Alle kontoer kan bruke den når den er publisert. Den kan trekkes tilbake senere, men ikke gjøres til utkast igjen.",
+        "retireBody": "Kontoene kan ikke lenger velge den. En versjon som er trukket tilbake, kan ikke publiseres igjen.",
+        "reason": "Begrunnelse (lagres i Orgpuls' revisjonslogg, minst fem tegn)",
+        "cancel": "Avbryt",
+        "publish": "Publiser",
+        "retire": "Trekk tilbake",
+        "published": "{name} er publisert",
+        "retired": "{name} er trukket tilbake",
+        "failed": "Orgpuls avviste eller svarte ikke ({code})."
+      }
+    },
+    "key": {
+      "title": "API-nøkkel",
+      "notConnected": "Ikke tilkoblet",
+      "presence": "token-hemmelighet {token} · webhook-hemmelighet {webhook}",
+      "rotate": "Bytt",
+      "body": "Applikasjonene bruker denne nøkkelen til å sende kontoer, bruk og faktureringshendelser til Sentral.",
+      "rotation": "Hemmelighetene ligger i Sentrals hvelv og vises aldri. For å bytte dem åpner eieren et engangsnummer for mottak (15 minutter), og applikasjonen sender de nye hemmelighetene med det."
+    },
+    "notice": {
+      "title": "Statusmelding",
+      "placeholder": "Vises øverst i appen for alle brukere",
+      "publish": "Publiser i {name}",
+      "clear": "Fjern",
+      "empty": "Skriv en melding først",
+      "live": "Statusmeldingen er ute i {name}",
+      "saved": "Lagret i Sentral – ikke levert til {name} ({code})",
+      "clearedLive": "Statusmeldingen er fjernet fra {name}",
+      "clearedSaved": "Fjernet i Sentral – ikke levert til {name} ({code})",
+      "since": "Publisert {ago}",
+      "delivered": "levert til {name} {ago}",
+      "notDelivered": "ikke levert til {name} ({code})",
+      "notDeliveredYet": "ikke levert til {name} ennå",
+      "problem": "Knyttet til problem T-{number}: den fjernes når problemet er løst.",
+      "noCommand": "{name} har ingen kommando for statusmeldinger ennå.",
+      "readOnly": "Å publisere krever rettigheten til å konfigurere.",
+      "readFailed": "Den gjeldende statusmeldingen kunne ikke leses."
+    },
+    "plans": {
+      "none": "Det finnes ingen planer for {name} i plankatalogen.",
+      "band": "{band} ansatte",
+      "accounts": "{count, plural, one {# konto} other {# kontoer}}",
+      "annual": "{price} kr / år",
+      "noAnnual": "Ingen årspris",
+      "perMonth": "kr / måned",
+      "trial": "Prøveperiode",
+      "days": "dager",
+      "discount": "Årsrabatt",
+      "discountVaries": "Varierer med planen",
+      "discountNone": "Ingen",
+      "monthsFree": "{count, plural, one {# måned gratis} other {# måneder gratis}}",
+      "percentOff": "{percent} %",
+      "save": "Lagre priser",
+      "readOnly": "Priser, prøveperiode og årsrabatt bestemmes i Orgpuls, som står for betalingen. Sentral leser plankatalogen (prøveperioden rapporteres ikke hit) og har ingen kommando for å endre dem ennå.",
+      "since": "Gjeldende priser fra {date}."
+    },
+    "team": {
+      "title": "Team",
+      "invite": "Inviter",
+      "inviteLabel": "Inviter med e-postadresse",
+      "needEmail": "Skriv inn en e-postadresse",
+      "already": "{email} er allerede med i teamet",
+      "invited": "{email} er invitert · ingen e-post sendes: de logger inn med denne adressen når en eier har opprettet innloggingen",
+      "readOnly": "Du kan se teamet. Å endre roller, invitere og fjerne krever sikkerhetsrettigheten.",
+      "col": {
+        "person": "Person",
+        "role": "Rolle",
+        "last": "Sist aktiv"
+      },
+      "roles": {
+        "admin": "Admin",
+        "sales": "Salg",
+        "support": "Kundestøtte",
+        "marketing": "Markedsføring",
+        "analyst": "Kun lesetilgang"
+      },
+      "owner": "Admin (eier)",
+      "roleOf": "Rollen til {name}",
+      "nowRole": "{name} er nå {role}",
+      "removed": "Fjernet",
+      "noLogin": "Ingen innlogging ennå",
+      "remove": "Fjern",
+      "restore": "Gjenopprett",
+      "selfNote": "Du kan ikke endre din egen rolle eller fjerne deg selv.",
+      "ownerNote": "Eieren forblir Admin.",
+      "legend": "Admin: alt · Salg: CRM · Kundestøtte: kunder og saker · Markedsføring: vekst · Kun lesetilgang: bare se"
+    }
+  }
 }

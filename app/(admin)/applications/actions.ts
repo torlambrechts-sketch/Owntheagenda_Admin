@@ -269,8 +269,11 @@ export async function moduleSet(input: unknown): Promise<Res> {
   return r.ok ? { ok: true } : fail(r)
 }
 
-/** Set (text) or clear (null) a product's banner; maintenance is refused not_available until the product has the command. */
-export async function noticeSet(input: unknown): Promise<Res> {
+/**
+ * Set (text) or clear (null) a product's banner; maintenance is refused not_available until the product has the command. The
+ * new notice's id is returned so a caller that delivers it (Sentral Simple › Platform) can record the delivery against it.
+ */
+export async function noticeSet(input: unknown): Promise<Res<{ id: string }>> {
   const p = z.object({
     product: productKey,
     text: z.string().trim().min(1).max(500).nullable(),
@@ -281,6 +284,6 @@ export async function noticeSet(input: unknown): Promise<Res> {
   if (!p.success) return { ok: false, code: 'invalid', detail: 'text' }
   const r = await rpc('status_notice_set', {
     p_product: p.data.product, p_text: p.data.text, p_problem: p.data.problem, p_maintenance: p.data.maintenance, p_confirm: p.data.confirm,
-  }, any)
-  return r.ok ? { ok: true } : fail(r)
+  }, z.object({ id: uuid }))
+  return r.ok ? { ok: true, id: r.data.id } : fail(r)
 }

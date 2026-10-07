@@ -75,7 +75,7 @@ insert into auth.mfa_factors (id, user_id, friendly_name, factor_type, status, s
 values ('b280db6b-e72d-408f-aad6-e928c601f9b3', 'e4c41238-3938-4868-a156-5ac7150ebd8e', 'Authenticator', 'totp', 'verified', 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP', now(), now());
 insert into app.admins (email, id, role, name, initials, title, permission_set_id, group_id, locale, time_zone)
 values ('sara@orgpuls.no', 'f91ec3fc-2bb3-4015-ad40-8933763d7be0', 'admin', 'Sara Haugen', 'SH', 'Finance',
-  (select id from app.permission_sets where key = 'finance'), '178831e7-9b14-4e31-a640-99d26a42ad42', 'en', 'Europe/Oslo');
+  (select id from app.permission_sets where key = 'analyst'), '178831e7-9b14-4e31-a640-99d26a42ad42', 'en', 'Europe/Oslo');
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
   created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change, email_change_token_current, reauthentication_token, phone_change, phone_change_token)
 values ('00000000-0000-0000-0000-000000000000', '332959f7-5362-438f-af3f-70b336c407d5', 'authenticated', 'authenticated', 'jonas@orgpuls.no', extensions.crypt('sentral-local-dev', extensions.gen_salt('bf')), now(),
@@ -97,7 +97,7 @@ insert into auth.mfa_factors (id, user_id, friendly_name, factor_type, status, s
 values ('3c9185dd-6e87-4395-a76e-6384c62e5826', '05484972-67ae-4876-a421-2de2f226db0b', 'Authenticator', 'totp', 'verified', 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP', now(), now());
 insert into app.admins (email, id, role, name, initials, title, permission_set_id, group_id, locale, time_zone)
 values ('emma@orgpuls.no', '32993233-d440-48e0-ac00-c6c903c0fb80', 'admin', 'Emma Lie', 'EL', 'Project',
-  (select id from app.permission_sets where key = 'project'), '18b1cf97-7b0f-4980-a4de-e93ba3882fa3', 'en', 'Europe/Oslo');
+  (select id from app.permission_sets where key = 'sales'), '18b1cf97-7b0f-4980-a4de-e93ba3882fa3', 'en', 'Europe/Oslo');
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
   created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change, email_change_token_current, reauthentication_token, phone_change, phone_change_token)
 values ('00000000-0000-0000-0000-000000000000', 'f582954b-8fc4-45d9-a101-3ec6f65f691a', 'authenticated', 'authenticated', 'ola@orgpuls.no', extensions.crypt('sentral-local-dev', extensions.gen_salt('bf')), now(),

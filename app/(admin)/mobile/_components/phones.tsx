@@ -48,7 +48,33 @@ export function FocusPhone({ frame, focus, nf, located }: { frame: Frame; focus:
 
 // ---------------------------------------------------------------------------
 // Nearby (MOB-03): organisations around a position the user sent (located or typed), from record_geo. The map has no tiles
-// (no provider) and nearby() returns distances, not positions, so no pin is drawn where its place is not known
+// (no provider). Each row carries its organisation's place (R-MOBILE-05), so the pins sit where the organisations are,
+// relative to the user's dot; a row without a place gets no pin
+type Pin = { key: string; x: number; y: number; n: number; names: string[]; first: boolean }
+
+/**
+ * The pins of the design's map (22 px, ink ring, a count): the organisations' places on a flat local projection around
+ * the position sent (1° of latitude = 111.32 km; longitude shrinks with the cosine), scaled so the farthest pin is 72 px
+ * from the user's dot. Organisations at the same place share a pin with their number; the nearest one's place is
+ * highlighted, as the design's first pin is.
+ */
+function pinsFor(rows: NearbyRow[], c: Coords): Pin[] {
+  const groups = new Map<string, Pin & { dx: number; dy: number }>()
+  rows.forEach((r, i) => {
+    if (r.entity !== 'organization' || r.lat === null || r.lng === null) return
+    const key = `${r.lat},${r.lng}`
+    const g = groups.get(key)
+    if (g) { g.n += 1; g.names.push(r.title); return }
+    const dx = (r.lng - c.lng) * 111.32 * Math.cos((c.lat * Math.PI) / 180)
+    const dy = (r.lat - c.lat) * 111.32
+    groups.set(key, { key, x: 0, y: 0, n: 1, names: [r.title], first: i === 0, dx, dy })
+  })
+  const list = [...groups.values()]
+  const far = Math.max(0.5, ...list.map((g) => Math.hypot(g.dx, g.dy)))
+  const scale = 72 / far
+  return list.map((g) => ({ key: g.key, n: g.n, names: g.names, first: g.first, x: g.dx * scale, y: -g.dy * scale }))
+}
+
 export function NearbyPhone({ frame, nf, coords, geo, rows, failed, offline, canCheckIn, onLocate, onManual, onForget, onCheckIn }: {
   frame: Frame; nf: NumberFormat; coords: Coords | null; geo: 'idle' | 'asking' | 'denied' | 'blocked' | 'unavailable'; rows: NearbyRow[] | null; failed: boolean; offline: boolean
   canCheckIn: boolean; onLocate: () => void; onManual: (c: Coords) => void; onForget: () => void; onCheckIn: (r: NearbyRow) => void
@@ -65,13 +91,23 @@ export function NearbyPhone({ frame, nf, coords, geo, rows, failed, offline, can
     : [r.customer ? t('nearby.customer') : null, r.health !== null ? t('nearby.health', { n: r.health }) : null,
        r.last_visit_at ? t('nearby.lastVisit', { date: format.dateTime(new Date(r.last_visit_at), { day: 'numeric', month: 'short' }) }) : t('nearby.noVisit')].filter(Boolean).join(' · ')
   const shown = (rows ?? []).slice(0, 6)
+  const pins = coords && rows ? pinsFor(rows, coords) : []
   return (
     <Phone {...frame} title={t('nearby.title')} label={t('phones.nearby.label')} ids={t('phones.nearby.ids')}>
       <Card pad="p-[6px]">
-        <div className="relative h-[190px] rounded-12 bg-[repeating-linear-gradient(135deg,#F2EAD6_0_8px,#FCF6E9_8px_16px)]">
+        <div className="relative h-[190px] overflow-hidden rounded-12 bg-[repeating-linear-gradient(135deg,#F2EAD6_0_8px,#FCF6E9_8px_16px)]">
           {coords ? (
             <>
               <span className="absolute left-[46%] top-[52%] h-[18px] w-[18px] rounded-999 border-[3px] border-solid border-surface bg-link" aria-hidden />
+              {/* pins after the dot: organisations at the user's own spot still show their count */}
+              {pins.map((p) => (
+                // the pin's centre (12.5 px with its ring) on the user's dot's centre (12 px with its ring), moved by the place
+                <span key={p.key} title={p.names.join(', ')} aria-hidden
+                  style={{ left: `calc(46% + ${(p.x - 0.5).toFixed(1)}px)`, top: `calc(52% + ${(p.y - 0.5).toFixed(1)}px)` }}
+                  className={`absolute flex h-[22px] w-[22px] items-center justify-center rounded-999 border-[1.5px] border-solid border-ink text-9.5 font-bold ${p.first ? 'bg-primary' : 'bg-surface'}`}>
+                  {p.n}
+                </span>
+              ))}
               <span className="absolute bottom-2 left-2 right-2 flex flex-wrap items-center justify-between gap-1 text-10.5 font-bold">
                 <span className="rounded-999 bg-surface px-2 py-[3px]">{t('nearby.noTiles')}</span>
                 <button type="button" onClick={onForget} className="cursor-pointer rounded-999 border border-solid border-line bg-surface px-2 py-[3px] text-10.5 font-bold">{t('nearby.forget')}</button>

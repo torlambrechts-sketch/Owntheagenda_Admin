@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useFormatter, useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
-import type { FindResult, Incident, PreviewResult, PrivacyJob, RetentionRule, Subprocessor } from '@/lib/data/security'
+import type { FindResult, Incident, PreviewResult, PrivacyJob, PrivacyRequest, RetentionRule, Subprocessor } from '@/lib/data/security'
 import { foundIn, intervalUnit } from '@/lib/data/security-shared'
 import { incidentSave, privacyApprove, privacyErase, privacyExport, privacyFind, privacyPreview, subprocessorSave } from '../actions'
 import { Modal, dialogCancel, dialogDanger, dialogInput, sx, useErrorText, useGuarded, useWhen } from './kit'
@@ -13,14 +13,17 @@ type Person = FindResult['people'][number]
 /**
  * Privacy compliance (SEC-11; SF-15; D-24, D-27): find a person, see where they are (privacy_preview's counts), export
  * or erase with the approval step (typed confirmation, fresh second factor, a second admin when second_admin is on).
- * Only names, addresses and counts are shown — never message bodies, never respondent text. Then the retention rules
- * (each with the job that enforces it), the sub-processor register, the incident register and the privacy jobs.
+ * Only names, addresses and counts are shown — never message bodies, never respondent text. An export or an erasure may
+ * name the open personvern request it answers (privacy_requests_get, R-SECURITY-05); the job closes it when done. Then
+ * the retention rules (each with the job that enforces it), the sub-processor register, the incident register and the
+ * privacy jobs.
  */
-export function PrivacyView({ retention, subprocessors, incidents, jobs, now, meName }: {
+export function PrivacyView({ retention, subprocessors, incidents, jobs, requests, now, meName }: {
   retention: RetentionRule[] | null
   subprocessors: Subprocessor[] | null
   incidents: Incident[] | null
   jobs: PrivacyJob[] | null
+  requests: PrivacyRequest[] | null
   now: string
   meName: string
 }) {
@@ -28,7 +31,7 @@ export function PrivacyView({ retention, subprocessors, incidents, jobs, now, me
   return (
     <div className="grid items-start gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))]">
       <div className="flex flex-col gap-[14px]">
-        <Finder />
+        <Finder requests={requests} />
         {jobs && jobs.length ? <Jobs jobs={jobs} now={now} meName={meName} /> : null}
       </div>
       <section className={sx.card} aria-label={t('retention.title')}>
@@ -41,7 +44,7 @@ export function PrivacyView({ retention, subprocessors, incidents, jobs, now, me
   )
 }
 
-function Finder() {
+function Finder({ requests }: { requests: PrivacyRequest[] | null }) {
   const t = useTranslations('security.privacy.find')
   const err = useErrorText()
   const flash = useToast()
@@ -51,6 +54,7 @@ function Finder() {
   const [picked, setPicked] = useState<{ person: Person; preview: PreviewResult } | null>(null)
   const [erase, setErase] = useState(false)
   const [problem, setProblem] = useState<string | null>(null)
+  const [request, setRequest] = useState<string | null>(null)
 
   const preview = async (person: Person) => {
     const r = await run(() => privacyPreview({ subject: { people: [person.id] } }))
@@ -58,7 +62,7 @@ function Finder() {
   }
   const search = async (e: React.FormEvent) => {
     e.preventDefault()
-    setPicked(null); setFound(null); setProblem(null)
+    setPicked(null); setFound(null); setProblem(null); setRequest(null)
     if (q.trim().length < 3) return setProblem(t('tooShort'))
     const r = await run(() => privacyFind({ q: q.trim() }), { onError: (x) => { setProblem(err(x)); return true } })
     if (!r.ok) return
@@ -110,9 +114,12 @@ function Finder() {
               person={picked.person}
               preview={picked.preview}
               busy={busy}
+              requests={requests}
+              request={request}
+              onRequest={setRequest}
               onExport={async () => {
-                const r = await run((reason) => privacyExport({ subject: { people: [picked.person.id] }, reason }))
-                if (r.ok) flash(t('exported'))
+                const r = await run((reason) => privacyExport({ subject: { people: [picked.person.id] }, request, reason }))
+                if (r.ok) { flash(t('exported')); setRequest(null) }
               }}
               onErase={() => setErase(true)}
             />
@@ -127,9 +134,9 @@ function Finder() {
           busy={busy}
           onClose={() => setErase(false)}
           onConfirm={async (confirm) => {
-            const r = await run((reason) => privacyErase({ subject: { people: [picked.person.id] }, confirm, reason }))
+            const r = await run((reason) => privacyErase({ subject: { people: [picked.person.id] }, confirm, request, reason }))
             if (r.ok) {
-              setErase(false); setPicked(null); setFound(null); setQ('')
+              setErase(false); setPicked(null); setFound(null); setQ(''); setRequest(null)
               flash(r.state === 'done' ? t('erasedDone', { n: r.rows }) : t('erasedPending'))
             }
             return r
@@ -140,7 +147,10 @@ function Finder() {
   )
 }
 
-function PersonCard({ person, preview, busy, onExport, onErase }: { person: Person; preview: PreviewResult; busy: boolean; onExport: () => void; onErase: () => void }) {
+function PersonCard({ person, preview, busy, requests, request, onRequest, onExport, onErase }: {
+  person: Person; preview: PreviewResult; busy: boolean; requests: PrivacyRequest[] | null; request: string | null; onRequest: (id: string | null) => void
+  onExport: () => void; onErase: () => void
+}) {
   const t = useTranslations('security.privacy.find')
   const c = useTranslations('security.privacy.counts')
   const list = foundIn(preview.counts).map((x) => c(x.key, { n: x.n }))
@@ -149,12 +159,42 @@ function PersonCard({ person, preview, busy, onExport, onErase }: { person: Pers
       <b>{[person.name, person.email].filter(Boolean).join(' · ')}</b>
       <span className="text-muted">{list.length ? t('foundIn', { list: list.join(', ') }) : t('foundNothing')}</span>
       {preview.product_user ? <div className={sx.bandDanger}>{t('productUser')}</div> : null}
+      <RequestPicker requests={requests} value={request} onChange={onRequest} disabled={busy} />
       <div className="flex flex-wrap gap-[6px]">
         <button type="button" className={sx.btn30} disabled={busy} onClick={onExport}>{t('export')}</button>
         <button type="button" className={sx.btnDanger30} disabled={busy || preview.product_user || preview.emails > 1} onClick={onErase}>{t('erase')}</button>
       </div>
       {preview.emails > 1 ? <span className="text-11.5 text-muted">{t('oneAddress')}</span> : null}
     </div>
+  )
+}
+
+/**
+ * Which open personvern request this export or erasure answers (SF-15): the ticket's number, the kind and the 30-day due
+ * date privacy_requests_get returns. None is the default; with no open request the line says so.
+ */
+function RequestPicker({ requests, value, onChange, disabled }: { requests: PrivacyRequest[] | null; value: string | null; onChange: (id: string | null) => void; disabled: boolean }) {
+  const t = useTranslations('security.privacy.find')
+  const format = useFormatter()
+  if (requests === null) return <span className="text-11.5 text-muted">{t('requestsFailed')}</span>
+  if (requests.length === 0) return <span className="text-11.5 text-muted">{t('requestsNone')}</span>
+  const label = (r: PrivacyRequest) => {
+    const v = {
+      ref: r.ticket_number !== null ? `T-${r.ticket_number}` : t('requestNoTicket'),
+      kind: t(`requestKind.${r.kind}`),
+      date: format.dateTime(new Date(r.due_at), { day: 'numeric', month: 'short', year: 'numeric' }),
+    }
+    return [t(r.overdue ? 'requestOverdue' : 'requestOption', v), r.organization].filter(Boolean).join(' · ')
+  }
+  return (
+    <label className={sx.label}>
+      {t('request')}
+      <select className={`${sx.inputSm} w-full`} value={value ?? ''} disabled={disabled} onChange={(e) => onChange(e.target.value || null)}>
+        <option value="">{t('requestNone')}</option>
+        {requests.map((r) => <option key={r.id} value={r.id}>{label(r)}</option>)}
+      </select>
+      {value ? <span className="font-normal">{t('requestHint')}</span> : null}
+    </label>
   )
 }
 
@@ -243,7 +283,8 @@ function Jobs({ jobs, now, meName }: { jobs: PrivacyJob[]; now: string; meName: 
 function RetentionRow({ r }: { r: RetentionRule }) {
   const t = useTranslations('security.privacy.retention')
   const u = intervalUnit(r.keep)
-  const keep = u ? t(`unit.${u.unit}`, { n: u.n }) : '—'
+  // a rule tied to a setting reads the setting's period (R-SECURITY-07); no period there means kept until deleted
+  const keep = u ? t(`unit.${u.unit}`, { n: u.n }) : r.keep === null && r.setting ? t('kept') : '—'
   const v = r.basis === 'product' ? t('product')
     : !r.in_force ? t('notEnforced', { keep })
     : t(`v.${r.key}`, { keep })

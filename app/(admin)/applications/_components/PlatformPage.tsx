@@ -5,7 +5,8 @@ import { z } from 'zod'
 import { getTranslations } from 'next-intl/server'
 import { can, getShell } from '@/lib/shell'
 import {
-  loadApiOverview, loadApplication, loadApplications, loadCatalog, loadContent, loadDeliveries, loadFlags, loadJobs, loadMcp, loadNotice, loadOauthApps, loadWebhooks,
+  loadApiOverview, loadApiScopes, loadApplication, loadApplications, loadCatalog, loadContent, loadDeliveries, loadFlags, loadJobs, loadMcp, loadNotice, loadOauthApps,
+  loadProblems, loadWebhooks,
 } from '@/lib/data/platform'
 import { PLATFORM_TABS, TAB_HREF, type PlatformTab } from '@/lib/data/platform-shared'
 import { AppsView } from './AppsView'
@@ -65,13 +66,15 @@ export async function PlatformPage({ route, searchParams }: { route: 'applicatio
       const detail = appKey ? await loadApplication(appKey) : null
       body = <AppsView apps={apps} current={appKey} detail={detail && detail.ok ? detail.data : null} owner={shell.me.owner} nf={shell.me.number_format} />
     } else if (tab === 'flags') {
-      const [flags, notice] = await Promise.all([loadFlags(), appKey ? loadNotice(appKey) : null])
+      // the open problems a banner may link (problems_open), read only for someone who may set the banner
+      const [flags, notice, problems] = await Promise.all([loadFlags(), appKey ? loadNotice(appKey) : null, configure ? loadProblems() : null])
       body = (
         <FlagsView
           flags={flags}
           apps={installed.map((a) => ({ key: a.key, name: a.name }))}
           current={appKey}
           notice={notice && notice.ok ? notice.data : null}
+          problems={problems && problems.ok ? problems.data : null}
           canConfigure={configure}
           owner={shell.me.owner}
         />
@@ -84,8 +87,8 @@ export async function PlatformPage({ route, searchParams }: { route: 'applicatio
     const [jobs, apps] = await Promise.all([loadJobs(), loadApplications()])
     body = <JobsView jobs={jobs} products={Object.fromEntries(apps.map((a) => [a.key, a.name]))} canConfigure={configure} nf={shell.me.number_format} />
   } else if (tab === 'api') {
-    const [api, oauth] = await Promise.all([loadApiOverview(), loadOauthApps()])
-    body = <ApiView api={api} oauth={oauth} canConfigure={configure} canSecurity={security} nf={shell.me.number_format} />
+    const [api, oauth, scopes] = await Promise.all([loadApiOverview(), loadOauthApps(), loadApiScopes()])
+    body = <ApiView api={api} oauth={oauth} scopes={scopes} canConfigure={configure} canSecurity={security} nf={shell.me.number_format} />
   } else if (tab === 'hooks') {
     const hooks = await loadWebhooks()
     const selected = p.webhook && hooks.webhooks.some((w) => w.id === p.webhook) ? p.webhook : null

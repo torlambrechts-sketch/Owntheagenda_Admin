@@ -82,8 +82,8 @@
         "none": "ingen",
         "critical": "{n} kritiske",
         "forcedSub": "fjernutlogginger",
-        "mfaValue": "{enrolled} av {active}",
-        "mfaSub": "aktive ansatte med app"
+        "mfaPct": "{n} %",
+        "mfaOf": "{enrolled} av {active} med app"
       },
       "timeout30": "Tidsavbrudd etter 30 min inaktivitet",
       "timeoutOff": "Ingen tidsavbrudd ved inaktivitet",
@@ -219,6 +219,20 @@
       "digestAt": "Daglig oppsummering kl.",
       "recipientsList": "Mottakere: {names}",
       "recipientsRole": "Mottakere: alle med sikkerhetsrettigheten ({names})",
+      "chooseRecipients": "Velg mottakere",
+      "pick": {
+        "eyebrow": "Sikkerhetsvarsler",
+        "title": "Hvem som får varslene",
+        "role": "Alle med sikkerhetsrettigheten",
+        "roleHint": "Alle som har Sikkerhet på Global, nå og senere.",
+        "list": "Bare de som er valgt",
+        "listHint": "Bare personer med sikkerhetsrettigheten kan velges.",
+        "none": "Ingen har sikkerhetsrettigheten.",
+        "pickOne": "Velg minst én person.",
+        "cancel": "Avbryt",
+        "save": "Lagre",
+        "saved": "Mottakere lagret"
+      },
       "rules": {
         "title": "Sikkerhetsregler",
         "strengthValue": "Satt i innloggingstjenesten",
@@ -474,7 +488,16 @@
         "productUser": "Også en aktiv produktbruker: slett vedkommende i produktet først (plattformens sletting avvises).",
         "export": "Eksporter (innsynsbegjæring)",
         "erase": "Slett fra alle moduler",
-        "oneAddress": "Søket traff mer enn én adresse; slett én person om gangen."
+        "oneAddress": "Søket traff mer enn én adresse; slett én person om gangen.",
+        "request": "Personvernhenvendelse",
+        "requestNone": "Ikke knyttet til en henvendelse",
+        "requestOption": "{ref} · {kind} · frist {date}",
+        "requestOverdue": "{ref} · {kind} · forfalt siden {date}",
+        "requestNoTicket": "Ingen sak",
+        "requestKind": { "access": "Innsyn", "correction": "Retting", "deletion": "Sletting" },
+        "requestHint": "En tilknyttet henvendelse lukkes når eksporten eller slettingen er ferdig.",
+        "requestsNone": "Ingen personvernhenvendelse er åpen.",
+        "requestsFailed": "Personvernhenvendelsene kunne ikke lastes."
       },
       "counts": {
         "people": "{n, plural, one {personoppføring} other {# personoppføringer}}",
@@ -537,6 +560,7 @@
         },
         "product": "Kunden velger · settes i Orgpuls",
         "notEnforced": "{keep} · håndheves ikke ennå",
+        "kept": "Beholdes til den slettes",
         "v": {
           "crm_soft_deleted": "{keep}, deretter slettet",
           "product_events_raw": "{keep}, deretter slettet",

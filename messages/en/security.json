@@ -82,8 +82,8 @@
         "none": "none",
         "critical": "{n} critical",
         "forcedSub": "remote log-outs",
-        "mfaValue": "{enrolled} of {active}",
-        "mfaSub": "active staff enrolled"
+        "mfaPct": "{n} %",
+        "mfaOf": "{enrolled} of {active} enrolled"
       },
       "timeout30": "Session timeout 30 min idle",
       "timeoutOff": "No idle timeout",
@@ -219,6 +219,20 @@
       "digestAt": "Daily digest at",
       "recipientsList": "Recipients: {names}",
       "recipientsRole": "Recipients: everyone with the security right ({names})",
+      "chooseRecipients": "Choose recipients",
+      "pick": {
+        "eyebrow": "Security alerts",
+        "title": "Who receives the alerts",
+        "role": "Everyone with the security right",
+        "roleHint": "Everyone who holds Security on Global, now and later.",
+        "list": "Only the people chosen",
+        "listHint": "Only people with the security right can be chosen.",
+        "none": "Nobody holds the security right.",
+        "pickOne": "Choose at least one person.",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saved": "Recipients saved"
+      },
       "rules": {
         "title": "Security rules",
         "strengthValue": "Set in the sign-in service",
@@ -474,7 +488,16 @@
         "productUser": "Also an active product user: erase them in the product first (the platform's erasure is refused).",
         "export": "Export (access request)",
         "erase": "Erase from every module",
-        "oneAddress": "This search matched more than one address; erase one person at a time."
+        "oneAddress": "This search matched more than one address; erase one person at a time.",
+        "request": "Personvern request",
+        "requestNone": "Not linked to a request",
+        "requestOption": "{ref} · {kind} · due {date}",
+        "requestOverdue": "{ref} · {kind} · overdue since {date}",
+        "requestNoTicket": "No ticket",
+        "requestKind": { "access": "Access", "correction": "Correction", "deletion": "Deletion" },
+        "requestHint": "A linked request is closed when the export or the erasure is done.",
+        "requestsNone": "No personvern request is open.",
+        "requestsFailed": "Personvern requests could not be loaded."
       },
       "counts": {
         "people": "{n, plural, one {person record} other {# person records}}",
@@ -537,6 +560,7 @@
         },
         "product": "Customer chooses · set in Orgpuls",
         "notEnforced": "{keep} · not enforced yet",
+        "kept": "Kept until deleted",
         "v": {
           "crm_soft_deleted": "{keep}, then purged",
           "product_events_raw": "{keep}, then purged",

@@ -5,11 +5,12 @@ import { useFormatter, useNow, useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
 import type { NumberFormat } from '@/lib/format'
 import type { CallOutcome, Coords, Mutation, NearbyRow, Pref, Preview, SyncResult } from '@/lib/data/mobile-shared'
-import { checkIn, fetchNearby, fetchPreview, logCall, moveStage, revokeDevice, saveCard, setPushPref, syncApply, syncChanges } from '../actions'
+import { checkIn, fetchNearby, fetchPreview, logCall, moveStage, registerDevice, revokeDevice, saveCard, setPushPref, syncApply, syncChanges } from '../actions'
 import { Banner } from './kit'
 import { CapturePhone, DealPhone, ExtrasPhone, FocusPhone, NearbyPhone, NotificationsPhone, type CardValues, type Frame } from './phones'
 import { DevicesPanel, PrefsPanel, SyncPanel, type Logged } from './panels'
 import { deviceId, loadCursor, loadOutbox, newId, saveCursor, saveOutbox, secondStep, type OutboxItem } from './outbox'
+import { browserLabel, subscribeThisBrowser, type SubscribeFail } from './push'
 
 type Geo = 'idle' | 'asking' | 'denied' | 'blocked' | 'unavailable'
 
@@ -245,6 +246,25 @@ export function MobileScreen({ staffId, numberFormat, initial }: { staffId: stri
     const r = await setPushPref({ kind, push })
     if (!r.ok) { setPreview((p) => ({ ...p, prefs: before })); flash(errorText(r.code)) }
   }
+  // register this browser for push (R-MOBILE-03): only on the person's click, only with the provider's public key
+  const [registering, setRegistering] = useState(false)
+  const [pushProblem, setPushProblem] = useState<SubscribeFail | null>(null)
+  const onRegister = async () => {
+    const key = preview.push?.public_key
+    if (!key) return
+    setRegistering(true)
+    setPushProblem(null)
+    try {
+      const sub = await subscribeThisBrowser(key)
+      if (typeof sub === 'string') { setPushProblem(sub); return }
+      const r = await registerDevice({ ...sub, label: browserLabel() })
+      if (!r.ok) { flash(errorText(r.code)); return }
+      flash(t('devices.registered'))
+      void reload(coords)
+    } finally {
+      setRegistering(false)
+    }
+  }
   const onRevoke = async (id: string) => {
     const r = await revokeDevice(id)
     if (!r.ok) { flash(errorText(r.code)); return }
@@ -298,7 +318,7 @@ export function MobileScreen({ staffId, numberFormat, initial }: { staffId: stri
 
       <div className="grid gap-[13px] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]">
         <SyncPanel device={device} offline={offline} outbox={outbox} log={log} syncing={syncing} lastPull={lastPull} onSync={() => (offline ? flash(t('sync.noNetwork')) : void sync())} />
-        <DevicesPanel push={preview.push} onRevoke={onRevoke} />
+        <DevicesPanel push={preview.push} onRevoke={onRevoke} onRegister={onRegister} registering={registering} problem={pushProblem} />
         <PrefsPanel prefs={preview.prefs} pushReady={pushReady} onSet={onPref} />
       </div>
     </div>

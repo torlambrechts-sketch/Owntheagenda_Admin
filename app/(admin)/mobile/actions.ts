@@ -115,6 +115,22 @@ export async function setPushPref(input: unknown): Promise<Res> {
   return r.ok ? { ok: true } : fail(r)
 }
 
+/**
+ * This browser's push subscription (R-MOBILE-03): the endpoint and keys the browser made with the provider's public key.
+ * Write-only: push_device_register never returns the endpoint. The database checks the module and the shapes again.
+ */
+export async function registerDevice(input: unknown): Promise<Res> {
+  const p = z.object({
+    endpoint: z.string().max(1000).url().startsWith('https://'),
+    p256dh: z.string().regex(/^[A-Za-z0-9_=-]{40,200}$/),
+    auth: z.string().regex(/^[A-Za-z0-9_=-]{16,60}$/),
+    label: z.string().trim().max(120).nullable(),
+  }).safeParse(input)
+  if (!p.success) return { ok: false, code: 'invalid', detail: String(p.error.issues[0]?.path[0] ?? '') }
+  const r = await rpc('push_device_register', { p_endpoint: p.data.endpoint, p_p256dh: p.data.p256dh, p_auth: p.data.auth, p_label: p.data.label || null }, z.object({ id: uuid }))
+  return r.ok ? { ok: true } : fail(r)
+}
+
 export async function revokeDevice(input: unknown): Promise<Res> {
   const p = uuid.safeParse(input)
   if (!p.success) return bad

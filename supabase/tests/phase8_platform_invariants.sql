@@ -979,4 +979,116 @@ select pg_temp.check((select state = 'skipped' and error_code = 'no_export' from
                      'a delivery for an owner without the export right is skipped as no_export, never sent');
 update app.admins set permission_set_id = (select id from app.permission_sets where key = 'sales') where email = 'ingrid@orgpuls.no';
 
+-- ---------------------------------------------------------------------------
+-- 0051: the Mobile and Platform requests (R-MOBILE-03/05/06, R-PLATFORM-02/03/06)
+create temp table t_rpcs51 as select unnest(array['public.push_vapid_public_key()', 'public.api_scopes_get()', 'public.problems_open()', 'public.webhook_rotate_secret(uuid)']) f;
+select pg_temp.check(not exists (select 1 from t_rpcs51 r join pg_proc p on p.oid = r.f::regprocedure
+                                 where not p.prosecdef or not ('search_path=""' = any (p.proconfig)) or not has_function_privilege('authenticated', r.f, 'execute')
+                                    or has_function_privilege('anon', r.f, 'execute') or has_function_privilege('public', r.f, 'execute')),
+                     'the 0051 functions are security definer, empty search path, for signed-in staff only');
+select pg_temp.check((select provolatile from pg_proc where oid = 'public.webhook_rotate_secret(uuid)'::regprocedure) = 'v'
+                     and (select provolatile from pg_proc where oid = 'public.nearby(numeric, numeric, numeric, text[], jsonb)'::regprocedure) = 'v',
+                     'the writers (rotation, nearby''s audit) stay volatile');
+-- R-MOBILE-05: a nearby row carries its organisation's place, never the device's
+select pg_temp.as_staff('ingrid@orgpuls.no');
+create temp table t_near51 as select public.nearby(59.9561, 11.0485, 10, array['organization', 'person'], '{}') n;
+select pg_temp.check((select (x ->> 'lat')::numeric = 59.955 and (x ->> 'lng')::numeric = 11.049 from jsonb_array_elements((select n from t_near51)) x
+                      where x ->> 'entity' = 'organization' and (x ->> 'id')::uuid = (select id from t_geo))
+                     and not exists (select 1 from jsonb_array_elements((select n from t_near51)) x where (x ->> 'lat')::numeric = 59.9561 or (x ->> 'lng')::numeric = 11.0485)
+                     and not exists (select 1 from jsonb_array_elements((select n from t_near51)) x where x ->> 'lat' is null or x ->> 'lng' is null),
+                     'nearby rows carry the organisation''s place (R-MOBILE-05), not the device''s position');
+-- the nearest of several places is the one returned
+insert into app.record_geo (entity, record_id, field_key, lat, lng, source) values ('organization', (select id from t_geo), 'custom.branch', 59.9300, 11.0000, 'manual');
+select pg_temp.check((select (x ->> 'lat')::numeric = 59.955 and (x ->> 'km')::numeric < 1 from jsonb_array_elements(public.nearby(59.9561, 11.0485, 10)) x where (x ->> 'id')::uuid = (select id from t_geo)),
+                     'with several places, the one the distance was measured to');
+delete from app.record_geo where entity = 'organization' and record_id = (select id from t_geo) and field_key = 'custom.branch';
+-- R-MOBILE-06: today's activities carry their deal and organisation ids
+create temp table t_d51 as select d.id, d.organization_id from app.deals d where d.owner_id = (select ingrid from t_staff) and d.deleted_at is null and d.archived_at is null
+  and not d.is_sample and d.organization_id is not null limit 1;
+create temp table t_chk51 as select (public.checkin('deal', (select id from t_d51)) ->> 'activity_id')::uuid id;
+select pg_temp.check((select (x ->> 'deal_id')::uuid = (select id from t_d51) and (x ->> 'organization_id')::uuid = (select organization_id from t_d51)
+                      from jsonb_array_elements(public.mobile_focus() -> 'today') x where (x ->> 'id')::uuid = (select id from t_chk51)),
+                     'mobile_focus().today[] carries deal_id and organization_id (R-MOBILE-06)');
+-- R-MOBILE-03: the public half of the VAPID key, only while push is configured; never the private key
+select pg_temp.check(public.push_vapid_public_key() is null, 'no public key in Vault: null');
+select vault.create_secret('BPublicKeyForTests_0123456789', 'vapid_public_key', 'test');
+select pg_temp.check(public.push_vapid_public_key() = 'BPublicKeyForTests_0123456789', 'push configured: the public key');
+select pg_temp.check(public.push_vapid_public_key() is distinct from (select decrypted_secret from vault.decrypted_secrets where name = 'vapid_private_key'),
+                     'never the private key');
+delete from vault.secrets where name = 'vapid_private_key';
+select pg_temp.check(public.push_vapid_public_key() is null and not app.push_ready(), 'without the private key push is not configured: null (a subscription could never be delivered to)');
+select pg_temp.as_nobody();
+select pg_temp.expect_error($$select public.push_vapid_public_key()$$, 'not_signed_in', 'nobody gets the key');
+-- R-PLATFORM-02: the scopes an OAuth app may ask for are the registry's
+select pg_temp.as_staff('ingrid@orgpuls.no');
+select pg_temp.check((select array_agg(x ->> 'scope' order by x ->> 'scope') from jsonb_array_elements(public.api_scopes_get()) x) = (select array_agg(scope order by scope) from app.api_scopes)
+                     and public.api_scopes_get() @> '[{"scope":"*"},{"scope":"deals:read"},{"scope":"global:read"}]'::jsonb
+                     and app.scopes_ok(array(select x ->> 'scope' from jsonb_array_elements(public.api_scopes_get()) x limit 20)),
+                     'api_scopes_get lists app.api_scopes, every one accepted by scopes_ok (R-PLATFORM-02)');
+-- R-PLATFORM-03: open problems for the banner's link
+select pg_temp.as_staff('tor@orgpuls.no');
+create temp table t_po51 as select public.problems_open() p;
+select pg_temp.check((select array_agg((x ->> 'id')::uuid order by x ->> 'id') from jsonb_array_elements((select p from t_po51)) x)
+                     is not distinct from (select array_agg(t.id order by t.id::text) from app.tickets t where t.type = 'problem' and t.deleted_at is null and t.problem_status <> 'resolved'
+                                           and t.status not in ('resolved', 'closed') and not t.is_sample and app.queue_ok(t.queue_key) and app.visible(t.owner_id, t.visibility)),
+                     'problems_open lists the open problems the caller may see');
+select pg_temp.check(not exists (select 1 from jsonb_array_elements((select p from t_po51)) x join app.tickets t on t.id = (x ->> 'id')::uuid where t.problem_status = 'resolved'),
+                     'a resolved problem is not offered');
+update app.ticket_queues set permission_set_ids = array(select id from app.permission_sets where key = 'admin') where key = 'support';
+select pg_temp.as_staff('ingrid@orgpuls.no');
+select pg_temp.check(not exists (select 1 from jsonb_array_elements(public.problems_open()) x join app.tickets t on t.id = (x ->> 'id')::uuid where t.queue_key = 'support'),
+                     'a problem in a queue the caller may not see is not offered');
+update app.ticket_queues set permission_set_ids = null where key = 'support';
+select pg_temp.as_staff('emma@orgpuls.no');
+select pg_temp.expect_detail($$select public.problems_open()$$, 'forbidden', 'global:see', 'problems_open needs global:see, as the banner');
+select pg_temp.as_staff('tor@orgpuls.no');
+create temp table t_po51_1 as select (x ->> 'id')::uuid id from jsonb_array_elements((select p from t_po51)) x limit 1;
+select public.status_notice_set('orgpuls', 'Innlogging feiler for noen', (select id from t_po51_1)) from t_po51_1;
+select pg_temp.check(not exists (select 1 from t_po51_1)
+                     or (public.status_notice_get('orgpuls') -> 'current' ->> 'problem_ticket_id')::uuid = (select id from t_po51_1),
+                     'a problem picked from the list links the banner');
+-- R-PLATFORM-06: rotating a webhook's secret
+select pg_temp.as_staff('ingrid@orgpuls.no');
+create temp table t_whr as select (r ->> 'id')::uuid id, r ->> 'secret' secret from (select public.webhook_save(null, '{"event_kind":"deal.updated","url":"https://hooks.example.com/rotate"}') r) x;
+create temp table t_whr_v as select vault_secret_id v, version from app.webhooks where id = (select id from t_whr);
+create temp table t_rot51 as select public.webhook_rotate_secret((select id from t_whr)) r;
+select pg_temp.check((select r ->> 'secret' ~ '^whsec_' and r ->> 'secret' <> (select secret from t_whr) and (r ->> 'version')::int = (select version from t_whr_v) + 1 from t_rot51)
+                     and (select s.decrypted_secret from vault.decrypted_secrets s join app.webhooks w on w.vault_secret_id = s.id where w.id = (select id from t_whr)) = (select r ->> 'secret' from t_rot51)
+                     and (select vault_secret_id from app.webhooks where id = (select id from t_whr)) = (select v from t_whr_v)
+                     and (select count(*) from vault.secrets where name = 'webhook:' || (select id from t_whr)) = 1,
+                     'rotation replaces the secret in Vault (webhook:<id>) and shows the new one once (R-PLATFORM-06)');
+select pg_temp.check((select detail is null and target_id = (select id::text from t_whr) from app.audit where action = 'webhook.secret_rotated' order by id desc limit 1)
+                     and not exists (select 1 from app.audit where detail::text like '%' || (select r ->> 'secret' from t_rot51) || '%')
+                     and not exists (select 1 from app.webhooks w where to_jsonb(w)::text like '%' || (select r ->> 'secret' from t_rot51) || '%'),
+                     'the rotation is audited without the secret; the row holds none');
+select public.webhook_test((select id from t_whr));
+select pg_temp.as_service();
+create temp table t_rclaim as select c from jsonb_array_elements(pg_temp.claim()) c where c ->> 'url' = 'https://hooks.example.com/rotate';
+select pg_temp.check((select (c -> 'headers' ->> 'Sentral-Signature') = 't=' || substring(c -> 'headers' ->> 'Sentral-Signature' from '^t=(\d+),') || ',v1='
+                      || encode(extensions.hmac(substring(c -> 'headers' ->> 'Sentral-Signature' from '^t=(\d+),') || '.' || (c ->> 'body'), (select r ->> 'secret' from t_rot51), 'sha256'), 'hex') from t_rclaim),
+                     'deliveries after the rotation are signed with the new secret');
+-- a webhook whose secret was never created (as the seed's) reads has_secret false and gets one
+select pg_temp.as_staff('ingrid@orgpuls.no');
+delete from vault.secrets where id = (select v from t_whr_v);
+update app.webhooks set vault_secret_id = gen_random_uuid() where id = (select id from t_whr);
+select pg_temp.check((select (x ->> 'has_secret')::boolean = false and (x ->> 'can_export')::boolean from jsonb_array_elements(public.webhooks_get() -> 'webhooks') x where (x ->> 'id')::uuid = (select id from t_whr)),
+                     'webhooks_get says when Vault holds no signing secret');
+create temp table t_rot51b as select public.webhook_rotate_secret((select id from t_whr)) r;
+select pg_temp.check((select (x ->> 'has_secret')::boolean from jsonb_array_elements(public.webhooks_get() -> 'webhooks') x where (x ->> 'id')::uuid = (select id from t_whr))
+                     and (select s.decrypted_secret from vault.decrypted_secrets s join app.webhooks w on w.vault_secret_id = s.id where w.id = (select id from t_whr) and s.name = 'webhook:' || w.id)
+                         = (select r ->> 'secret' from t_rot51b),
+                     'rotating a webhook without a secret creates one in Vault');
+-- rights: the owner or global:configure, and the export right of the event's area (0049)
+select pg_temp.as_staff('eirik@orgpuls.no');
+select pg_temp.expect_detail(format($$select public.webhook_rotate_secret(%L)$$, (select id from t_whr)), 'forbidden', 'global:configure', 'another sales user cannot rotate the secret');
+select pg_temp.expect_detail(format($$select public.webhook_rotate_secret(%L)$$, gen_random_uuid()), 'not_found', null, 'an unknown webhook is not found');
+update app.admins set permission_set_id = (select id from app.permission_sets where key = 'analyst') where email = 'ingrid@orgpuls.no';
+select pg_temp.as_staff('ingrid@orgpuls.no');
+select pg_temp.expect_detail(format($$select public.webhook_rotate_secret(%L)$$, (select id from t_whr)), 'forbidden', 'deals:export', 'rotation needs the export right of the event''s area (0049)');
+update app.admins set permission_set_id = (select id from app.permission_sets where key = 'sales') where email = 'ingrid@orgpuls.no';
+select pg_temp.as_staff('tor@orgpuls.no');
+select pg_temp.check((public.webhook_rotate_secret((select id from t_whr)) ->> 'secret') ~ '^whsec_', 'global:configure may rotate any webhook''s secret');
+select public.webhook_delete((select id from t_whr));
+select pg_temp.expect_detail(format($$select public.webhook_rotate_secret(%L)$$, (select id from t_whr)), 'not_found', null, 'a deleted webhook has no secret to rotate');
+
 rollback;

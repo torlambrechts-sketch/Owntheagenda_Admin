@@ -139,6 +139,8 @@ export const WebhooksZ = z.object({
   webhooks: z.array(z.object({
     id: z.string(), owner_id: z.string(), owner: z.string().nullable(), event_kind: z.string(), url: z.string(), state: z.enum(WEBHOOK_STATES),
     banned_until: ts, retrying: z.boolean(), last_success_at: ts, failing_since: ts, created_at: z.string(), version: num, mine: z.boolean(),
+    // whether Vault holds its signing secret, and whether the caller may rotate it (the export right of its area, 0049/0051)
+    has_secret: z.boolean(), can_export: z.boolean(),
   })),
   deliveries: z.array(z.object({
     id: z.string(), webhook_id: z.string(), at: z.string(), event: z.string(), host: z.string().nullable(), status: numN, state: z.enum(DELIVERY_STATES),
@@ -187,6 +189,12 @@ export const McpZ = z.object({
 })
 export type Mcp = z.infer<typeof McpZ>
 
+/** The scopes an OAuth app may ask for (api_scopes_get, R-PLATFORM-02): exactly what app.scopes_ok accepts. */
+export const ApiScopesZ = z.array(z.object({ scope: z.string() }))
+/** Open problem tickets the caller may see (problems_open, R-PLATFORM-03): what a status banner may link. */
+export const ProblemsZ = z.array(z.object({ id: z.string(), number: num, subject: z.string(), problem_status: z.enum(['investigating', 'known_error']) }))
+export type Problem = z.infer<typeof ProblemsZ>[number]
+
 export const loadApplications = () => rpcOrThrow('applications_get', {}, z.array(AppCardZ))
 export const loadApplication = (key: string) => rpc('application_get', { p_product: key }, AppDetailZ)
 export const loadFlags = () => rpcOrThrow('flags_get', {}, FlagsZ)
@@ -200,3 +208,5 @@ export const loadDeliveries = (webhook: string) => rpc('webhook_deliveries_get',
 export const loadDelivery = (id: string) => rpc('webhook_delivery_get', { p_id: id }, DeliveryZ)
 export const loadCatalog = (q: string | null) => rpc('integration_catalog_get', { p_q: q }, CatalogZ)
 export const loadMcp = () => rpcOrThrow('mcp_get', {}, McpZ)
+export const loadApiScopes = async () => (await rpcOrThrow('api_scopes_get', {}, ApiScopesZ)).map((s) => s.scope)
+export const loadProblems = () => rpc('problems_open', {}, ProblemsZ)

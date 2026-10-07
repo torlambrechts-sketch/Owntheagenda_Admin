@@ -1,10 +1,12 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
 import { ui } from '@/components/ui/styles'
 import { Switch } from '@/components/ui/Switch'
 import type { Pref, PushState, SyncResult } from '@/lib/data/mobile-shared'
 import type { OutboxItem, OutboxKind } from './outbox'
+import { pushSupported, type SubscribeFail } from './push'
 
 /**
  * The panels under the phones (spec §6 Q13, D-41): this device's offline sync, the staff member's push devices and their
@@ -74,9 +76,18 @@ export function SyncPanel({ device, offline, outbox, log, syncing, lastPull, onS
   )
 }
 
-export function DevicesPanel({ push, onRevoke }: { push: PushState | null; onRevoke: (id: string) => void }) {
+/**
+ * «Register this browser» works only when push is ready (module, setting, provider key in Vault), the database gives the
+ * public key, and the browser can receive push; otherwise the line says which of these is missing (D-41).
+ */
+export function DevicesPanel({ push, onRevoke, onRegister, registering, problem }: {
+  push: PushState | null; onRevoke: (id: string) => void; onRegister: () => void; registering: boolean; problem: SubscribeFail | null
+}) {
   const t = useTranslations('mobile.devices')
   const format = useFormatter()
+  // the browser's abilities are known only after hydration; the server renders «not yet known» as unsupported
+  const [supported, setSupported] = useState(false)
+  useEffect(() => setSupported(pushSupported()), [])
   if (!push) return <Panel eyebrow={t('eyebrow')} title={t('title')}><span className="text-12.5 text-danger">{t('failed')}</span></Panel>
   const state = !push.module ? 'moduleOff' : push.setting !== 'on' ? 'settingOff' : !push.push_ready ? 'notConnected' : 'ready'
   return (
@@ -100,8 +111,17 @@ export function DevicesPanel({ push, onRevoke }: { push: PushState | null; onRev
         </div>
       ))}
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-12 text-muted">{t('registerDisabled')}</span>
-        <button type="button" className={`${ui.btnSmall} disabled:cursor-default disabled:opacity-60`} disabled>{t('register')}</button>
+        <span className={`text-12 ${problem ? 'font-semibold text-danger' : 'text-muted'}`}>
+          {problem ? t(`registerProblem.${problem}`)
+            : state !== 'ready' ? t('registerWaits')
+            : !push.public_key ? t('registerNoKey')
+            : !supported ? t('registerUnsupported')
+            : t('registerHint')}
+        </span>
+        <button type="button" className={`${ui.btnSmall} disabled:cursor-default disabled:opacity-60`} onClick={onRegister}
+          disabled={state !== 'ready' || !push.public_key || !supported || registering}>
+          {registering ? t('registering') : t('register')}
+        </button>
       </div>
     </Panel>
   )

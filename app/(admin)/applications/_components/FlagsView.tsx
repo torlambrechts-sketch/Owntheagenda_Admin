@@ -4,7 +4,7 @@ import Link from 'next/link'
 import type { Route } from 'next'
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import type { Flags, Notice } from '@/lib/data/platform'
+import type { Flags, Notice, Problem } from '@/lib/data/platform'
 import { moduleSet, noticeSet } from '../actions'
 import { Dialog, Toggle, k, useAct, useAgo, useSensitive } from './kit'
 
@@ -12,10 +12,11 @@ import { Dialog, Toggle, k, useAct, useAgo, useSensitive } from './kit'
  * Feature flags and the status banner (ENT-01; Appendix 2 System operations). The platform's own module switches are
  * real and switchable (module_set). A product's flags live in the product (D-23) and are read through its commands;
  * the replies have no agreed shape yet, so they are named, not drawn (V-PLATFORM-07). Maintenance mode needs a product
- * command that does not exist (D-40): the database refuses it as not_available, and the switch says so.
+ * command that does not exist (D-40): the database refuses it as not_available, and the switch says so. A banner may link
+ * an open problem ticket (problems_open, R-PLATFORM-03); it is shown until the problem is resolved.
  */
-export function FlagsView({ flags, apps, current, notice, canConfigure, owner }: {
-  flags: Flags; apps: { key: string; name: string }[]; current: string | null; notice: Notice | null; canConfigure: boolean; owner: boolean
+export function FlagsView({ flags, apps, current, notice, problems, canConfigure, owner }: {
+  flags: Flags; apps: { key: string; name: string }[]; current: string | null; notice: Notice | null; problems: Problem[] | null; canConfigure: boolean; owner: boolean
 }) {
   const t = useTranslations('platform.flags')
   const ago = useAgo()
@@ -24,10 +25,12 @@ export function FlagsView({ flags, apps, current, notice, canConfigure, owner }:
   const [maint, setMaint] = useState<boolean | null>(null)
   const app = apps.find((a) => a.key === current) ?? null
   const cur = notice?.current ?? null
+  const [problem, setProblem] = useState<string | null>(cur?.problem_ticket_id ?? null)
+  const unchanged = text.trim() === (cur?.text ?? '') && problem === (cur?.problem_ticket_id ?? null)
 
   const save = (clear: boolean) => run(
-    () => noticeSet({ product: current, text: clear ? null : text.trim(), problem: clear ? null : cur?.problem_ticket_id ?? null, maintenance: false, confirm: null }),
-    () => { flash(t(clear ? 'cleared' : 'saved', { name: app?.name ?? '' })); if (clear) setText('') },
+    () => noticeSet({ product: current, text: clear ? null : text.trim(), problem: clear ? null : problem, maintenance: false, confirm: null }),
+    () => { flash(t(clear ? 'cleared' : 'saved', { name: app?.name ?? '' })); if (clear) { setText(''); setProblem(null) } },
   )
 
   return (
@@ -94,6 +97,19 @@ export function FlagsView({ flags, apps, current, notice, canConfigure, owner }:
             {text.trim() ? (
               <div className="rounded-12 bg-amber-bg px-3 py-[10px] text-12.5 text-amber-ink"><b>{t('preview')}</b> {text.trim()}</div>
             ) : null}
+            {canConfigure && notice.notice_command ? (
+              <label className={k.label}>
+                {t('problem')}
+                <select value={problem ?? ''} onChange={(e) => setProblem(e.target.value || null)} disabled={pending} className={k.input}>
+                  <option value="">{t('noProblem')}</option>
+                  {cur?.problem_ticket_id && cur.problem_number !== null && !(problems ?? []).some((p) => p.id === cur.problem_ticket_id)
+                    ? <option value={cur.problem_ticket_id}>{`T-${cur.problem_number}`}</option> : null}
+                  {(problems ?? []).map((p) => <option key={p.id} value={p.id}>{`T-${p.number} · ${p.subject}`}</option>)}
+                </select>
+                {problems === null ? <span className="font-normal text-danger">{t('problemsFailed')}</span>
+                  : problems.length === 0 ? <span className="font-normal">{t('noProblems')}</span> : null}
+              </label>
+            ) : null}
             {cur?.problem_number ? <div className="text-11.5 text-muted">{t('linked', { number: String(cur.problem_number), name: app.name })}</div> : null}
             {cur ? (
               <div className={`text-11.5 ${cur.push_error ? 'font-semibold text-danger' : 'text-muted'}`}>
@@ -102,7 +118,7 @@ export function FlagsView({ flags, apps, current, notice, canConfigure, owner }:
             ) : null}
             {!notice.notice_command ? <span className="text-11.5 text-muted">{t('noNoticeCommand', { name: app.name })}</span> : null}
             <div className="flex flex-wrap gap-[6px]">
-              <button type="button" disabled={!canConfigure || !notice.notice_command || pending || !text.trim() || text.trim() === (cur?.text ?? '')} onClick={() => save(false)} className={k.btn}>{t('save')}</button>
+              <button type="button" disabled={!canConfigure || !notice.notice_command || pending || !text.trim() || unchanged} onClick={() => save(false)} className={k.btn}>{t('save')}</button>
               {cur ? <button type="button" disabled={!canConfigure || pending} onClick={() => save(true)} className={k.btnSoft}>{t('clear')}</button> : null}
             </div>
             {notice.history.length ? (

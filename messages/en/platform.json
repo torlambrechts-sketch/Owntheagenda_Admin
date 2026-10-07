@@ -345,7 +345,16 @@
       "save": "Save",
       "create": "Create",
       "done": "Done",
-      "noExport": "A webhook sends records out of the platform: it needs the export right for their area."
+      "noExport": "A webhook sends records out of the platform: it needs the export right for their area.",
+      "rotate": "Rotate secret",
+      "rotateNoExport": "Rotating the secret needs the export right for this event's area.",
+      "noSecret": "No signing secret is stored for this webhook, so its deliveries cannot be signed. Rotate the secret to create one.",
+      "rotateTitle": "Rotate the signing secret of the {event} webhook",
+      "rotateBody": "A new secret replaces the current one at once: deliveries to {host} are signed with the new secret from now on, and the old one stops working.",
+      "rotateBodyNone": "No secret is stored for this webhook. A new one is created and deliveries to {host} are signed with it.",
+      "rotateSubmit": "Rotate secret",
+      "rotatedTitle": "New signing secret",
+      "rotatedBody": "Verify each delivery's Sentral-Signature header with this secret from now on."
     },
     "catalog": {
       "placeholder": "Describe what you need — «send invoices when a deal is won»",
@@ -604,7 +613,11 @@
         "cancel": "Cancel",
         "submitOn": "Start maintenance",
         "submitOff": "End maintenance"
-      }
+      },
+      "problem": "Linked problem",
+      "noProblem": "No problem linked",
+      "noProblems": "No open problem ticket to link.",
+      "problemsFailed": "Problem tickets could not be loaded."
     },
     "content": {
       "noApp": "No application is installed.",

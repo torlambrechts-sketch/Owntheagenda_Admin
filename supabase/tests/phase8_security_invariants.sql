@@ -782,4 +782,58 @@ select pg_temp.check((public.session_sign_out() ->> 'ended')::boolean = false, '
 select pg_temp.check(not has_function_privilege('anon', 'public.session_sign_out()', 'execute')
                      and has_function_privilege('authenticated', 'public.session_sign_out()', 'execute'), 'session_sign_out is for signed-in callers');
 
+-- ---------------------------------------------------------------------------
+-- 0051: the Security requests (R-SECURITY-02, -05, -06, -07)
+select pg_temp.check(not has_function_privilege('anon', 'public.privacy_requests_get()', 'execute') and not has_function_privilege('public', 'public.privacy_requests_get()', 'execute')
+                     and has_function_privilege('authenticated', 'public.privacy_requests_get()', 'execute')
+                     and (select prosecdef and 'search_path=""' = any (proconfig) from pg_proc where oid = 'public.privacy_requests_get()'::regprocedure),
+                     'privacy_requests_get is a security definer for signed-in staff');
+select pg_temp.as_s('tor@orgpuls.no', null);
+-- R-SECURITY-02: coverage as a rounded percentage of the two counts
+create temp table t_cov as select public.security_dashboard() -> 'kpis' -> 'mfa' m;
+select pg_temp.check((select (m ->> 'coverage_pct')::int = round(100.0 * (m ->> 'enrolled')::int / (m ->> 'active')::int)::int from t_cov)
+                     and (select (m ->> 'enrolled')::int = (select count(*) from app.admins a where a.active and not a.is_sample and app.staff_mfa_verified(a.email)) from t_cov),
+                     'kpis.mfa.coverage_pct = enrolled / active, rounded (R-SECURITY-02)');
+-- R-SECURITY-05: the open personvern requests with their 30-day due date
+insert into app.privacy_requests (kind, received_at) values ('access', now() - interval '5 days') returning id \gset open_
+insert into app.privacy_requests (kind, received_at, status, closed_at) values ('deletion', now() - interval '2 days', 'done', now()) returning id \gset closed_
+create temp table t_preq as select public.privacy_requests_get() r;
+select pg_temp.check((select (x ->> 'due_at')::timestamptz = now() - interval '5 days' + interval '30 days' and x ->> 'kind' = 'access' and x ->> 'status' = 'received'
+                             and not (x ->> 'overdue')::boolean
+                      from jsonb_array_elements((select r from t_preq)) x where (x ->> 'id')::uuid = :'open_id')
+                     and not exists (select 1 from jsonb_array_elements((select r from t_preq)) x where (x ->> 'id')::uuid = :'closed_id')
+                     and (select jsonb_array_length(r) from t_preq) = (select count(*) from app.privacy_requests where status in ('received', 'in_progress') and not is_sample),
+                     'privacy_requests_get: every open request with its 30-day due date, none closed (R-SECURITY-05)');
+select pg_temp.check(not exists (select 1 from jsonb_array_elements((select r from t_preq)) x where x ? 'requester_category'), 'no requester text is returned');
+-- linking the request: the export puts it in progress, and its job carries it
+create temp table t_lexp as select (public.privacy_export(jsonb_build_object('people', jsonb_build_array((select id from app.people where deleted_at is null and not is_sample order by created_at limit 1))),
+                                                           :'open_id', null) ->> 'job')::uuid id;
+select pg_temp.check((select status from app.privacy_requests where id = :'open_id') = 'in_progress'
+                     and (select request_id from app.privacy_jobs where id = (select id from t_lexp)) = :'open_id'
+                     and (select x ->> 'status' from jsonb_array_elements(public.privacy_requests_get()) x where (x ->> 'id')::uuid = :'open_id') = 'in_progress',
+                     'an export linked to the request moves it to in progress and stays listed until done');
+select pg_temp.as_s('ingrid@orgpuls.no', null);
+select pg_temp.expect_detail($$select public.privacy_requests_get()$$, 'forbidden', 'global:security', 'privacy requests are for global:security');
+-- R-SECURITY-06: who may be named a recipient, and every one of them is accepted
+select pg_temp.as_s('tor@orgpuls.no', null);
+create temp table t_elig as select public.alerts_get() -> 'eligible' e;
+select pg_temp.check((select array_agg((x ->> 'id')::uuid order by x ->> 'id') from jsonb_array_elements((select e from t_elig)) x)
+                     = (select array_agg(a.id order by a.id::text) from app.admins a where a.active and not a.is_sample and app.staff_has_security(a.id))
+                     and not exists (select 1 from jsonb_array_elements((select e from t_elig)) x where (x ->> 'id')::uuid = (select ingrid from t_staff)),
+                     'alerts_get.eligible = the active holders of global:security (R-SECURITY-06)');
+select pg_temp.check((public.alert_recipients_set(array(select (x ->> 'id')::uuid from jsonb_array_elements((select e from t_elig)) x)) ->> 'count')::int
+                     = (select jsonb_array_length(e) from t_elig), 'alert_recipients_set accepts every eligible person');
+select public.alert_recipients_set('{}');
+-- R-SECURITY-07: a rule tied to a setting keeps what the setting says
+select pg_temp.check((select x ->> 'keep' = '12 mons' and x ->> 'default_keep' = '1 year' from jsonb_array_elements(public.retention_get()) x where x ->> 'key' = 'meeting_recordings')
+                     and (select x ->> 'keep' from jsonb_array_elements(public.retention_get()) x where x ->> 'key' = 'login_log') = '60 days',
+                     'meeting recordings keep the 12 months rec_retention says; fixed rules keep their interval (R-SECURITY-07)');
+select public.setting_set('rec_retention', 'custom', '', 6);
+select pg_temp.check((select x ->> 'keep' from jsonb_array_elements(public.retention_get()) x where x ->> 'key' = 'meeting_recordings') = '6 mons'
+                     and app.mtg_retention() = interval '6 months', 'a custom period is the effective keep, the same the purge uses');
+select public.setting_set('rec_retention', 'keep');
+select pg_temp.check((select x ->> 'keep' is null and x -> 'setting' ->> 'value' = 'keep' from jsonb_array_elements(public.retention_get()) x where x ->> 'key' = 'meeting_recordings'),
+                     'kept: no period');
+select public.setting_set('rec_retention', '12_months');
+
 rollback;

@@ -69,4 +69,11 @@ select pg_temp.check(not exists (
     where c.table_schema = 'app' and e.key = ec.entity and c.column_name = ec.col)),
   'every registered column exists');
 
+-- PostgREST runs a STABLE/IMMUTABLE function read-only: a public function that writes must be volatile (0046)
+select pg_temp.check(not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+                                 where n.nspname = 'public' and p.provolatile in ('s', 'i')
+                                   and (p.prosrc ~* 'app\.log\(' or p.prosrc ~* '\minsert\s+into' or p.prosrc ~* '\mupdate\s+app\.'
+                                        or p.prosrc ~* '\mdelete\s+from' or p.prosrc ~* 'app\.notify\(' or p.prosrc ~* 'pgmq\.send')),
+                     'no stable or immutable public function writes (PostgREST would run it read-only)');
+
 rollback;

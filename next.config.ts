@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
           // same-origin, not no-referrer: a form posted before hydration must carry its Origin, or the server action refuses it
           { key: 'Referrer-Policy', value: 'same-origin' },
           { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self), payment=(), usb=()' },
           { key: 'Content-Security-Policy', value: csp },
           // an admin tool is never indexed
           { key: 'X-Robots-Tag', value: 'noindex, nofollow' },

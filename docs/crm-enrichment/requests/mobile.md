@@ -1,5 +1,13 @@
 # Requests: Mobile (Phase 8 screen build)
 
+## Status
+
+| Request | Status |
+|---|---|
+| R-MOBILE-01 | Done in 0046 (`nearby` volatile); structure_invariants now refuses any non-volatile public function that writes |
+| R-MOBILE-02 | Done: `Permissions-Policy` allows `geolocation=(self)`; camera and microphone wait for capture uploads (R-MOBILE-04) |
+| R-MOBILE-03..06 | Open: push (VAPID reader, service worker, manifest), the record-files signer, coordinates and ids in the reads |
+
 Database and shared-code changes the Mobile screen needs. Each names the deviation it would close.
 
 | ID | Request | Why | Closes |

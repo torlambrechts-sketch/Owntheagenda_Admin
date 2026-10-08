@@ -12,15 +12,16 @@
  * checks it likewise and asks worker_jobs_claim before it runs a transcript parse or a privacy package. mail-run takes the
  * cron's worker key or the owner's own token (email_provider_check_ready); mail-events takes Brevo's events key, a
  * one-click unsubscribe token, or the app's unsubscribe page's token. search-console-run takes the cron's worker key or the
- * owner's own token (search_console_check_ready).
+ * owner's own token (search_console_check_ready). web-collect is the public site's beacon: it reads only an origin that
+ * belongs to a registered site and answers 204 to everything.
  */
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 
 const REF = process.env.PLATFORM_PROJECT_REF ?? 'zuvqbaejoktpekfsiyyr'
 const TOKEN = process.env.SB_MCP_PAT ?? process.env.SUPABASE_ACCESS_TOKEN
-const FUNCTIONS = ['orgpuls-events', 'product-command', 'secret-intake', 'session-report', 'storage-sign', 'jobs-run', 'mail-run', 'mail-events', 'search-console-run']
-const SHARED = ['_shared/signing.ts', '_shared/orgpuls.ts', '_shared/secrets.ts', '_shared/zip.ts', '_shared/transcript.ts', '_shared/privacy-package.ts', '_shared/brevo.ts', '_shared/brevo-events.ts', '_shared/mail-render.ts', '_shared/mail-texts.gen.ts', '_shared/google.ts']
+const FUNCTIONS = ['orgpuls-events', 'product-command', 'secret-intake', 'session-report', 'storage-sign', 'jobs-run', 'mail-run', 'mail-events', 'search-console-run', 'web-collect']
+const SHARED = ['_shared/signing.ts', '_shared/orgpuls.ts', '_shared/secrets.ts', '_shared/zip.ts', '_shared/transcript.ts', '_shared/privacy-package.ts', '_shared/brevo.ts', '_shared/brevo-events.ts', '_shared/mail-render.ts', '_shared/mail-texts.gen.ts', '_shared/google.ts', '_shared/web-collect.ts']
 const ROOT = 'supabase/functions'
 
 execFileSync('npx', ['-y', 'deno', 'check', '--config', `${ROOT}/deno.json`, ...FUNCTIONS.map((f) => `${ROOT}/${f}/index.ts`)], { stdio: 'inherit' })

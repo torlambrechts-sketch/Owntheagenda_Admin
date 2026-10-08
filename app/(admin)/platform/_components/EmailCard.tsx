@@ -28,6 +28,9 @@ export function EmailCard({ p, apps, current }: { p: EmailProvider; apps: { key:
   const [inbound, setInbound] = useState(p.inbound_domain ?? '')
   const [appBase, setAppBase] = useState(p.app_bases[current] ?? '')
   const appName = apps.find((a) => a.key === current)?.name ?? current
+  // the two link addresses are web addresses of this deployment, never email addresses: said before the server refuses
+  const baseOk = !base.trim() || /^https:\/\/[a-z0-9.-]+(:\d+)?\/?$/i.test(base.trim())
+  const appBaseOk = !appBase.trim() || /^https:\/\/post\.[a-z0-9.-]+\.[a-z]{2,}\/?$/i.test(appBase.trim())
   const [adding, setAdding] = useState(false)
 
   const connect = () => s.call(() => connectBrevo({ key }), (r) => {
@@ -100,24 +103,29 @@ export function EmailCard({ p, apps, current }: { p: EmailProvider; apps: { key:
           <div className="flex flex-col gap-2 border-t border-line pt-3">
             <label className={k.label}>
               {t('publicBase')}
-              <input value={base} onChange={(e) => setBase(e.target.value)} placeholder="https://…" className={`${k.input} ${k.mono}`} />
+              <input value={base} onChange={(e) => setBase(e.target.value)} placeholder={p.public_base ?? 'https://…'} aria-invalid={!baseOk} className={`${k.input} ${k.mono}`} />
             </label>
-            <span className={k.note}>{t('publicBaseNote')}</span>
-            <label className={k.label}>
-              {t('appBase', { app: appName })}
-              <input value={appBase} onChange={(e) => setAppBase(e.target.value)} placeholder="https://post.…" className={`${k.input} ${k.mono}`} />
-            </label>
-            <span className={k.note}>{t('appBaseNote', { app: appName })}{p.app_bases[current] ? '' : ` ${t('appBaseNone', { app: appName })}`}</span>
-            <div>
-              <button type="button" disabled={pending || appBase === (p.app_bases[current] ?? '')} onClick={() => run(() => saveAppBase({ product: current, base: appBase.trim() }), t('saved'))} className={k.btn}>{t('save')}</button>
-            </div>
+            <span className={baseOk ? k.note : `${k.note} font-semibold text-danger`}>{baseOk ? t('publicBaseNote') : t('publicBaseInvalid')}</span>
             <label className={k.label}>
               {t('inbound')}
               <input value={inbound} onChange={(e) => setInbound(e.target.value)} placeholder={t('inboundPh')} className={`${k.input} ${k.mono}`} />
             </label>
             <span className={k.note}>{p.inbound_domain ? (p.inbound_ok ? t('inboundOk', { domain: p.inbound_domain }) : t('inboundPending', { domain: p.inbound_domain })) : t('inboundNote')}</span>
             <div>
-              <button type="button" disabled={pending || !base} onClick={() => run(() => saveMailSettings({ publicBase: base, inboundDomain: inbound || null }), t('saved'))} className={k.btn}>{t('save')}</button>
+              <button type="button" disabled={pending || !base || !baseOk} onClick={() => run(() => saveMailSettings({ publicBase: base.trim(), inboundDomain: inbound || null }), t('saved'))} className={k.btn}>{t('save')}</button>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 border-t border-line pt-3">
+            <label className={k.label}>
+              {t('appBase', { app: appName })}
+              <input value={appBase} onChange={(e) => setAppBase(e.target.value)} placeholder="https://post.orgpuls.com" aria-invalid={!appBaseOk} className={`${k.input} ${k.mono}`} />
+            </label>
+            <span className={appBaseOk ? k.note : `${k.note} font-semibold text-danger`}>
+              {appBaseOk ? <>{t('appBaseNote', { app: appName })}{p.app_bases[current] ? '' : ` ${t('appBaseNone', { app: appName })}`}</> : t('appBaseInvalid', { app: appName })}
+            </span>
+            <div>
+              <button type="button" disabled={pending || !appBaseOk || appBase.trim() === (p.app_bases[current] ?? '')} onClick={() => run(() => saveAppBase({ product: current, base: appBase.trim() }), t('saved'))} className={k.btn}>{t('save')}</button>
             </div>
           </div>
         </>

@@ -36,11 +36,14 @@ export const Overview = z.object({
   days: n,
   site: Site,
   tracked: z.boolean(),
+  // the tracker's first day (0067): visitors and the visit → signup share mean nothing before it
+  tracked_since: z.string().nullable().catch(null),
   kpis: z.object({
     visitors: nn,
     visitors_prev: nn,
     signups: n,
     signups_prev: n,
+    signups_tracked: nn.catch(null),
     trial_conversion: z.object({ trials: nn, converted: nn }).nullable(),
     spend: nn,
     spend_excluded_currency: n,

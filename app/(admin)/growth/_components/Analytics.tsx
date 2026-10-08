@@ -24,6 +24,10 @@ export async function Analytics({ d, nf, app }: { d: Overview; nf: NumberFormat;
   const cac = k.spend !== null && k.paying_new > 0 ? k.spend / k.paying_new : null
   const channel = (c: string) => (t.has(`channels.${c}`) ? t(`channels.${c}`) : c)
   const noTracker = d.site ? t('tracker.waiting', { site: d.site.hostname }) : t('tracker.noSite', { app })
+  // the tracker began inside the period: the share divides only the signups of the days it counted (0067)
+  const first = d.daily[0]?.day
+  const partial = !!d.tracked_since && !!first && d.tracked_since > first
+  const since = d.tracked_since ? format.dateTime(new Date(`${d.tracked_since}T12:00:00Z`), { day: 'numeric', month: 'long' }) : ''
 
   // the chart: visitors as the area, signups dashed — scaled to the visitors when there are any (the design's «scaled»)
   const n = d.daily.length
@@ -50,7 +54,8 @@ export async function Analytics({ d, nf, app }: { d: Overview; nf: NumberFormat;
       <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
         <Tile label={t('kpi.visitors')} value={num(k.visitors)} delta={pctDelta(k.visitors, k.visitors_prev, nf)} title={k.visitors === null ? noTracker : undefined} />
         <Tile label={t('kpi.signups')} value={formatNumber(k.signups, nf)} delta={pctDelta(k.signups, k.signups_prev, nf)} />
-        <Tile label={t('kpi.visitSignup')} value={pct(k.visitors ? share(k.signups, k.visitors) : null)} title={k.visitors === null ? noTracker : undefined} />
+        <Tile label={t('kpi.visitSignup')} value={pct(k.visitors && k.signups_tracked !== null ? share(k.signups_tracked, k.visitors) : null)}
+          title={k.visitors === null ? noTracker : partial ? t('kpi.visitSignupSince', { date: since }) : undefined} />
         <Tile label={t('kpi.trialPaid')} value={pct(conv === null ? null : Math.round(conv))} title={t('kpi.trialPaidTip')} />
         <Tile label={t('kpi.cost')} value={cac === null ? dash : money(cac, nf)}
           title={k.spend === null ? t('kpi.costNone') : t('kpi.costTip', { from: format.dateTime(new Date(`${k.spend_from.slice(0, 7)}-15T12:00:00Z`), { month: 'long', year: 'numeric' }), customers: k.paying_new })} />

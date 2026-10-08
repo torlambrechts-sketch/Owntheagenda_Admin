@@ -22,6 +22,7 @@
         "visitors": "Besøkende",
         "signups": "Registreringer",
         "visitSignup": "Besøk → registrering",
+        "visitSignupSince": "Registreringer siden {date}, da besøkstellingen startet, delt på besøkende.",
         "trialPaid": "Prøve → betalende",
         "trialPaidTip": "Prøveperioder startet i kohortmånedene som ble betalende innen 45 dager (som Analyse › Forretning).",
         "cost": "Kostnad per kunde",

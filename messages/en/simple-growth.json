@@ -22,6 +22,7 @@
         "visitors": "Visitors",
         "signups": "Signups",
         "visitSignup": "Visit → signup",
+        "visitSignupSince": "Signups since {date}, when the website tracker started, divided by its visitors.",
         "trialPaid": "Trial → paid",
         "trialPaidTip": "Trials started in the cohort months that became paying within 45 days (as Analytics › Business).",
         "cost": "Cost per customer",

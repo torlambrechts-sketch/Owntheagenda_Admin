@@ -76,4 +76,16 @@ select pg_temp.check(not exists (select 1 from pg_proc p join pg_namespace n on 
                                         or p.prosrc ~* '\mdelete\s+from' or p.prosrc ~* 'app\.notify\(' or p.prosrc ~* 'pgmq\.send')),
                      'no stable or immutable public function writes (PostgREST would run it read-only)');
 
+-- the hosted authenticator loads pg-safeupdate (0065): an UPDATE or DELETE with no WHERE at its top level is refused there,
+-- even inside a security definer function, while these suites (run as postgres) would pass it. Parenthesised parts
+-- (subqueries, case arguments) are dropped before looking for the WHERE.
+select pg_temp.check(not exists (
+  select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+  cross join lateral regexp_matches(p.prosrc, '((?:\mupdate|\mdelete\s+from)\s+(?:only\s+)?[a-z_]+\.[a-z_]+[^;]*;)', 'gi') m
+  where n.nspname in ('app', 'public') and p.prokind = 'f'
+    and regexp_replace(regexp_replace(regexp_replace(regexp_replace(regexp_replace(regexp_replace(m[1],
+          '\([^()]*\)', '', 'g'), '\([^()]*\)', '', 'g'), '\([^()]*\)', '', 'g'), '\([^()]*\)', '', 'g'), '\([^()]*\)', '', 'g'), '\([^()]*\)', '', 'g')
+        !~* '\mwhere\M'),
+  'every UPDATE and DELETE in a function has a WHERE clause (the hosted project refuses one without)');
+
 rollback;

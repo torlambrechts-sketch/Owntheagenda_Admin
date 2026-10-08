@@ -215,7 +215,10 @@ select app.security_alerts_run();
 select pg_temp.check(exists (select 1 from app.security_alert_deliveries where channel = 'email' and status = 'queued'), 'an alert''s email is queued once mail is ready');
 select pg_temp.as_service();
 create temp table t_alerts as select public.worker_alert_mail_claim(100) c;
-select pg_temp.check(jsonb_array_length((select c from t_alerts)) > 0 and (select bool_and(x ->> 'to' is not null and x ->> 'kind' = 'user_invited') from jsonb_array_elements((select c from t_alerts)) x),
+-- the seed's own alerts from the last day that waited for the provider are released too (0060), so this one is looked for
+-- among them; which seed alerts fall inside the day depends on the hour the suite runs
+select pg_temp.check(exists (select 1 from jsonb_array_elements((select c from t_alerts)) x where x ->> 'kind' = 'user_invited')
+                     and (select bool_and(x ->> 'to' is not null) from jsonb_array_elements((select c from t_alerts)) x),
                      'the worker claims each recipient''s alert email');
 select public.worker_alert_mail_done((x ->> 'event')::bigint, (x ->> 'recipient')::uuid, true) from jsonb_array_elements((select c from t_alerts)) x;
 select pg_temp.check(not exists (select 1 from app.security_alert_deliveries d join jsonb_array_elements((select c from t_alerts)) x

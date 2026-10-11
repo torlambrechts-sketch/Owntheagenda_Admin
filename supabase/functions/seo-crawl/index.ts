@@ -172,6 +172,10 @@ Deno.serve(async (req) => {
     }
     const { error } = await svc.rpc('worker_seo_crawl_result', { p_site: s.site_id, p_pages: r.pages.length, p_ms: ms, p_issues: r.issues, p_error: left() ? null : 'partial' })
     if (error) log(`result refused ${error.code ?? ''}`)
+    // what each page said about itself, for Pages and links (0073): no body, no links
+    const facts = r.pages.map((p) => ({ path: p.path.slice(0, 300), title: p.title, description: p.description, h1: p.h1, status: p.status, ms: p.ms, noindex: p.noindex }))
+    const { error: pagesError } = await svc.rpc('worker_seo_pages', { p_site: s.site_id, p_pages: facts })
+    if (pagesError) log(`pages refused ${pagesError.code ?? ''}`)
     out.push({ site_id: s.site_id, pages: r.pages.length, issues: r.issues.length })
     log(`site pages=${r.pages.length} issues=${r.issues.length} ms=${ms}`)
   }

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+
+  <sc-if value="{{ v.overview }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px"><sc-for list="{{ ov.kpis }}" as="k" hint-placeholder-count="6"><div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:18px; padding:13px 15px"><div style="font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#5F5849">{{ k.n }}</div><div style="display:flex; align-items:baseline; gap:8px; margin-top:5px"><span style="font-family:'Playfair Display',serif; font-size:23px; font-weight:600; white-space:nowrap">{{ k.v }}</span><span style="font-size:12px; font-weight:700; color:{{ k.dc }}; white-space:nowrap">{{ k.d }}</span></div><div style="font-size:11.5px; color:#5F5849">{{ k.s }}</div></div></sc-for></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:baseline"><b style="font-size:15px">Top 5 actions this week</b><span style="font-size:12px; color:#5F5849">Ranked by value per month</span></div>
+          <sc-for list="{{ ov.actions }}" as="a"><div style="display:flex; gap:12px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9"><span style="width:76px; flex:none; font-family:'Playfair Display',serif; font-size:16px; font-weight:600; color:#2F5D2A; white-space:nowrap">{{ a.valF }}</span><span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px"><b style="font-size:13px; line-height:1.3">{{ a.t }}</b><span style="font-size:11.5px; color:#5F5849">{{ a.type }} · effort {{ a.effort }}</span></span><button onClick="{{ a.doIt }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #191510; background:{{ a.bg }}; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">{{ a.cta }}</button></div></sc-for>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px">
+          <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+            <b style="font-size:15px">Index coverage · Search Console</b>
+            <div style="display:flex; height:16px; border-radius:6px; overflow:hidden"><sc-for list="{{ ov.index }}" as="i"><span title="{{ i.n }}" style="width:{{ i.w }}%; background:{{ i.c }}"></span></sc-for></div>
+            <sc-for list="{{ ov.index }}" as="i"><div style="display:flex; justify-content:space-between; font-size:12.5px"><span style="display:flex; gap:7px; align-items:center"><span style="width:10px; height:10px; border-radius:3px; background:{{ i.c }}"></span>{{ i.n }}</span><b>{{ i.v }}</b></div></sc-for>
+          </div>
+          <div style="background:#FCF6E9; border:1px dashed #C4BCA8; border-radius:20px; padding:14px 16px; display:flex; flex-direction:column; gap:6px">
+            <b style="font-size:13px">Data confidence</b>
+            <sc-for list="{{ ov.confidence }}" as="c"><span style="font-size:12px; line-height:1.45; color:#3A342A">· {{ c }}</span></sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.clusters }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr)); gap:14px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <sc-for list="{{ clusters }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.pick }}" style="display:flex; flex-direction:column; gap:8px; padding:14px 16px; border-radius:18px; border:1px solid {{ c.bc }}; background:{{ c.bg }}; cursor:pointer; text-align:left">
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:baseline"><b style="font-size:14px">{{ c.n }}</b><span style="font-size:12px; color:#5F5849; white-space:nowrap">{{ c.kws }} keywords · {{ c.pages }} pages</span></div>
+          <div style="display:flex; gap:14px; align-items:center"><span style="display:flex; flex-direction:column"><span style="font-family:'Playfair Display',serif; font-size:24px; font-weight:600">{{ c.visF }}</span><span style="font-size:11px; color:#5F5849">visibility</span></span><svg viewBox="0 0 160 36" preserveAspectRatio="none" style="flex:1; height:36px"><polyline points="{{ c.spark }}" fill="none" stroke="{{ c.stroke }}" stroke-width="2" vector-effect="non-scaling-stroke"></polyline></svg><span style="display:flex; flex-direction:column; align-items:flex-end"><b style="font-size:14px; color:{{ c.tc }}">{{ c.trend }}</b><span style="font-size:11px; color:#5F5849">{{ c.mrr }} MRR</span></span></div>
+        </button></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #191510; border-radius:20px; padding:16px 20px; display:flex; flex-direction:column; gap:11px">
+        <b style="font-family:'Playfair Display',serif; font-size:20px">{{ cl.n }}</b>
+        <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Main page</div>
+        <div style="display:flex; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:12px; background:#FBEBBE; border:1px solid #191510; font-size:12.5px"><span style="font-family:ui-monospace,Menlo,monospace; min-width:0; overflow-wrap:anywhere">{{ cl.pillar }}</span><b style="white-space:nowrap">{{ cl.pillarPos }}</b></div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Supporting articles</div>
+        <sc-for list="{{ cl.spokes }}" as="s"><div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid #F2EAD6; font-size:12.5px"><span style="display:flex; flex-direction:column; min-width:0"><b>{{ s.t }}</b><span style="font-size:11px; color:#5F5849; font-family:ui-monospace,Menlo,monospace; overflow-wrap:anywhere">{{ s.url }}</span></span><span style="display:flex; gap:6px; align-items:center; flex:none"><span style="font-size:11.5px; font-weight:700; color:{{ s.c }}; white-space:nowrap">{{ s.state }}</span><sc-if value="{{ s.missing }}"><button onClick="{{ s.plan }}" style="height:26px; padding:0 9px; border-radius:8px; border:1px solid #191510; background:#F5C64A; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap">Plan</button></sc-if></span></div></sc-for>
+        <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Share of clicks in this topic</div>
+        <sc-for list="{{ cl.share }}" as="s"><div style="display:grid; grid-template-columns:130px minmax(0,1fr) 40px; gap:8px; align-items:center; font-size:12px"><span style="font-weight:{{ s.fw }}">{{ s.n }}</span><span style="height:9px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ s.w }}%; background:{{ s.c }}"></span></span><b style="text-align:right">{{ s.v }}</b></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.opps }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center"><sc-for list="{{ oppTypes }}" as="t"><button onClick="{{ t.pick }}" style="padding:5px 11px; border-radius:999px; font-size:12px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; font-weight:{{ t.fw }}; white-space:nowrap">{{ t.n }} <span style="color:#5F5849">{{ t.count }}</span></button></sc-for><span style="flex:1"></span><span style="font-size:12px; color:#5F5849">Value = volume × click-rate gain × signup rate × paid rate × average revenue (ARPA) × chance of winning</span></div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="display:grid; grid-template-columns:minmax(0,2fr) 110px 60px 70px 90px 96px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#5F5849"><span>Opportunity</span><span>Type</span><span>Difficulty</span><span>Effort</span><span>Value / mo</span><span></span></div>
+        <sc-for list="{{ opps }}" as="o" hint-placeholder-count="10"><div style="display:grid; grid-template-columns:minmax(0,2fr) 110px 60px 70px 90px 96px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column; min-width:0"><b style="line-height:1.3">{{ o.t }}</b><span style="font-size:11.5px; color:#5F5849; overflow-wrap:anywhere">{{ o.s }}</span></span><span><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ o.tbg }}; white-space:nowrap">{{ o.type }}</span></span><span style="color:{{ o.kdc }}; font-weight:700">{{ o.kd }}</span><span>{{ o.effort }}</span><b style="color:#2F5D2A; white-space:nowrap">{{ o.valF }}</b><button onClick="{{ o.doIt }}" style="height:30px; padding:0 10px; border-radius:9px; border:1px solid #191510; background:{{ o.bg }}; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap">{{ o.cta }}</button></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.plan }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; align-items:flex-start">
+        <sc-for list="{{ planCols }}" as="col" hint-placeholder-count="4"><div style="flex:1 0 220px; display:flex; flex-direction:column; gap:8px; border-radius:18px; padding:8px; background:#F2EAD6; min-height:260px">
+          <div style="padding:6px 6px 8px; border-bottom:3px solid {{ col.c }}; display:flex; justify-content:space-between"><b style="font-size:13px">{{ col.n }}</b><span style="font-size:12px; color:#5F5849">{{ col.count }}</span></div>
+          <sc-for list="{{ col.cards }}" as="p"><div onClick="{{ p.open }}" style="display:flex; flex-direction:column; gap:6px; padding:10px 11px; border-radius:14px; background:#FFFDF6; border:1px solid {{ p.bc }}; cursor:pointer"><b style="font-size:12.5px; line-height:1.3">{{ p.t }}</b><span style="font-size:11.5px; color:#5F5849">{{ p.kw }} · {{ p.owner }}</span><span style="display:flex; justify-content:space-between; align-items:center; font-size:11.5px"><b style="color:#2F5D2A">{{ p.valF }}</b><span style="display:flex; gap:3px"><button onClick="{{ p.back }}" style="width:24px; height:24px; border-radius:7px; border:1px solid #E8DFC9; background:transparent; cursor:pointer; font-size:11px">←</button><button onClick="{{ p.fwd }}" style="width:24px; height:24px; border-radius:7px; border:1px solid #191510; background:#FFFDF6; cursor:pointer; font-size:11px">→</button></span></span><sc-if value="{{ p.result }}"><span style="font-size:11.5px; font-weight:700; color:{{ p.rc }}">{{ p.result }}</span></sc-if></div></sc-for>
+        </div></sc-for>
+      </div>
+      <sc-if value="{{ brief }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFDF6; border:1px solid #191510; border-radius:20px; padding:18px 22px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:16px">
+          <div style="display:flex; flex-direction:column; gap:8px; grid-column:1/-1"><div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start"><div><div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Content brief · {{ brief.stage }}</div><b style="font-family:'Playfair Display',serif; font-size:21px; line-height:1.2">{{ brief.t }}</b></div><button onClick="{{ closeBrief }}" style="width:30px; height:30px; flex:none; border-radius:999px; border:1px solid #191510; background:transparent; cursor:pointer">×</button></div></div>
+          <div style="display:flex; flex-direction:column; gap:7px"><span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Target</span><b style="font-size:13.5px">{{ brief.kw }}</b><span style="font-size:12px; color:#5F5849">URL {{ brief.url }} · intent {{ brief.intent }}</span><span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849; margin-top:6px">Related terms to cover</span><div style="display:flex; flex-wrap:wrap; gap:4px"><sc-for list="{{ brief.terms }}" as="t"><span style="padding:3px 9px; border-radius:999px; font-size:11.5px; background:#F2EAD6">{{ t }}</span></sc-for></div></div>
+          <div style="display:flex; flex-direction:column; gap:7px"><span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Questions to answer (People also ask)</span><sc-for list="{{ brief.qs }}" as="q"><span style="font-size:12.5px">? {{ q }}</span></sc-for></div>
+          <div style="display:flex; flex-direction:column; gap:7px"><span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849">Length vs top 3</span><sc-for list="{{ brief.len }}" as="l"><div style="display:grid; grid-template-columns:120px minmax(0,1fr) 54px; gap:8px; align-items:center; font-size:12px"><span style="font-weight:{{ l.fw }}">{{ l.n }}</span><span style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ l.w }}%; background:{{ l.c }}"></span></span><b style="text-align:right">{{ l.v }}</b></div></sc-for><span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5F5849; margin-top:6px">Internal links to add</span><sc-for list="{{ brief.links }}" as="l"><span style="font-size:12px; font-family:ui-monospace,Menlo,monospace">↳ {{ l }}</span></sc-for></div>
+          <sc-if value="{{ brief.measured }}"><div style="grid-column:1/-1; display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px"><sc-for list="{{ brief.measured }}" as="m"><div style="border-radius:13px; background:#CFE7E4; padding:9px 11px"><div style="font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#20431C">{{ m.k }} · 28 d</div><b style="font-size:14px">{{ m.v }}</b></div></sc-for></div></sc-if>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.links }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden; grid-column:1/-1">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between; align-items:baseline"><b style="font-size:15px">Suggested internal links</b><span style="font-size:12px; color:#5F5849">Pages that mention the topic but don’t link to the main page</span></div>
+        <sc-for list="{{ linkSugs }}" as="l"><div style="display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.1fr) 160px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; overflow-wrap:anywhere">{{ l.from }}</span><span>«{{ l.anchor }}»</span><span style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; overflow-wrap:anywhere">→ {{ l.to }}</span><span style="display:flex; gap:6px; justify-content:flex-end"><sc-if value="{{ l.pending }}"><button onClick="{{ l.skip }}" style="height:28px; padding:0 9px; border-radius:8px; border:1px solid #E8DFC9; background:transparent; font-size:11.5px; cursor:pointer">Skip</button><button onClick="{{ l.accept }}" style="height:28px; padding:0 10px; border-radius:8px; border:1px solid #191510; background:#F5C64A; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap">Add link</button></sc-if><sc-if value="{{ l.done }}"><b style="font-size:12px; color:{{ l.dc }}">{{ l.done }}</b></sc-if></span></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Orphan pages</b><span style="font-size:12px; color:#5F5849">No internal links point here</span></div>
+        <sc-for list="{{ orphans }}" as="o"><div style="display:flex; justify-content:space-between; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; overflow-wrap:anywhere">{{ o.u }}</span><span style="color:#5F5849; white-space:nowrap">{{ o.s }}</span></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Most linked pages</b><span style="font-size:12px; color:#5F5849">Inlinks · top anchor</span></div>
+        <sc-for list="{{ hubs }}" as="h"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) 50px minmax(0,1fr); gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; overflow-wrap:anywhere">{{ h.u }}</span><b>{{ h.n }}</b><span style="color:#5F5849">«{{ h.a }}»</span></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.serp }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 20px">
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:baseline; margin-bottom:10px"><b style="font-size:15px">Visibility vs competitors · 12 weeks</b><span style="display:flex; flex-wrap:wrap; gap:12px; font-size:11.5px; color:#5F5849"><sc-for list="{{ comps }}" as="c"><span style="display:flex; gap:6px; align-items:center"><span style="width:14px; height:3px; background:{{ c.c }}"></span>{{ c.n }} <b style="color:#191510">{{ c.last }}</b></span></sc-for></span></div>
+        <svg viewBox="0 0 600 160" preserveAspectRatio="none" style="width:100%; height:160px; display:block"><line x1="0" y1="159" x2="600" y2="159" stroke="#C4BCA8"></line><sc-for list="{{ comps }}" as="c"><polyline points="{{ c.pts }}" fill="none" stroke="{{ c.c }}" stroke-width="{{ c.sw }}" vector-effect="non-scaling-stroke"></polyline></sc-for></svg>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Search result features</b><span style="font-size:12px; color:#5F5849">● we have it · ○ competitor has it · – not shown</span></div>
+        <div style="display:grid; grid-template-columns:minmax(0,1.6fr) repeat(5,minmax(70px,1fr)); gap:8px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#5F5849"><span>Keyword</span><span>Snippet</span><span>People ask</span><span>AI overview</span><span>Video</span><span>Local</span></div>
+        <sc-for list="{{ features }}" as="f"><div style="display:grid; grid-template-columns:minmax(0,1.6fr) repeat(5,minmax(70px,1fr)); gap:8px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b style="overflow-wrap:anywhere">{{ f.q }}</b><sc-for list="{{ f.cells }}" as="c"><span title="{{ c.tip }}" style="font-size:12px; color:{{ c.c }}; font-weight:700; overflow-wrap:anywhere">{{ c.v }}</span></sc-for></div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Keyword gaps — they rank, we don’t</b><span style="font-size:12px; color:#5F5849">From the SEO tool’s competitor data (Ahrefs / Semrush)</span></div>
+        <sc-for list="{{ gaps }}" as="g"><div style="display:grid; grid-template-columns:minmax(0,1.5fr) 70px minmax(0,1.3fr) 96px; gap:10px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b style="overflow-wrap:anywhere">{{ g.q }}</b><span>{{ g.vol }}</span><span style="color:#5F5849">{{ g.who }}</span><button onClick="{{ g.plan }}" style="height:28px; padding:0 10px; border-radius:8px; border:1px solid #191510; background:{{ g.bg }}; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap">{{ g.cta }}</button></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.changes }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:14px 18px; display:flex; flex-wrap:wrap; gap:8px; align-items:center">
+        <b style="font-size:14px; margin-right:6px">Log a change</b>
+        <select value="{{ nc.page }}" onChange="{{ setNcPage }}" style="height:34px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><sc-for list="{{ pageOpts }}" as="p"><option>{{ p }}</option></sc-for></select>
+        <select value="{{ nc.type }}" onChange="{{ setNcType }}" style="height:34px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"><option>Title and meta</option><option>Content update</option><option>Internal links</option><option>Schema markup</option><option>Speed fix</option><option>New page</option><option>Merge pages</option></select>
+        <input value="{{ nc.note }}" onChange="{{ setNcNote }}" placeholder="What changed?" style="flex:1 1 200px; height:34px; padding:0 10px; border-radius:9px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:12.5px"></input>
+        <button onClick="{{ addChange }}" style="height:34px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap">Log change</button>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 20px">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px"><b style="font-size:15px">Organic clicks per day with changes marked</b><span style="font-size:12px; color:#5F5849">Last 60 days · hover a dot</span></div>
+        <div style="position:relative">
+          <svg viewBox="0 0 600 140" preserveAspectRatio="none" style="width:100%; height:140px; display:block"><polygon points="{{ cline.area }}" fill="#E4EEEC"></polygon><polyline points="{{ cline.line }}" fill="none" stroke="#5C9A55" stroke-width="2" vector-effect="non-scaling-stroke"></polyline></svg>
+          <sc-for list="{{ cline.marks }}" as="m"><span title="{{ m.tip }}" style="position:absolute; top:0; bottom:0; left:{{ m.x }}%; width:2px; background:#F5C64A"><span style="position:absolute; top:-4px; left:-5px; width:12px; height:12px; border-radius:999px; background:#F5C64A; border:1.5px solid #191510"></span></span></sc-for>
+        </div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="display:grid; grid-template-columns:80px minmax(0,1.3fr) minmax(0,1.5fr) 80px 80px 70px 90px; gap:10px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#5F5849"><span>Date</span><span>Page</span><span>Change</span><span>Clicks</span><span>Position</span><span>CTR</span><span>Result</span></div>
+        <sc-for list="{{ changes }}" as="c" hint-placeholder-count="6"><div style="display:grid; grid-template-columns:80px minmax(0,1.3fr) minmax(0,1.5fr) 80px 80px 70px 90px; gap:10px; align-items:center; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px; font-variant-numeric:tabular-nums"><span style="color:#5F5849">{{ c.date }}</span><span style="font-family:ui-monospace,Menlo,monospace; font-size:11.5px; overflow-wrap:anywhere">{{ c.page }}</span><span style="display:flex; flex-direction:column"><b>{{ c.type }}</b><span style="font-size:11.5px; color:#5F5849">{{ c.note }}</span></span><span style="color:{{ c.cc }}; font-weight:700">{{ c.clicks }}</span><span style="color:{{ c.pc }}; font-weight:700">{{ c.pos }}</span><span>{{ c.ctr }}</span><span><span style="padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; background:{{ c.rbg }}; color:{{ c.rc }}; white-space:nowrap">{{ c.result }}</span></span></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.alerts }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Alert rules</b><span style="font-size:12px; color:#5F5849">Checked every hour</span></div>
+        <sc-for list="{{ rules }}" as="r"><div style="display:flex; flex-direction:column; gap:7px; padding:11px 18px; border-bottom:1px solid #E8DFC9">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px"><b style="font-size:13px; opacity:{{ r.op }}">{{ r.n }}</b><button onClick="{{ r.toggle }}" style="position:relative; width:40px; height:22px; flex:none; border-radius:999px; border:none; background:{{ r.track }}; cursor:pointer"><span style="position:absolute; top:3px; left:{{ r.knob }}px; width:16px; height:16px; border-radius:999px; background:#FFFDF6"></span></button></div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:12px; color:#5F5849; opacity:{{ r.op }}"><span>{{ r.cond }}</span><sc-for list="{{ r.chans }}" as="c"><button onClick="{{ c.toggle }}" style="padding:3px 9px; border-radius:999px; font-size:11px; border:1px solid {{ c.bc }}; background:{{ c.bg }}; font-weight:{{ c.fw }}; cursor:pointer; white-space:nowrap">{{ c.n }}</button></sc-for></div>
+        </div></sc-for>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Alert history</b><span style="font-size:12px; color:#5F5849">{{ openAlerts }} open</span></div>
+        <sc-for list="{{ history }}" as="h"><div style="display:flex; gap:12px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9; opacity:{{ h.op }}"><span style="width:7px; align-self:stretch; border-radius:999px; background:{{ h.c }}"></span><span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px"><b style="font-size:13px; line-height:1.3">{{ h.t }}</b><span style="font-size:11.5px; color:#5F5849">{{ h.when }} · {{ h.s }}</span></span><button onClick="{{ h.ack }}" style="height:28px; padding:0 10px; border-radius:8px; border:1px solid #191510; background:#FFFDF6; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none">{{ h.cta }}</button></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(p) { super(p); const S = window.__seo || (window.__seo = { plan: null, changes: [], links: {}, done: {}, ack: {}, rulesOff: {}, chans: {} }); this.state = { cluster: 0, oppType: 'All', brief: null, nc: { page: '/pris', type: 'Title and meta', note: '' }, toast: null, tick: 0, ready: !!window.SA }; this.S = S; }
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  bump() { this.setState({ tick: this.state.tick + 1 }); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2400); }
+  rng(seed) { let s = seed * 7919 + 13; return () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }; }
+  addPlan(o) { const S = this.S; if (S.plan.some((p) => p.t === o.t)) return; S.plan.unshift({ id: 'c' + Date.now() + Math.random(), t: o.t, kw: o.kw || o.t.toLowerCase(), url: o.url || '/artikler/ny', val: o.val || 2000, stage: 0, owner: 'Jonas' }); this.bump(); this.flash('Added to the content plan'); }
+  renderVals() {
+    const D = window.SA; const st = this.state; const S = this.S; const go = this.props.go || (() => {});
+    const empty = { v: {}, ov: { kpis: [], actions: [], index: [], confidence: [] }, clusters: [], cl: { spokes: [], share: [] }, oppTypes: [], opps: [], planCols: [], linkSugs: [], orphans: [], hubs: [], comps: [], features: [], gaps: [], cline: { marks: [] }, changes: [], pageOpts: [], nc: {}, rules: [], history: [] };
+    if (!D) return empty;
+    const kr = D.kr, nb = D.nb, pct = D.pct; const view = this.props.view || 'overview';
+    const ARPA = 620, SIGN = 0.018, PAID = 0.31;
+    const inPlan = (t) => (S.plan || []).some((p) => p.t === t);
+    if (!S.plan) S.plan = [
+      { id: 'p1', t: 'Hvordan gjennomføre en medarbeiderundersøkelse', kw: 'hvordan gjennomføre medarbeiderundersøkelse', url: '/artikler/gjennomfore-medarbeiderundersokelse', val: 5200, stage: 1, owner: 'Jonas' },
+      { id: 'p2', t: 'Sjekkliste for vernerunde', kw: 'sjekkliste vernerunde', url: '/artikler/sjekkliste-vernerunde', val: 3100, stage: 0, owner: 'Emma' },
+      { id: 'p3', t: 'Ny tittel og FAQ: Lovkrav', kw: 'psykososialt arbeidsmiljø lovkrav', url: '/lovkrav', val: 2400, stage: 2, owner: 'Jonas' },
+      { id: 'p4', t: 'Oppdatere mal for medarbeiderundersøkelse 2026', kw: 'medarbeiderundersøkelse mal', url: '/artikler/medarbeiderundersokelse-mal', val: 6800, stage: 3, owner: 'Jonas', result: '+38 % clicks · pos 6,1 → 4,2' },
+      { id: 'p5', t: 'QPS Nordic forklart', kw: 'qps nordic', url: '/artikler/qps-nordic', val: 1800, stage: 3, owner: 'Emma', result: '+12 % clicks · pos 7,9 → 6,1' },
+    ];
+    // ---------- overview ----------
+    const orgClicks = 9840, orgSign = 151, orgMRR = 41 * ARPA;
+    const OPP = [
+      ['Striking distance', 'Move «medarbeiderundersøkelse» from #4,2 into top 3', '18 400 searches · currently 4,1 % CTR', 'medarbeiderundersøkelse', '/artikler/medarbeiderundersokelse-mal', 18400, 0.10 - 0.041, 0.75, 54, 'medium'],
+      ['Low CTR', 'Rewrite title for «psykososialt arbeidsmiljø lovkrav»', 'Position 1,9 but 31 % CTR vs 34 % expected · add year and benefit', 'psykososialt arbeidsmiljø lovkrav', '/lovkrav', 6100, 0.03, 0.95, 22, 'small'],
+      ['Content gap', 'New guide: Hvordan gjennomføre en medarbeiderundersøkelse', '6 200 searches · no page in top 20', 'hvordan gjennomføre medarbeiderundersøkelse', '/artikler/gjennomfore-medarbeiderundersokelse', 6200, 0.06, 0.5, 38, 'large'],
+      ['Cannibalization', 'Merge two pages competing for «medarbeiderundersøkelse mal»', '/artikler/…-mal and /artikler/mal-2024 split clicks 60/40', 'medarbeiderundersøkelse mal gratis', '/artikler/medarbeiderundersokelse-mal', 3400, 0.05, 0.8, 31, 'small'],
+      ['Decay', 'Refresh /artikler/arbeidsmiljokartlegging', 'Clicks −27 % vs 3 months ago · competitors updated for 2026', 'arbeidsmiljøkartlegging', '/artikler/arbeidsmiljokartlegging', 9200, 0.035, 0.85, 29, 'medium'],
+      ['Striking distance', 'Push «verneombud plikter» from #8,4 to page-one top', '11 800 searches · page one, below the fold', 'verneombud plikter', '/bruksomrader/verneombud', 11800, 0.04, 0.6, 44, 'medium'],
+      ['Featured snippet', 'Win the snippet for «arbeidsmiljøkartlegging»', 'idebanken.org holds it with a 40-word definition', 'arbeidsmiljøkartlegging', '/artikler/arbeidsmiljokartlegging', 9200, 0.05, 0.55, 36, 'small'],
+      ['Decay', 'Refresh /bruksomrader/verneombud', 'Clicks −18 % · outdated 2024 rules', 'verneombud', '/bruksomrader/verneombud', 4200, 0.03, 0.85, 25, 'small'],
+      ['Content gap', 'Vaktplan mal Excel (Skiftly)', '3 900 searches · competitors rank with downloadable templates', 'vaktplan mal excel', '/skiftly/vaktplan-mal', 3900, 0.06, 0.55, 33, 'medium'],
+      ['Low CTR', 'Add FAQ schema to /pris', '«hms system pris» shows no rich result', 'hms system pris', '/pris', 1600, 0.03, 0.7, 41, 'small'],
+    ].map(([type, t, s, kw, url, vol, gain, win, kd, effort]) => { const val = Math.round(vol * gain * SIGN * PAID * ARPA * win * (type === 'Content gap' ? 1 : 1.4)); return { type, t, s, kw, url, vol, val, kd, effort }; }).sort((a, b) => b.val - a.val);
+    const TC = { 'Striking distance': '#FBEBBE', 'Low CTR': '#F6D9C6', 'Content gap': '#CFE0F5', Cannibalization: '#E7DAF2', Decay: '#FBD5C4', 'Featured snippet': '#DCEBD3' };
+    const doIt = (o) => () => this.addPlan({ t: o.t, kw: o.kw, url: o.url, val: o.val });
+    const ov = { kpis: [['Organic clicks · 30 d', nb(orgClicks), '+14 %', '#2F5D2A', 'Search Console'], ['Organic signups', String(orgSign), '+11 %', '#2F5D2A', 'Joined on landing page'], ['Organic MRR won', kr(orgMRR), '+9 %', '#2F5D2A', 'Stripe · first-touch organic'], ['Traffic value', kr(orgClicks * 14), '', '#191510', 'What the clicks would cost as ads'], ['Visibility', '18,4 %', '+2,1', '#2F5D2A', 'Share of clicks in tracked topics'], ['Indexed pages', '142 / 158', '−3', '#A33A16', '16 excluded']].map(([n, v, d, dc, s]) => ({ n, v, d, dc, s })),
+      actions: OPP.slice(0, 5).map((o) => ({ ...o, valF: kr(o.val) + '/mo', cta: inPlan(o.t) ? '✓ In plan' : 'Do it', bg: inPlan(o.t) ? '#CFE7E4' : '#F5C64A', doIt: doIt(o) })),
+      index: [['Indexed', 142, '#5C9A55'], ['Crawled, not indexed', 7, '#E0A21F'], ['Duplicate without canonical', 4, '#EC9B77'], ['Blocked by noindex (intended)', 3, '#C4BCA8'], ['404 not found', 2, '#D4633A']].map(([n, v, c]) => ({ n, v: String(v), c, w: v / 158 * 100 })),
+      confidence: ['Search Console hides rare queries (~22 % of clicks) and lags 2 days.', 'Visitors who decline cookies (about 31 %) are counted by the cookieless tracker, not GA4.', 'Revenue uses first-touch attribution; last-touch is available in Analytics.', 'Competitor numbers are estimates from the SEO tool.'] };
+    // ---------- clusters ----------
+    const CL = [['Medarbeiderundersøkelse', 14, 9, 22.4, 1.8, '/artikler/medarbeiderundersokelse-mal', '#4,2', 18], ['Lovkrav og HMS', 11, 6, 31.2, 3.4, '/lovkrav', '#1,9', 14], ['Verneombud', 8, 4, 12.6, -1.9, '/bruksomrader/verneombud', '#8,4', 6], ['Arbeidsmiljøkartlegging', 9, 5, 19.8, -2.6, '/artikler/arbeidsmiljokartlegging', '#2,8', 9], ['Vaktplan og turnus (Skiftly)', 10, 3, 3.1, 0.4, '/skiftly', '#22,4', 2]];
+    const SP = [[['Mal for medarbeiderundersøkelse', '/artikler/medarbeiderundersokelse-mal', 1], ['Hvordan gjennomføre en medarbeiderundersøkelse', '/artikler/gjennomfore-medarbeiderundersokelse', 0], ['Spørsmål til medarbeiderundersøkelse', '/artikler/sporsmal', 1], ['Pulsundersøkelse vs årlig', '/artikler/puls-vs-arlig', 1], ['Anonymitet i undersøkelser', '/artikler/anonymitet', 0]], [['Lovkrav arbeidsmiljø', '/lovkrav', 1], ['Arbeidsmiljøloven §4-3 forklart', '/artikler/aml-4-3', 1], ['Dokumentasjonskrav HMS', '/artikler/dokumentasjon-hms', 0], ['Risikovurdering psykososialt', '/artikler/risikovurdering', 1]], [['For verneombud', '/bruksomrader/verneombud', 1], ['Sjekkliste for vernerunde', '/artikler/sjekkliste-vernerunde', 0], ['Verneombudets plikter 2026', '/artikler/verneombud-plikter', 0]], [['Slik kartlegger du arbeidsmiljøet', '/artikler/arbeidsmiljokartlegging', 1], ['QPS Nordic forklart', '/artikler/qps-nordic', 1], ['Kartlegging i små bedrifter', '/artikler/sma-bedrifter', 0]], [['Skiftly — vaktplan', '/skiftly', 1], ['Vaktplan mal Excel', '/skiftly/vaktplan-mal', 0], ['Turnusplan regler', '/skiftly/turnus-regler', 0]]];
+    const clusters = CL.map(([n, kws, pages, vis, tr, , , mrr], i) => { const r = this.rng(i + 2); const p = []; for (let k = 0; k < 12; k++) p.push(vis - tr * (1 - k / 11) + (r() - 0.5) * 2); const mx = Math.max(...p) + 1, mn = Math.min(...p) - 1; return { n, kws, pages, visF: pct(vis), trend: (tr >= 0 ? '+' : '−') + String(Math.abs(tr)).replace('.', ',') + ' pts', tc: tr >= 0 ? '#2F5D2A' : '#A33A16', stroke: tr >= 0 ? '#5C9A55' : '#D4633A', mrr: kr(mrr * ARPA), spark: p.map((y, k) => (k * 160 / 11).toFixed(1) + ',' + (34 - ((y - mn) / (mx - mn)) * 32).toFixed(1)).join(' '), bg: st.cluster === i ? '#FBEBBE' : '#FFFDF6', bc: st.cluster === i ? '#191510' : '#E8DFC9', pick: () => this.setState({ cluster: i }) }; });
+    const C = CL[st.cluster];
+    const cl = { n: C[0], pillar: C[5], pillarPos: C[6], spokes: SP[st.cluster].map(([t, url, has]) => { const planned = inPlan(t); return { t, url, missing: !has && !planned, state: has ? 'Published' : planned ? 'In plan' : 'Missing', c: has ? '#2F5D2A' : planned ? '#8A6A00' : '#A33A16', plan: () => this.addPlan({ t, kw: t.toLowerCase(), url, val: 1800 }) }; }),
+      share: [['orgpuls.com', C[3], '#F5C64A', 700], ['arbeidstilsynet.no', 28 - st.cluster * 3, '#9DB8B3', 500], ['netigate.net', 12 + st.cluster, '#6E8FB8', 500], ['questback.com', 9, '#8F74B3', 500], ['Others', 100 - C[3] - (28 - st.cluster * 3) - (12 + st.cluster) - 9, '#C4BCA8', 500]].map(([n, v, c, fw]) => ({ n, w: v, v: pct(v), c, fw })) };
+    // ---------- opps ----------
+    const types = ['All', ...Object.keys(TC)];
+    const oppTypes = types.map((n) => ({ n, count: n === 'All' ? OPP.length : OPP.filter((o) => o.type === n).length, pick: () => this.setState({ oppType: n }), bg: st.oppType === n ? '#FBEBBE' : 'transparent', bc: st.oppType === n ? '#191510' : '#C4BCA8', fw: st.oppType === n ? 700 : 500 }));
+    const opps = OPP.filter((o) => st.oppType === 'All' || o.type === st.oppType).map((o) => ({ ...o, tbg: TC[o.type], kd: String(o.kd), kdc: o.kd > 45 ? '#A33A16' : o.kd > 30 ? '#8A6A00' : '#2F5D2A', valF: kr(o.val), cta: inPlan(o.t) ? '✓ In plan' : 'Do it', bg: inPlan(o.t) ? '#CFE7E4' : '#F5C64A', doIt: doIt(o) }));
+    // ---------- plan ----------
+    const STG = [['Idea', '#F2EAD6'], ['Writing', '#F3E2C9'], ['Published', '#CFE0F5'], ['Measuring', '#CFE7E4']];
+    const move = (p, d) => (e) => { e.stopPropagation(); const ns = Math.max(0, Math.min(3, p.stage + d)); if (ns === p.stage) return; p.stage = ns; if (ns === 2) S.changes.unshift({ date: 'Today', page: p.url, type: 'New page', note: p.t, fresh: true }); if (ns === 3 && !p.result) p.result = 'Measuring · results in 28 days'; this.bump(); this.flash('Moved to ' + STG[ns][0] + (ns === 2 ? ' · logged in change log' : '')); };
+    const planCols = STG.map(([n, c], si) => { const cs = S.plan.filter((p) => p.stage === si); return { n, c, count: cs.length, cards: cs.map((p) => ({ ...p, valF: kr(p.val) + '/mo', bc: st.brief === p.id ? '#191510' : '#E8DFC9', rc: p.result && p.result.startsWith('+') ? '#2F5D2A' : '#8A6A00', result: p.result || null, open: () => this.setState({ brief: p.id }), back: move(p, -1), fwd: move(p, 1) })) }; });
+    const bp = S.plan.find((p) => p.id === st.brief);
+    const brief = bp ? { t: bp.t, stage: STG[bp.stage][0], kw: bp.kw, url: bp.url, intent: /mal|pris/.test(bp.kw) ? 'Commercial' : 'Informational', terms: ['arbeidsmiljøloven', 'psykososialt', 'anonymitet', 'svarprosent', 'tiltak', 'verneombud', 'QPS Nordic', 'handlingsplan'].slice(0, 6 + (bp.t.length % 3)), qs: ['Hvor ofte bør man ha medarbeiderundersøkelse?', 'Er medarbeiderundersøkelse lovpålagt?', 'Hvor mange må svare for at det er anonymt?', 'Hva gjør man med resultatene?'], len: [['Our draft', 1200, '#F5C64A', 700], ['#1 idebanken.org', 2400, '#9DB8B3', 500], ['#2 netigate.net', 1900, '#9DB8B3', 500], ['#3 arbeidstilsynet.no', 1600, '#9DB8B3', 500]].map(([n, v, c, fw]) => ({ n, v: nb(v), w: v / 25, c, fw })), links: ['/lovkrav → anchor «lovkrav»', '/pris → anchor «se priser»', '/artikler/qps-nordic → anchor «QPS Nordic»'], measured: bp.stage === 3 && bp.result && bp.result.startsWith('+') ? [{ k: 'Clicks', v: bp.result.split(' · ')[0] }, { k: 'Position', v: bp.result.split(' · ')[1] }, { k: 'Signups', v: '+' + Math.round(bp.val / 600) }, { k: 'Value', v: kr(bp.val) + '/mo' }] : null } : null;
+    // ---------- links ----------
+    const LS = [['/artikler/qps-nordic', 'medarbeiderundersøkelse', '/artikler/medarbeiderundersokelse-mal'], ['/artikler/arbeidsmiljokartlegging', 'lovkrav', '/lovkrav'], ['/bruksomrader/verneombud', 'kartlegging av arbeidsmiljøet', '/artikler/arbeidsmiljokartlegging'], ['/artikler/anonymitet', 'prøv gratis', '/kom-i-gang'], ['/artikler/sporsmal', 'mal', '/artikler/medarbeiderundersokelse-mal'], ['/lovkrav', 'verneombudets rolle', '/bruksomrader/verneombud']];
+    const linkSugs = LS.map(([from, anchor, to]) => { const k = from + to; const d = S.links[k]; return { from, anchor, to, pending: !d, done: d === 'added' ? '✓ Added' : d === 'skip' ? 'Skipped' : null, dc: d === 'added' ? '#2F5D2A' : '#8A8272', accept: () => { S.links[k] = 'added'; S.changes.unshift({ date: 'Today', page: from, type: 'Internal links', note: '«' + anchor + '» → ' + to, fresh: true }); this.bump(); this.flash('Link added · logged in change log'); }, skip: () => { S.links[k] = 'skip'; this.bump(); } }; });
+    const orphans = [['/artikler/mal-2024', '0 inlinks · 120 visits'], ['/artikler/tiltaksplan-eksempel', '0 inlinks · 64 visits'], ['/kampanje/hms2026', '0 inlinks · campaign page'], ['/artikler/arbeidsmiljo-2025', '0 inlinks · decaying']].map(([u, s]) => ({ u, s }));
+    const hubs = [['/', 148, 'Orgpuls'], ['/pris', 142, 'Priser'], ['/kom-i-gang', 96, 'Kom i gang'], ['/lovkrav', 31, 'lovkrav'], ['/artikler/medarbeiderundersokelse-mal', 9, 'mal'], ['/bruksomrader/verneombud', 6, 'verneombud']].map(([u, n, a]) => ({ u, n, a }));
+    // ---------- serp ----------
+    const CP = [['orgpuls.com', 18.4, 2.1, '#F5C64A', 3], ['arbeidstilsynet.no', 24.1, -0.4, '#9DB8B3', 2], ['netigate.net', 12.2, 1.4, '#6E8FB8', 2], ['questback.com', 8.6, -1.1, '#8F74B3', 2], ['stamina.no', 6.9, 0.6, '#D4633A', 2]];
+    const comps = CP.map(([n, v, tr, c, sw], i) => { const r = this.rng(i + 9); const p = []; for (let k = 0; k < 12; k++) p.push(v - tr * (1 - k / 11) + (r() - 0.5) * 1.4); return { n, c, sw, last: pct(v), pts: p.map((y, k) => (k * 600 / 11).toFixed(1) + ',' + (156 - (y / 28) * 150).toFixed(1)).join(' ') }; });
+    const F = [['medarbeiderundersøkelse', ['○ netigate', '● us', '○ arbeidstilsynet', '–', '–']], ['arbeidsmiljøkartlegging', ['○ idebanken', '● us', '○ idebanken', '○ YouTube', '–']], ['psykososialt arbeidsmiljø lovkrav', ['● us', '● us', '● us (cited)', '–', '–']], ['verneombud plikter', ['○ arbeidstilsynet', '○ lovdata', '○ arbeidstilsynet', '–', '–']], ['hms system pris', ['–', '○ stamina', '–', '–', '○ 3 local']], ['medarbeiderundersøkelse mal gratis', ['○ netigate', '–', '○ netigate', '○ YouTube', '–']]];
+    const features = F.map(([q, cells]) => ({ q, cells: cells.map((v) => ({ v, c: v.startsWith('●') ? '#2F5D2A' : v.startsWith('○') ? '#A33A16' : '#8A8272', tip: v })) }));
+    const gaps = [['medarbeiderundersøkelse spørsmål', 2900, 'netigate.net #2 · questback.com #5'], ['eNPS', 4400, 'netigate.net #1 · peakon #3'], ['trivselsundersøkelse', 3600, 'questback.com #3 · stamina.no #6'], ['HMS handlingsplan mal', 2100, 'stamina.no #2'], ['arbeidsmiljøundersøkelse kommune', 900, 'ks.no #1']].map(([q, vol, who]) => { const on = inPlan('Ny side: ' + q); return { q, vol: nb(vol), who, cta: on ? '✓ In plan' : 'Plan page', bg: on ? '#CFE7E4' : '#F5C64A', plan: () => this.addPlan({ t: 'Ny side: ' + q, kw: q, url: '/artikler/' + q.replace(/[^a-zæøå0-9]+/gi, '-').toLowerCase(), val: Math.round(vol * 0.05 * SIGN * PAID * ARPA * 0.6) }) }; });
+    // ---------- changes ----------
+    const BASE = [['24 Aug', '/artikler/medarbeiderundersokelse-mal', 'Content update', 'Updated for 2026 + template download', 38, -1.9, 1.4], ['31 Aug', '/lovkrav', 'Schema markup', 'FAQ schema with 6 questions', 12, -0.1, 2.8], ['7 Sep', '/plattform', 'Speed fix', 'Hero image to WebP (LCP 4,1 → 2,3 s)', 6, -0.6, 0.3], ['14 Sep', '/artikler/qps-nordic', 'Title and meta', 'Added «2026» and benefit to title', 12, -1.8, 1.1], ['21 Sep', '/bruksomrader/verneombud', 'Internal links', '5 links from articles', -3, 0.4, -0.2], ['28 Sep', '/pris', 'Title and meta', 'Price in meta description', 0, 0, 0]];
+    const changes = [...S.changes.map((c) => ({ ...c, clicks: '—', pos: '—', ctr: '—', result: 'Measuring', rbg: '#FBEBBE', rc: '#5C4600', cc: '#8A8272', pc: '#8A8272' })), ...BASE.map(([date, page, type, note, cl, pos, ctr]) => { const pending = date === '28 Sep'; return { date, page, type, note, clicks: pending ? '—' : (cl >= 0 ? '+' : '−') + Math.abs(cl) + ' %', cc: cl > 0 ? '#2F5D2A' : cl < 0 ? '#A33A16' : '#8A8272', pos: pending ? '—' : (pos <= 0 ? '▲ ' : '▼ ') + String(Math.abs(pos)).replace('.', ','), pc: pos < 0 ? '#2F5D2A' : pos > 0 ? '#A33A16' : '#8A8272', ctr: pending ? '—' : (ctr >= 0 ? '+' : '−') + String(Math.abs(ctr)).replace('.', ',') + ' pts', result: pending ? 'Measuring' : cl >= 10 ? 'Win' : cl > 0 ? 'Small win' : 'No effect', rbg: pending ? '#FBEBBE' : cl >= 10 ? '#CFE7E4' : cl > 0 ? '#E4EEEC' : '#F2EAD6', rc: pending ? '#5C4600' : cl > 0 ? '#20431C' : '#5F5849' }; })];
+    const r = this.rng(77); const cv = []; for (let i = 0; i < 60; i++) cv.push(280 + i * 1.6 + Math.sin(i / 3) * 25 + r() * 30 - (i % 7 > 4 ? 60 : 0) + (i > 13 ? 25 : 0));
+    const cmx = Math.max(...cv); const cline = { line: cv.map((y, i) => (i * 600 / 59).toFixed(1) + ',' + (136 - (y / cmx) * 128).toFixed(1)).join(' ') }; cline.area = '0,136 ' + cline.line + ' 600,136';
+    cline.marks = [[13, '24 Aug · Content update · mal'], [20, '31 Aug · FAQ schema · /lovkrav'], [27, '7 Sep · Speed fix · /plattform'], [34, '14 Sep · Title · QPS'], [41, '21 Sep · Internal links'], [48, '28 Sep · Title · /pris'], ...S.changes.map((c) => [59, 'Today · ' + c.type + ' · ' + c.page])].map(([d, tip]) => ({ x: d / 59 * 100, tip }));
+    const nc = st.nc;
+    // ---------- alerts ----------
+    const RU = [['rank', 'Ranking drop', 'A top-10 keyword falls 3+ positions'], ['snippet', 'Lost featured snippet', 'Any tracked keyword'], ['deindex', 'Page dropped from the index', 'Search Console coverage'], ['traffic', 'Organic traffic drop', '−30 % vs same weekday, hour by hour'], ['cwv', 'Core Web Vitals fail', 'LCP > 2,5 s or INP > 200 ms on a top page'], ['links', 'Lost backlink', 'From a domain with DR 40+'], ['comp', 'Competitor jump', 'A competitor gains 5+ positions on our top-3 keyword']];
+    const CH = ['In app', 'Email', 'Slack', 'Ticket'];
+    const rules = RU.map(([id, n, cond]) => { const on = !S.rulesOff[id]; return { n, cond, op: on ? 1 : 0.5, track: on ? '#191510' : '#C4BCA8', knob: on ? 21 : 3, toggle: () => { S.rulesOff[id] = on; this.bump(); }, chans: CH.map((c, ci) => { const k = id + c; const sel = S.chans[k] != null ? S.chans[k] : ci < 3 && !(id === 'comp' && ci === 2); return { n: c, bg: sel ? '#FBEBBE' : 'transparent', bc: sel ? '#191510' : '#C4BCA8', fw: sel ? 700 : 500, toggle: () => { S.chans[k] = !sel; this.bump(); } }; }) }; });
+    const H = [['h1', '#D4633A', 'Ranking drop: «verneombud plikter» #6,1 → #9,4', 'Today 07:00', 'arbeidstilsynet.no published a new guide'], ['h2', '#E0A21F', 'Lost backlink from arbeidsrett.no (DR 39)', 'Yesterday', 'Page removed — ask for a replacement link'], ['h3', '#D4633A', 'LCP 4,1 s on /plattform (mobile)', '9 Oct', 'PageSpeed Insights'], ['h4', '#5C9A55', 'Won People-also-ask for «arbeidsmiljøkartlegging»', '8 Oct', 'Positive alert'], ['h5', '#E0A21F', 'netigate.net +6 on «medarbeiderundersøkelse»', '6 Oct', 'Now #2, we are #4']];
+    const history = H.map(([id, c, t, when, s]) => { const a = !!S.ack[id]; return { c, t, when, s, op: a ? 0.5 : 1, cta: a ? 'Reopen' : 'Acknowledge', ack: () => { S.ack[id] = !a; this.bump(); } }; });
+    return { v: { [view]: true }, ov, clusters, cl, oppTypes, opps, planCols, brief, closeBrief: () => this.setState({ brief: null }), linkSugs, orphans, hubs, comps, features, gaps, cline, changes,
+      pageOpts: ['/', '/pris', '/lovkrav', '/plattform', '/artikler/medarbeiderundersokelse-mal', '/artikler/arbeidsmiljokartlegging', '/bruksomrader/verneombud', '/skiftly'], nc, setNcPage: (e) => this.setState({ nc: { ...nc, page: e.target.value } }), setNcType: (e) => this.setState({ nc: { ...nc, type: e.target.value } }), setNcNote: (e) => this.setState({ nc: { ...nc, note: e.target.value } }),
+      addChange: () => { S.changes.unshift({ date: 'Today', page: nc.page, type: nc.type, note: nc.note || '—', fresh: true }); this.setState({ nc: { ...nc, note: '' } }); this.flash('Change logged · result shown after 28 days'); },
+      rules, history, openAlerts: history.filter((h) => h.cta === 'Acknowledge').length, toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

@@ -711,7 +711,8 @@
           "search_console": "Search Console",
           "pagespeed": "PageSpeed Insights",
           "product_events": "Produkthendelser",
-          "email": "E-post"
+          "email": "E-post",
+          "url_inspection": "URL-inspeksjon"
         },
         "states": {
           "ok": "OK",
@@ -724,7 +725,8 @@
           "searchConsole": "Importert til og med {day}",
           "searchConsoleNone": "Import forsøkt",
           "pagespeed": "{n, plural, one {# side} other {# sider}} målt",
-          "events": "{n, plural, one {# hendelse} other {# hendelser}} · {kinds}"
+          "events": "{n, plural, one {# hendelse} other {# hendelser}} · {kinds}",
+          "urlInspection": "{n, plural, one {# side} other {# sider}} sjekket · {indexed} av {pages} indeksert"
         }
       },
       "pagespeed": {
@@ -758,6 +760,278 @@
           "no_reading": "Google ga ingen måling for en side.",
           "other": "Noe gikk galt ({code})."
         }
+      }
+    },
+    "seoSuite": {
+      "subTabs": {
+        "label": "SEO-visninger",
+        "overview": "SEO-oversikt",
+        "clusters": "Temaklynger",
+        "opps": "Muligheter",
+        "keywords": "Søkeord",
+        "plan": "Innholdsplan",
+        "links": "Interne lenker",
+        "serp": "Søkeresultater og konkurrenter",
+        "changes": "Endringslogg",
+        "alerts": "Varsler"
+      },
+      "notConnected": "Search Console er ikke koblet til, så det finnes ingen søketall ennå. Koble det til under Integrasjoner.",
+      "noSite": "Ingen offentlig nettside er registrert for {app}.",
+      "kinds": {
+        "striking": "Innen rekkevidde",
+        "low_ctr": "Lav klikkrate",
+        "gap": "Innholdshull",
+        "cannibal": "Kannibalisering",
+        "decay": "Forfall"
+      },
+      "effort": {
+        "small": "liten",
+        "medium": "middels",
+        "large": "stor"
+      },
+      "doIt": "Gjør det",
+      "inPlan": "✓ I planen",
+      "planned": "Lagt i innholdsplanen",
+      "perMonth": "{value}/mnd",
+      "clicksPerMonth": "+{n} klikk/mnd",
+      "overview": {
+        "kpi": {
+          "clicks": "Organiske klikk · 30 d",
+          "clicksNote": "Search Console",
+          "signups": "Organiske registreringer",
+          "signupsNote": "Fullførte registrering etter et søkebesøk",
+          "mrr": "Organisk MRR vunnet",
+          "mrrNote": "Første kontakt: organisk søk",
+          "mrrNone": "Rapporteres ikke av produktet",
+          "visibility": "Synlighet",
+          "visibilityNote": "Klikkandel for fulgte søk",
+          "indexed": "Indekserte sider",
+          "indexedNote": "{n} utelatt",
+          "indexedNone": "Ikke sjekket ennå",
+          "pts": "{v} poeng"
+        },
+        "actions": "Topp 5 tiltak denne uken",
+        "actionsNote": "Rangert etter verdi per måned",
+        "actionsNoteClicks": "Rangert etter klikk per måned",
+        "actionsEmpty": "Ingen mulighet i Search Consoles siste 28 dager.",
+        "actionSub": "{type} · innsats {effort}",
+        "index": "Indeksdekning · Search Console",
+        "indexEmpty": "URL-inspeksjon sjekker de crawlede sidene hver natt når Search Console er koblet til; ingenting er sjekket ennå.",
+        "coverage": {
+          "indexed": "Indeksert",
+          "crawled_not_indexed": "Crawlet, ikke indeksert",
+          "discovered_not_indexed": "Oppdaget, ikke indeksert",
+          "duplicate": "Duplikat eller alternativ",
+          "noindex": "Blokkert av noindex",
+          "not_found": "404 ikke funnet",
+          "redirect": "Side med videresending",
+          "blocked": "Blokkert av robots.txt",
+          "error": "Server- eller tilgangsfeil",
+          "unknown": "Ukjent for Google",
+          "other": "Annet"
+        },
+        "confidence": "Hvor sikre tallene er",
+        "facts": {
+          "hidden": "Search Console utelater sjeldne søk ({share} av klikkene de siste 30 dagene), og tallene kommer omtrent to dager forsinket.",
+          "hiddenPlain": "Search Console utelater sjeldne søk, og tallene kommer omtrent to dager forsinket.",
+          "tracker": "Besøk telles av Sentrals informasjonskapselfrie sporer siden {date}; et besøk knyttes aldri til en person eller en konto.",
+          "noTracker": "Nettsidens sporer har ikke sendt noe besøk ennå, så organiske registreringer telles ikke.",
+          "revenue": "Organisk inntekt bruker første kontakt slik produktet rapporterer den.",
+          "noRevenue": "{app} rapporterer ikke hvor en konto kom fra, så organisk inntekt telles ikke.",
+          "index": "Indeksdekningen kommer fra URL-inspeksjon: {n, plural, one {# side} other {# sider}} sjekket, sist {date}.",
+          "noIndex": "URL-inspeksjon har ikke sjekket noen side ennå."
+        }
+      },
+      "clusters": {
+        "meta": "{kws, plural, one {# søkeord} other {# søkeord}} · {pages, plural, one {# side} other {# sider}}",
+        "visibility": "synlighet",
+        "clicks": "{n} klikk · 90 d",
+        "pts": "{v} poeng",
+        "main": "Hovedside",
+        "spokes": "Støttesider",
+        "share": "Sidenes andel av temaets klikk",
+        "published": "Publisert",
+        "inPlan": "I planen",
+        "missing": "Mangler",
+        "plan": "Planlegg",
+        "missingSub": "ingen side blant de 20 første (best #{pos})",
+        "empty": "Følg søkeord under Søkeord: hvert fulgte søk havner i temaet til siden Google viser mest for det.",
+        "unclustered": "{n, plural, one {# fulgt søkeord har} other {# fulgte søkeord har}} ingen side i Googles resultater ennå."
+      },
+      "opps": {
+        "all": "Alle",
+        "formula": "Verdi = volum × økt klikkrate × registreringsrate × betalingsrate × snittinntekt (ARPA) × sjanse for å lykkes",
+        "formulaMissing": "Verdi krever organiske registreringer, betalende kontoer og inntekt; til Sentral har alle tre, rangeres mulighetene etter klikkene de ville gitt.",
+        "cols": {
+          "opp": "Mulighet",
+          "type": "Type",
+          "effort": "Innsats",
+          "value": "Verdi / mnd"
+        },
+        "t": {
+          "striking": "Løft «{q}» fra #{pos} inn blant topp 3",
+          "low_ctr": "Skriv om tittelen for «{q}»",
+          "gap": "Ny side for «{q}»",
+          "cannibal": "Slå sammen sidene som konkurrerer om «{q}»",
+          "decay": "Frisk opp {path}"
+        },
+        "s": {
+          "striking": "{impr} visninger · nå {ctr} klikkrate",
+          "low_ctr": "Plass {pos}, men {ctr} klikkrate mot forventet {expected}",
+          "gap": "{impr} visninger · ingen side blant de 20 første (best #{pos})",
+          "cannibal": "{a} og {b} deler visningene {sa}/{sb}",
+          "decay": "Klikk {change} mot for tre måneder siden · «{q}»"
+        },
+        "empty": "Ingenting her: ingen søk de siste 28 dagene passer denne typen."
+      },
+      "plan": {
+        "stages": {
+          "idea": "Idé",
+          "writing": "Skrives",
+          "published": "Publisert",
+          "measuring": "Måles"
+        },
+        "title": {
+          "striking": "Løft «{q}» inn blant topp 3",
+          "low_ctr": "Ny tittel og beskrivelse for «{q}»",
+          "gap": "Ny side: {q}",
+          "cannibal": "Slå sammen sidene for «{q}»",
+          "decay": "Frisk opp {path}"
+        },
+        "meta": "{q} · {owner}",
+        "back": "Tilbake til {stage}",
+        "fwd": "Videre til {stage}",
+        "measuring": "Måles · resultat {date}",
+        "result": "{clicks} klikk · plass {from} → {to}",
+        "resultClicks": "{clicks} klikk",
+        "moved": "Flyttet til {stage}",
+        "movedLogged": "Flyttet til {stage} · ført i endringsloggen",
+        "empty": "Ingenting planlagt ennå. «Gjør det» på en mulighet, eller «Planlegg» på en manglende temaside, legger den her.",
+        "brief": {
+          "label": "Innholdsbrief · {stage}",
+          "close": "Lukk briefen",
+          "target": "Mål",
+          "urlIntent": "URL {url} · hensikt {intent}",
+          "noUrl": "ingen side ennå",
+          "terms": "Beslektede søk å dekke",
+          "questions": "Spørsmål folk søker etter",
+          "links": "Interne lenker å legge til",
+          "noTerms": "Search Console viser ingen beslektede søk ennå.",
+          "noQuestions": "Ingen søk formulert som spørsmål ennå.",
+          "noLinks": "Ingen crawlet side nevner det uten å lenke til det.",
+          "measured": "{k} · 28 d",
+          "clicks": "Klikk",
+          "position": "Plass"
+        },
+        "noFigures": "Ingen tall fra Search Console for siden ennå"
+      },
+      "links": {
+        "sug": "Foreslåtte interne lenker",
+        "sugNote": "Sider som nevner temaet, men ikke lenker til hovedsiden",
+        "skip": "Hopp over",
+        "add": "Legg til lenke",
+        "added": "✓ Lagt til",
+        "skipped": "Hoppet over",
+        "addedToast": "Lenken er notert · ført i endringsloggen",
+        "skippedToast": "Forslaget er hoppet over",
+        "orphans": "Foreldreløse sider",
+        "orphansNote": "Ingen interne lenker peker hit",
+        "orphanLine": "0 innlenker · {n, plural, one {# besøk} other {# besøk}}",
+        "hubs": "Mest lenkede sider",
+        "hubsNote": "Innlenker · vanligste lenketekst",
+        "notCrawled": "Crawleren kartlegger nettsidens lenker hver natt; ingenting er kartlagt ennå.",
+        "noSug": "Ingen side nevner et fulgt eller hyppig søk uten å lenke til hovedsiden for det.",
+        "noOrphans": "Hver crawlet side har en lenke som peker til den."
+      },
+      "serp": {
+        "title": "Søkeresultater og konkurrenter",
+        "body": "Konkurrentenes synlighet, funksjoner i søkeresultatene og søkeordshull krever søkeresultatdata fra et SEO-verktøy som Ahrefs, Semrush eller DataForSEO. Sentral har ingen slik tilkobling, og Search Console rapporterer bare nettsidens egne resultater.",
+        "needs": "Krever en integrasjon med et SEO-verktøy"
+      },
+      "changes": {
+        "log": "Før en endring",
+        "note": "Hva ble endret?",
+        "submit": "Før endring",
+        "logged": "Endringen er ført · resultatet vises etter 28 dager",
+        "pagePick": "Side",
+        "kindPick": "Type endring",
+        "kinds": {
+          "title_meta": "Tittel og meta",
+          "content": "Innholdsoppdatering",
+          "links": "Interne lenker",
+          "schema": "Strukturerte data",
+          "speed": "Hastighetsforbedring",
+          "new_page": "Ny side",
+          "merge": "Sammenslåtte sider"
+        },
+        "chart": "Organiske klikk per dag med endringer markert",
+        "chartNote": "Siste 60 dager · hold over et punkt",
+        "noDaily": "Search Console har ingen dagstall ennå.",
+        "cols": {
+          "date": "Dato",
+          "page": "Side",
+          "change": "Endring",
+          "clicks": "Klikk",
+          "position": "Plass",
+          "ctr": "Klikkrate",
+          "result": "Resultat"
+        },
+        "result": {
+          "win": "Gevinst",
+          "small": "Liten gevinst",
+          "none": "Ingen effekt",
+          "loss": "Tap",
+          "measuring": "Måles"
+        },
+        "pts": "{v} poeng",
+        "empty": "Ingen endringer ført ennå.",
+        "noPages": "Crawleren har ikke listet nettsidens sider ennå."
+      },
+      "alerts": {
+        "rules": "Varselregler",
+        "rulesNote": "Sjekkes hver time",
+        "history": "Varselhistorikk",
+        "open": "{n} åpne",
+        "rule": {
+          "rank": {
+            "n": "Fall i rangering",
+            "cond": "Et søkeord på topp 10 faller 3+ plasser"
+          },
+          "deindex": {
+            "n": "Side falt ut av indeksen",
+            "cond": "URL-inspeksjon"
+          },
+          "traffic": {
+            "n": "Fall i organisk trafikk",
+            "cond": "−30 % mot samme ukedag, time for time"
+          },
+          "cwv": {
+            "n": "Core Web Vitals feiler",
+            "cond": "LCP > 2,5 s eller INP > 200 ms på en toppside"
+          }
+        },
+        "channels": {
+          "app": "I appen",
+          "email": "E-post"
+        },
+        "mailOff": "E-post sendes når Brevo er koblet til",
+        "toggle": "Slå «{rule}» av eller på",
+        "ack": "Kvitter",
+        "reopen": "Åpne igjen",
+        "titles": {
+          "rank": "Fall i rangering: «{query}» #{from} → #{to}",
+          "deindex": "{path} falt ut av indeksen",
+          "traffic": "Organiske besøk falt kl. {hour}: {now} mot vanligvis {before}",
+          "cwv_lcp": "LCP {value} s på {path} (mobil)",
+          "cwv_inp": "INP {value} ms på {path} (mobil)"
+        },
+        "source": {
+          "rank": "Search Console",
+          "deindex": "URL-inspeksjon",
+          "traffic": "Nettsidesporer",
+          "cwv": "PageSpeed Insights"
+        },
+        "empty": "Ingen varsler ennå."
       }
     }
   }

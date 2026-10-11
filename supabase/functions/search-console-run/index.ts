@@ -6,14 +6,15 @@
  *   - "connect": the owner (own aal2 token; search_console_check_ready proves the owner). Signs in as the service account,
  *     lists the properties it may read, maps each site to one, reports the verdict, then imports what time allows.
  *   - "run": the nightly cron (header x-worker-key = Vault «search_console_worker_secret») or the owner. Imports each
- *     site's days since a little before its last imported day, thirty days at a time, oldest first, until about two
- *     minutes have gone; the next run goes on from there.
+ *     site's days since a little before its last imported day, thirty days at a time, oldest first, for about ninety
+ *     seconds; the next run goes on from there. Then, until about two and a quarter minutes, it asks URL Inspection
+ *     whether Google has each crawled page in its index (0074), the longest unchecked first.
  *
  * Logs carry kinds, counts and status codes. Never a query, an address or the key.
  */
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2'
 import { sameText } from '../_shared/signing.ts'
-import { accessToken, listSites, parseKey, propertyFor, searchAnalytics, windows } from '../_shared/google.ts'
+import { accessToken, inspectUrl, listSites, parseKey, propertyFor, searchAnalytics, windows } from '../_shared/google.ts'
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
 const log = (s: string) => console.log(`[search-console-run] ${s}`)
@@ -72,8 +73,10 @@ Deno.serve(async (req) => {
   const key = parseKey(await secret(svc, 'search_console_key'))
   if (!key) return json({ ok: false, code: 'no_key' })
   const start = Date.now()
-  const budget = kind === 'connect' ? 35_000 : 120_000
+  const budget = kind === 'connect' ? 35_000 : 90_000
   const left = () => Date.now() - start < budget
+  // URL Inspection after the import, while the run's time allows (0074)
+  const inspectLeft = () => Date.now() - start < 135_000
 
   const tok = await accessToken(key)
   if (!tok.ok) {
@@ -132,5 +135,28 @@ Deno.serve(async (req) => {
     }
   }
   log(`${kind} windows=${windowsDone} rows=${rowsIn} failed=${failed}`)
-  return json({ ok: true, ...(kind === 'connect' ? { client_email: key.client_email, sites } : {}), windows: windowsDone, rows: rowsIn, failed })
+
+  // index coverage: four pages at a time; a refusal for quota or access stops the site until the next run
+  let inspected = 0
+  if (kind === 'run') {
+    for (const t of arr<{ site_id: string; property: string; origin: string; paths: string[] }>(await rpc(svc, 'worker_seo_index_targets'))) {
+      if (!inspectLeft()) break
+      const paths = arr<string>(t.paths).filter((p) => typeof p === 'string' && p.startsWith('/'))
+      const rows: Array<{ path: string; coverage: string; last_crawl_at: string | null }> = []
+      let stop = ''
+      let i = 0
+      await Promise.all(Array.from({ length: 4 }, async () => {
+        while (i < paths.length && inspectLeft() && !stop) {
+          const path = paths[i++]!
+          const r = await inspectUrl(tok.token, t.property, t.origin + path)
+          if (r.ok) rows.push({ path, coverage: r.coverage, last_crawl_at: r.lastCrawlAt })
+          else if (/^http_(401|403|429)$/.test(r.code)) stop = r.code
+        }
+      }))
+      if (rows.length) await rpc(svc, 'worker_seo_index_result', { p_site: t.site_id, p_rows: rows })
+      inspected += rows.length
+      log(`inspect pages=${rows.length}/${paths.length}${stop ? ` stopped ${stop}` : ''}`)
+    }
+  }
+  return json({ ok: true, ...(kind === 'connect' ? { client_email: key.client_email, sites } : {}), windows: windowsDone, rows: rowsIn, failed, inspected })
 })

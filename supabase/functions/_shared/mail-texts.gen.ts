@@ -56,6 +56,20 @@ export const MAIL_TEXTS = {
       "subject": "Test from Sentral",
       "body": "Email from Sentral works. This message was sent through Brevo from {from}.",
       "note": "You do not need to do anything with it."
+    },
+    "seoAlert": {
+      "subject": "SEO alert for {site}: {title}",
+      "lead": "{title}",
+      "when": "Time: {at}",
+      "body": "Open Growth › SEO › Alerts in Sentral to see it and acknowledge it. You get this because you can read Growth's reports; the rule's channels are set there.",
+      "button": "Open the alerts",
+      "titles": {
+        "rank": "«{query}» fell from position {from} to {to} in Google",
+        "deindex": "{path} is no longer in Google's index",
+        "traffic": "Organic visits fell at {hour}: {now} against usually {before} on this weekday",
+        "cwv_lcp": "{path} loads slowly on mobile: LCP {value} s",
+        "cwv_inp": "{path} responds slowly on mobile: INP {value} ms"
+      }
     }
   },
   "no": {
@@ -114,6 +128,20 @@ export const MAIL_TEXTS = {
       "subject": "Test fra Sentral",
       "body": "E-post fra Sentral virker. Denne meldingen ble sendt gjennom Brevo fra {from}.",
       "note": "Du trenger ikke gjøre noe med den."
+    },
+    "seoAlert": {
+      "subject": "SEO-varsel for {site}: {title}",
+      "lead": "{title}",
+      "when": "Tidspunkt: {at}",
+      "body": "Åpne Vekst › SEO › Varsler i Sentral for å se det og kvittere for det. Du får dette fordi du kan lese Vekst-rapportene; regelens kanaler velges der.",
+      "button": "Åpne varslene",
+      "titles": {
+        "rank": "«{query}» falt fra plass {from} til {to} i Google",
+        "deindex": "{path} er ikke lenger i Googles indeks",
+        "traffic": "Organiske besøk falt kl. {hour}: {now} mot vanligvis {before} denne ukedagen",
+        "cwv_lcp": "{path} laster tregt på mobil: LCP {value} s",
+        "cwv_inp": "{path} svarer tregt på mobil: INP {value} ms"
+      }
     }
   }
 } as const

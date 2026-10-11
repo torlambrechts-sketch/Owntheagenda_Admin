@@ -4,16 +4,26 @@ import { currentProduct } from '@/lib/product'
 import type { RpcResult } from '@/lib/rpc'
 import { RpcError } from '@/lib/rpc'
 import { loadAdCampaigns, loadEmailConnected, loadLists, loadProposalStage, loadSeo, loadSequences } from '@/lib/data/simple-growth'
-import { loadFunnel, loadIntegrations, loadKeywordHistory, loadPages, loadScope } from '@/lib/data/growth'
+import { loadFunnel, loadIntegrations, loadKeywordHistory, loadPages, loadScope, loadSeoAlerts, loadSeoChanges, loadSeoClusters, loadSeoLinks, loadSeoOpps,
+  loadSeoOverview, loadSeoPlan } from '@/lib/data/growth'
+import { SEO_VIEWS, seoOpportunities, valuePerClick, type SeoView } from '@/lib/growth/seo'
 import { keywordRow, opportunities, rate } from '@/lib/growth/calc'
-import { RANGE_DAYS, SCOPED, TABS, osloToday, parseGrowth, type Scope, type Tab } from '@/lib/growth/scope'
-import { GrowthTabs } from './_components/GrowthTabs'
+import { RANGE_DAYS, SCOPED, TABS, growthHref, osloToday, parseGrowth, type Scope, type Tab } from '@/lib/growth/scope'
+import { GrowthTabs, SubTabs } from './_components/GrowthTabs'
 import { ScopeBar } from './_components/ScopeBar'
 import { OverviewTab } from './_components/Overview'
 import { FunnelTab } from './_components/Funnel'
 import { PagesTab } from './_components/Pages'
 import { SeoKeywordsTab } from './_components/SeoKeywords'
 import { IntegrationsTab } from './_components/Integrations'
+import { SeoOverviewView } from './_components/seo/Overview'
+import { SeoClustersView } from './_components/seo/Clusters'
+import { SeoOppsView } from './_components/seo/Opportunities'
+import { SeoPlanView } from './_components/seo/Plan'
+import { SeoLinksView } from './_components/seo/Links'
+import { SeoSerpView } from './_components/seo/Serp'
+import { SeoChangesView } from './_components/seo/Changes'
+import { SeoAlertsView } from './_components/seo/Alerts'
 import { CampaignsTab } from './_components/Campaigns'
 import { EmailTab } from './_components/Email'
 import { dayLabel, hh } from './_components/v2kit'
@@ -32,7 +42,7 @@ function need<T>(r: RpcResult<T>): T {
 /**
  * Sentral Simple › Growth (SimpleGrowth.dc.html of 11 Oct 2026; Marketing campaigns and Email are GrowthMarketing.dc.html).
  * Seven tabs; the scope bar (period › day › hour, source, device) on Overview, Signup funnel and log, Pages and links and
- * SEO › Keywords. Everything chosen lives in the address (lib/growth/scope). Overview, funnel, pages, SEO and Integrations
+ * SEO › Keywords. SEO has nine views (SeoSuite.dc.html, 0074) under its own sub-tabs. Everything chosen lives in the address (lib/growth/scope). Overview, funnel, pages, SEO and Integrations
  * need a reports right (global or campaigns, require_marketing_reports); Marketing campaigns and Email Campaigns › See. A
  * tab the person may not open is not offered. Each tab loads only what it shows; docs/crm-enrichment/growth-v2-gap.md
  * maps the design to its sources.
@@ -100,16 +110,46 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
       bar = scopeBar(s?.updated_at ?? null, { sort: p.sort, page: p.page })
       body = <PagesTab d={need(pg)} scope={scope} sort={p.sort} nf={nf} siteRate={s ? rate(s.kpis.started, s.kpis.visitors) : null} />
     } else if (tab === 'seo') {
-      const range = p.range === 'today' ? '7d' : p.range
-      const d = need(await loadSeo(product, range))
-      const kwSel = p.kw ?? d.keywords.map((k) => keywordRow(k)).sort((a, b) => b.potential - a.potential)[0]?.query ?? null
-      const history = kwSel && d.connected ? await loadKeywordHistory(product, kwSel, RANGE_DAYS[range]) : null
-      bar = scopeBar(d.search_console.last_import_at, { sub: 'keywords', kt: p.kt, kw: p.kw }, { hideFilters: true, seo: true })
-      const brands = [product, app?.name ?? '', ...(d.site ? [d.site.hostname.replace(/^www\./, '').split('.')[0] ?? ''] : [])]
-      body = (
-        <SeoKeywordsTab d={d} scope={{ ...scope, range }} kt={p.kt} kw={kwSel} history={history?.ok ? history.data : null} nf={nf} product={product} brands={brands}
-          canAdd={canAdd} editOthers={can(shell, 'campaigns', 'edit_others')} />
+      // SEO's nine views (SeoSuite.dc.html); the scope bar only on Keywords (the design's showScope)
+      const view: SeoView = (SEO_VIEWS as readonly string[]).includes(p.sub ?? '') ? (p.sub as SeoView) : 'overview'
+      const subTabs = (
+        <SubTabs current={view} label={t('seoSuite.subTabs.label')}
+          items={SEO_VIEWS.map((k) => ({ key: k, label: t(`seoSuite.subTabs.${k}`), href: growthHref('seo', scope, { sub: k === 'overview' ? null : k }) }))} />
       )
+      const brands = (host: string | null) => [product, app?.name ?? '', ...(host ? [host.replace(/^www\./, '').split('.')[0] ?? ''] : [])]
+      let inner: React.ReactNode = null
+      if (view === 'keywords') {
+        const range = p.range === 'today' ? '7d' : p.range
+        const d = need(await loadSeo(product, range))
+        const kwSel = p.kw ?? d.keywords.map((k) => keywordRow(k)).sort((a, b) => b.potential - a.potential)[0]?.query ?? null
+        const history = kwSel && d.connected ? await loadKeywordHistory(product, kwSel, RANGE_DAYS[range]) : null
+        bar = scopeBar(d.search_console.last_import_at, { sub: 'keywords', kt: p.kt, kw: p.kw }, { hideFilters: true, seo: true })
+        inner = (
+          <SeoKeywordsTab d={d} scope={{ ...scope, range }} kt={p.kt} kw={kwSel} history={history?.ok ? history.data : null} nf={nf} product={product}
+            brands={brands(d.site?.hostname ?? null)} canAdd={canAdd} editOthers={can(shell, 'campaigns', 'edit_others')} />
+        )
+      } else if (view === 'overview') {
+        const [ov, op] = await Promise.all([loadSeoOverview(product), loadSeoOpps(product)])
+        const o = need(op)
+        inner = <SeoOverviewView d={need(ov)} opps={seoOpportunities(o)} priced={valuePerClick(o.econ).perClick !== null} nf={nf} product={product} app={app?.name ?? product} canAdd={canAdd} />
+      } else if (view === 'clusters') {
+        inner = <SeoClustersView d={need(await loadSeoClusters(product))} sel={p.cl} scope={scope} nf={nf} product={product} canAdd={canAdd} />
+      } else if (view === 'opps') {
+        const o = need(await loadSeoOpps(product))
+        inner = <SeoOppsView opps={seoOpportunities(o)} ot={p.ot} priced={valuePerClick(o.econ).perClick !== null} connected={o.connected} scope={scope} nf={nf} product={product} canAdd={canAdd} />
+      } else if (view === 'plan') {
+        const [pl, op] = await Promise.all([loadSeoPlan(product, p.brief), loadSeoOpps(product)])
+        inner = <SeoPlanView d={need(pl)} opps={op.ok ? seoOpportunities(op.data) : []} scope={scope} nf={nf} brands={brands(null)} canAdd={canAdd} />
+      } else if (view === 'links') {
+        inner = <SeoLinksView d={need(await loadSeoLinks(product))} nf={nf} product={product} canAdd={canAdd} />
+      } else if (view === 'serp') {
+        inner = <SeoSerpView />
+      } else if (view === 'changes') {
+        inner = <SeoChangesView d={need(await loadSeoChanges(product))} nf={nf} product={product} canAdd={canAdd} />
+      } else if (view === 'alerts') {
+        inner = <SeoAlertsView d={need(await loadSeoAlerts(product))} nf={nf} product={product} canEdit={can(shell, 'campaigns', 'edit_others')} canAck={canAdd} />
+      }
+      body = <div className="flex flex-col gap-[14px]">{subTabs}{inner}</div>
     } else if (tab === 'integrations') {
       const [d, seo] = await Promise.all([loadIntegrations(product), loadSeo(product, '30d')])
       body = <IntegrationsTab d={need(d)} sc={seo.ok ? seo.data : null} open={p.sub} nf={nf} app={app?.name ?? product} canMeasure={canAdd} />

@@ -1,6 +1,6 @@
 /**
  * The transactional emails Sentral sends through Brevo (0060): a ticket reply, an invitation, an MFA reminder, a security
- * alert and the owner's test. Plain, table-free HTML (one column, inline styles) with a text part; every text is escaped.
+ * alert, an SEO alert (0074) and the owner's test. Plain, table-free HTML (one column, inline styles) with a text part; every text is escaped.
  * Pure functions: the edge functions and the tests (Node) run the same code. Texts come from messages/{en,no}/mail.json
  * through mail-texts.gen.ts.
  */
@@ -88,6 +88,23 @@ export function securityAlert(m: { lang: Lang; kind: string; staff: string | nul
     subject: fill(t.subject, { title }),
     html: page(blocks, footer),
     text: [fill(t.lead, { title }), about, when, t.body, m.link ? `${t.button}: ${m.link}` : null, `— ${footer}`].filter(Boolean).join('\n\n'),
+  }
+}
+
+/** an SEO alert (0074): the rule's sentence with its figures, the site, when, and a link to Growth › SEO › Alerts */
+export function seoAlert(m: { lang: Lang; rule: string; params: Record<string, unknown>; site: string; at: string; link: string | null; fromName: string }): Rendered {
+  const t = MAIL_TEXTS[m.lang].seoAlert
+  const titles = t.titles as Record<string, string>
+  const num = (v: unknown) => (typeof v === 'number' ? v.toLocaleString(m.lang === 'en' ? 'en-GB' : 'nb-NO', { maximumFractionDigits: 1 }) : typeof v === 'string' ? v : '')
+  const p = Object.fromEntries(Object.entries(m.params ?? {}).map(([k, v]) => [k, num(v)]))
+  const key = m.rule === 'cwv' ? (p.metric === 'inp' ? 'cwv_inp' : 'cwv_lcp') : m.rule
+  const title = fill(titles[key] ?? m.rule, p)
+  const when = fill(t.when, { at: new Date(m.at).toLocaleString(m.lang === 'en' ? 'en-GB' : 'nb-NO', { timeZone: 'Europe/Oslo', dateStyle: 'medium', timeStyle: 'short' }) })
+  const footer = fill(MAIL_TEXTS[m.lang].common.footer, { from_name: m.fromName })
+  return {
+    subject: fill(t.subject, { site: m.site, title }),
+    html: page([para(fill(t.lead, { title })), para(when, true), para(t.body), button(t.button, m.link)], footer),
+    text: [fill(t.lead, { title }), when, t.body, m.link ? `${t.button}: ${m.link}` : null, `— ${footer}`].filter(Boolean).join('\n\n'),
   }
 }
 

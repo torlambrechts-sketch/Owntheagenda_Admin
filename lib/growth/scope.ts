@@ -38,7 +38,16 @@ export type GrowthParams = Scope & {
   sub: string | null
   kt: KwTab
   kw: string | null
+  /** SEO › Topic clusters: the topic's main page */
+  cl: string | null
+  /** SEO › Opportunities: the kind shown, or all */
+  ot: (typeof OPP_TYPES)[number]
+  /** SEO › Content plan: the item whose brief is open */
+  brief: string | null
 }
+
+export const OPP_TYPES = ['all', 'striking', 'low_ctr', 'gap', 'cannibal', 'decay'] as const
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v)
 const DAY = /^\d{4}-\d{2}-\d{2}$/
@@ -68,6 +77,9 @@ export function parseGrowth(sp: Record<string, string | string[] | undefined>): 
     sub: g('sub') && /^[a-z]{2,20}$/.test(g('sub')!) ? g('sub')! : null,
     kt: z.enum(KW_TABS).catch('all').parse(g('kt') ?? 'all'),
     kw: g('kw') && g('kw')!.length <= 200 ? g('kw')! : null,
+    cl: g('cl') && g('cl')!.startsWith('/') && g('cl')!.length <= 300 ? g('cl')! : null,
+    ot: z.enum(OPP_TYPES).catch('all').parse(g('ot') ?? 'all'),
+    brief: g('brief') && UUID.test(g('brief')!) ? g('brief')! : null,
   }
 }
 
@@ -83,7 +95,7 @@ export function osloToday(now = new Date()): string {
 
 type Extra = Partial<Omit<GrowthParams, keyof Scope | 'tab'>>
 const DEFAULTS: Required<{ [K in keyof Extra]: string | number | null }> = {
-  metric: 'visitors', step: 4, lf: 'all', page: null, sort: 'opportunity', sub: null, kt: 'all', kw: null,
+  metric: 'visitors', step: 4, lf: 'all', page: null, sort: 'opportunity', sub: null, kt: 'all', kw: null, cl: null, ot: 'all', brief: null,
 }
 
 /**

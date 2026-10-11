@@ -446,6 +446,24 @@
             "title": "The customer answered {record}",
             "body": "Their email is on the ticket."
           }
+        },
+        "seo": {
+          "alert_rank": {
+            "title": "Ranking drop: «{query}»",
+            "body": "From #{from} to #{to} in Google · Growth › SEO › Alerts"
+          },
+          "alert_deindex": {
+            "title": "{path} dropped out of Google's index",
+            "body": "URL Inspection · Growth › SEO › Alerts"
+          },
+          "alert_traffic": {
+            "title": "Organic visits fell at {hour}",
+            "body": "{now} against usually {before} · Growth › SEO › Alerts"
+          },
+          "alert_cwv": {
+            "title": "{path} fails Core Web Vitals on mobile",
+            "body": "PageSpeed Insights · Growth › SEO › Alerts"
+          }
         }
       }
     },

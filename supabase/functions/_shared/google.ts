@@ -180,3 +180,57 @@ export function windows(from: string, to: string, days: number): Array<{ from: s
   }
   return out
 }
+
+// ---------------------------------------------------------------------------
+// URL Inspection (0074): whether Google has a page in its index, for SEO › Overview's index coverage and the deindex
+// alert. One call per page; Google allows 2 000 a day and 600 a minute per property.
+
+export const COVERAGE = ['indexed', 'crawled_not_indexed', 'discovered_not_indexed', 'duplicate', 'noindex', 'not_found', 'redirect',
+  'blocked', 'error', 'unknown', 'other'] as const
+export type Coverage = (typeof COVERAGE)[number]
+
+/** Google's verdict and coverage sentence («Crawled - currently not indexed») reduced to the design's buckets */
+export function coverageKey(verdict: unknown, state: unknown, fetchState?: unknown): Coverage {
+  const s = typeof state === 'string' ? state.toLowerCase() : ''
+  if (verdict === 'PASS') return 'indexed'
+  if (/unknown to google/.test(s)) return 'unknown'
+  if (/crawled/.test(s) && /not indexed/.test(s)) return 'crawled_not_indexed'
+  if (/discovered/.test(s)) return 'discovered_not_indexed'
+  if (/duplicate|alternate|canonical/.test(s)) return 'duplicate'
+  if (/noindex/.test(s)) return 'noindex'
+  if (/soft 404|server error|5xx|unauthori[sz]ed|forbidden|40[13]/.test(s)) return 'error'
+  if (fetchState === 'NOT_FOUND' || /not found|404/.test(s)) return 'not_found'
+  if (/redirect/.test(s)) return 'redirect'
+  if (/robots\.txt|blocked/.test(s)) return 'blocked'
+  if (/indexed/.test(s) && !/not indexed/.test(s)) return 'indexed'
+  return 'other'
+}
+
+const INSPECT = 'https://searchconsole.googleapis.com/v1/urlInspection/index:inspect'
+
+/** one page's index status; the property is the one Search Console reads the site under */
+export async function inspectUrl(token: string, property: string, url: string, f: Fetch = fetch):
+  Promise<{ ok: true; coverage: Coverage; lastCrawlAt: string | null } | Fail> {
+  let res: Response
+  try {
+    res = await f(INSPECT, {
+      method: 'POST',
+      headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ inspectionUrl: url, siteUrl: property }),
+      signal: AbortSignal.timeout(20_000),
+    })
+  } catch {
+    return { ok: false, code: 'network' }
+  }
+  if (!res.ok) {
+    await res.body?.cancel()
+    return { ok: false, code: `http_${res.status}` }
+  }
+  const j = (await res.json().catch(() => ({}))) as {
+    inspectionResult?: { indexStatusResult?: { verdict?: unknown; coverageState?: unknown; pageFetchState?: unknown; lastCrawlTime?: unknown } }
+  }
+  const r = j.inspectionResult?.indexStatusResult
+  if (!r) return { ok: false, code: 'empty' }
+  const crawled = typeof r.lastCrawlTime === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(r.lastCrawlTime) ? r.lastCrawlTime : null
+  return { ok: true, coverage: coverageKey(r.verdict, r.coverageState, r.pageFetchState), lastCrawlAt: crawled }
+}

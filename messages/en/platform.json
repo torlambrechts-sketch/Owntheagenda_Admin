@@ -578,7 +578,8 @@
       "mail_tick": "Email sending check",
       "search_console_import": "Google Search Console import",
       "seo_crawl": "Site health check (crawler)",
-      "pagespeed": "PageSpeed Insights measurement"
+      "pagespeed": "PageSpeed Insights measurement",
+      "seo_alerts": "SEO alerts check"
     },
     "flags": {
       "title": "Feature flags — global and per organization",

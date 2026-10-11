@@ -174,3 +174,58 @@ insert into app.events_in (product, source_id, kind, tenant_id, payload, occurre
 select 'orgpuls', 900000 + g, (array['usage.daily', 'member.joined', 'billing.changed'])[1 + g % 3], null, '{}', now() - make_interval(hours => g * 5), now() - make_interval(hours => g * 5)
 from generate_series(1, 12) g
 on conflict do nothing;
+
+-- ---------------------------------------------------------------------------
+-- SEO suite (0074): pages, index coverage, the link graph and mentions, a content plan, changes and alerts
+create temp table g_site as select id from app.web_sites where hostname = 'orgpuls.com';
+insert into app.seo_pages (site_id, path, title, description, h1, status, ms, noindex)
+select g_site.id, v.path, v.title, v.title, 1, 200, 600, v.noindex
+from g_site, (values ('/artikler/qps-nordic', 'QPS Nordic forklart', false), ('/artikler/anonymitet', 'Anonymitet i undersøkelser', false),
+                     ('/artikler/sporsmal', 'Spørsmål til medarbeiderundersøkelse', false), ('/artikler/mal-2024', 'Mal for medarbeiderundersøkelse 2024', false),
+                     ('/artikler/tiltaksplan-eksempel', 'Tiltaksplan — eksempel', false), ('/kampanje/hms2026', 'HMS 2026', true)) v(path, title, noindex)
+on conflict do nothing;
+update app.seo_crawls set origin = 'https://www.orgpuls.com' where id = (select id from app.seo_crawls where site_id = (select id from g_site) order by finished_at desc limit 1);
+select public.worker_seo_index_result((select id from g_site), (
+  select jsonb_agg(jsonb_build_object('path', sp.path, 'last_crawl_at', now() - interval '3 days',
+         'coverage', case sp.path when '/kampanje/hms2026' then 'noindex' when '/artikler/tiltaksplan-eksempel' then 'crawled_not_indexed'
+                                  when '/artikler/mal-2024' then 'duplicate' else 'indexed' end))
+  from app.seo_pages sp where sp.site_id = (select id from g_site)) || '[{"path": "/gammel-side", "coverage": "not_found"}]'::jsonb);
+-- every page links to the main navigation; a few articles link to each other
+select public.worker_seo_links((select id from g_site), 'https://www.orgpuls.com', (
+  select jsonb_agg(l) from (
+    select jsonb_build_object('from', sp.path, 'to', n.to_path, 'anchor', n.anchor) l
+    from app.seo_pages sp cross join (values ('/', 'Orgpuls'), ('/pris', 'Priser'), ('/kom-i-gang', 'Kom i gang'), ('/lovkrav', 'Lovkrav'),
+                                             ('/plattform', 'Plattform'), ('/skiftly', 'Skiftly')) n(to_path, anchor)
+    where sp.site_id = (select id from g_site) and sp.path not in ('/artikler/mal-2024', '/artikler/tiltaksplan-eksempel', '/kampanje/hms2026')
+    union all
+    select jsonb_build_object('from', f, 'to', t, 'anchor', a) from (values
+      ('/lovkrav', '/artikler/medarbeiderundersokelse-mal', 'mal'), ('/', '/bruksomrader/verneombud', 'verneombud'),
+      ('/artikler/arbeidsmiljokartlegging', '/artikler/qps-nordic', 'QPS Nordic'), ('/artikler/medarbeiderundersokelse-mal', '/artikler/anonymitet', 'anonymitet'),
+      ('/artikler/medarbeiderundersokelse-mal', '/artikler/sporsmal', 'spørsmål'), ('/plattform', '/artikler/arbeidsmiljokartlegging', 'kartlegging')) x(f, t, a)) q),
+  '[{"path": "/artikler/qps-nordic", "term": "medarbeiderundersøkelse"}, {"path": "/artikler/anonymitet", "term": "medarbeiderundersøkelse"},
+    {"path": "/artikler/arbeidsmiljokartlegging", "term": "psykososialt arbeidsmiljø lovkrav"}, {"path": "/bruksomrader/verneombud", "term": "arbeidsmiljøkartlegging"},
+    {"path": "/artikler/sporsmal", "term": "medarbeiderundersøkelse mal gratis"}, {"path": "/lovkrav", "term": "verneombud plikter"},
+    {"path": "/artikler/qps-nordic", "term": "qps nordic"}]'::jsonb);
+-- the content plan, the change log and a few alerts
+insert into app.seo_content_plan (site_id, query, kind, path, stage, created_by, owner_id, published_at, updated_at)
+select (select id from g_site), v.q, v.k, v.p, v.s, a.id, a.id, case when v.s in ('published', 'measuring') then now() - make_interval(days => v.days) end, now() - make_interval(hours => v.days)
+from (values ('hvordan gjennomføre en medarbeiderundersøkelse', 'gap', null, 'writing', 0, 'sara@orgpuls.no'),
+             ('sjekkliste for vernerunde', 'striking', '/bruksomrader/verneombud', 'idea', 0, 'ola@orgpuls.no'),
+             ('psykososialt arbeidsmiljø lovkrav', 'low_ctr', '/lovkrav', 'published', 6, 'sara@orgpuls.no'),
+             ('medarbeiderundersøkelse mal gratis', 'striking', '/artikler/medarbeiderundersokelse-mal', 'measuring', 45, 'sara@orgpuls.no'),
+             ('qps nordic', 'striking', '/artikler/qps-nordic', 'measuring', 38, 'ola@orgpuls.no')) v(q, k, p, s, days, who)
+join app.admins a on a.email = v.who
+on conflict (site_id, query) do update set kind = excluded.kind, path = excluded.path, stage = excluded.stage, published_at = excluded.published_at;
+insert into app.seo_changes (site_id, day, path, kind, note, source, created_by)
+select (select id from g_site), current_date - v.days, v.p, v.k, v.note, 'manual', (select id from app.admins where email = 'sara@orgpuls.no')
+from (values (48, '/artikler/medarbeiderundersokelse-mal', 'content', 'Oppdatert for 2026 og mal til nedlasting'), (41, '/lovkrav', 'schema', 'FAQ-skjema med seks spørsmål'),
+             (34, '/plattform', 'speed', 'Hovedbildet til WebP'), (27, '/artikler/qps-nordic', 'title_meta', '«2026» og nytte i tittelen'),
+             (20, '/bruksomrader/verneombud', 'links', 'Fem lenker fra artikler'), (13, '/pris', 'title_meta', 'Pris i metabeskrivelsen')) v(days, p, k, note)
+where not exists (select 1 from app.seo_changes);
+insert into app.seo_alerts (site_id, rule, subject, key, params, at, acknowledged_at)
+select (select id from g_site), v.rule, v.subj, v.subj || '@sample', v.params::jsonb, now() - make_interval(hours => v.h), case when v.ack then now() end
+from (values ('rank', 'verneombud plikter', '{"query": "verneombud plikter", "from": 6.1, "to": 9.4}', 3, false),
+             ('cwv', '/plattform', '{"path": "/plattform", "metric": "lcp", "value": 4.1}', 50, false),
+             ('deindex', '/artikler/mal-2024', '{"path": "/artikler/mal-2024", "coverage": "duplicate"}', 75, true),
+             ('traffic', 'organic', '{"hour": "09:00", "now": 4, "before": 11}', 130, false)) v(rule, subj, params, h, ack)
+on conflict do nothing;

@@ -95,6 +95,7 @@ export async function IntegrationsTab({ d, sc, open, nf, app, canMeasure }: {
       case 'search_console': return (typeof i.last_day === 'string' ? t('log.what.searchConsole', { day: i.last_day }) : t('log.what.searchConsoleNone')) + code
       case 'pagespeed': return t('log.what.pagespeed', { n: l.rows ?? 0 }) + code
       case 'product_events': return t('log.what.events', { n: l.rows ?? 0, kinds: Array.isArray(i.kinds) ? (i.kinds as string[]).join(', ') : '' })
+      case 'url_inspection': return t('log.what.urlInspection', { n: l.rows ?? 0, indexed: Number(i.indexed ?? 0), pages: Number(i.pages ?? 0) })
       default: return ''
     }
   }

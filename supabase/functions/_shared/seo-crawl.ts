@@ -27,7 +27,12 @@ export type PageFacts = {
   h1: number
   noindex: boolean
   links: string[]
+  /** the page's links to its own site with their anchor text, for Internal links (0074) */
+  anchors?: Anchor[]
+  /** the searches its content mentions, of those it was asked about (0074) */
+  mentions?: string[]
 }
+export type Anchor = { to: string; text: string | null }
 export type Issue = { kind: IssueKind; severity: Severity; count: number; paths: string[]; value?: string; ms?: number }
 export type Broken = { path: string; status: number; from: string[] }
 
@@ -62,8 +67,48 @@ function attrs(tag: string): Record<string, string> {
 /** two hosts are the same site when they differ only by www. */
 export const sameSite = (a: string, b: string) => a.replace(/^www\./, '') === b.replace(/^www\./, '')
 
-/** what a search engine reads first on a page, and its links to its own site as paths (no fragment) */
-export function pageFacts(html: string, url: URL): Pick<PageFacts, 'title' | 'description' | 'h1' | 'noindex' | 'links'> {
+/** an href on a page as a path on the page's own site (no fragment), or null for anything else */
+function ownPath(href: string | undefined, url: URL): string | null {
+  if (!href || /^(mailto:|tel:|javascript:|data:|#)/i.test(href.trim())) return null
+  try {
+    const u = new URL(decode(href), url)
+    return (u.protocol === 'https:' || u.protocol === 'http:') && sameSite(u.hostname, url.hostname) ? (u.pathname || '/') + u.search : null
+  } catch {
+    return null
+  }
+}
+
+/** the words a page's content shows, lower-cased: no scripts, styles, navigation, header or footer */
+export function contentText(html: string): string {
+  return decode(html
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<(script|style|noscript|svg|template|nav|header|footer)\b[\s\S]*?<\/\1>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')).toLowerCase()
+}
+
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+/** the terms a text mentions as whole words (Norwegian letters count as letters) */
+export function mentionsIn(text: string, terms: string[]): string[] {
+  const norm = [...new Set(terms.map((t) => t.toLowerCase().replace(/\s+/g, ' ').trim()).filter((t) => t.length >= 2 && t.length <= 80))]
+  return norm.filter((t) => new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRe(t)}($|[^\\p{L}\\p{N}])`, 'u').test(text)).sort()
+}
+
+/** each own-site link with the text it shows (or its aria-label or title), the first non-empty one per address */
+export function anchorsOf(html: string, url: URL): Anchor[] {
+  const out = new Map<string, string | null>()
+  for (const m of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
+    const a = attrs(`<a ${m[1]}>`)
+    const to = ownPath(a.href, url)
+    if (!to) continue
+    const text = (decode(m[2]!.replace(/<[^>]+>/g, ' ')) || decode(a['aria-label'] ?? '') || decode(a.title ?? '')).slice(0, 120) || null
+    if (!out.has(to) || (out.get(to) === null && text)) out.set(to, text)
+  }
+  return [...out.entries()].map(([to, text]) => ({ to, text }))
+}
+
+/** what a search engine reads first on a page, and its links to its own site as paths (no fragment); with terms, the
+ *  links' anchors and the terms its content mentions (0074) */
+export function pageFacts(html: string, url: URL, terms?: string[]): Pick<PageFacts, 'title' | 'description' | 'h1' | 'noindex' | 'links' | 'anchors' | 'mentions'> {
   const head = html.slice(0, 400_000)
   const t = /<title\b[^>]*>([\s\S]*?)<\/title>/i.exec(head)
   let description: string | null = null
@@ -76,16 +121,12 @@ export function pageFacts(html: string, url: URL): Pick<PageFacts, 'title' | 'de
   }
   const links = new Set<string>()
   for (const m of html.matchAll(/<a\b[^>]*>/gi)) {
-    const href = attrs(m[0]).href
-    if (!href || /^(mailto:|tel:|javascript:|data:|#)/i.test(href.trim())) continue
-    try {
-      const u = new URL(decode(href), url)
-      if ((u.protocol === 'https:' || u.protocol === 'http:') && sameSite(u.hostname, url.hostname)) links.add((u.pathname || '/') + u.search)
-    } catch {
-      // not an address
-    }
+    const to = ownPath(attrs(m[0]).href, url)
+    if (to) links.add(to)
   }
-  return { title: t ? decode(t[1]!) || null : null, description, h1: (html.match(/<h1\b/gi) ?? []).length, noindex, links: [...links] }
+  const facts = { title: t ? decode(t[1]!) || null : null, description, h1: (html.match(/<h1\b/gi) ?? []).length, noindex, links: [...links] }
+  if (!terms) return facts
+  return { ...facts, anchors: anchorsOf(html, url), mentions: mentionsIn(contentText(html), terms) }
 }
 
 const named = (paths: string[]) => [...new Set(paths)].sort().slice(0, NAMED)

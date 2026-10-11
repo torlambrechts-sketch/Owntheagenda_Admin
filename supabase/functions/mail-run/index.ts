@@ -3,7 +3,7 @@
  *
  * POST {"kind": "run" | "connect" | "test"}
  *   - "run": the cron's call (app.mail_tick, header x-worker-key = Vault «mail_worker_secret») or the owner's. Sends what
- *     waits: ticket replies, staff invitations, security alert emails, then the mail jobs on the queue (MFA reminders,
+ *     waits: ticket replies, staff invitations, security and SEO alert emails, then the mail jobs on the queue (MFA reminders,
  *     campaign test sends, campaign batches, sending-domain checks). Stops at about forty seconds; the next tick goes on.
  *   - "connect": the owner (own aal2 token; email_provider_check_ready proves the owner). Proves the Brevo key, registers
  *     Brevo's webhooks to mail-events, checks every sending domain against Brevo, and reports the verdict.
@@ -194,6 +194,16 @@ async function run(svc: SupabaseClient, key: string, config: Config, url: string
     const m = R.securityAlert({ lang: R.langOf(x.locale), kind: x.kind, staff: x.staff, at: x.at, link: link('/security'), fromName: x.from_name })
     const r = await send({ sender: { email: x.from, name: x.from_name }, to: { email: x.to }, subject: m.subject, html: m.html, text: m.text, tag: 'sentral-alert' })
     await rpc(svc, 'worker_alert_mail_done', { p_event: x.event, p_recipient: x.recipient, p_ok: r.ok })
+    if (r.ok) c.alerts++
+  }
+
+  // 3b. SEO alerts (0074): to everybody who may read Growth's reports, when the rule sends email
+  for (const x of arr<{ alert: string; recipient: string; rule: string; params: Record<string, unknown>; at: string; site: string; to: string; locale: string; from: string; from_name: string }>(
+    await rpc(svc, 'worker_seo_alert_mail_claim', { p_limit: 50 }))) {
+    if (!left() || authDown) break
+    const m = R.seoAlert({ lang: R.langOf(x.locale), rule: x.rule, params: x.params ?? {}, site: x.site, at: x.at, link: link('/growth?tab=seo&sub=alerts'), fromName: x.from_name })
+    const r = await send({ sender: { email: x.from, name: x.from_name }, to: { email: x.to }, subject: m.subject, html: m.html, text: m.text, tag: 'sentral-alert' })
+    await rpc(svc, 'worker_seo_alert_mail_done', { p_alert: x.alert, p_recipient: x.recipient, p_ok: r.ok })
     if (r.ok) c.alerts++
   }
 

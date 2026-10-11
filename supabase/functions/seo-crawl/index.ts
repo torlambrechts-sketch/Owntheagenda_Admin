@@ -4,8 +4,11 @@
  * the issues it finds to worker_seo_crawl_result. The nightly job knocks with the worker key; a person who may manage the
  * application's SEO knocks with their own token («Check now», seo_crawl_check_ready).
  *
+ * A whole crawl also hands over the link graph (which page links to which, with its anchor) and which of the site's
+ * searches each page's content mentions (0074, worker_seo_links), for SEO › Internal links and the content brief.
+ *
  * It only reads public pages, sends no cookie, and keeps no page body: what goes to the database is a count, a few paths,
- * a duplicated title and a time. Logs carry counts and status codes.
+ * a duplicated title, a time, the anchors and the searches mentioned. Logs carry counts and status codes.
  */
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2'
 import { sameText } from '../_shared/signing.ts'
@@ -62,7 +65,7 @@ async function text(res: Response): Promise<string> {
   return new TextDecoder().decode(all.slice(0, MAX_BYTES))
 }
 
-async function crawl(hostname: string, left: () => boolean) {
+async function crawl(hostname: string, left: () => boolean, terms: string[]) {
   // the site's own address after its redirects (orgpuls.com → www.orgpuls.com)
   const home = await get(`https://${hostname}/`)
   if (!home.res) return { error: 'unreachable' as const }
@@ -99,12 +102,12 @@ async function crawl(hostname: string, left: () => boolean) {
   await pool(paths.slice(0, MAX_PAGES), 6, left, async (path) => {
     const t0 = Date.now()
     const { res, ms } = await get(origin + path)
-    if (!res) { pages.push({ path, status: 0, ms, html: false, title: null, description: null, h1: 0, noindex: false, links: [] }); return }
+    if (!res) { pages.push({ path, status: 0, ms, html: false, title: null, description: null, h1: 0, noindex: false, links: [], anchors: [], mentions: [] }); return }
     const html = (res.headers.get('content-type') ?? '').includes('text/html')
     const body = html && res.ok ? await text(res) : (await res.body?.cancel(), '')
     // the time to the last byte, as a search engine waits for it
     const total = Date.now() - t0
-    const facts = html && res.ok ? pageFacts(body, new URL(origin + path)) : { title: null, description: null, h1: 0, noindex: false, links: [] }
+    const facts = html && res.ok ? pageFacts(body, new URL(origin + path), terms) : { title: null, description: null, h1: 0, noindex: false, links: [], anchors: [], mentions: [] }
     if (/\bnoindex\b/i.test(res.headers.get('x-robots-tag') ?? '')) facts.noindex = true
     pages.push({ path, status: res.status, ms: total, html, ...facts })
   })
@@ -154,7 +157,7 @@ Deno.serve(async (req) => {
   }
 
   const { data: listed } = await svc.rpc('worker_seo_crawl_sites')
-  const sites = (Array.isArray(listed) ? listed : []).filter((s): s is { site_id: string; hostname: string } =>
+  const sites = (Array.isArray(listed) ? listed : []).filter((s): s is { site_id: string; hostname: string; terms?: unknown } =>
     typeof s?.site_id === 'string' && UUID.test(s.site_id) && typeof s?.hostname === 'string' && (!only || s.site_id === only))
   const start = Date.now()
   const left = () => Date.now() - start < BUDGET_MS
@@ -162,7 +165,8 @@ Deno.serve(async (req) => {
   for (const s of sites) {
     if (!left()) break
     const t = Date.now()
-    const r = await crawl(s.hostname, left)
+    const terms = (Array.isArray(s.terms) ? s.terms : []).filter((x): x is string => typeof x === 'string').slice(0, 200)
+    const r = await crawl(s.hostname, left, terms)
     const ms = Date.now() - t
     if ('error' in r) {
       await svc.rpc('worker_seo_crawl_result', { p_site: s.site_id, p_pages: 0, p_ms: ms, p_issues: [], p_error: r.error })
@@ -170,12 +174,21 @@ Deno.serve(async (req) => {
       log(`site failed ${r.error}`)
       continue
     }
-    const { error } = await svc.rpc('worker_seo_crawl_result', { p_site: s.site_id, p_pages: r.pages.length, p_ms: ms, p_issues: r.issues, p_error: left() ? null : 'partial' })
+    const whole = left()
+    const { error } = await svc.rpc('worker_seo_crawl_result', { p_site: s.site_id, p_pages: r.pages.length, p_ms: ms, p_issues: r.issues, p_error: whole ? null : 'partial' })
     if (error) log(`result refused ${error.code ?? ''}`)
     // what each page said about itself, for Pages and links (0073): no body, no links
     const facts = r.pages.map((p) => ({ path: p.path.slice(0, 300), title: p.title, description: p.description, h1: p.h1, status: p.status, ms: p.ms, noindex: p.noindex }))
     const { error: pagesError } = await svc.rpc('worker_seo_pages', { p_site: s.site_id, p_pages: facts })
     if (pagesError) log(`pages refused ${pagesError.code ?? ''}`)
+    // the link graph and the mentions (0074), only from a whole crawl: a partial one would make pages look orphaned
+    if (whole) {
+      const links = r.pages.flatMap((p) => (p.anchors ?? []).map((a) => ({ from: p.path.slice(0, 300), to: a.to.slice(0, 300), anchor: a.text }))).slice(0, 40_000)
+      const mentions = r.pages.flatMap((p) => (p.mentions ?? []).map((term) => ({ path: p.path.slice(0, 300), term }))).slice(0, 20_000)
+      const { error: linksError } = await svc.rpc('worker_seo_links', { p_site: s.site_id, p_origin: r.origin, p_links: links, p_mentions: mentions })
+      if (linksError) log(`links refused ${linksError.code ?? ''}`)
+      else log(`links=${links.length} mentions=${mentions.length}`)
+    }
     out.push({ site_id: s.site_id, pages: r.pages.length, issues: r.issues.length })
     log(`site pages=${r.pages.length} issues=${r.issues.length} ms=${ms}`)
   }

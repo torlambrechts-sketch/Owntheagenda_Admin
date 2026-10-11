@@ -711,7 +711,8 @@
           "search_console": "Search Console",
           "pagespeed": "PageSpeed Insights",
           "product_events": "Product events",
-          "email": "Email"
+          "email": "Email",
+          "url_inspection": "URL Inspection"
         },
         "states": {
           "ok": "OK",
@@ -724,7 +725,8 @@
           "searchConsole": "Imported through {day}",
           "searchConsoleNone": "Import attempted",
           "pagespeed": "{n, plural, one {# page} other {# pages}} measured",
-          "events": "{n, plural, one {# event} other {# events}} · {kinds}"
+          "events": "{n, plural, one {# event} other {# events}} · {kinds}",
+          "urlInspection": "{n, plural, one {# page} other {# pages}} checked · {indexed} of {pages} indexed"
         }
       },
       "pagespeed": {
@@ -758,6 +760,278 @@
           "no_reading": "Google returned no reading for a page.",
           "other": "Something went wrong ({code})."
         }
+      }
+    },
+    "seoSuite": {
+      "subTabs": {
+        "label": "SEO views",
+        "overview": "SEO overview",
+        "clusters": "Topic clusters",
+        "opps": "Opportunities",
+        "keywords": "Keywords",
+        "plan": "Content plan",
+        "links": "Internal links",
+        "serp": "Search results and competitors",
+        "changes": "Change log",
+        "alerts": "Alerts"
+      },
+      "notConnected": "Search Console is not connected, so there are no search figures yet. Connect it in Integrations.",
+      "noSite": "No public website is registered for {app}.",
+      "kinds": {
+        "striking": "Striking distance",
+        "low_ctr": "Low CTR",
+        "gap": "Content gap",
+        "cannibal": "Cannibalization",
+        "decay": "Decay"
+      },
+      "effort": {
+        "small": "small",
+        "medium": "medium",
+        "large": "large"
+      },
+      "doIt": "Do it",
+      "inPlan": "✓ In plan",
+      "planned": "Added to the content plan",
+      "perMonth": "{value}/mo",
+      "clicksPerMonth": "+{n} clicks/mo",
+      "overview": {
+        "kpi": {
+          "clicks": "Organic clicks · 30 d",
+          "clicksNote": "Search Console",
+          "signups": "Organic signups",
+          "signupsNote": "Finished signup after a search visit",
+          "mrr": "Organic MRR won",
+          "mrrNote": "First touch: organic search",
+          "mrrNone": "Not reported by the product",
+          "visibility": "Visibility",
+          "visibilityNote": "Click share of tracked searches",
+          "indexed": "Indexed pages",
+          "indexedNote": "{n} excluded",
+          "indexedNone": "Not inspected yet",
+          "pts": "{v} pts"
+        },
+        "actions": "Top 5 actions this week",
+        "actionsNote": "Ranked by value per month",
+        "actionsNoteClicks": "Ranked by clicks per month",
+        "actionsEmpty": "No opportunity in Search Console's last 28 days.",
+        "actionSub": "{type} · effort {effort}",
+        "index": "Index coverage · Search Console",
+        "indexEmpty": "URL Inspection checks the crawled pages every night once Search Console is connected; nothing is checked yet.",
+        "coverage": {
+          "indexed": "Indexed",
+          "crawled_not_indexed": "Crawled, not indexed",
+          "discovered_not_indexed": "Discovered, not indexed",
+          "duplicate": "Duplicate or alternate",
+          "noindex": "Blocked by noindex",
+          "not_found": "404 not found",
+          "redirect": "Page with redirect",
+          "blocked": "Blocked by robots.txt",
+          "error": "Server or access error",
+          "unknown": "Unknown to Google",
+          "other": "Other"
+        },
+        "confidence": "Data confidence",
+        "facts": {
+          "hidden": "Search Console leaves out rare searches ({share} of the last 30 days' clicks) and its figures arrive about two days late.",
+          "hiddenPlain": "Search Console leaves out rare searches, and its figures arrive about two days late.",
+          "tracker": "Visits are counted by Sentral's cookieless tracker since {date}; a visit is never joined to a person or an account.",
+          "noTracker": "The site's tracker has not sent a visit yet, so organic signups are not counted.",
+          "revenue": "Organic revenue uses first-touch attribution reported by the product.",
+          "noRevenue": "{app} does not report where an account came from, so organic revenue is not counted.",
+          "index": "Index coverage comes from URL Inspection: {n, plural, one {# page} other {# pages}} checked, the last on {date}.",
+          "noIndex": "URL Inspection has not checked a page yet."
+        }
+      },
+      "clusters": {
+        "meta": "{kws, plural, one {# keyword} other {# keywords}} · {pages, plural, one {# page} other {# pages}}",
+        "visibility": "visibility",
+        "clicks": "{n} clicks · 90 d",
+        "pts": "{v} pts",
+        "main": "Main page",
+        "spokes": "Supporting pages",
+        "share": "Share of the topic's clicks by page",
+        "published": "Published",
+        "inPlan": "In plan",
+        "missing": "Missing",
+        "plan": "Plan",
+        "missingSub": "no page in the top 20 (best #{pos})",
+        "empty": "Track keywords under Keywords: each tracked search joins the topic of the page Google shows most for it.",
+        "unclustered": "{n, plural, one {# tracked keyword has} other {# tracked keywords have}} no page in Google's results yet."
+      },
+      "opps": {
+        "all": "All",
+        "formula": "Value = volume × click-rate gain × signup rate × paid rate × average revenue (ARPA) × chance of winning",
+        "formulaMissing": "Value needs organic signups, paying accounts and revenue; until Sentral has all three, opportunities are ranked by the clicks they would bring.",
+        "cols": {
+          "opp": "Opportunity",
+          "type": "Type",
+          "effort": "Effort",
+          "value": "Value / mo"
+        },
+        "t": {
+          "striking": "Move «{q}» from #{pos} into top 3",
+          "low_ctr": "Rewrite the title for «{q}»",
+          "gap": "New page for «{q}»",
+          "cannibal": "Merge the pages competing for «{q}»",
+          "decay": "Refresh {path}"
+        },
+        "s": {
+          "striking": "{impr} impressions · currently {ctr} CTR",
+          "low_ctr": "Position {pos} but {ctr} CTR against {expected} expected",
+          "gap": "{impr} impressions · no page in the top 20 (best #{pos})",
+          "cannibal": "{a} and {b} split its impressions {sa}/{sb}",
+          "decay": "Clicks {change} against three months ago · «{q}»"
+        },
+        "empty": "Nothing here: no search in the last 28 days fits this kind."
+      },
+      "plan": {
+        "stages": {
+          "idea": "Idea",
+          "writing": "Writing",
+          "published": "Published",
+          "measuring": "Measuring"
+        },
+        "title": {
+          "striking": "Lift «{q}» into top 3",
+          "low_ctr": "New title and description for «{q}»",
+          "gap": "New page: {q}",
+          "cannibal": "Merge the pages for «{q}»",
+          "decay": "Refresh {path}"
+        },
+        "meta": "{q} · {owner}",
+        "back": "Back to {stage}",
+        "fwd": "On to {stage}",
+        "measuring": "Measuring · result on {date}",
+        "result": "{clicks} clicks · pos {from} → {to}",
+        "resultClicks": "{clicks} clicks",
+        "moved": "Moved to {stage}",
+        "movedLogged": "Moved to {stage} · logged in the change log",
+        "empty": "Nothing planned yet. «Do it» on an opportunity, or «Plan» on a missing topic page, puts it here.",
+        "brief": {
+          "label": "Content brief · {stage}",
+          "close": "Close the brief",
+          "target": "Target",
+          "urlIntent": "URL {url} · intent {intent}",
+          "noUrl": "no page yet",
+          "terms": "Related searches to cover",
+          "questions": "Questions people search for",
+          "links": "Internal links to add",
+          "noTerms": "Search Console shows no related search yet.",
+          "noQuestions": "No search phrased as a question yet.",
+          "noLinks": "No crawled page mentions it without linking to it.",
+          "measured": "{k} · 28 d",
+          "clicks": "Clicks",
+          "position": "Position"
+        },
+        "noFigures": "No Search Console figures for the page yet"
+      },
+      "links": {
+        "sug": "Suggested internal links",
+        "sugNote": "Pages that mention the topic but don't link to the main page",
+        "skip": "Skip",
+        "add": "Add link",
+        "added": "✓ Added",
+        "skipped": "Skipped",
+        "addedToast": "Link noted · logged in change log",
+        "skippedToast": "Suggestion skipped",
+        "orphans": "Orphan pages",
+        "orphansNote": "No internal links point here",
+        "orphanLine": "0 inlinks · {n, plural, one {# visit} other {# visits}}",
+        "hubs": "Most linked pages",
+        "hubsNote": "Inlinks · top anchor",
+        "notCrawled": "The crawler maps the site's links every night; nothing is mapped yet.",
+        "noSug": "No page mentions a tracked or frequent search without linking to its main page.",
+        "noOrphans": "Every crawled page has a link pointing to it."
+      },
+      "serp": {
+        "title": "Search results and competitors",
+        "body": "Competitors' visibility, search result features and keyword gaps need search result data from an SEO tool such as Ahrefs, Semrush or DataForSEO. Sentral has no such connection, and Search Console reports only the site's own results.",
+        "needs": "Needs an SEO tool integration"
+      },
+      "changes": {
+        "log": "Log a change",
+        "note": "What changed?",
+        "submit": "Log change",
+        "logged": "Change logged · result shown after 28 days",
+        "pagePick": "Page",
+        "kindPick": "Kind of change",
+        "kinds": {
+          "title_meta": "Title and meta",
+          "content": "Content update",
+          "links": "Internal links",
+          "schema": "Schema markup",
+          "speed": "Speed fix",
+          "new_page": "New page",
+          "merge": "Merge pages"
+        },
+        "chart": "Organic clicks per day with changes marked",
+        "chartNote": "Last 60 days · hover a dot",
+        "noDaily": "Search Console has no daily figures yet.",
+        "cols": {
+          "date": "Date",
+          "page": "Page",
+          "change": "Change",
+          "clicks": "Clicks",
+          "position": "Position",
+          "ctr": "CTR",
+          "result": "Result"
+        },
+        "result": {
+          "win": "Win",
+          "small": "Small win",
+          "none": "No effect",
+          "loss": "Loss",
+          "measuring": "Measuring"
+        },
+        "pts": "{v} pts",
+        "empty": "No change logged yet.",
+        "noPages": "The crawler has not listed the site's pages yet."
+      },
+      "alerts": {
+        "rules": "Alert rules",
+        "rulesNote": "Checked every hour",
+        "history": "Alert history",
+        "open": "{n} open",
+        "rule": {
+          "rank": {
+            "n": "Ranking drop",
+            "cond": "A top-10 keyword falls 3+ positions"
+          },
+          "deindex": {
+            "n": "Page dropped from the index",
+            "cond": "URL Inspection"
+          },
+          "traffic": {
+            "n": "Organic traffic drop",
+            "cond": "−30 % vs same weekday, hour by hour"
+          },
+          "cwv": {
+            "n": "Core Web Vitals fail",
+            "cond": "LCP > 2,5 s or INP > 200 ms on a top page"
+          }
+        },
+        "channels": {
+          "app": "In app",
+          "email": "Email"
+        },
+        "mailOff": "Email goes out once Brevo is connected",
+        "toggle": "Turn «{rule}» on or off",
+        "ack": "Acknowledge",
+        "reopen": "Reopen",
+        "titles": {
+          "rank": "Ranking drop: «{query}» #{from} → #{to}",
+          "deindex": "{path} dropped out of the index",
+          "traffic": "Organic visits fell at {hour}: {now} against usually {before}",
+          "cwv_lcp": "LCP {value} s on {path} (mobile)",
+          "cwv_inp": "INP {value} ms on {path} (mobile)"
+        },
+        "source": {
+          "rank": "Search Console",
+          "deindex": "URL Inspection",
+          "traffic": "Website tracker",
+          "cwv": "PageSpeed Insights"
+        },
+        "empty": "No alert yet."
       }
     }
   }

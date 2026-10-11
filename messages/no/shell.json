@@ -446,6 +446,24 @@
             "title": "Kunden svarte på {record}",
             "body": "E-posten deres ligger på saken."
           }
+        },
+        "seo": {
+          "alert_rank": {
+            "title": "Fall i rangering: «{query}»",
+            "body": "Fra #{from} til #{to} i Google · Vekst › SEO › Varsler"
+          },
+          "alert_deindex": {
+            "title": "{path} falt ut av Googles indeks",
+            "body": "URL-inspeksjon · Vekst › SEO › Varsler"
+          },
+          "alert_traffic": {
+            "title": "Organiske besøk falt kl. {hour}",
+            "body": "{now} mot vanligvis {before} · Vekst › SEO › Varsler"
+          },
+          "alert_cwv": {
+            "title": "{path} feiler Core Web Vitals på mobil",
+            "body": "PageSpeed Insights · Vekst › SEO › Varsler"
+          }
         }
       }
     },

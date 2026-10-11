@@ -158,24 +158,20 @@ Read the search-term report every week and add more.
 - **Growth › Analytics:** the short version. «Sent org. number» now counts only real attempts.
 - **Growth › SEO:** the tracked keywords. Add the six from the Search Console column above.
 
-## 6. More signup detail: what Orgpuls' site must send
+## 6. Signup detail from Orgpuls' site (built: Orgpuls D-277, 11 October 2026)
 
-Sentral (0068) accepts these events from the site's existing tracker (`s(name, value)` in the beacon). The value is
-a short code (`a-z 0-9 _ -`, at most 40 characters), **never something the person typed**: no org. number, name or
-email address. Sentral drops anything else.
+The signup page and the home page send these to Sentral through the site's existing tracker. The value is always a short
+code (`a-z 0-9 _ -`, at most 40 characters), never anything the person typed; both the site and Sentral drop anything else.
 
 | Event | Value | When |
 |---|---|---|
-| `signup_step` | `step1_shown` | the form is shown (step 1, organisation) |
-| `signup_step` | `org_found` | Brønnøysund returned the company (before step 2) |
-| `signup_step` | `step2_shown` | step 2 «Deg» is shown |
+| `signup_step` | `step1_shown` / `step2_shown` | step 1 (organisation) or step 2 («Deg») is shown |
+| `signup_step` | `org_found` | the register returned the company |
 | `signup_step` | `sso_google` / `sso_microsoft` | the person chose Google or Microsoft sign-in |
-| `signup_error` | `org_invalid` | the org. number failed the client check (not 9 digits) |
-| `signup_error` | `lookup_not_found` | Brønnøysund has no such company |
-| `signup_error` | `lookup_failed` | the lookup failed (network or timeout) |
-| `signup_error` | `step2_<code>` | step 2 refused (for example `step2_email_taken`, `step2_weak_password`) |
-| `signup_error` | `google_failed` / `microsoft_failed` | SSO came back with an error |
-| `persona_click` | `daglig_leder` / `hr` / `avdelingsleder` / `verneombud` | a «Hvem er du?» card was pressed |
+| `signup_error` | the lookup's own code (for example `invalid_name`, `rate_limited`, the register's not-found or failure code) | step 1's lookup was refused |
+| `signup_error` | `step2_<code>` (for example `step2_signup_failed`, `step2_confirm_email`, `step2_org_failed`) | step 2 was refused |
+| `signup_error` | the provider's code from `?feil=` | Google or Microsoft came back with an error |
+| `persona_click` | `daglig_leder` / `hr` / `avdelingsleder` / `verneombud` | a «Hvem er du?» card on the home page was pressed |
 
-`signup_started` (org. number sent) and `signup_completed` are already sent and stay as they are.
-Analytics › Web then shows each attempt's steps and the error it stopped on, and counts errors by code.
+`signup_started` (org. number sent) and `signup_completed` are unchanged. Growth › Analytics shows the steps and errors
+under «Where signups stop» and in each signup attempt; Analytics › Web also shows the persona presses.

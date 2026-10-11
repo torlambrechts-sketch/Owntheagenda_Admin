@@ -44,7 +44,11 @@ export type GrowthParams = Scope & {
   ot: (typeof OPP_TYPES)[number]
   /** SEO › Content plan: the item whose brief is open */
   brief: string | null
+  /** Marketing campaigns › Outcomes: the attribution model */
+  am: (typeof MODELS)[number]
 }
+
+export const MODELS = ['first', 'last'] as const
 
 export const OPP_TYPES = ['all', 'striking', 'low_ctr', 'gap', 'cannibal', 'decay'] as const
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
@@ -80,6 +84,7 @@ export function parseGrowth(sp: Record<string, string | string[] | undefined>): 
     cl: g('cl') && g('cl')!.startsWith('/') && g('cl')!.length <= 300 ? g('cl')! : null,
     ot: z.enum(OPP_TYPES).catch('all').parse(g('ot') ?? 'all'),
     brief: g('brief') && UUID.test(g('brief')!) ? g('brief')! : null,
+    am: z.enum(MODELS).catch('first').parse(g('am') ?? 'first'),
   }
 }
 
@@ -95,7 +100,7 @@ export function osloToday(now = new Date()): string {
 
 type Extra = Partial<Omit<GrowthParams, keyof Scope | 'tab'>>
 const DEFAULTS: Required<{ [K in keyof Extra]: string | number | null }> = {
-  metric: 'visitors', step: 4, lf: 'all', page: null, sort: 'opportunity', sub: null, kt: 'all', kw: null, cl: null, ot: 'all', brief: null,
+  metric: 'visitors', step: 4, lf: 'all', page: null, sort: 'opportunity', sub: null, kt: 'all', kw: null, cl: null, ot: 'all', brief: null, am: 'first',
 }
 
 /**

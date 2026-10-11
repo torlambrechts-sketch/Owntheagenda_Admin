@@ -34,14 +34,16 @@ export function Delta({ change, lowerIsBetter = false, nf }: { change: number | 
 }
 
 /** A KPI tile (kpis[]: radius 18, padding 13×15, the serif value at 24 px); a link when it picks something */
-export function Tile({ label, value, delta, href, on = false, size = 24, note, title }: {
+export function Tile({ label, value, delta, href, on = false, size = 24, note, title, tone = 'text-ink' }: {
   label: string; value: string; delta?: React.ReactNode; href?: string; on?: boolean; size?: 23 | 24; note?: string | null; title?: string
+  /** the value's colour, where the design colours it (a payback under target, a complaint rate over the limit) */
+  tone?: string
 }) {
   const body = (
     <>
       <div className={colHead}>{label}</div>
       <div className="mt-[5px] flex items-baseline gap-2">
-        <span className={`whitespace-nowrap font-serif font-semibold text-ink ${size === 23 ? 'text-23' : 'text-24'}`}>{value}</span>
+        <span className={`whitespace-nowrap font-serif font-semibold ${tone} ${size === 23 ? 'text-23' : 'text-24'}`}>{value}</span>
         {delta}
       </div>
       {note ? <div className="text-11.5 text-muted">{note}</div> : null}

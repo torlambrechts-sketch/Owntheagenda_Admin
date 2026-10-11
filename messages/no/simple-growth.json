@@ -1033,6 +1033,326 @@
         },
         "empty": "Ingen varsler ennå."
       }
+    },
+    "playbook": {
+      "campSubs": {
+        "label": "Visninger for markedsføringskampanjer",
+        "base": "Kampanjer",
+        "outcomes": "Resultater og attribusjon",
+        "budget": "Budsjettplan",
+        "experiments": "Eksperimenter",
+        "audiences": "Målgrupper",
+        "creative": "Annonser og landingssider",
+        "calendar": "Kalender og tilbud"
+      },
+      "emailSubs": {
+        "label": "Visninger for e-post og automasjon",
+        "base": "E-postkampanjer",
+        "trial": "Prøveperiode og avbrutt registrering",
+        "library": "Flytbibliotek",
+        "deliver": "Leveranse og frekvens"
+      },
+      "outcomes": {
+        "model": "Attribusjonsmodell",
+        "models": {
+          "first": "Første kontakt",
+          "last": "Siste kontakt"
+        },
+        "note": "Siste {days} dager · kostnad slik den er ført under Kampanjer",
+        "cols": {
+          "channel": "Kanal",
+          "spend": "Kostnad",
+          "cps": "Per registrering",
+          "cpa": "Per konto",
+          "paying": "Betalende",
+          "cac": "CAC",
+          "payback": "Tilbakebetaling",
+          "mrr": "MRR"
+        },
+        "empty": "Ingen kostnad, registreringer eller kontoer de siste {days} dagene.",
+        "months": "{n} mnd",
+        "footnote": "CAC = kostnad ÷ betalende kunder · tilbakebetaling = CAC ÷ ARPA ({arpa}/mnd) · mål: under 12 måneder",
+        "noSource": "Kontoer, betalende kunder og MRR krever at {app} rapporterer hvor en konto kom fra. Den rapporterer bare hvordan folk hørte om den, så de kolonnene viser «—».",
+        "trackedSince": "Registreringer telles av nettstedssporingen, som startet {date}.",
+        "noTracker": "Registreringer krever nettstedssporingen, som ikke har rapportert et besøk ennå.",
+        "journeys": "Vanligste veier til betalende",
+        "journeysNote": "Siste {days} dager",
+        "journeysNoSource": "Veiene krever at {app} rapporterer første og siste kontakt for en konto.",
+        "journeysEmpty": "Ingen konto ble betalende de siste {days} dagene.",
+        "signup": "Registrering",
+        "journeyRow": "<b>{n}</b> betalende · {days} dager"
+      },
+      "budget": {
+        "kpi": {
+          "budget": "Budsjett {month}",
+          "budgetNote": "{n, plural, one {# kanal} other {# kanaler}} med budsjett",
+          "budgetNone": "Ikke noe budsjett denne måneden",
+          "spent": "Brukt så langt",
+          "spentNote": "{share} av måneden gått",
+          "cac": "Samlet CAC",
+          "cacNote": "Kostnad ÷ betalende kunder, 90 dager",
+          "noSource": "Krever at {app} rapporterer kilder",
+          "payback": "Tilbakebetaling",
+          "paybackNote": "Mål: under 12"
+        },
+        "months": "{n} mnd",
+        "title": "Budsjett per kanal for {month}",
+        "dayOf": "Dag {day} av {days} · endre budsjettet for å planlegge",
+        "inputLabel": "Budsjett for {channel}",
+        "pace": {
+          "on": "I rute",
+          "under": "Under tempo",
+          "ahead": "Foran tempo — tom {date}",
+          "none": "Ikke noe budsjett",
+          "noBudgetSpent": "{spent} brukt, ikke noe budsjett"
+        },
+        "perPaying": "per kunde, {days} dager",
+        "projection": "≈ {n} betalende denne måneden",
+        "noSource": "Kostnad per betalende kunde krever at {app} rapporterer hvor kontoene kommer fra; til da er det ikke noe forslag til flytting eller scenario.",
+        "move": "<b>Foreslått flytting:</b> Flytt {amount} fra {from} til {to} — de siste 90 dagene kostet en betalende kunde {fromCac} gjennom {from} og {toCac} gjennom {to}.",
+        "gain": "+{n} betalende / mnd",
+        "apply": "Flytt budsjett",
+        "movedToast": "Budsjett flyttet fra {from} til {to}",
+        "moved": "<b>Flyttet denne måneden:</b> {amount} fra {from} til {to} {date}.",
+        "applied": "✓ Flyttet",
+        "saved": "Budsjett lagret",
+        "scenario": {
+          "title": "Scenario",
+          "ifAdd": "Hvis vi legger til",
+          "amount": "Ekstra kroner denne måneden",
+          "toBest": "kr denne måneden i de beste kanalene, venter vi",
+          "result": "+{n} betalende · {mrr} MRR",
+          "resultPaying": "+{n} betalende"
+        }
+      },
+      "experiments": {
+        "placeholder": "Hypotese: hvis vi … så … fordi …",
+        "hypothesis": "Hypotese",
+        "area": "Område",
+        "areas": {
+          "signup": "Registrering",
+          "landing_page": "Landingsside",
+          "pricing": "Pris",
+          "email": "E-post",
+          "ads": "Annonser",
+          "content": "Innhold",
+          "referral": "Anbefaling",
+          "other": "Annet"
+        },
+        "ice": {
+          "impact": "Effekt",
+          "confidence": "Sikkerhet",
+          "ease": "Enkelhet",
+          "impactShort": "I",
+          "confidenceShort": "C",
+          "easeShort": "E"
+        },
+        "iceScore": "ICE {n}",
+        "add": "＋ Legg til eksperiment",
+        "pace": "{running} kjører · {called} avgjort siste 30 dager",
+        "stages": {
+          "backlog": "Idébank",
+          "ready": "Klar",
+          "running": "Kjører",
+          "done": "Ferdig"
+        },
+        "empty": "Ingen eksperimenter ennå. Skriv en hypotese over, gi den poeng og legg den i idébanken.",
+        "added": "Lagt i idébanken",
+        "movedTo": "Flyttet til {stage}",
+        "archived": "Arkivert",
+        "called": "Resultat lagret",
+        "runningSince": "Kjører siden {date} · dag {days}",
+        "outcomes": {
+          "win": "Gevinst",
+          "no_effect": "Ingen effekt",
+          "loss": "Tap"
+        },
+        "callLabel": "Resultat",
+        "notePlaceholder": "Hva så dere?",
+        "cancel": "Avbryt",
+        "save": "Lagre resultat",
+        "back": "Ett steg tilbake",
+        "call": "Avgjør",
+        "archive": "Arkiver",
+        "next": "Neste →"
+      },
+      "audiences": {
+        "lists": "Lister i CRM",
+        "listsNote": "Hvem som passer, og hvem som kan få e-post",
+        "empty": "Ingen lister ennå.",
+        "size": "{count, plural, one {{n} person} other {{n} personer}} · {r} kan få e-post",
+        "shared": "delt",
+        "owner": "{name} sin",
+        "private": "privat",
+        "kind": "CRM-liste",
+        "noSync": "Ingen annonseplattform er koblet til, så listene synkroniseres ikke til Google Ads, LinkedIn eller Meta, og det finnes ingen treffprosent.",
+        "personas": "Resultater per persona",
+        "personasNone": "Å dele registreringer, konvertering og CAC per persona krever rollen til den som registrerte seg (daglig leder, HR, avdelingsleder, verneombud). {app} rapporterer den ikke, så det er ingenting å dele på."
+      },
+      "creative": {
+        "title": "Annonser og landingssider",
+        "note": "Ikke koblet til",
+        "needs": "Budskapsmatrisen, annonsevarianter med slitasje og tester av landingssider krever visninger, klikkrate og frekvens fra annonseplattformene, og resultater fra et A/B-testverktøy. Ingen av dem er koblet til Sentral, så her vises ingenting i stedet for tall som ikke er ekte.",
+        "today": "Besøk, registreringer og konvertering for hver landingsside måles i dag under <link>Sider og lenker</link>."
+      },
+      "calendar": {
+        "rows": {
+          "email": "E-postkampanjer",
+          "blackout": "Stille periode"
+        },
+        "empty": "Ingen kampanje har dato i {year}.",
+        "footnote": "Grå felt er stille perioder: en markering i planen, de stopper ingen utsending. En rad med søkeinteresse krever Google Trends, som ikke er koblet til.",
+        "blackouts": "Stille perioder",
+        "blackoutsNote": "Når ingenting skal sendes ut",
+        "noBlackouts": "Ingen stille periode i {year}.",
+        "name": "Navn, f.eks. Fellesferie",
+        "from": "Første dag",
+        "to": "Siste dag",
+        "add": "Legg til",
+        "added": "Stille periode lagt til",
+        "remove": "Fjern {name}",
+        "removed": "Stille periode fjernet",
+        "offers": "Tilbud, anbefalinger og partnere",
+        "offersNone": "Sentral har ingen oversikt over tilbud, rabattkoder eller anbefalinger fra partnere, så leads, prøveperioder og betalende kunder per tilbud eller partner kan ikke telles."
+      },
+      "trial": {
+        "kpi": {
+          "trial": "Prøve → betalende",
+          "trialNote": "{n, plural, one {# prøveperiode} other {# prøveperioder}} avsluttet siste 90 dager",
+          "trialNone": "Ingen prøveperiode avsluttet siste 90 dager",
+          "firstSurvey": "Tid til første undersøkelse",
+          "firstSurveyNote": "median · {n, plural, one {# konto} other {# kontoer}}",
+          "firstSurveyNone": "Ingen første undersøkelse siste 90 dager",
+          "abandoned": "Avbrutte registreringer",
+          "abandonedNote": "siste 30 dager",
+          "abandonedSince": "siden {date}",
+          "noTracker": "Ingen besøk sporet ennå",
+          "recovered": "Gjenvunnet",
+          "recoveredNone": "Ingen adresse å skrive til"
+        },
+        "pts": "{n} poeng",
+        "days": "{n} dager",
+        "flows": "Prøveflyter etter hva brukerne gjør",
+        "flowsNote": "Startet av hva en konto gjør",
+        "flowsEmpty": "Ingen flyt starter av hva en prøvekonto gjør ennå. En flyt som utløses av en produkthendelse (konto opprettet, milepæl nådd, betaling endret) vises her.",
+        "if": "Hvis: {when}",
+        "inFlow": "{n} i flyten",
+        "noSteps": "Ingen steg ennå",
+        "live": "{name} · {n} fullført siste 90 dager",
+        "notLive": "{name} · kjører ikke",
+        "trigger": {
+          "org_created": "en konto opprettes",
+          "milestone": "{name}",
+          "milestone_any": "en aktiveringsmilepæl nås",
+          "billing": "betalingen endres",
+          "billing_state": "betalingen blir {state}"
+        },
+        "payment": {
+          "past_due": "forfalt",
+          "unpaid": "ubetalt",
+          "ok": "i orden"
+        },
+        "delay": {
+          "minutes": "{n, plural, one {# minutt} other {# minutter}}",
+          "hours": "{n, plural, one {# time} other {# timer}}",
+          "days": "{n, plural, one {# dag} other {# dager}}",
+          "weeks": "{n, plural, one {# uke} other {# uker}}"
+        },
+        "recovery": {
+          "title": "Gjenvinning av avbrutte registreringer",
+          "why": "Et besøk som stopper før kontoen er opprettet, etterlater ingen e-postadresse, og nettstedssporingen bruker ikke informasjonskapsler, så den vet aldri hvem en besøkende er. Gjenvinnings-e-post krever at registreringen spør etter e-postadresse først.",
+          "funnel": "Se hvor de stopper, og hvorfor, under <link>Registreringstrakt og logg</link>.",
+          "total": "Startet registreringen uten å fullføre, siste 30 dager"
+        }
+      },
+      "library": {
+        "empty": "Ingen sekvens eller flyt som skriver til folk ennå.",
+        "states": {
+          "live": "Aktiv",
+          "paused": "På pause",
+          "draft": "Utkast"
+        },
+        "types": {
+          "event": "Starter av en CRM-hendelse",
+          "date": "Starter på en dato",
+          "product_event": "Starter av en produkthendelse",
+          "enrollment": "Folk meldes inn i den"
+        },
+        "stats": {
+          "sent": "Sendt",
+          "opened": "Åpnet",
+          "unsub": "Avmeldt"
+        },
+        "steps": "{n, plural, one {# steg} other {# steg}}",
+        "kinds": {
+          "workflow": "Arbeidsflyt",
+          "sequence": "Sekvens",
+          "lifecycle": "Livssyklus"
+        },
+        "inFlow": "{n} i flyten",
+        "pause": "Sett på pause",
+        "activate": "Aktiver",
+        "paused": "{name} satt på pause",
+        "activated": "{name} er aktiv"
+      },
+      "deliver": {
+        "kpi": {
+          "sent": "Sendt, 30 dager",
+          "sentNote": "{n} levert",
+          "none": "Ingenting sendt siste 30 dager",
+          "bounce": "Returrate",
+          "bounceNote": "{n} harde · sperret automatisk",
+          "complaints": "Spamklager",
+          "complaintsNote": "Grense {limit}",
+          "unsub": "Avmeldingsrate",
+          "unsubNote": "{n} avmeldt",
+          "auth": "SPF · DKIM · DMARC",
+          "authUnknown": "Avsenderdomener kunne ikke leses",
+          "authNone": "Ikke noe avsenderdomene",
+          "authMissing": "{domain} mangler {what}",
+          "authAll": "Alle avsenderdomener består",
+          "authUnchecked": "{domain} er ikke sjekket ennå"
+        },
+        "domains": "Avsenderdomener",
+        "domainsNote": "SPF, DKIM, DMARC og returrate",
+        "noDomains": "Ikke noe avsenderdomene er satt opp.",
+        "domainsUnknown": "Avsenderdomenene kunne ikke leses.",
+        "streams": {
+          "marketing": "Markedsføring",
+          "transactional": "Transaksjonell"
+        },
+        "warmup": "oppvarming, dag {day} av {days}",
+        "bounceTitle": "Returrate",
+        "placementNone": "Innboksplassering og domenets omdømme krever testadresser eller Google Postmaster, som ikke er koblet til.",
+        "suppression": "Sperreliste",
+        "suppressionNote": "Adresser som ikke får e-post, etter årsak",
+        "noCap": "Motoren har ingen grense for antall e-poster, ingen stille timer og ingen prioritet mellom flyter: hver flyt sender etter sin egen plan, og en sperret adresse får ingenting.",
+        "signals": "E-post → salgssignaler",
+        "signalsNote": "Hva motoren gjør med engasjement på e-post, denne måneden",
+        "signal": {
+          "engaged": {
+            "n": "Første åpning eller klikk på en kampanje som varsler eiere",
+            "then": "Kontaktens eier varsles"
+          },
+          "replied": {
+            "n": "Svarte på en e-post i en sekvens",
+            "then": "Sekvensen stopper for dem"
+          },
+          "unsubscribed": {
+            "n": "Meldte seg av",
+            "then": "Sperret for markedsførings-e-post"
+          },
+          "hard_bounce": {
+            "n": "Hard retur",
+            "then": "Adressen sperres"
+          },
+          "complaint": {
+            "n": "Spamklage",
+            "then": "Adressen sperres"
+          }
+        },
+        "thisMonth": "{n} denne måneden"
+      }
     }
   }
 }

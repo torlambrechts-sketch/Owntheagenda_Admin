@@ -103,6 +103,7 @@ the screens show the real, small numbers and the design's empty treatments.
 2. PageSpeed Insights (0073), URL Inspection and the crawler's link graph (0074) — **built**.
 3. The SEO suite: overview, opportunities, content plan, internal links, change log, alerts, clusters — **built (0074)**;
    deviations V-GR2-23 to 32.
-4. The playbook: outcomes, budget, experiments, calendar, audiences; trial, flow library, deliverability.
+4. The playbook: outcomes, budget, experiments, calendar, audiences; trial, flow library, deliverability — **built (0076)**;
+   deviations V-GR2-33 to 41.
 
 Each step is released to production on its own, with its migration, tests and pixel check.

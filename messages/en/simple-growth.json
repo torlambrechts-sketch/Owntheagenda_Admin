@@ -1033,6 +1033,326 @@
         },
         "empty": "No alert yet."
       }
+    },
+    "playbook": {
+      "campSubs": {
+        "label": "Marketing campaigns views",
+        "base": "Campaigns",
+        "outcomes": "Outcomes and attribution",
+        "budget": "Budget planner",
+        "experiments": "Experiments",
+        "audiences": "Audiences",
+        "creative": "Creative and landing pages",
+        "calendar": "Calendar and offers"
+      },
+      "emailSubs": {
+        "label": "Email and automation views",
+        "base": "Email campaigns",
+        "trial": "Trial and abandoned signup",
+        "library": "Flow library",
+        "deliver": "Deliverability and frequency"
+      },
+      "outcomes": {
+        "model": "Attribution model",
+        "models": {
+          "first": "First touch",
+          "last": "Last touch"
+        },
+        "note": "Last {days} days · spend as typed in under Campaigns",
+        "cols": {
+          "channel": "Channel",
+          "spend": "Spend",
+          "cps": "Per signup",
+          "cpa": "Per account",
+          "paying": "Paying",
+          "cac": "CAC",
+          "payback": "Payback",
+          "mrr": "MRR"
+        },
+        "empty": "No spend, signups or accounts in the last {days} days.",
+        "months": "{n} mo",
+        "footnote": "CAC = spend ÷ paying customers · payback = CAC ÷ ARPA ({arpa}/month) · target payback under 12 months",
+        "noSource": "Accounts, paying customers and MRR need {app} to report where an account came from. It reports only how people heard of it, so those columns are «—».",
+        "trackedSince": "Signups are counted by the website tracker, which started on {date}.",
+        "noTracker": "Signups need the website tracker, which has not reported a visit yet.",
+        "journeys": "Most common journeys to paying",
+        "journeysNote": "Last {days} days",
+        "journeysNoSource": "Journeys need {app} to report the first and the last touch of an account.",
+        "journeysEmpty": "No account became paying in the last {days} days.",
+        "signup": "Signup",
+        "journeyRow": "<b>{n}</b> paying · {days} days"
+      },
+      "budget": {
+        "kpi": {
+          "budget": "Budget {month}",
+          "budgetNote": "{n, plural, one {# channel} other {# channels}} with a budget",
+          "budgetNone": "No budget set this month",
+          "spent": "Spent so far",
+          "spentNote": "{share} of month gone",
+          "cac": "Blended CAC",
+          "cacNote": "Spend ÷ paying customers, 90 days",
+          "noSource": "Needs {app} to report sources",
+          "payback": "Payback",
+          "paybackNote": "Target under 12"
+        },
+        "months": "{n} mo",
+        "title": "{month} budget per channel",
+        "dayOf": "Day {day} of {days} · edit the budget to plan",
+        "inputLabel": "Budget for {channel}",
+        "pace": {
+          "on": "On pace",
+          "under": "Under pace",
+          "ahead": "Ahead of pace — runs out {date}",
+          "none": "No budget",
+          "noBudgetSpent": "{spent} spent, no budget"
+        },
+        "perPaying": "per paying, {days} days",
+        "projection": "≈ {n} paying this month",
+        "noSource": "Cost per paying customer needs {app} to report where accounts come from; until it does, there is no suggested move or scenario.",
+        "move": "<b>Suggested move:</b> Move {amount} from {from} to {to} — over 90 days a paying customer cost {fromCac} through {from} and {toCac} through {to}.",
+        "gain": "+{n} paying / mo",
+        "apply": "Apply move",
+        "movedToast": "Budget moved from {from} to {to}",
+        "moved": "<b>Moved this month:</b> {amount} from {from} to {to} on {date}.",
+        "applied": "✓ Applied",
+        "saved": "Budget saved",
+        "scenario": {
+          "title": "Scenario",
+          "ifAdd": "If we add",
+          "amount": "Extra kroner this month",
+          "toBest": "kr this month to the best channels, we expect",
+          "result": "+{n} paying · {mrr} MRR",
+          "resultPaying": "+{n} paying"
+        }
+      },
+      "experiments": {
+        "placeholder": "Hypothesis: if we … then … because …",
+        "hypothesis": "Hypothesis",
+        "area": "Area",
+        "areas": {
+          "signup": "Signup",
+          "landing_page": "Landing page",
+          "pricing": "Pricing",
+          "email": "Email",
+          "ads": "Ads",
+          "content": "Content",
+          "referral": "Referral",
+          "other": "Other"
+        },
+        "ice": {
+          "impact": "Impact",
+          "confidence": "Confidence",
+          "ease": "Ease",
+          "impactShort": "I",
+          "confidenceShort": "C",
+          "easeShort": "E"
+        },
+        "iceScore": "ICE {n}",
+        "add": "＋ Add experiment",
+        "pace": "{running} running · {called} called in 30 days",
+        "stages": {
+          "backlog": "Backlog",
+          "ready": "Ready",
+          "running": "Running",
+          "done": "Done"
+        },
+        "empty": "No experiments yet. Write a hypothesis above, score it and add it to the backlog.",
+        "added": "Added to the backlog",
+        "movedTo": "Moved to {stage}",
+        "archived": "Archived",
+        "called": "Result recorded",
+        "runningSince": "Running since {date} · day {days}",
+        "outcomes": {
+          "win": "Win",
+          "no_effect": "No effect",
+          "loss": "Loss"
+        },
+        "callLabel": "Result",
+        "notePlaceholder": "What did you see?",
+        "cancel": "Cancel",
+        "save": "Save result",
+        "back": "Back a step",
+        "call": "Call result",
+        "archive": "Archive",
+        "next": "Next →"
+      },
+      "audiences": {
+        "lists": "Lists in the CRM",
+        "listsNote": "Who matches and who can receive email",
+        "empty": "No lists yet.",
+        "size": "{count, plural, one {{n} person} other {{n} people}} · {r} can receive email",
+        "shared": "shared",
+        "owner": "{name}’s",
+        "private": "private",
+        "kind": "CRM list",
+        "noSync": "No ad platform is connected, so lists are not synced to Google Ads, LinkedIn or Meta, and there are no match rates.",
+        "personas": "Results by persona",
+        "personasNone": "Splitting signups, conversion and CAC by persona needs the role of the person who signed up (daglig leder, HR, avdelingsleder, verneombud). {app} does not report it, so there is nothing to split by."
+      },
+      "creative": {
+        "title": "Creative and landing pages",
+        "note": "Not connected",
+        "needs": "The message matrix, ad variants with fatigue and landing page tests need impressions, click-through and frequency from the ad platforms, and results from an A/B testing tool. Neither is connected to Sentral, so nothing is shown here rather than figures that are not real.",
+        "today": "Each landing page’s visits, signups and conversion are measured today under <link>Pages and links</link>."
+      },
+      "calendar": {
+        "rows": {
+          "email": "Email campaigns",
+          "blackout": "Blackout"
+        },
+        "empty": "No campaign is dated in {year}.",
+        "footnote": "Grey bars are blackout periods: a marker on the plan, they do not stop a send. A search-interest row needs Google Trends, which is not connected.",
+        "blackouts": "Blackout periods",
+        "blackoutsNote": "When nothing should go out",
+        "noBlackouts": "No blackout period in {year}.",
+        "name": "Name, e.g. Fellesferie",
+        "from": "First day",
+        "to": "Last day",
+        "add": "Add",
+        "added": "Blackout added",
+        "remove": "Remove {name}",
+        "removed": "Blackout removed",
+        "offers": "Offers, referral and partners",
+        "offersNone": "Sentral holds no record of offers, coupons or partner referrals, so leads, trials and paying customers per offer or partner cannot be counted."
+      },
+      "trial": {
+        "kpi": {
+          "trial": "Trial → paid",
+          "trialNote": "{n, plural, one {# trial} other {# trials}} ended in 90 days",
+          "trialNone": "No trial ended in 90 days",
+          "firstSurvey": "Time to first survey",
+          "firstSurveyNote": "median · {n, plural, one {# account} other {# accounts}}",
+          "firstSurveyNone": "No first survey in 90 days",
+          "abandoned": "Abandoned signups",
+          "abandonedNote": "last 30 days",
+          "abandonedSince": "since {date}",
+          "noTracker": "No visit tracked yet",
+          "recovered": "Recovered",
+          "recoveredNone": "No address to write to"
+        },
+        "pts": "{n} pts",
+        "days": "{n} days",
+        "flows": "Trial flows based on what users do",
+        "flowsNote": "Started by what an account does",
+        "flowsEmpty": "No flow starts from what a trial does yet. A flow triggered by a product event (an account created, a milestone reached, billing changed) shows here.",
+        "if": "If: {when}",
+        "inFlow": "{n} in flow",
+        "noSteps": "No steps yet",
+        "live": "{name} · {n} finished in 90 days",
+        "notLive": "{name} · not running",
+        "trigger": {
+          "org_created": "an account is created",
+          "milestone": "{name}",
+          "milestone_any": "an activation milestone is reached",
+          "billing": "billing changes",
+          "billing_state": "payment becomes {state}"
+        },
+        "payment": {
+          "past_due": "past due",
+          "unpaid": "unpaid",
+          "ok": "fine"
+        },
+        "delay": {
+          "minutes": "{n, plural, one {# minute} other {# minutes}}",
+          "hours": "{n, plural, one {# hour} other {# hours}}",
+          "days": "{n, plural, one {# day} other {# days}}",
+          "weeks": "{n, plural, one {# week} other {# weeks}}"
+        },
+        "recovery": {
+          "title": "Abandoned signup recovery",
+          "why": "A visit that stops before the account is created leaves no email address behind, and the website tracker is cookieless, so it never knows who a visitor is. Recovery emails would need the signup to ask for an email address first.",
+          "funnel": "See where they stop, and why, under <link>Signup funnel and log</link>.",
+          "total": "Started the signup without finishing, last 30 days"
+        }
+      },
+      "library": {
+        "empty": "No sequence or flow that writes to people yet.",
+        "states": {
+          "live": "Live",
+          "paused": "Paused",
+          "draft": "Draft"
+        },
+        "types": {
+          "event": "Starts on a CRM event",
+          "date": "Starts on a date",
+          "product_event": "Starts on a product event",
+          "enrollment": "People are enrolled into it"
+        },
+        "stats": {
+          "sent": "Sent",
+          "opened": "Opened",
+          "unsub": "Unsub"
+        },
+        "steps": "{n, plural, one {# step} other {# steps}}",
+        "kinds": {
+          "workflow": "Workflow",
+          "sequence": "Sequence",
+          "lifecycle": "Lifecycle"
+        },
+        "inFlow": "{n} in flow",
+        "pause": "Pause",
+        "activate": "Activate",
+        "paused": "{name} paused",
+        "activated": "{name} is live"
+      },
+      "deliver": {
+        "kpi": {
+          "sent": "Sent, 30 days",
+          "sentNote": "{n} delivered",
+          "none": "Nothing sent in 30 days",
+          "bounce": "Bounce rate",
+          "bounceNote": "{n} hard · suppressed automatically",
+          "complaints": "Spam complaints",
+          "complaintsNote": "Limit {limit}",
+          "unsub": "Unsubscribe rate",
+          "unsubNote": "{n} unsubscribed",
+          "auth": "SPF · DKIM · DMARC",
+          "authUnknown": "Sender domains not readable",
+          "authNone": "No sender domain",
+          "authMissing": "{domain} missing {what}",
+          "authAll": "All sender domains pass",
+          "authUnchecked": "{domain} not checked yet"
+        },
+        "domains": "Sender domains",
+        "domainsNote": "SPF, DKIM, DMARC and bounce rate",
+        "noDomains": "No sender domain is set up.",
+        "domainsUnknown": "Sender domains could not be read.",
+        "streams": {
+          "marketing": "Marketing",
+          "transactional": "Transactional"
+        },
+        "warmup": "warming up, day {day} of {days}",
+        "bounceTitle": "Bounce rate",
+        "placementNone": "Inbox placement and domain reputation need seed tests or Google Postmaster, which are not connected.",
+        "suppression": "Suppression list",
+        "suppressionNote": "Addresses that get no email, by reason",
+        "noCap": "The engine has no frequency cap, quiet hours or priority between flows: each flow sends on its own schedule, and a suppressed address gets nothing.",
+        "signals": "Email → sales signals",
+        "signalsNote": "What the engine does with email engagement, this month",
+        "signal": {
+          "engaged": {
+            "n": "First open or click on a campaign that notifies owners",
+            "then": "The contact’s owner is notified"
+          },
+          "replied": {
+            "n": "Replied to a sequence email",
+            "then": "The sequence stops for them"
+          },
+          "unsubscribed": {
+            "n": "Unsubscribed",
+            "then": "Suppressed from marketing email"
+          },
+          "hard_bounce": {
+            "n": "Hard bounce",
+            "then": "Address suppressed"
+          },
+          "complaint": {
+            "n": "Spam complaint",
+            "then": "Address suppressed"
+          }
+        },
+        "thisMonth": "{n} this month"
+      }
     }
   }
 }

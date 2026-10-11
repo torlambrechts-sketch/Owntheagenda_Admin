@@ -4,9 +4,11 @@ import { currentProduct } from '@/lib/product'
 import type { RpcResult } from '@/lib/rpc'
 import { RpcError } from '@/lib/rpc'
 import { loadAdCampaigns, loadEmailConnected, loadLists, loadProposalStage, loadSeo, loadSequences } from '@/lib/data/simple-growth'
-import { loadFunnel, loadIntegrations, loadKeywordHistory, loadPages, loadScope, loadSeoAlerts, loadSeoChanges, loadSeoClusters, loadSeoLinks, loadSeoOpps,
-  loadSeoOverview, loadSeoPlan } from '@/lib/data/growth'
+import { loadAudiences, loadBudget, loadCalendar, loadDeliverability, loadExperiments, loadFlows, loadFunnel, loadIntegrations, loadKeywordHistory, loadOutcomes,
+  loadPages, loadScope, loadSenderDomains, loadSeoAlerts, loadSeoChanges, loadSeoClusters, loadSeoLinks, loadSeoOpps, loadSeoOverview, loadSeoPlan,
+  loadTrial } from '@/lib/data/growth'
 import { SEO_VIEWS, seoOpportunities, valuePerClick, type SeoView } from '@/lib/growth/seo'
+import { CAMP_VIEWS, EMAIL_VIEWS, type CampView, type EmailView } from '@/lib/growth/playbook'
 import { keywordRow, opportunities, rate } from '@/lib/growth/calc'
 import { RANGE_DAYS, SCOPED, TABS, growthHref, osloToday, parseGrowth, type Scope, type Tab } from '@/lib/growth/scope'
 import { GrowthTabs, SubTabs } from './_components/GrowthTabs'
@@ -26,6 +28,15 @@ import { SeoChangesView } from './_components/seo/Changes'
 import { SeoAlertsView } from './_components/seo/Alerts'
 import { CampaignsTab } from './_components/Campaigns'
 import { EmailTab } from './_components/Email'
+import { OutcomesView } from './_components/playbook/Outcomes'
+import { BudgetView } from './_components/playbook/Budget'
+import { ExperimentsView } from './_components/playbook/Experiments'
+import { AudiencesView } from './_components/playbook/Audiences'
+import { CreativeView } from './_components/playbook/Creative'
+import { CalendarView } from './_components/playbook/Calendar'
+import { TrialView } from './_components/playbook/Trial'
+import { LibraryView } from './_components/playbook/Library'
+import { DeliverabilityView } from './_components/playbook/Deliverability'
 import { dayLabel, hh } from './_components/v2kit'
 
 /** The channels the Source filter offers: channel_rules' keys (0025, 0073) */
@@ -42,7 +53,8 @@ function need<T>(r: RpcResult<T>): T {
 /**
  * Sentral Simple › Growth (SimpleGrowth.dc.html of 11 Oct 2026; Marketing campaigns and Email are GrowthMarketing.dc.html).
  * Seven tabs; the scope bar (period › day › hour, source, device) on Overview, Signup funnel and log, Pages and links and
- * SEO › Keywords. SEO has nine views (SeoSuite.dc.html, 0074) under its own sub-tabs. Everything chosen lives in the address (lib/growth/scope). Overview, funnel, pages, SEO and Integrations
+ * SEO › Keywords. SEO has nine views (SeoSuite.dc.html, 0074) under its own sub-tabs; Marketing campaigns seven and Email four
+ * (GrowthPlaybook.dc.html, 0076). Everything chosen lives in the address (lib/growth/scope). Overview, funnel, pages, SEO and Integrations
  * need a reports right (global or campaigns, require_marketing_reports); Marketing campaigns and Email Campaigns › See. A
  * tab the person may not open is not offered. Each tab loads only what it shows; docs/crm-enrichment/growth-v2-gap.md
  * maps the design to its sources.
@@ -73,6 +85,16 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
       <p className="m-0 mt-2 text-13 text-muted">{t('noAccess.body')}</p>
     </div>
   )
+
+  // a view refused for want of a right shows the no-access card under its sub-tabs, so the others stay in reach
+  const guarded = async (f: () => Promise<React.ReactNode>): Promise<React.ReactNode> => {
+    try {
+      return await f()
+    } catch (e) {
+      if (e instanceof Refused) return noAccess
+      throw e
+    }
+  }
 
   let body: React.ReactNode = noAccess
   let bar: React.ReactNode = null
@@ -154,32 +176,70 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
       const [d, seo] = await Promise.all([loadIntegrations(product), loadSeo(product, '30d')])
       body = <IntegrationsTab d={need(d)} sc={seo.ok ? seo.data : null} open={p.sub} nf={nf} app={app?.name ?? product} canMeasure={canAdd} />
     } else if (tab === 'campaigns') {
+      // Marketing campaigns and the playbook's views (GrowthPlaybook.dc.html, 0076) under their own sub-tabs
+      const view: CampView = (CAMP_VIEWS as readonly string[]).includes(p.sub ?? '') ? (p.sub as CampView) : 'base'
+      const appName = app?.name ?? product
+      const inner = await guarded(async () => {
+        switch (view) {
+          case 'outcomes': return <OutcomesView d={need(await loadOutcomes(product, p.am))} nf={nf} app={appName} />
+          case 'budget': return <BudgetView d={need(await loadBudget(product))} nf={nf} product={product} app={appName} canEdit={can(shell, 'campaigns', 'reports_others')} />
+          case 'experiments': return <ExperimentsView d={need(await loadExperiments(product))} nf={nf} product={product} canAdd={canAdd} />
+          case 'audiences': return <AudiencesView lists={need(await loadAudiences())} nf={nf} app={appName} />
+          case 'creative': return <CreativeView />
+          case 'calendar': return <CalendarView d={need(await loadCalendar(product))} product={product} canAdd={canAdd} />
+          default: return (
+            <CampaignsTab
+              d={need(await loadAdCampaigns(product))}
+              nf={nf}
+              product={product}
+              app={appName}
+              canAdd={canAdd}
+              editOthers={can(shell, 'campaigns', 'edit_others')}
+              canSpend={can(shell, 'campaigns', 'reports_others')}
+            />
+          )
+        }
+      })
       body = (
-        <CampaignsTab
-          d={need(await loadAdCampaigns(product))}
-          nf={nf}
-          product={product}
-          app={app?.name ?? product}
-          canAdd={canAdd}
-          editOthers={can(shell, 'campaigns', 'edit_others')}
-          canSpend={can(shell, 'campaigns', 'reports_others')}
-        />
+        <div className="flex flex-col gap-[14px]">
+          <SubTabs current={view} label={t('playbook.campSubs.label')}
+            items={CAMP_VIEWS.map((k) => ({ key: k, label: t(`playbook.campSubs.${k}`), href: growthHref('campaigns', scope, { sub: k === 'base' ? null : k }) }))} />
+          {inner}
+        </div>
       )
     } else if (tab === 'email') {
-      const [sequences, stage, lists, emailConnected] = await Promise.all([loadSequences(), loadProposalStage(), loadLists(), loadEmailConnected()])
+      const view: EmailView = (EMAIL_VIEWS as readonly string[]).includes(p.sub ?? '') ? (p.sub as EmailView) : 'base'
+      // the engine's rule (workflow_save, campaign_action) and the campaigns' (campaign_save); the database decides
+      const edit = can(shell, 'deals', 'workflows') && can(shell, 'campaigns', 'workflows') && can(shell, 'campaigns', 'add')
+      const inner = await guarded(async () => {
+        switch (view) {
+          case 'trial': return <TrialView d={need(await loadTrial(product))} nf={nf} app={app?.name ?? product} />
+          case 'library': return <LibraryView d={need(await loadFlows())} nf={nf} canEdit={edit} />
+          case 'deliver': {
+            const [dl, dom] = await Promise.all([loadDeliverability(product), loadSenderDomains()])
+            return <DeliverabilityView d={need(dl)} domains={dom.ok ? dom.data.rows : null} nf={nf} />
+          }
+          default: {
+            const [sequences, stage, lists, emailConnected] = await Promise.all([loadSequences(), loadProposalStage(), loadLists(), loadEmailConnected()])
+            return (
+              <EmailTab
+                sequences={need(sequences)}
+                stage={stage}
+                lists={lists}
+                emailConnected={emailConnected}
+                nf={nf}
+                rights={{ edit, configure: can(shell, 'global', 'configure') }}
+              />
+            )
+          }
+        }
+      })
       body = (
-        <EmailTab
-          sequences={need(sequences)}
-          stage={stage}
-          lists={lists}
-          emailConnected={emailConnected}
-          nf={nf}
-          rights={{
-            // the engine's rule (workflow_save, campaign_action) and the campaigns' (campaign_save); the database decides
-            edit: can(shell, 'deals', 'workflows') && can(shell, 'campaigns', 'workflows') && can(shell, 'campaigns', 'add'),
-            configure: can(shell, 'global', 'configure'),
-          }}
-        />
+        <div className="flex flex-col gap-[14px]">
+          <SubTabs current={view} label={t('playbook.emailSubs.label')}
+            items={EMAIL_VIEWS.map((k) => ({ key: k, label: t(`playbook.emailSubs.${k}`), href: growthHref('email', scope, { sub: k === 'base' ? null : k }) }))} />
+          {inner}
+        </div>
       )
     }
   } catch (e) {

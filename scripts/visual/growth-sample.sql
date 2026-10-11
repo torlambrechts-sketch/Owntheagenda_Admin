@@ -229,3 +229,71 @@ from (values ('rank', 'verneombud plikter', '{"query": "verneombud plikter", "fr
              ('deindex', '/artikler/mal-2024', '{"path": "/artikler/mal-2024", "coverage": "duplicate"}', 75, true),
              ('traffic', 'organic', '{"hour": "09:00", "now": 4, "before": 11}', 130, false)) v(rule, subj, params, h, ack)
 on conflict do nothing;
+
+-- ---------------------------------------------------------------------------
+-- Playbook (0076): more campaigns and their spend, last touches, budgets, experiments, blackout periods and a sent newsletter
+insert into app.ad_campaigns (product, name, channel, landing_path, utm_source, utm_medium, utm_campaign, budget, currency, starts_on, ends_on, state)
+values ('orgpuls', 'Meta retargeting', 'facebook', '/pris', 'facebook', 'paid_social', 'meta-retarget', 8000, 'NOK', current_date - 25, current_date + 30, 'live'),
+       ('orgpuls', 'Verneombud webinar', 'webinar', '/webinar/verneombud', 'webinar', 'partner', 'verneombud-webinar', 6000, 'NOK', current_date - 70, current_date - 69, 'ended'),
+       ('orgpuls', 'Årsplan', 'google_ads', '/lovkrav', 'google', 'cpc', 'arsplan', 20000, 'NOK', make_date(extract(year from current_date)::int, 1, 3), make_date(extract(year from current_date)::int, 2, 20), 'ended')
+on conflict do nothing;
+insert into app.marketing_spend (campaign, month, channel, amount, currency)
+values ('meta-retarget', date_trunc('month', current_date)::date, 'paid_social', 2100, 'NOK'),
+       ('meta-retarget', date_trunc('month', current_date - 30)::date, 'paid_social', 1900, 'NOK'),
+       ('verneombud-webinar', date_trunc('month', current_date - 70)::date, 'partner', 6000, 'NOK'),
+       ('oktober', date_trunc('month', current_date)::date, 'email', 1200, 'NOK')
+on conflict do nothing;
+-- the last touch the product reported, on two accounts in five
+update app.account_products ap set attribution = ap.attribution || jsonb_build_object('last_touch',
+  case when x.r < .2 then jsonb_build_object('utm_source', 'newsletter', 'utm_medium', 'email') else jsonb_build_object('referrer_host', 'www.google.com') end)
+from (select product, tenant_id, random() r from app.account_products) x
+where x.product = ap.product and x.tenant_id = ap.tenant_id and x.r < .4 and ap.attribution ? 'first_touch';
+-- one paying account each from paid social and the webinar, so the planner has costs to compare
+update app.account_products ap set attribution = jsonb_set(ap.attribution, '{first_touch}', x.touch)
+from (select sb.product, sb.tenant_id, (array['{"utm_source": "linkedin", "utm_medium": "paid_social"}', '{"utm_source": "partner-webinar", "utm_medium": "event"}'])[row_number() over (order by sb.confirmed_at desc)]::jsonb touch
+      from app.subscriptions sb where sb.confirmed_at > now() - interval '90 days' order by sb.confirmed_at desc limit 2) x
+where x.product = ap.product and x.tenant_id = ap.tenant_id;
+insert into app.marketing_budgets (product, month, channel, amount)
+values ('orgpuls', date_trunc('month', (now() at time zone 'Europe/Oslo')::date)::date, 'paid_search', 30000),
+       ('orgpuls', date_trunc('month', (now() at time zone 'Europe/Oslo')::date)::date, 'paid_social', 24000),
+       ('orgpuls', date_trunc('month', (now() at time zone 'Europe/Oslo')::date)::date, 'email', 2000),
+       ('orgpuls', date_trunc('month', (now() at time zone 'Europe/Oslo')::date)::date, 'partner', 6000),
+       ('orgpuls', date_trunc('month', (now() at time zone 'Europe/Oslo')::date)::date, 'organic_search', 15000)
+on conflict do nothing;
+insert into app.growth_experiments (product, hypothesis, area, impact, confidence, ease, stage, outcome, result_note, owner_id, started_at, ended_at, created_at)
+select 'orgpuls', h, a, i, c, e, s, o, n, (select id from app.admins order by created_at limit 1),
+       case when s in ('running', 'done') then now() - make_interval(days => d) end, case when s = 'done' then now() - make_interval(days => d / 3) end, now() - make_interval(days => d + 5)
+from (values
+  ('Email-only first signup step (org.nr later)', 'signup', 9, 8, 8, 'running', null, null, 12),
+  ('Price calculator on /pris', 'pricing', 8, 7, 6, 'running', null, null, 9),
+  ('Behaviour-based trial emails', 'email', 9, 7, 7, 'ready', null, null, 4),
+  ('LinkedIn video vs image', 'ads', 6, 6, 9, 'ready', null, null, 3),
+  ('«Book demo» next to «Kom i gang»', 'landing_page', 7, 6, 9, 'backlog', null, null, 2),
+  ('Referral: give a month, get a month', 'referral', 8, 5, 6, 'backlog', null, null, 1),
+  ('Subject line with employee count', 'email', 5, 7, 10, 'done', 'win', '+11 % clicks, rolled out', 30),
+  ('Free template behind email', 'content', 7, 8, 8, 'done', 'no_effect', null, 24)
+) v(h, a, i, c, e, s, o, n, d)
+where not exists (select 1 from app.growth_experiments);
+insert into app.growth_blackouts (product, name, starts_on, ends_on)
+select 'orgpuls', n, f, t from (values
+  ('Fellesferie', make_date(extract(year from current_date)::int, 7, 1), make_date(extract(year from current_date)::int, 8, 9)),
+  ('Jul', make_date(extract(year from current_date)::int, 12, 20), make_date(extract(year from current_date)::int, 12, 31))) v(n, f, t)
+where not exists (select 1 from app.growth_blackouts);
+-- the October newsletter, sent twelve days ago to 640 addresses
+update app.campaigns set status = 'scheduled', rendered_html = coalesce(rendered_html, '<p>Oktober</p>'), scheduled_at = now() - interval '12 days'
+where id = 'c5d7c291-0ce6-4d8b-aa5f-347788b5df55' and status = 'draft';
+update app.campaigns set status = 'sending', started_at = now() - interval '12 days' where id = 'c5d7c291-0ce6-4d8b-aa5f-347788b5df55' and status = 'scheduled';
+update app.campaigns set status = 'sent', sent_at = now() - interval '12 days' where id = 'c5d7c291-0ce6-4d8b-aa5f-347788b5df55' and status = 'sending';
+insert into app.campaign_recipients (campaign_id, email, send_key, state, sent_at, delivered_at, first_open_at, first_click_at, unsubscribed_at, complained_at, bounced_at, bounce_kind)
+select 'c5d7c291-0ce6-4d8b-aa5f-347788b5df55', 'sample' || g || '@example.invalid', 'g' || g,
+       case when g % 70 = 0 then 'bounced' when g % 320 = 0 then 'complained' else 'delivered' end,
+       now() - interval '12 days', case when g % 70 <> 0 then now() - interval '12 days' end,
+       case when g % 3 = 0 then now() - interval '11 days' end, case when g % 11 = 0 then now() - interval '11 days' end,
+       case when g % 160 = 0 then now() - interval '10 days' end, case when g % 320 = 0 then now() - interval '10 days' end,
+       case when g % 70 = 0 then now() - interval '12 days' end, case when g % 70 = 0 then (case when g % 140 = 0 then 'hard' else 'soft' end) end
+from generate_series(1, 640) g
+where not exists (select 1 from app.campaign_recipients where campaign_id = 'c5d7c291-0ce6-4d8b-aa5f-347788b5df55');
+insert into app.suppressions (email_sha256, scope, reason, created_at)
+select sha256(convert_to('sample' || g || '@example.invalid', 'UTF8')), 'marketing', r, now() - make_interval(days => g % 9)
+from (values (160, 'unsubscribed'), (320, 'unsubscribed'), (480, 'unsubscribed'), (140, 'hard_bounce'), (280, 'hard_bounce'), (420, 'hard_bounce'), (321, 'complaint'), (7, 'manual')) v(g, r)
+on conflict do nothing;

@@ -29,6 +29,7 @@ export async function enroll(): Promise<Enrolment> {
   return { ok: true, factorId: data.id, qr: data.totp.qr_code, secret: data.totp.secret }
 }
 
+const Remembered = z.object({ ok: z.boolean(), until: z.string().nullable().optional(), reason: z.string().optional() })
 const Input = z.object({ factorId: z.string().uuid(), code: z.string().trim().regex(/^\d{6}$/) })
 
 export async function verify(_prev: VerifyState, form: FormData): Promise<VerifyState> {
@@ -54,5 +55,11 @@ export async function verify(_prev: VerifyState, form: FormData): Promise<Verify
   }
   const session = token ? sessionOf(token) : null
   if (reply && session) store.set(SEEN_COOKIE, `${session}.${Math.floor(Date.now() / 1000)}`, { httpOnly: true, secure: true, sameSite: 'lax', path: '/' })
+  // «Remember this device» (0071): the new session, which has its second factor, is kept past the idle rule for 30 days.
+  // The database decides (session_remember, an owner's switch); a refusal leaves an ordinary session.
+  if (reply?.ok && form.get('remember') === 'on') {
+    const { data } = await supabase.rpc('session_remember')
+    Remembered.safeParse(data)
+  }
   redirect('/')
 }

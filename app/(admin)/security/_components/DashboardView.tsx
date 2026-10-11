@@ -76,7 +76,10 @@ export function DashboardView({ data, now, mayRemind }: { data: Dashboard; now: 
                   <b className="truncate">{l.name}</b>
                 </span>
                 <span className="min-w-0 text-muted">{[place(l.city, l.country), l.device].filter(Boolean).join(' · ') || '—'}</span>
-                <span className="text-muted">{t('since', { time: isToday(l.since) ? clock(l.since) : when(l.since, { time: false }) })}</span>
+                <span className="text-muted">
+                  {t('since', { time: isToday(l.since) ? clock(l.since) : when(l.since, { time: false }) })}
+                  {l.remembered_until ? <span className="block text-11" title={t('rememberedTip')}>{t('remembered', { time: when(l.remembered_until, { time: false }) })}</span> : null}
+                </span>
                 {l.current ? (
                   <span className="text-center text-11.5 font-semibold text-muted">{t('thisSession')}</span>
                 ) : (

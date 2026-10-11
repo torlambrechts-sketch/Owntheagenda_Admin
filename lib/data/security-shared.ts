@@ -40,6 +40,7 @@ export type PrivacyCount = (typeof PRIVACY_COUNTS)[number]
 /** The register keys this screen may set (groups security and security_alerts), with the options each accepts. */
 export const SECURITY_SETTINGS: Record<string, readonly string[]> = {
   session_idle: ['on_30', 'off'],
+  session_remember: ['days_30', 'off'],
   ip_allowlist: ['off', 'on'],
   signin_hours: ['off', 'on'],
   password_expiry: ['never', 'days'],

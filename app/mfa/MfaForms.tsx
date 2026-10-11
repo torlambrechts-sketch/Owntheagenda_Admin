@@ -15,6 +15,14 @@ function CodeForm({ factorId }: { factorId: string }) {
         {t('code')}
         <input name="code" inputMode="numeric" autoComplete="one-time-code" pattern="\d{6}" maxLength={6} required className={`${authField} tracking-[.3em]`} />
       </label>
+      {/* the session on this device is kept past the idle rule for 30 days (0071); the code is still asked at every sign-in */}
+      <label className="flex cursor-pointer items-start gap-[9px] text-12.5">
+        <input type="checkbox" name="remember" className="mt-[2px] h-4 w-4 flex-none accent-ink" />
+        <span className="flex flex-col">
+          <b>{t('remember')}</b>
+          <span className="text-muted">{t('rememberHint')}</span>
+        </span>
+      </label>
       {state.problem ? (
         <p role="alert" className={authAlert}>
           {t(state.problem)}

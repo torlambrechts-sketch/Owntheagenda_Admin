@@ -250,6 +250,15 @@ function RulesEditor({ r }: { r: Rules }) {
       </div>
 
       <div className={`${sx.row} flex flex-wrap items-center justify-between gap-[10px] py-[10px] text-12.5`}>
+        <span className="flex flex-col"><b>{t('remember')}</b><span className={sx.muted}>{t('rememberHint')}</span></span>
+        <select className={sx.select} aria-label={t('remember')} value={r.session_remember} disabled={busy}
+          onChange={(e) => write(() => setSecuritySetting({ key: 'session_remember', value: e.target.value }), t('saved'))}>
+          <option value="days_30">{t('remember30')}</option>
+          <option value="off">{t('rememberOff')}</option>
+        </select>
+      </div>
+
+      <div className={`${sx.row} flex flex-wrap items-center justify-between gap-[10px] py-[10px] text-12.5`}>
         <span className="flex flex-col"><b>{t('expiry')}</b><span className={sx.muted}>{t('expiryHint')}</span></span>
         <span className="flex flex-wrap items-center gap-2">
           <select className={sx.select} aria-label={t('expiry')} value={r.password_expiry} disabled={busy}

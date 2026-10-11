@@ -55,6 +55,8 @@ export const LiveSession = z.object({
   method: z.enum(METHODS),
   since: ts,
   last_seen_at: ts,
+  // a device remembered at the second factor is exempt from the idle rule until then (0071)
+  remembered_until: ts.nullable().optional(),
   current: z.boolean().nullable(),
 })
 export type LiveSession = z.infer<typeof LiveSession>
@@ -68,7 +70,7 @@ export const Dashboard = z.object({
     // coverage_pct is the database's own rounded percentage (R-SECURITY-02), null with no active staff
     mfa: z.object({ enrolled: num, active: num, coverage_pct: num.nullable() }),
   }),
-  settings: z.object({ session_idle: z.string(), ip_allowlist: z.string(), signin_hours: z.string(), ip_rules: num }),
+  settings: z.object({ session_idle: z.string(), session_remember: z.string().optional(), ip_allowlist: z.string(), signin_hours: z.string(), ip_rules: num }),
   live: z.array(LiveSession),
   issues: z.array(Issue),
   issues_open: num,
@@ -95,6 +97,7 @@ export const Rules = z.object({
   ip_allowlist: z.string(),
   signin_hours: z.string(),
   session_idle: z.string(),
+  session_remember: z.string().default('days_30'),
   password_expiry: z.string(),
   password_expiry_days: num.nullable(),
   password_reuse: z.string(),

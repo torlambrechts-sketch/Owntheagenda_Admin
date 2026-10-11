@@ -14,8 +14,8 @@ import { cardTable, emptyRow } from './kit'
  * outside its top ten, that nobody tracks. Search Console has no monthly search volume, so the line says impressions over
  * the days read and the page Google showed (V-SGR-30). «Plan article» puts the search in the content plan.
  */
-export function ContentIdeas({ ideas, product, nf, canEdit }: {
-  ideas: NonNullable<Seo['ideas']>; product: string; nf: NumberFormat; canEdit: boolean
+export function ContentIdeas({ ideas, product, nf, canEdit, notConnected = false }: {
+  ideas: NonNullable<Seo['ideas']>; product: string; nf: NumberFormat; canEdit: boolean; notConnected?: boolean
 }) {
   const t = useTranslations('simpleGrowth.seo.ideas')
   const te = useTranslations('common.errors')
@@ -32,12 +32,12 @@ export function ContentIdeas({ ideas, product, nf, canEdit }: {
 
   return (
     <div className={cardTable}>
-      <div className="flex justify-between gap-3 border-b border-line px-[18px] py-[14px]">
+      <div className="flex justify-between gap-3 border-b border-line px-[18px] py-3">
         <b className="text-15">{t('title')}</b>
         <span className="text-12 text-muted">{t('sub')}</span>
       </div>
       {ideas.map((i) => (
-        <div key={i.query} className="flex items-center gap-3 border-b border-line px-[18px] py-[11px]">
+        <div key={i.query} className="flex items-center gap-3 border-b border-line px-[18px] py-[10px]">
           <span className="flex min-w-0 flex-1 flex-col gap-[2px]">
             <b className="text-13 [overflow-wrap:anywhere]">{i.query}</b>
             <span className="text-12 text-muted [overflow-wrap:anywhere]">
@@ -53,7 +53,7 @@ export function ContentIdeas({ ideas, product, nf, canEdit }: {
           ) : null}
         </div>
       ))}
-      {ideas.length === 0 ? <div className={emptyRow}>{t('empty')}</div> : null}
+      {ideas.length === 0 ? <div className={emptyRow}>{notConnected ? t('notConnected') : t('empty')}</div> : null}
     </div>
   )
 }

@@ -577,7 +577,8 @@
       "mail_send": "Email sending (Brevo)",
       "mail_tick": "Email sending check",
       "search_console_import": "Google Search Console import",
-      "seo_crawl": "Site health check (crawler)"
+      "seo_crawl": "Site health check (crawler)",
+      "pagespeed": "PageSpeed Insights measurement"
     },
     "flags": {
       "title": "Feature flags — global and per organization",

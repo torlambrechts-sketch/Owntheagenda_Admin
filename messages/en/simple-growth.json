@@ -6,82 +6,15 @@
     },
     "tabs": {
       "label": "Growth",
-      "analytics": "Analytics",
+      "overview": "Overview",
+      "funnel": "Signup funnel and log",
+      "pages": "Pages and links",
       "seo": "SEO",
       "campaigns": "Marketing campaigns",
-      "email": "Email and automation"
-    },
-    "range": {
-      "label": "Period",
-      "7d": "7 d",
-      "30d": "30 d",
-      "90d": "90 d"
-    },
-    "analytics": {
-      "kpi": {
-        "visitors": "Visitors",
-        "signups": "Signups",
-        "visitSignup": "Visit → signup",
-        "visitSignupSince": "Signups since {date}, when the website tracker started, divided by its visitors.",
-        "trialPaid": "Trial → paid",
-        "trialPaidTip": "Trials started in the cohort months that became paying within 45 days (as Analytics › Business).",
-        "cost": "Cost per customer",
-        "costNone": "No marketing spend has been entered for this period. Enter it on a campaign under Marketing campaigns.",
-        "costTip": "Spend entered from {from} ÷ {customers} new paying customers in the same months. Spend is entered per month."
-      },
-      "tracker": {
-        "waiting": "Visitors appear once the website tracker runs on {site}.",
-        "noSite": "No public website is registered for {app}, so there are no visitors to count."
-      },
-      "chart": {
-        "title": "Visitors and signups",
-        "visitors": "Visitors",
-        "signupsScaled": "Signups (scaled)",
-        "signups": "Signups"
-      },
-      "funnel": {
-        "title": "From visit to paying customer",
-        "visited": "Visited the site",
-        "viewed_pricing": "Viewed pricing",
-        "started_signup": "Sent org. number",
-        "account_created": "Created account",
-        "survey_sent": "Sent first survey",
-        "paying": "Became paying",
-        "topMissing": "Visits, pricing views and started signups need the website tracker. The bottom three steps follow the accounts created in this period."
-      },
-      "sources": {
-        "title": "Where visitors come from",
-        "source": "Source",
-        "visits": "Visits",
-        "signups": "Signups",
-        "conv": "Conv.",
-        "empty": "No signups in this period.",
-        "visitsMissing": "Signups by the channel of their first visit. Visits appear once the website tracker runs."
-      },
-      "pages": {
-        "title": "Top landing pages",
-        "sub": "Pages that bring signups",
-        "none": "No visits in this period.",
-        "signupsMissing": "A visit cannot be joined to a signup (the tracker keeps no cookie), so signups per page are not known."
-      },
-      "channels": {
-        "organic_search": "Organic search",
-        "paid_search": "Paid search",
-        "direct": "Direct",
-        "social": "Social",
-        "partner": "Referral",
-        "email": "Email",
-        "paid_social": "Paid social"
-      }
+      "email": "Email and automation",
+      "integrations": "Integrations"
     },
     "seo": {
-      "kpi": {
-        "clicks": "Organic clicks",
-        "impressions": "Impressions",
-        "position": "Average position",
-        "pages": "Pages in Google",
-        "pagesHint": "Pages Google showed in search results in the period, from Search Console. Google gives no count of indexed pages through its API."
-      },
       "connect": {
         "title": "Connect Search Console",
         "body": "Clicks, impressions and positions for {site} are fetched every night once Search Console is connected. Until then no figures are shown.",
@@ -122,38 +55,16 @@
           "other": "Something went wrong ({code})."
         }
       },
-      "keywords": {
-        "title": "Tracked keywords",
-        "placeholder": "Add a keyword to track",
-        "track": "Track",
-        "cols": {
-          "keyword": "Keyword",
-          "impressions": "Impressions",
-          "position": "Position",
-          "change": "Change",
-          "page": "Ranking page"
-        },
-        "notRanking": "Not ranking yet",
-        "remove": "Stop tracking «{q}»",
-        "empty": "No keywords tracked yet.",
-        "noSite": "No public website is registered for {app}.",
-        "duplicate": "That keyword is already tracked.",
-        "limit": "200 keywords are tracked already. Remove one first.",
-        "tracked": "Keyword tracked · first position tomorrow",
-        "trackedNotConnected": "Keyword tracked · positions appear once Search Console is connected",
-        "removed": "Keyword no longer tracked"
-      },
       "health": {
-        "title": "Site health",
-        "open": "{count, plural, one {# issue to fix} other {# issues to fix}}",
+        "title": "Technical SEO",
+        "open": "{count} open",
         "none": "No open issues.",
         "fix": "Mark fixed",
         "fixed": "Marked fixed · re-checked on the next crawl",
         "check": "Check now",
         "checking": "Checking…",
         "checked": "Checked {pages} pages · {issues, plural, =0 {no issues} one {# issue} other {# issues}}",
-        "lastCrawl": "Last checked {ago} · {pages} pages",
-        "never": "Not checked yet: the site is read tonight, or press «Check now».",
+        "never": "not crawled yet",
         "awaiting": "{count, plural, one {# marked fixed, awaiting the next check} other {# marked fixed, awaiting the next check}}",
         "reopened": "Marked fixed, but the last check found it again",
         "more": "and {n} more",
@@ -201,16 +112,27 @@
             "title": "{count, plural, one {# broken internal link} other {# broken internal links}}",
             "sub": "From {from} to {to}"
           }
+        },
+        "crawledToday": "crawled today {time}",
+        "crawledOn": "crawled {day} {time}",
+        "pages": "{pages} pages read on the last crawl",
+        "derived": {
+          "lcp": "LCP {lcp} s on {path} (mobile)",
+          "inp": "INP {inp} ms on {path} (mobile)",
+          "fieldSub": "PageSpeed Insights · real Chrome users",
+          "labSub": "PageSpeed Insights · lab run",
+          "cannibal": "«{q}» ranks with {n} pages"
         }
       },
       "ideas": {
-        "title": "Content ideas",
-        "sub": "Searches with no strong page yet",
+        "title": "Content gaps",
+        "sub": "Searched, but we have no strong page",
         "line": "{impressions} impressions in {days} days · position {position}",
         "plan": "Plan article",
         "done": "✓ Planned",
-        "planned": "Article added to the content plan",
-        "empty": "No searches outside the top ten yet. Ideas appear as Search Console counts impressions."
+        "planned": "Added to the content plan",
+        "empty": "No searches outside the top ten yet. Ideas appear as Search Console counts impressions.",
+        "notConnected": "Content gaps appear once Search Console is connected (Integrations)."
       }
     },
     "campaigns": {
@@ -392,6 +314,450 @@
       },
       "errors": {
         "trigger": "That start is not available yet."
+      }
+    },
+    "channels": {
+      "organic_search": "Organic search",
+      "paid_search": "Paid search",
+      "direct": "Direct",
+      "social": "Social",
+      "referral": "Referral",
+      "partner": "Partner",
+      "email": "Email",
+      "paid_social": "Paid social"
+    },
+    "scope": {
+      "rangeLabel": "Period",
+      "ranges": {
+        "today": "Today",
+        "7d": "7 days",
+        "30d": "30 days",
+        "90d": "90 days"
+      },
+      "last": "Last {days} days",
+      "lastLower": "last {days} days",
+      "crumbs": "Drill-down",
+      "source": "Source",
+      "device": "Device",
+      "allSources": "All sources",
+      "allDevices": "All devices",
+      "devices": {
+        "desktop": "Desktop",
+        "mobile": "Mobile",
+        "tablet": "Tablet"
+      },
+      "updated": "Updated {ago}",
+      "noData": "No data yet"
+    },
+    "overview": {
+      "metrics": {
+        "visitors": "Visitors",
+        "signups": "Signups",
+        "accounts": "Accounts",
+        "paying": "Paying"
+      },
+      "kpi": {
+        "visitors": "Visitors",
+        "signups": "Signups started",
+        "conversion": "Visit → signup",
+        "accounts": "Accounts",
+        "paying": "Paying",
+        "cost": "Cost per paying",
+        "notTracked": "The website tracker had not started in this period.",
+        "noDevice": "An account has no device: account figures cannot be split by device.",
+        "costNoDay": "Spend is entered per month, so it is not shown for a single day or hour.",
+        "costNone": "No spend is entered for these months.",
+        "costTip": "Spend entered for the campaigns, spread evenly over each month's days, divided by the new paying customers."
+      },
+      "chart": {
+        "perDay": "{metric} per day · last {days} days",
+        "byHour": "{metric} by hour · {day}",
+        "hintDay": "Click a day to see it hour by hour",
+        "hintHour": "Click an hour to open its signup log",
+        "inner": "Signups (inner bar)",
+        "peak": "Most signups between {from} and {to}",
+        "tipDay": "{day} · {visitors} visitors · {signups} signups · {paying} paying",
+        "tipHour": "{hour} · {visitors} visitors · {signups} signups",
+        "waiting": "Visitors appear once the website tracker runs on {site}.",
+        "noSite": "No public website is registered for this application."
+      },
+      "opps": {
+        "title": "Biggest opportunities",
+        "sub": "Estimated extra signups / month",
+        "effort": "effort {effort}",
+        "efforts": {
+          "small": "small",
+          "medium": "medium"
+        },
+        "none": "No estimate yet: each one needs enough visits, signups or Search Console data to compare with.",
+        "cta": {
+          "error": "Open funnel",
+          "keyword": "Open keyword",
+          "page": "Open page",
+          "mobile": "See mobile",
+          "slow": "Open page"
+        },
+        "error": {
+          "title": "«{value}» stops signups at the org.nr step",
+          "sub": "{count, plural, one {# visit} other {# visits}} stopped on this form error"
+        },
+        "keyword": {
+          "title": "Move «{query}» into the top 3",
+          "sub": "Position {position} · +{clicks} clicks possible"
+        },
+        "page": {
+          "title": "{path} gets traffic but doesn't convert",
+          "sub": "{conv} signup rate against the site's"
+        },
+        "mobile": {
+          "title": "Mobile visitors convert at a lower rate than desktop",
+          "sub": "{mobile} on mobile vs {desktop} on desktop · {share} of visits"
+        },
+        "slow": {
+          "title": "Speed up {path}",
+          "sub": "LCP {lcp} s · {share} of traffic"
+        }
+      },
+      "channels": {
+        "title": "Channels",
+        "sub": "Click to filter everything",
+        "source": "Source",
+        "visits": "Visits",
+        "signups": "Signups",
+        "conv": "Conv.",
+        "paying": "Paying",
+        "none": "No visits or signups in this period."
+      }
+    },
+    "funnel": {
+      "title": "Signup funnel · {scope}",
+      "hint": "Click a step to see why people stop",
+      "steps": {
+        "1": "Visited the site",
+        "2": "Viewed pricing or product",
+        "3": "Clicked to sign up",
+        "4": "Entered org.nr (Brønnøysund lookup)",
+        "5": "Created account",
+        "6": "Uploaded employee list",
+        "7": "Sent first survey",
+        "8": "Became paying"
+      },
+      "note": "Steps 1–4 count the website's visitors (the tracker's page views and presses); steps 5–8 count the accounts created in the period, from the product's own events. A visit is never joined to an account.",
+      "card": {
+        "step": "Step {from} → {to}",
+        "stopped": "stopped here",
+        "continued": "Continued",
+        "median": "Median time",
+        "vsLast": "vs last period",
+        "pts": "{n} pts",
+        "why": "Why they stop",
+        "leftOn": "Left on {path}",
+        "error": "Form error «{code}»",
+        "noReasons": "No visit stopped at this step in this period.",
+        "noReasonsProduct": "The product does not report why an account stops here.",
+        "segments": "Continue rate by segment",
+        "noSegments": "Too few visits to compare segments.",
+        "fix": "Fix:"
+      },
+      "time": {
+        "s": "{v} s",
+        "min": "{v} min",
+        "minSec": "{m} min {s} s",
+        "h": "{v} h",
+        "d": "{v} days"
+      },
+      "fixes": {
+        "device": "{device} visitors continue at {rate} against {otherRate} on {other}: go through this step on that device and fix what blocks it.",
+        "error": "The form error «{code}» stopped {count, plural, one {# visit} other {# visits}} here: handle that case in the form, or explain it where it happens.",
+        "exit": "{share} of the visits that stopped here left on {path}: make the next step visible on that page.",
+        "channel": "Visits from {channel} continue at {rate} against {overall} overall: check that their landing page matches the ad or link."
+      },
+      "log": {
+        "title": "Signup log · {scope}",
+        "filters": {
+          "all": "All",
+          "stopped": "Stopped at selected step",
+          "account": "Finished signup"
+        },
+        "export": "Export CSV",
+        "exported": "{count, plural, one {# session} other {# sessions}} exported · no personal data",
+        "cols": {
+          "time": "Time",
+          "visitor": "Visitor",
+          "source": "Source",
+          "device": "Device",
+          "page": "Landing page",
+          "reached": "Reached"
+        },
+        "finished": "Finished signup on the site",
+        "stopped": "{step} — stopped",
+        "secondsIn": "{s} s into the visit",
+        "leftOn": "left on {path}",
+        "none": "No sessions match in this period.",
+        "more": "Showing the newest {shown} of {total} sessions.",
+        "showMore": "Show {n} more"
+      }
+    },
+    "pages": {
+      "landing": {
+        "title": "Landing pages",
+        "page": "Page",
+        "visits": "Visits",
+        "bounce": "Bounce",
+        "signups": "Signups",
+        "conv": "Conv.",
+        "none": "No landing pages in this period.",
+        "waiting": "Appears once the website tracker runs."
+      },
+      "sorts": {
+        "opportunity": "Opportunity",
+        "visits": "Visits",
+        "conversion": "Conversion",
+        "slowest": "Slowest"
+      },
+      "tags": {
+        "converts": "Converts well — send more traffic",
+        "slow": "Slow — fix speed",
+        "weak": "High traffic, weak conversion",
+        "bounce": "High bounce"
+      },
+      "card": {
+        "line": "{title} · {visits} visits · {conv} signup rate",
+        "noTitle": "No title read yet",
+        "trend": "Visits per day",
+        "noVitals": "Core Web Vitals appear once PageSpeed Insights is connected (Integrations).",
+        "sources": "Traffic sources to this page",
+        "noSources": "No visits in this period.",
+        "keywords": "Keywords ranking this page",
+        "noKeywords": "No Search Console queries for this page.",
+        "rec": "Recommendation:"
+      },
+      "advice": {
+        "converts": "This page converts at {conv}. Link to it from the top articles and use it as the landing page for paid campaigns.",
+        "slow": "LCP is {lcp} on mobile: find the largest element in PageSpeed's report, compress it and preload it. Aim for under 2,5 s.",
+        "informational": "Visitors arrive with a question, not to buy: add a signup box after the first section and a link to pricing.",
+        "headline": "Test a shorter headline and a clearer signup button above the fold."
+      },
+      "refs": {
+        "title": "Referring sites",
+        "sub": "Other sites that sent visits",
+        "domain": "Domain",
+        "visits": "Visits",
+        "signups": "Signups",
+        "status": "Status",
+        "states": {
+          "new": "New",
+          "active": "Active",
+          "lost": "Lost"
+        },
+        "none": "No other site sent visits in this period."
+      },
+      "ctas": {
+        "title": "Links and buttons on our site",
+        "sub": "Clicks that lead to signups",
+        "link": "Link",
+        "page": "On page",
+        "clicks": "Clicks",
+        "ctr": "CTR",
+        "signups": "Signups",
+        "none": "No presses recorded in this period."
+      }
+    },
+    "keywords": {
+      "kpi": {
+        "clicks": "Organic clicks",
+        "impressions": "Impressions",
+        "top3": "Keywords in top 3",
+        "striking": "Striking distance",
+        "potential": "Potential clicks / period"
+      },
+      "tabs": {
+        "all": "All",
+        "top3": "Top 3",
+        "striking": "Striking distance 4–20",
+        "low": "Low (20+)",
+        "losing": "Losing",
+        "lowctr": "Low CTR"
+      },
+      "placeholder": "Track a keyword",
+      "track": "Track",
+      "cols": {
+        "keyword": "Keyword",
+        "volume": "Impr.",
+        "pos": "Pos.",
+        "change": "Δ {days}d",
+        "ctr": "CTR",
+        "clicks": "Clicks",
+        "potential": "Potential"
+      },
+      "tags": {
+        "top3": "Top 3 — defend",
+        "striking": "Striking distance",
+        "strikingCtr": "Striking distance · low CTR",
+        "low": "Low — needs a better page",
+        "new": "No impressions yet",
+        "notConnected": "Positions once Search Console is connected"
+      },
+      "empty": "No keywords tracked yet.",
+      "noSite": "No public website is registered for this application.",
+      "noneInTab": "No tracked keyword in this group.",
+      "intent": {
+        "brand": "Brand",
+        "transactional": "Transactional",
+        "commercial": "Commercial",
+        "informational": "Informational"
+      },
+      "detail": {
+        "position": "Position, last {days} days (lower is better)",
+        "noHistory": "No position recorded for it in this period.",
+        "notConnected": "Positions appear once Search Console is connected.",
+        "impressions": "Impressions",
+        "ctr": "CTR vs expected",
+        "potential": "Potential clicks",
+        "page": "Ranking page",
+        "pages": "Pages Google showed for it",
+        "doThis": "Do this:"
+      },
+      "advice": {
+        "new": "Create or pick a page that targets this keyword, then check back in a week.",
+        "top3_ctr": "You rank top 3 but get few clicks: rewrite the title and meta description with the year and a clear benefit.",
+        "top3": "Defend: refresh the page every quarter, add FAQ schema and link to it from new articles.",
+        "page1": "Page one but below the fold: add a section answering «{q}» directly, add 3 internal links with this anchor text, and improve the title.",
+        "page2": "Page two: expand the content (compare with the top 3), add a downloadable template and earn 2–3 links from relevant sites.",
+        "low": "Not competitive yet: create a dedicated landing page — the current page targets a different intent."
+      },
+      "duplicate": "That keyword is already tracked.",
+      "limit": "200 keywords are tracked already. Remove one first.",
+      "tracked": "Keyword tracked · first position tomorrow",
+      "trackedNotConnected": "Keyword tracked · positions appear once Search Console is connected",
+      "removed": "Keyword no longer tracked",
+      "remove": "Stop tracking «{q}»"
+    },
+    "integrations": {
+      "connected": "<b>{n}</b> of {total} connected",
+      "note": "Data stays in the EU (Frankfurt) · keys in the vault · read-only access unless noted",
+      "groups": {
+        "site": "Your website",
+        "google": "Google",
+        "products": "Products and email"
+      },
+      "cards": {
+        "tracker": {
+          "name": "Website tracker",
+          "desc": "Visits, pages, sources, devices and presses on {hosts}, from the cookieless tracker. No cookies, no addresses."
+        },
+        "crawler": {
+          "name": "Site crawler",
+          "desc": "Reads the sitemap and every page each night: titles, descriptions, errors, speed and links."
+        },
+        "gsc": {
+          "name": "Google Search Console",
+          "desc": "Queries, positions, clicks and the pages Google shows, imported every night through a service account."
+        },
+        "psi": {
+          "name": "PageSpeed Insights",
+          "desc": "Core Web Vitals (LCP, INP, CLS) for the landing pages, from Google's lab run and real Chrome users."
+        },
+        "product": {
+          "name": "{name} events",
+          "desc": "Accounts, milestones and subscriptions {name} reports through its signed events."
+        },
+        "email": {
+          "name": "Brevo",
+          "desc": "Sends the email campaigns and flows; delivery events come back by webhook."
+        }
+      },
+      "state": {
+        "receiving": "Receiving",
+        "quiet": "Nothing since {ago}",
+        "waiting": "Waiting for the first data",
+        "failed": "Failed",
+        "on": "Connected",
+        "notRun": "Not run yet",
+        "connectedTo": "Connected · {what}",
+        "noProperty": "Connected · no property found",
+        "off": "Not connected",
+        "keyRefused": "Key refused"
+      },
+      "sync": {
+        "tracker": "Last visit {ago} · {n} visits in 24 h",
+        "crawler": "Last crawl {ago} · {pages} pages · every night",
+        "daily": "Last import {ago} · every night",
+        "psi": "Last measured {ago} · {pages} pages · every night",
+        "events": "Last event {ago} · {n} in 24 h · live"
+      },
+      "manage": "Manage",
+      "connect": "Connect",
+      "feeds": {
+        "overview": "Overview",
+        "funnel": "Funnel",
+        "pages": "Pages",
+        "tech": "Technical SEO",
+        "seo": "SEO",
+        "accounts": "Accounts",
+        "paying": "Paying",
+        "email": "Email"
+      },
+      "log": {
+        "title": "Sync log",
+        "sub": "Every import, with rows and errors",
+        "today": "Today {time}",
+        "yesterday": "Yesterday {time}",
+        "on": "{day} {time}",
+        "none": "Nothing imported yet.",
+        "sources": {
+          "tracker": "Website tracker",
+          "crawler": "Site crawler",
+          "search_console": "Search Console",
+          "pagespeed": "PageSpeed Insights",
+          "product_events": "Product events",
+          "email": "Email"
+        },
+        "states": {
+          "ok": "OK",
+          "warning": "Warning",
+          "failed": "Failed"
+        },
+        "what": {
+          "tracker": "{n, plural, one {# visit} other {# visits}} · {views, plural, one {# page view} other {# page views}}",
+          "crawler": "{n, plural, one {# page} other {# pages}} · {issues, plural, one {# open issue} other {# open issues}}",
+          "searchConsole": "Imported through {day}",
+          "searchConsoleNone": "Import attempted",
+          "pagespeed": "{n, plural, one {# page} other {# pages}} measured",
+          "events": "{n, plural, one {# event} other {# events}} · {kinds}"
+        }
+      },
+      "pagespeed": {
+        "title": "PageSpeed Insights",
+        "step1": "In Google Cloud (APIs & Services › Library), turn on the «PageSpeed Insights API».",
+        "step2": "Under Credentials, create an API key and restrict it to that API. Paste it here.",
+        "keyLabel": "API key",
+        "keyNote": "The key goes straight to the vault and is never shown again.",
+        "save": "Save and measure",
+        "cancel": "Cancel",
+        "connected": "PageSpeed Insights is connected · {pages} pages measured",
+        "measured": "Last measured {ago} · {pages} pages",
+        "notYet": "Not measured yet: the pages are measured tonight, or press «Measure now».",
+        "measure": "Measure now",
+        "measuring": "Measuring…",
+        "measuredNow": "{pages} pages measured",
+        "replace": "Replace key",
+        "disconnect": "Disconnect",
+        "disconnected": "PageSpeed Insights is disconnected",
+        "ownerOnly": "Only the owner can connect PageSpeed Insights.",
+        "codes": {
+          "key_refused": "Google did not accept the key. Check that the PageSpeed Insights API is on and the key is allowed to use it.",
+          "quota": "Google's daily quota for the key is used up. The pages are measured again tonight.",
+          "timeout": "Google took too long to answer. Try again in a moment.",
+          "not_deployed": "PageSpeed measuring is not available yet.",
+          "forbidden": "You do not have the right to do this.",
+          "bad_key": "This is not a Google API key.",
+          "expired": "The one-time number expired. Try again.",
+          "no_key": "No key is stored yet.",
+          "partial": "Not every page was measured in time.",
+          "no_reading": "Google returned no reading for a page.",
+          "other": "Something went wrong ({code})."
+        }
       }
     }
   }

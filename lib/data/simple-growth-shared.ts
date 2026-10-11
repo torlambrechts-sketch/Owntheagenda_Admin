@@ -103,6 +103,9 @@ export const Seo = z.object({
   }).nullable().optional(),
   // Content ideas (0072): searches the site is seen for outside the top ten, not tracked
   ideas: z.array(z.object({ query: z.string(), impressions: n, position: nn, days: n, page: z.string().nullable(), planned: z.boolean() })).nullable().optional(),
+  // Technical SEO beyond the crawl (0073): searches split over two or more pages, and pages measured slow
+  cannibal: z.array(z.object({ query: z.string(), pages: z.array(z.object({ page: z.string(), impressions: n })) })).nullable().optional(),
+  slow: z.array(z.object({ path: z.string(), lcp_ms: nn, inp_ms: nn, field: z.boolean() })).nullable().optional(),
 })
 export type Seo = z.infer<typeof Seo>
 

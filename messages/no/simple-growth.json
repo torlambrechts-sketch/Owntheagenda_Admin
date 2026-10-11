@@ -6,82 +6,15 @@
     },
     "tabs": {
       "label": "Vekst",
-      "analytics": "Analyse",
+      "overview": "Oversikt",
+      "funnel": "Registrering og logg",
+      "pages": "Sider og lenker",
       "seo": "SEO",
       "campaigns": "Markedsføringskampanjer",
-      "email": "E-post og automasjon"
-    },
-    "range": {
-      "label": "Periode",
-      "7d": "7 d",
-      "30d": "30 d",
-      "90d": "90 d"
-    },
-    "analytics": {
-      "kpi": {
-        "visitors": "Besøkende",
-        "signups": "Registreringer",
-        "visitSignup": "Besøk → registrering",
-        "visitSignupSince": "Registreringer siden {date}, da besøkstellingen startet, delt på besøkende.",
-        "trialPaid": "Prøve → betalende",
-        "trialPaidTip": "Prøveperioder startet i kohortmånedene som ble betalende innen 45 dager (som Analyse › Forretning).",
-        "cost": "Kostnad per kunde",
-        "costNone": "Det er ikke lagt inn markedsføringskostnader for denne perioden. Legg dem inn på en kampanje under Markedsføringskampanjer.",
-        "costTip": "Kostnader lagt inn fra {from} ÷ {customers} nye betalende kunder i de samme månedene. Kostnader legges inn per måned."
-      },
-      "tracker": {
-        "waiting": "Besøkende vises når nettstedssporingen kjører på {site}.",
-        "noSite": "Ingen offentlig nettside er registrert for {app}, så det finnes ingen besøkende å telle."
-      },
-      "chart": {
-        "title": "Besøkende og registreringer",
-        "visitors": "Besøkende",
-        "signupsScaled": "Registreringer (skalert)",
-        "signups": "Registreringer"
-      },
-      "funnel": {
-        "title": "Fra besøk til betalende kunde",
-        "visited": "Besøkte nettsiden",
-        "viewed_pricing": "Så prisene",
-        "started_signup": "Sendte org.nr.",
-        "account_created": "Opprettet konto",
-        "survey_sent": "Sendte første undersøkelse",
-        "paying": "Ble betalende",
-        "topMissing": "Besøk, prisvisninger og påbegynte registreringer krever nettstedssporingen. De tre nederste trinnene følger kontoene som ble opprettet i perioden."
-      },
-      "sources": {
-        "title": "Hvor de besøkende kommer fra",
-        "source": "Kilde",
-        "visits": "Besøk",
-        "signups": "Registreringer",
-        "conv": "Konv.",
-        "empty": "Ingen registreringer i denne perioden.",
-        "visitsMissing": "Registreringer etter kanalen til det første besøket. Besøk vises når nettstedssporingen kjører."
-      },
-      "pages": {
-        "title": "Beste landingssider",
-        "sub": "Sider som gir registreringer",
-        "none": "Ingen besøk i denne perioden.",
-        "signupsMissing": "Et besøk kan ikke kobles til en registrering (sporingen lagrer ingen informasjonskapsel), så registreringer per side er ikke kjent."
-      },
-      "channels": {
-        "organic_search": "Organisk søk",
-        "paid_search": "Betalt søk",
-        "direct": "Direkte",
-        "social": "Sosiale medier",
-        "partner": "Henvisning",
-        "email": "E-post",
-        "paid_social": "Betalt sosialt"
-      }
+      "email": "E-post og automasjon",
+      "integrations": "Integrasjoner"
     },
     "seo": {
-      "kpi": {
-        "clicks": "Organiske klikk",
-        "impressions": "Visninger",
-        "position": "Gjennomsnittlig posisjon",
-        "pages": "Sider i Google",
-        "pagesHint": "Sider Google viste i søkeresultatene i perioden, fra Search Console. Google gir ikke antall indekserte sider gjennom sitt API."
-      },
       "connect": {
         "title": "Koble til Search Console",
         "body": "Klikk, visninger og posisjoner for {site} hentes hver natt når Search Console er koblet til. Inntil da vises ingen tall.",
@@ -122,38 +55,16 @@
           "other": "Noe gikk galt ({code})."
         }
       },
-      "keywords": {
-        "title": "Sporede søkeord",
-        "placeholder": "Legg til et søkeord å spore",
-        "track": "Spor",
-        "cols": {
-          "keyword": "Søkeord",
-          "impressions": "Visninger",
-          "position": "Posisjon",
-          "change": "Endring",
-          "page": "Rangert side"
-        },
-        "notRanking": "Rangerer ikke ennå",
-        "remove": "Slutt å spore «{q}»",
-        "empty": "Ingen søkeord spores ennå.",
-        "noSite": "Ingen offentlig nettside er registrert for {app}.",
-        "duplicate": "Det søkeordet spores allerede.",
-        "limit": "200 søkeord spores allerede. Fjern ett først.",
-        "tracked": "Søkeordet spores · første posisjon i morgen",
-        "trackedNotConnected": "Søkeordet spores · posisjoner vises når Search Console er koblet til",
-        "removed": "Søkeordet spores ikke lenger"
-      },
       "health": {
-        "title": "Nettstedshelse",
-        "open": "{count, plural, one {# problem å fikse} other {# problemer å fikse}}",
+        "title": "Teknisk SEO",
+        "open": "{count} åpne",
         "none": "Ingen åpne problemer.",
         "fix": "Merk som fikset",
         "fixed": "Merket som fikset · sjekkes igjen ved neste gjennomgang",
         "check": "Sjekk nå",
         "checking": "Sjekker …",
         "checked": "Sjekket {pages} sider · {issues, plural, =0 {ingen problemer} one {# problem} other {# problemer}}",
-        "lastCrawl": "Sist sjekket {ago} · {pages} sider",
-        "never": "Ikke sjekket ennå: nettstedet leses i natt, eller trykk «Sjekk nå».",
+        "never": "ikke gjennomgått ennå",
         "awaiting": "{count, plural, one {# merket som fikset, venter på neste sjekk} other {# merket som fikset, venter på neste sjekk}}",
         "reopened": "Merket som fikset, men forrige sjekk fant det igjen",
         "more": "og {n} til",
@@ -201,16 +112,27 @@
             "title": "{count, plural, one {# brutt intern lenke} other {# brutte interne lenker}}",
             "sub": "Fra {from} til {to}"
           }
+        },
+        "crawledToday": "gjennomgått i dag {time}",
+        "crawledOn": "gjennomgått {day} {time}",
+        "pages": "{pages} sider lest ved siste gjennomgang",
+        "derived": {
+          "lcp": "LCP {lcp} s på {path} (mobil)",
+          "inp": "INP {inp} ms på {path} (mobil)",
+          "fieldSub": "PageSpeed Insights · ekte Chrome-brukere",
+          "labSub": "PageSpeed Insights · labkjøring",
+          "cannibal": "«{q}» rangerer med {n} sider"
         }
       },
       "ideas": {
-        "title": "Innholdsideer",
-        "sub": "Søk uten en sterk side ennå",
+        "title": "Innholdshull",
+        "sub": "Det søkes, men vi har ingen sterk side",
         "line": "{impressions} visninger på {days} dager · posisjon {position}",
         "plan": "Planlegg artikkel",
         "done": "✓ Planlagt",
-        "planned": "Artikkelen er lagt i innholdsplanen",
-        "empty": "Ingen søk utenfor topp ti ennå. Ideer dukker opp når Search Console teller visninger."
+        "planned": "Lagt i innholdsplanen",
+        "empty": "Ingen søk utenfor topp ti ennå. Ideer dukker opp når Search Console teller visninger.",
+        "notConnected": "Innholdshull vises når Search Console er koblet til (Integrasjoner)."
       }
     },
     "campaigns": {
@@ -392,6 +314,450 @@
       },
       "errors": {
         "trigger": "Den starten er ikke tilgjengelig ennå."
+      }
+    },
+    "channels": {
+      "organic_search": "Organisk søk",
+      "paid_search": "Betalt søk",
+      "direct": "Direkte",
+      "social": "Sosiale medier",
+      "referral": "Henvisning",
+      "partner": "Partner",
+      "email": "E-post",
+      "paid_social": "Betalt sosialt"
+    },
+    "scope": {
+      "rangeLabel": "Periode",
+      "ranges": {
+        "today": "I dag",
+        "7d": "7 dager",
+        "30d": "30 dager",
+        "90d": "90 dager"
+      },
+      "last": "Siste {days} dager",
+      "lastLower": "siste {days} dager",
+      "crumbs": "Nedbryting",
+      "source": "Kilde",
+      "device": "Enhet",
+      "allSources": "Alle kilder",
+      "allDevices": "Alle enheter",
+      "devices": {
+        "desktop": "Datamaskin",
+        "mobile": "Mobil",
+        "tablet": "Nettbrett"
+      },
+      "updated": "Oppdatert {ago}",
+      "noData": "Ingen data ennå"
+    },
+    "overview": {
+      "metrics": {
+        "visitors": "Besøkende",
+        "signups": "Registreringer",
+        "accounts": "Kontoer",
+        "paying": "Betalende"
+      },
+      "kpi": {
+        "visitors": "Besøkende",
+        "signups": "Påbegynte registreringer",
+        "conversion": "Besøk → registrering",
+        "accounts": "Kontoer",
+        "paying": "Betalende",
+        "cost": "Kostnad per betalende",
+        "notTracked": "Besøkstellingen var ikke startet i denne perioden.",
+        "noDevice": "En konto har ingen enhet: kontotall kan ikke deles på enhet.",
+        "costNoDay": "Kostnader føres per måned, så de vises ikke for én dag eller time.",
+        "costNone": "Ingen kostnader er ført for disse månedene.",
+        "costTip": "Kostnadene ført på kampanjene, fordelt jevnt over hver måneds dager, delt på nye betalende kunder."
+      },
+      "chart": {
+        "perDay": "{metric} per dag · siste {days} dager",
+        "byHour": "{metric} per time · {day}",
+        "hintDay": "Klikk på en dag for å se den time for time",
+        "hintHour": "Klikk på en time for å åpne registreringsloggen",
+        "inner": "Registreringer (indre stolpe)",
+        "peak": "Flest registreringer mellom {from} og {to}",
+        "tipDay": "{day} · {visitors} besøkende · {signups} registreringer · {paying} betalende",
+        "tipHour": "{hour} · {visitors} besøkende · {signups} registreringer",
+        "waiting": "Besøkende vises når besøkstellingen kjører på {site}.",
+        "noSite": "Ingen offentlig nettside er registrert for denne applikasjonen."
+      },
+      "opps": {
+        "title": "Største muligheter",
+        "sub": "Anslått ekstra registreringer / måned",
+        "effort": "innsats {effort}",
+        "efforts": {
+          "small": "liten",
+          "medium": "middels"
+        },
+        "none": "Ingen anslag ennå: hvert anslag trenger nok besøk, registreringer eller Search Console-data å sammenligne med.",
+        "cta": {
+          "error": "Åpne trakten",
+          "keyword": "Åpne søkeordet",
+          "page": "Åpne siden",
+          "mobile": "Se mobil",
+          "slow": "Åpne siden"
+        },
+        "error": {
+          "title": "«{value}» stopper registreringer ved org.nr-steget",
+          "sub": "{count, plural, one {# besøk} other {# besøk}} stoppet på denne skjemafeilen"
+        },
+        "keyword": {
+          "title": "Få «{query}» inn på topp 3",
+          "sub": "Posisjon {position} · +{clicks} mulige klikk"
+        },
+        "page": {
+          "title": "{path} får trafikk, men konverterer ikke",
+          "sub": "{conv} registreringsrate mot nettstedets"
+        },
+        "mobile": {
+          "title": "Mobilbesøkende konverterer lavere enn på datamaskin",
+          "sub": "{mobile} på mobil mot {desktop} på datamaskin · {share} av besøkene"
+        },
+        "slow": {
+          "title": "Gjør {path} raskere",
+          "sub": "LCP {lcp} s · {share} av trafikken"
+        }
+      },
+      "channels": {
+        "title": "Kanaler",
+        "sub": "Klikk for å filtrere alt",
+        "source": "Kilde",
+        "visits": "Besøk",
+        "signups": "Registr.",
+        "conv": "Konv.",
+        "paying": "Betalende",
+        "none": "Ingen besøk eller registreringer i perioden."
+      }
+    },
+    "funnel": {
+      "title": "Registreringstrakt · {scope}",
+      "hint": "Klikk på et steg for å se hvorfor folk stopper",
+      "steps": {
+        "1": "Besøkte nettstedet",
+        "2": "Så priser eller produkt",
+        "3": "Klikket for å registrere seg",
+        "4": "Fylte inn org.nr (Brønnøysund-oppslag)",
+        "5": "Opprettet konto",
+        "6": "Lastet opp ansattliste",
+        "7": "Sendte første undersøkelse",
+        "8": "Ble betalende"
+      },
+      "note": "Steg 1–4 teller nettstedets besøkende (besøkstellingens sidevisninger og trykk); steg 5–8 teller kontoene som ble opprettet i perioden, fra produktets egne hendelser. Et besøk kobles aldri til en konto.",
+      "card": {
+        "step": "Steg {from} → {to}",
+        "stopped": "stoppet her",
+        "continued": "Gikk videre",
+        "median": "Mediantid",
+        "vsLast": "mot forrige periode",
+        "pts": "{n} poeng",
+        "why": "Hvorfor de stopper",
+        "leftOn": "Forlot på {path}",
+        "error": "Skjemafeil «{code}»",
+        "noReasons": "Ingen besøk stoppet ved dette steget i perioden.",
+        "noReasonsProduct": "Produktet rapporterer ikke hvorfor en konto stopper her.",
+        "segments": "Andel som går videre per segment",
+        "noSegments": "For få besøk til å sammenligne segmenter.",
+        "fix": "Tiltak:"
+      },
+      "time": {
+        "s": "{v} s",
+        "min": "{v} min",
+        "minSec": "{m} min {s} s",
+        "h": "{v} t",
+        "d": "{v} dager"
+      },
+      "fixes": {
+        "device": "Besøkende på {device} går videre i {rate} av tilfellene, mot {otherRate} på {other}: gå gjennom steget på den enheten og fjern det som stopper.",
+        "error": "Skjemafeilen «{code}» stoppet {count, plural, one {# besøk} other {# besøk}} her: håndter tilfellet i skjemaet, eller forklar det der det skjer.",
+        "exit": "{share} av besøkene som stoppet her, forlot på {path}: gjør neste steg synlig på den siden.",
+        "channel": "Besøk fra {channel} går videre i {rate} av tilfellene, mot {overall} totalt: sjekk at landingssiden passer annonsen eller lenken."
+      },
+      "log": {
+        "title": "Registreringslogg · {scope}",
+        "filters": {
+          "all": "Alle",
+          "stopped": "Stoppet ved valgt steg",
+          "account": "Fullførte registrering"
+        },
+        "export": "Eksporter CSV",
+        "exported": "{count, plural, one {# besøk} other {# besøk}} eksportert · ingen personopplysninger",
+        "cols": {
+          "time": "Tid",
+          "visitor": "Besøkende",
+          "source": "Kilde",
+          "device": "Enhet",
+          "page": "Landingsside",
+          "reached": "Nådde"
+        },
+        "finished": "Fullførte registreringen på nettstedet",
+        "stopped": "{step} — stoppet",
+        "secondsIn": "{s} s inn i besøket",
+        "leftOn": "forlot på {path}",
+        "none": "Ingen besøk i perioden passer.",
+        "more": "Viser de nyeste {shown} av {total} besøk.",
+        "showMore": "Vis {n} til"
+      }
+    },
+    "pages": {
+      "landing": {
+        "title": "Landingssider",
+        "page": "Side",
+        "visits": "Besøk",
+        "bounce": "Fluktrate",
+        "signups": "Registr.",
+        "conv": "Konv.",
+        "none": "Ingen landingssider i perioden.",
+        "waiting": "Vises når besøkstellingen kjører."
+      },
+      "sorts": {
+        "opportunity": "Mulighet",
+        "visits": "Besøk",
+        "conversion": "Konvertering",
+        "slowest": "Tregest"
+      },
+      "tags": {
+        "converts": "Konverterer godt — send mer trafikk",
+        "slow": "Treg — gjør den raskere",
+        "weak": "Mye trafikk, svak konvertering",
+        "bounce": "Høy fluktrate"
+      },
+      "card": {
+        "line": "{title} · {visits} besøk · {conv} registreringsrate",
+        "noTitle": "Ingen tittel lest ennå",
+        "trend": "Besøk per dag",
+        "noVitals": "Core Web Vitals vises når PageSpeed Insights er koblet til (Integrasjoner).",
+        "sources": "Trafikkilder til denne siden",
+        "noSources": "Ingen besøk i perioden.",
+        "keywords": "Søkeord siden rangerer på",
+        "noKeywords": "Ingen Search Console-søk for denne siden.",
+        "rec": "Anbefaling:"
+      },
+      "advice": {
+        "converts": "Siden konverterer {conv}. Lenk til den fra de mest leste artiklene, og bruk den som landingsside for betalte kampanjer.",
+        "slow": "LCP er {lcp} på mobil: finn det største elementet i PageSpeed-rapporten, komprimer det og forhåndslast det. Målet er under 2,5 s.",
+        "informational": "Besøkende kommer med et spørsmål, ikke for å kjøpe: legg en registreringsboks etter første avsnitt og en lenke til priser.",
+        "headline": "Test en kortere overskrift og en tydeligere registreringsknapp øverst på siden."
+      },
+      "refs": {
+        "title": "Henvisende nettsteder",
+        "sub": "Andre nettsteder som sendte besøk",
+        "domain": "Domene",
+        "visits": "Besøk",
+        "signups": "Registr.",
+        "status": "Status",
+        "states": {
+          "new": "Ny",
+          "active": "Aktiv",
+          "lost": "Mistet"
+        },
+        "none": "Ingen andre nettsteder sendte besøk i perioden."
+      },
+      "ctas": {
+        "title": "Lenker og knapper på nettstedet",
+        "sub": "Klikk som fører til registreringer",
+        "link": "Lenke",
+        "page": "På side",
+        "clicks": "Klikk",
+        "ctr": "CTR",
+        "signups": "Registr.",
+        "none": "Ingen trykk registrert i perioden."
+      }
+    },
+    "keywords": {
+      "kpi": {
+        "clicks": "Organiske klikk",
+        "impressions": "Visninger",
+        "top3": "Søkeord på topp 3",
+        "striking": "Innen rekkevidde",
+        "potential": "Mulige klikk / periode"
+      },
+      "tabs": {
+        "all": "Alle",
+        "top3": "Topp 3",
+        "striking": "Innen rekkevidde 4–20",
+        "low": "Lavt (20+)",
+        "losing": "Faller",
+        "lowctr": "Lav CTR"
+      },
+      "placeholder": "Spor et søkeord",
+      "track": "Spor",
+      "cols": {
+        "keyword": "Søkeord",
+        "volume": "Visn.",
+        "pos": "Pos.",
+        "change": "Δ {days} d",
+        "ctr": "CTR",
+        "clicks": "Klikk",
+        "potential": "Potensial"
+      },
+      "tags": {
+        "top3": "Topp 3 — forsvar",
+        "striking": "Innen rekkevidde",
+        "strikingCtr": "Innen rekkevidde · lav CTR",
+        "low": "Lavt — trenger en bedre side",
+        "new": "Ingen visninger ennå",
+        "notConnected": "Posisjoner når Search Console er koblet til"
+      },
+      "empty": "Ingen søkeord spores ennå.",
+      "noSite": "Ingen offentlig nettside er registrert for denne applikasjonen.",
+      "noneInTab": "Ingen sporede søkeord i denne gruppen.",
+      "intent": {
+        "brand": "Merkevare",
+        "transactional": "Kjøp",
+        "commercial": "Kommersiell",
+        "informational": "Informasjon"
+      },
+      "detail": {
+        "position": "Posisjon, siste {days} dager (lavere er bedre)",
+        "noHistory": "Ingen posisjon registrert i perioden.",
+        "notConnected": "Posisjoner vises når Search Console er koblet til.",
+        "impressions": "Visninger",
+        "ctr": "CTR mot forventet",
+        "potential": "Mulige klikk",
+        "page": "Rangerende side",
+        "pages": "Sider Google viste for det",
+        "doThis": "Gjør dette:"
+      },
+      "advice": {
+        "new": "Lag eller velg en side som er rettet mot søkeordet, og se igjen om en uke.",
+        "top3_ctr": "Dere er på topp 3, men får få klikk: skriv om tittel og metabeskrivelse med årstall og en tydelig fordel.",
+        "top3": "Forsvar: oppdater siden hvert kvartal, legg til FAQ-skjema og lenk til den fra nye artikler.",
+        "page1": "Første side, men langt ned: legg til en del som svarer direkte på «{q}», tre interne lenker med denne ankerteksten, og en bedre tittel.",
+        "page2": "Side to: utvid innholdet (sammenlign med topp 3), legg til en nedlastbar mal og skaff 2–3 lenker fra relevante nettsteder.",
+        "low": "Ikke konkurransedyktig ennå: lag en egen landingsside — dagens side svarer på et annet behov."
+      },
+      "duplicate": "Det søkeordet spores allerede.",
+      "limit": "200 søkeord spores allerede. Fjern ett først.",
+      "tracked": "Søkeordet spores · første posisjon i morgen",
+      "trackedNotConnected": "Søkeordet spores · posisjoner vises når Search Console er koblet til",
+      "removed": "Søkeordet spores ikke lenger",
+      "remove": "Slutt å spore «{q}»"
+    },
+    "integrations": {
+      "connected": "<b>{n}</b> av {total} tilkoblet",
+      "note": "Data blir i EU (Frankfurt) · nøkler i hvelvet · bare lesetilgang der ikke annet står",
+      "groups": {
+        "site": "Nettstedet",
+        "google": "Google",
+        "products": "Produkter og e-post"
+      },
+      "cards": {
+        "tracker": {
+          "name": "Besøkstelling",
+          "desc": "Besøk, sider, kilder, enheter og trykk på {hosts}, fra den informasjonskapselfrie tellingen. Ingen informasjonskapsler, ingen adresser."
+        },
+        "crawler": {
+          "name": "Nettstedsgjennomgang",
+          "desc": "Leser sitemap og alle sider hver natt: titler, beskrivelser, feil, hastighet og lenker."
+        },
+        "gsc": {
+          "name": "Google Search Console",
+          "desc": "Søk, posisjoner, klikk og sidene Google viser, importert hver natt via en tjenestekonto."
+        },
+        "psi": {
+          "name": "PageSpeed Insights",
+          "desc": "Core Web Vitals (LCP, INP, CLS) for landingssidene, fra Googles labkjøring og ekte Chrome-brukere."
+        },
+        "product": {
+          "name": "{name}-hendelser",
+          "desc": "Kontoer, milepæler og abonnementer {name} rapporterer gjennom sine signerte hendelser."
+        },
+        "email": {
+          "name": "Brevo",
+          "desc": "Sender e-postkampanjer og flyter; leveransehendelser kommer tilbake via webhook."
+        }
+      },
+      "state": {
+        "receiving": "Mottar",
+        "quiet": "Ingenting siden {ago}",
+        "waiting": "Venter på første data",
+        "failed": "Feilet",
+        "on": "Tilkoblet",
+        "notRun": "Ikke kjørt ennå",
+        "connectedTo": "Tilkoblet · {what}",
+        "noProperty": "Tilkoblet · ingen eiendom funnet",
+        "off": "Ikke tilkoblet",
+        "keyRefused": "Nøkkelen ble avvist"
+      },
+      "sync": {
+        "tracker": "Siste besøk {ago} · {n} besøk siste døgn",
+        "crawler": "Siste gjennomgang {ago} · {pages} sider · hver natt",
+        "daily": "Siste import {ago} · hver natt",
+        "psi": "Sist målt {ago} · {pages} sider · hver natt",
+        "events": "Siste hendelse {ago} · {n} siste døgn · direkte"
+      },
+      "manage": "Administrer",
+      "connect": "Koble til",
+      "feeds": {
+        "overview": "Oversikt",
+        "funnel": "Trakt",
+        "pages": "Sider",
+        "tech": "Teknisk SEO",
+        "seo": "SEO",
+        "accounts": "Kontoer",
+        "paying": "Betalende",
+        "email": "E-post"
+      },
+      "log": {
+        "title": "Synkroniseringslogg",
+        "sub": "Hver import, med rader og feil",
+        "today": "I dag {time}",
+        "yesterday": "I går {time}",
+        "on": "{day} {time}",
+        "none": "Ingenting importert ennå.",
+        "sources": {
+          "tracker": "Besøkstelling",
+          "crawler": "Nettstedsgjennomgang",
+          "search_console": "Search Console",
+          "pagespeed": "PageSpeed Insights",
+          "product_events": "Produkthendelser",
+          "email": "E-post"
+        },
+        "states": {
+          "ok": "OK",
+          "warning": "Advarsel",
+          "failed": "Feilet"
+        },
+        "what": {
+          "tracker": "{n, plural, one {# besøk} other {# besøk}} · {views, plural, one {# sidevisning} other {# sidevisninger}}",
+          "crawler": "{n, plural, one {# side} other {# sider}} · {issues, plural, one {# åpent problem} other {# åpne problemer}}",
+          "searchConsole": "Importert til og med {day}",
+          "searchConsoleNone": "Import forsøkt",
+          "pagespeed": "{n, plural, one {# side} other {# sider}} målt",
+          "events": "{n, plural, one {# hendelse} other {# hendelser}} · {kinds}"
+        }
+      },
+      "pagespeed": {
+        "title": "PageSpeed Insights",
+        "step1": "I Google Cloud (APIs & Services › Library), slå på «PageSpeed Insights API».",
+        "step2": "Under Credentials, lag en API-nøkkel og begrens den til det API-et. Lim den inn her.",
+        "keyLabel": "API-nøkkel",
+        "keyNote": "Nøkkelen går rett til hvelvet og vises aldri igjen.",
+        "save": "Lagre og mål",
+        "cancel": "Avbryt",
+        "connected": "PageSpeed Insights er koblet til · {pages} sider målt",
+        "measured": "Sist målt {ago} · {pages} sider",
+        "notYet": "Ikke målt ennå: sidene måles i natt, eller trykk «Mål nå».",
+        "measure": "Mål nå",
+        "measuring": "Måler …",
+        "measuredNow": "{pages} sider målt",
+        "replace": "Bytt nøkkel",
+        "disconnect": "Koble fra",
+        "disconnected": "PageSpeed Insights er koblet fra",
+        "ownerOnly": "Bare eieren kan koble til PageSpeed Insights.",
+        "codes": {
+          "key_refused": "Google godtok ikke nøkkelen. Sjekk at PageSpeed Insights API er slått på og at nøkkelen kan bruke det.",
+          "quota": "Nøkkelens daglige kvote hos Google er brukt opp. Sidene måles igjen i natt.",
+          "timeout": "Google brukte for lang tid. Prøv igjen om litt.",
+          "not_deployed": "PageSpeed-målingen er ikke tilgjengelig ennå.",
+          "forbidden": "Du har ikke rett til å gjøre dette.",
+          "bad_key": "Dette er ikke en Google API-nøkkel.",
+          "expired": "Engangsnummeret er utløpt. Prøv igjen.",
+          "no_key": "Ingen nøkkel er lagret ennå.",
+          "partial": "Ikke alle sidene ble målt i tide.",
+          "no_reading": "Google ga ingen måling for en side.",
+          "other": "Noe gikk galt ({code})."
+        }
       }
     }
   }

@@ -98,7 +98,8 @@ the screens show the real, small numbers and the design's empty treatments.
 | Sync log | job runs, imports, crawls, product events | D |
 
 ## Order of work
-1. Database and screens for Overview, Signup funnel and log, Pages and links, SEO › Keywords, Integrations.
+1. Database and screens for Overview, Signup funnel and log, Pages and links, SEO › Keywords, Integrations — **built (0073)**;
+   the deviations are `deviations/growth-v2.md`.
 2. PageSpeed Insights, URL Inspection and the crawler's link graph.
 3. The SEO suite: overview, opportunities, content plan, internal links, change log, alerts, clusters.
 4. The playbook: outcomes, budget, experiments, calendar, audiences; trial, flow library, deliverability.

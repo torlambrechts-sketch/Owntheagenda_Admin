@@ -577,7 +577,8 @@
       "mail_send": "E-postutsending (Brevo)",
       "mail_tick": "Sjekk av e-postutsending",
       "search_console_import": "Import fra Google Search Console",
-      "seo_crawl": "Sjekk av nettstedshelse (crawler)"
+      "seo_crawl": "Sjekk av nettstedshelse (crawler)",
+      "pagespeed": "Måling med PageSpeed Insights"
     },
     "flags": {
       "title": "Funksjonsflagg — globalt og per organisasjon",

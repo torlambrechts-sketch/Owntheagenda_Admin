@@ -576,7 +576,8 @@
       "webhook_send": "Webhook-leveranser",
       "mail_send": "E-postutsending (Brevo)",
       "mail_tick": "Sjekk av e-postutsending",
-      "search_console_import": "Import fra Google Search Console"
+      "search_console_import": "Import fra Google Search Console",
+      "seo_crawl": "Sjekk av nettstedshelse (crawler)"
     },
     "flags": {
       "title": "Funksjonsflagg — globalt og per organisasjon",

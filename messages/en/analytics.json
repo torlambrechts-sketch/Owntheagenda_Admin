@@ -440,7 +440,7 @@
           "started": "Org. no.",
           "completed": "Completed"
         },
-        "empty": "No visit with utm_term in this period. With utm_term={keyword} in the Google Ads tracking template, the keyword behind each click shows here."
+        "empty": "No visit with utm_term in this period. With utm_term='{'keyword'}' in the Google Ads tracking template, the keyword behind each click shows here."
       },
       "attempts": {
         "title": "Recent signup attempts",

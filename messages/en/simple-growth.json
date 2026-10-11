@@ -78,7 +78,9 @@
       "kpi": {
         "clicks": "Organic clicks",
         "impressions": "Impressions",
-        "position": "Average position"
+        "position": "Average position",
+        "pages": "Pages in Google",
+        "pagesHint": "Pages Google showed in search results in the period, from Search Console. Google gives no count of indexed pages through its API."
       },
       "connect": {
         "title": "Connect Search Console",
@@ -140,6 +142,75 @@
         "tracked": "Keyword tracked · first position tomorrow",
         "trackedNotConnected": "Keyword tracked · positions appear once Search Console is connected",
         "removed": "Keyword no longer tracked"
+      },
+      "health": {
+        "title": "Site health",
+        "open": "{count, plural, one {# issue to fix} other {# issues to fix}}",
+        "none": "No open issues.",
+        "fix": "Mark fixed",
+        "fixed": "Marked fixed · re-checked on the next crawl",
+        "check": "Check now",
+        "checking": "Checking…",
+        "checked": "Checked {pages} pages · {issues, plural, =0 {no issues} one {# issue} other {# issues}}",
+        "lastCrawl": "Last checked {ago} · {pages} pages",
+        "never": "Not checked yet: the site is read tonight, or press «Check now».",
+        "awaiting": "{count, plural, one {# marked fixed, awaiting the next check} other {# marked fixed, awaiting the next check}}",
+        "reopened": "Marked fixed, but the last check found it again",
+        "more": "and {n} more",
+        "codes": {
+          "failed": "The check failed. Try again shortly.",
+          "unreachable": "The site did not answer",
+          "partial": "the last check ran out of time before reading every page",
+          "not_deployed": "The site checker is not available yet.",
+          "forbidden": "You do not have the right to check the site.",
+          "timeout": "The check took too long. The result arrives with tonight's check."
+        },
+        "kinds": {
+          "sitemap_missing": {
+            "title": "No sitemap",
+            "sub": "/sitemap.xml is missing or empty, so search engines must find every page by links"
+          },
+          "page_error": {
+            "title": "{count, plural, one {# page in the sitemap answers with an error} other {# pages in the sitemap answer with an error}}"
+          },
+          "noindex": {
+            "title": "{count, plural, one {# page is hidden from search (noindex)} other {# pages are hidden from search (noindex)}}"
+          },
+          "missing_title": {
+            "title": "{count, plural, one {# page is missing a title} other {# pages are missing a title}}"
+          },
+          "missing_description": {
+            "title": "{count, plural, one {# page is missing a meta description} other {# pages are missing a meta description}}"
+          },
+          "slow_page": {
+            "title": "{count, plural, one {Slow page: {path} loads in {seconds} s} other {# slow pages: {path} loads in {seconds} s}}",
+            "sub": "Over 3 s from request to the last byte"
+          },
+          "duplicate_title": {
+            "title": "{count, plural, other {Duplicate title on # pages}}",
+            "sub": "«{value}» used as title"
+          },
+          "duplicate_description": {
+            "title": "{count, plural, other {Duplicate meta description on # pages}}",
+            "sub": "«{value}» used as description"
+          },
+          "missing_h1": {
+            "title": "{count, plural, one {# page is missing an H1} other {# pages are missing an H1}}"
+          },
+          "broken_link": {
+            "title": "{count, plural, one {# broken internal link} other {# broken internal links}}",
+            "sub": "From {from} to {to}"
+          }
+        }
+      },
+      "ideas": {
+        "title": "Content ideas",
+        "sub": "Searches with no strong page yet",
+        "line": "{impressions} impressions in {days} days · position {position}",
+        "plan": "Plan article",
+        "done": "✓ Planned",
+        "planned": "Article added to the content plan",
+        "empty": "No searches outside the top ten yet. Ideas appear as Search Console counts impressions."
       }
     },
     "campaigns": {

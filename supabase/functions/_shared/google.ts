@@ -10,6 +10,8 @@ export type ServiceKey = { client_email: string; private_key: string; token_uri:
 export type GoogleSite = { siteUrl: string; permissionLevel: string }
 export type DayRow = { day: string; impressions: number; clicks: number; position: number | null }
 export type QueryRow = DayRow & { query: string }
+/** a day × query × page row; the page is its path (and query string), never the host */
+export type PageRow = QueryRow & { page: string }
 type Fetch = typeof fetch
 type Fail = { ok: false; code: string }
 
@@ -113,10 +115,27 @@ export function propertyFor(hostname: string, sites: GoogleSite[]): string | nul
 const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0)
 const DAY = /^\d{4}-\d{2}-\d{2}$/
 
-/** Search Analytics for one property and period: by day, or by day and query; pages of 25 000 rows, at most four */
-export async function searchAnalytics<D extends 'day' | 'query'>(token: string, property: string, from: string, to: string, by: D, f: Fetch = fetch):
-  Promise<{ ok: true; rows: D extends 'day' ? DayRow[] : QueryRow[]; capped: boolean } | Fail> {
-  const rows: QueryRow[] = []
+/** the path of a page Search Console names by its full address; null for anything that is not one */
+export function pagePath(url: unknown): string | null {
+  if (typeof url !== 'string') return null
+  try {
+    const u = new URL(url)
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return null
+    return (u.pathname + u.search).slice(0, 300) || '/'
+  } catch {
+    return null
+  }
+}
+
+type Rows<D> = D extends 'day' ? DayRow[] : D extends 'query' ? QueryRow[] : PageRow[]
+const DIMS = { day: ['date'], query: ['date', 'query'], page: ['date', 'query', 'page'] } as const
+
+/** Search Analytics for one property and period: by day, by day and query, or by day, query and page (0072); pages of
+ *  25 000 rows, at most four */
+export async function searchAnalytics<D extends 'day' | 'query' | 'page'>(token: string, property: string, from: string, to: string, by: D, f: Fetch = fetch):
+  Promise<{ ok: true; rows: Rows<D>; capped: boolean } | Fail> {
+  const rows: PageRow[] = []
+  const shape = (): Rows<D> => (by === 'day' ? rows.map(({ query: _q, page: _p, ...d }) => d) : by === 'query' ? rows.map(({ page: _p, ...q }) => q) : rows) as Rows<D>
   const PAGE = 25_000
   for (let page = 0; page < 4; page++) {
     let res: Response
@@ -124,7 +143,7 @@ export async function searchAnalytics<D extends 'day' | 'query'>(token: string, 
       res = await f(`${API}/sites/${encodeURIComponent(property)}/searchAnalytics/query`, {
         method: 'POST',
         headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json', accept: 'application/json' },
-        body: JSON.stringify({ startDate: from, endDate: to, dimensions: by === 'day' ? ['date'] : ['date', 'query'], rowLimit: PAGE, startRow: page * PAGE, dataState: 'final' }),
+        body: JSON.stringify({ startDate: from, endDate: to, dimensions: DIMS[by], rowLimit: PAGE, startRow: page * PAGE, dataState: 'final' }),
         signal: AbortSignal.timeout(30_000),
       })
     } catch {
@@ -140,13 +159,15 @@ export async function searchAnalytics<D extends 'day' | 'query'>(token: string, 
       const day = typeof r.keys?.[0] === 'string' ? r.keys[0] : ''
       if (!DAY.test(day)) continue
       const query = typeof r.keys?.[1] === 'string' ? r.keys[1] : ''
-      if (by === 'query' && !query.trim()) continue
+      if (by !== 'day' && !query.trim()) continue
+      const pg = by === 'page' ? pagePath(r.keys?.[2]) : ''
+      if (pg === null) continue
       const position = num(r.position)
-      rows.push({ day, query, impressions: Math.max(0, Math.round(num(r.impressions))), clicks: Math.max(0, Math.round(num(r.clicks))), position: position > 0 ? position : null })
+      rows.push({ day, query, page: pg, impressions: Math.max(0, Math.round(num(r.impressions))), clicks: Math.max(0, Math.round(num(r.clicks))), position: position > 0 ? position : null })
     }
-    if (got.length < PAGE) return { ok: true, rows: (by === 'day' ? rows.map(({ query: _q, ...d }) => d) : rows) as never, capped: false }
+    if (got.length < PAGE) return { ok: true, rows: shape(), capped: false }
   }
-  return { ok: true, rows: (by === 'day' ? rows.map(({ query: _q, ...d }) => d) : rows) as never, capped: true }
+  return { ok: true, rows: shape(), capped: true }
 }
 
 /** a period as windows of at most `days` days, oldest first (dates as YYYY-MM-DD, UTC) */

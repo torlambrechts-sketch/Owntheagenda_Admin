@@ -440,7 +440,7 @@
           "started": "Org.nr.",
           "completed": "Fullført"
         },
-        "empty": "Ingen besøk med utm_term i perioden. Med utm_term={keyword} i Google Ads-annonsenes sporingsmal vises søkeordet som ga klikket her."
+        "empty": "Ingen besøk med utm_term i perioden. Med utm_term='{'keyword'}' i Google Ads-annonsenes sporingsmal vises søkeordet som ga klikket her."
       },
       "attempts": {
         "title": "Siste registreringsforsøk",

@@ -13,8 +13,8 @@ const COLS = '[grid-template-columns:minmax(0,1.5fr)_80px_70px_70px_minmax(0,1.2
 
 /**
  * «Tracked keywords» (SimpleGrowth.dc.html): add with Track, remove with × (an addition: seo_keyword_remove, V-SGR-07).
- * Search Console has no search volume, so the column shows impressions (V-SGR-08); it has no page per query in the import,
- * so «Ranking page» is «—» (or «Not ranking yet» once connected without impressions).
+ * Search Console has no search volume, so the column shows impressions (V-SGR-08). «Ranking page» is the page Google showed
+ * most for the query (0072), «Not ranking yet» once connected without impressions, otherwise «—».
  */
 export function Keywords({ rows, connected, hasSite, app, product, nf, canAdd, editOthers }: {
   rows: Seo['keywords']; connected: boolean; hasSite: boolean; app: string; product: string; nf: NumberFormat; canAdd: boolean; editOthers: boolean
@@ -72,7 +72,7 @@ export function Keywords({ rows, connected, hasSite, app, product, nf, canAdd, e
           </div>
           {rows.map((k) => {
             const ch = k.position !== null && k.position_prev !== null ? Math.round((k.position_prev - k.position) * 10) / 10 : null
-            const ranking = connected && !k.impressions ? t('notRanking') : '—'
+            const ranking = k.page ?? (connected && !k.impressions ? t('notRanking') : '—')
             const mayRemove = canAdd && (k.mine || editOthers)
             return (
               <div key={k.id} className={`grid items-center gap-[10px] ${rowLine} text-13 tabular-nums ${COLS}`}>
@@ -90,7 +90,7 @@ export function Keywords({ rows, connected, hasSite, app, product, nf, canAdd, e
                     onClick={() => remove(k.id)}
                     aria-label={t('remove', { q: k.query })}
                     title={t('remove', { q: k.query })}
-                    className="h-[22px] w-[26px] cursor-pointer rounded-6 border border-coral bg-transparent text-11 text-rust"
+                    className="h-[18px] w-[26px] cursor-pointer rounded-6 border border-coral bg-transparent text-11 leading-none text-rust"
                   >
                     ×
                   </button>

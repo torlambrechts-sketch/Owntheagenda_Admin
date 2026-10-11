@@ -78,7 +78,9 @@
       "kpi": {
         "clicks": "Organiske klikk",
         "impressions": "Visninger",
-        "position": "Gjennomsnittlig posisjon"
+        "position": "Gjennomsnittlig posisjon",
+        "pages": "Sider i Google",
+        "pagesHint": "Sider Google viste i søkeresultatene i perioden, fra Search Console. Google gir ikke antall indekserte sider gjennom sitt API."
       },
       "connect": {
         "title": "Koble til Search Console",
@@ -140,6 +142,75 @@
         "tracked": "Søkeordet spores · første posisjon i morgen",
         "trackedNotConnected": "Søkeordet spores · posisjoner vises når Search Console er koblet til",
         "removed": "Søkeordet spores ikke lenger"
+      },
+      "health": {
+        "title": "Nettstedshelse",
+        "open": "{count, plural, one {# problem å fikse} other {# problemer å fikse}}",
+        "none": "Ingen åpne problemer.",
+        "fix": "Merk som fikset",
+        "fixed": "Merket som fikset · sjekkes igjen ved neste gjennomgang",
+        "check": "Sjekk nå",
+        "checking": "Sjekker …",
+        "checked": "Sjekket {pages} sider · {issues, plural, =0 {ingen problemer} one {# problem} other {# problemer}}",
+        "lastCrawl": "Sist sjekket {ago} · {pages} sider",
+        "never": "Ikke sjekket ennå: nettstedet leses i natt, eller trykk «Sjekk nå».",
+        "awaiting": "{count, plural, one {# merket som fikset, venter på neste sjekk} other {# merket som fikset, venter på neste sjekk}}",
+        "reopened": "Merket som fikset, men forrige sjekk fant det igjen",
+        "more": "og {n} til",
+        "codes": {
+          "failed": "Sjekken feilet. Prøv igjen om litt.",
+          "unreachable": "Nettstedet svarte ikke",
+          "partial": "forrige sjekk rakk ikke å lese alle sidene",
+          "not_deployed": "Nettstedssjekken er ikke tilgjengelig ennå.",
+          "forbidden": "Du har ikke rett til å sjekke nettstedet.",
+          "timeout": "Sjekken tok for lang tid. Resultatet kommer med nattens sjekk."
+        },
+        "kinds": {
+          "sitemap_missing": {
+            "title": "Ingen sitemap",
+            "sub": "/sitemap.xml mangler eller er tom, så søkemotorene må finne hver side via lenker"
+          },
+          "page_error": {
+            "title": "{count, plural, one {# side i sitemap svarer med feil} other {# sider i sitemap svarer med feil}}"
+          },
+          "noindex": {
+            "title": "{count, plural, one {# side er skjult for søk (noindex)} other {# sider er skjult for søk (noindex)}}"
+          },
+          "missing_title": {
+            "title": "{count, plural, one {# side mangler tittel} other {# sider mangler tittel}}"
+          },
+          "missing_description": {
+            "title": "{count, plural, one {# side mangler metabeskrivelse} other {# sider mangler metabeskrivelse}}"
+          },
+          "slow_page": {
+            "title": "{count, plural, one {Treg side: {path} laster på {seconds} s} other {# trege sider: {path} laster på {seconds} s}}",
+            "sub": "Over 3 s fra forespørsel til siste byte"
+          },
+          "duplicate_title": {
+            "title": "{count, plural, other {Lik tittel på # sider}}",
+            "sub": "«{value}» brukt som tittel"
+          },
+          "duplicate_description": {
+            "title": "{count, plural, other {Lik metabeskrivelse på # sider}}",
+            "sub": "«{value}» brukt som beskrivelse"
+          },
+          "missing_h1": {
+            "title": "{count, plural, one {# side mangler H1} other {# sider mangler H1}}"
+          },
+          "broken_link": {
+            "title": "{count, plural, one {# brutt intern lenke} other {# brutte interne lenker}}",
+            "sub": "Fra {from} til {to}"
+          }
+        }
+      },
+      "ideas": {
+        "title": "Innholdsideer",
+        "sub": "Søk uten en sterk side ennå",
+        "line": "{impressions} visninger på {days} dager · posisjon {position}",
+        "plan": "Planlegg artikkel",
+        "done": "✓ Planlagt",
+        "planned": "Artikkelen er lagt i innholdsplanen",
+        "empty": "Ingen søk utenfor topp ti ennå. Ideer dukker opp når Search Console teller visninger."
       }
     },
     "campaigns": {

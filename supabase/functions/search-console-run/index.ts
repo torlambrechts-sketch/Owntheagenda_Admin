@@ -106,9 +106,10 @@ Deno.serve(async (req) => {
     if (t.from > t.to) continue
     for (const w of windows(t.from, t.to, 30)) {
       if (!left()) break
-      const [days, queries] = await Promise.all([
+      const [days, queries, pages] = await Promise.all([
         searchAnalytics(tok.token, t.property, w.from, w.to, 'day'),
         searchAnalytics(tok.token, t.property, w.from, w.to, 'query'),
+        searchAnalytics(tok.token, t.property, w.from, w.to, 'page'),
       ])
       if (!days.ok || !queries.ok) {
         const code = !days.ok ? days.code : !queries.ok ? queries.code : 'failed'
@@ -120,6 +121,12 @@ Deno.serve(async (req) => {
       if (queries.capped) log('import capped at 100000 rows for one window')
       const r = await rpc<{ totals: number; rows: number }>(svc, 'worker_search_console_import', { p_site: t.site_id, p_totals: days.rows, p_rows: queries.rows })
       if (!r) { failed++; break }
+      // the page each query was seen on (0072): «Ranking page», pages in Google, content ideas. A refusal here keeps the
+      // window's totals and queries; the pages come again with the next window that overlaps
+      if (pages.ok) {
+        if (pages.capped) log('pages capped at 100000 rows for one window')
+        await rpc(svc, 'worker_search_console_pages', { p_site: t.site_id, p_from: w.from, p_to: w.to, p_rows: pages.rows })
+      } else log(`pages refused ${pages.code}`)
       windowsDone++
       rowsIn += r.rows
     }

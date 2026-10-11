@@ -68,6 +68,13 @@ export const FUNNEL_COLOR: Record<(typeof FUNNEL_KEYS)[number], string> = {
 
 // ---------------------------------------------------------------------------
 // SEO (seo_get)
+export const ISSUE_KINDS = ['sitemap_missing', 'page_error', 'noindex', 'missing_title', 'missing_description', 'slow_page',
+  'duplicate_title', 'duplicate_description', 'missing_h1', 'broken_link'] as const
+export const SeoIssue = z.object({
+  kind: z.enum(ISSUE_KINDS), severity: z.enum(['high', 'medium']), count: n, paths: z.array(z.string()),
+  value: z.string().nullable(), ms: nn, first_seen_at: z.string(), reopened: z.boolean(),
+})
+export type SeoIssue = z.infer<typeof SeoIssue>
 export const Seo = z.object({
   connected: z.boolean(),
   days: n,
@@ -78,11 +85,24 @@ export const Seo = z.object({
     client_email: z.string().nullable(), last_error: z.string().nullable(), property: z.string().nullable(),
     site_error: z.string().nullable(), last_import_at: z.string().nullable(), last_day: z.string().nullable(),
   }),
-  totals: z.object({ clicks: nn, clicks_prev: nn, impressions: nn, impressions_prev: nn, position: nn, position_prev: nn }).nullable(),
+  totals: z.object({
+    clicks: nn, clicks_prev: nn, impressions: nn, impressions_prev: nn, position: nn, position_prev: nn,
+    // pages Google showed in search (0072), null before pages are imported for the period
+    pages: nn.optional(), pages_prev: nn.optional(),
+  }).nullable(),
   keywords: z.array(z.object({
     id: uuid, query: z.string(), created_at: z.string(), mine: z.boolean().nullable(),
     impressions: nn, clicks: nn, position: nn, position_prev: nn,
+    // the page Google showed most for it (0072)
+    page: z.string().nullable().optional(),
   })),
+  // Site health (0072): the last crawl and its open issues
+  health: z.object({
+    last_crawl_at: z.string().nullable(), last_error: z.string().nullable(), pages: nn, awaiting_check: n,
+    issues: z.array(SeoIssue),
+  }).nullable().optional(),
+  // Content ideas (0072): searches the site is seen for outside the top ten, not tracked
+  ideas: z.array(z.object({ query: z.string(), impressions: n, position: nn, days: n, page: z.string().nullable(), planned: z.boolean() })).nullable().optional(),
 })
 export type Seo = z.infer<typeof Seo>
 

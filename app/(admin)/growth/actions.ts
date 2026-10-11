@@ -3,7 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { rpc, type RpcCode } from '@/lib/rpc'
-import { AD_CHANNELS, AD_UTM, CONDITIONS, EXITS, SimpleModel, TRIGGERS } from '@/lib/data/simple-growth-shared'
+import { AD_CHANNELS, AD_UTM, CONDITIONS, EXITS, ISSUE_KINDS, SimpleModel, TRIGGERS } from '@/lib/data/simple-growth-shared'
+import { seoCrawl } from '@/lib/seo/crawl'
 import { setSpend } from '../analytics/actions'
 import { setWorkflowState } from '../automation/actions'
 
@@ -25,6 +26,35 @@ export async function addKeyword(input: { product: string; query: string }): Pro
   if (!r.ok) return fail(r)
   done()
   return { ok: true }
+}
+
+// ---------------------------------------------------------------------------
+// Site health and content ideas (0072)
+export async function fixIssue(input: { product: string; kind: string }): Promise<Result> {
+  const p = z.object({ product, kind: z.enum(ISSUE_KINDS) }).safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('seo_issue_fix', { p_product: p.data.product, p_kind: p.data.kind }, z.object({ kind: z.string() }))
+  if (!r.ok) return fail(r)
+  done()
+  return { ok: true }
+}
+
+export async function planIdea(input: { product: string; query: string }): Promise<Result> {
+  const p = z.object({ product, query: z.string().trim().min(1).max(200) }).safeParse(input)
+  if (!p.success) return bad
+  const r = await rpc('seo_idea_plan', { p_product: p.data.product, p_query: p.data.query }, z.object({ query: z.string(), planned: z.boolean() }))
+  if (!r.ok) return fail(r)
+  done()
+  return { ok: true }
+}
+
+/** «Check now»: crawl the application's site instead of tonight; the answer says how many pages and issues */
+export async function checkSiteHealth(input: { site: string }): Promise<{ ok: true; pages: number; issues: number; error: string | null } | { ok: false; code: string }> {
+  const p = z.object({ site: uuid }).safeParse(input)
+  if (!p.success) return { ok: false, code: 'invalid' }
+  const r = await seoCrawl(p.data.site)
+  done()
+  return r
 }
 
 export async function removeKeyword(input: { id: string }): Promise<Result> {

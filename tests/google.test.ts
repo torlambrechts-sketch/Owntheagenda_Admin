@@ -1,6 +1,6 @@
 import { webcrypto } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
-import { accessToken, parseKey, propertyFor, searchAnalytics, serviceJwt, windows } from '../supabase/functions/_shared/google'
+import { accessToken, pagePath, parseKey, propertyFor, searchAnalytics, serviceJwt, windows } from '../supabase/functions/_shared/google'
 
 const subtle = webcrypto.subtle
 async function testKey() {
@@ -58,6 +58,22 @@ describe('Search Console properties and figures (0064)', () => {
     expect(r).toEqual({ ok: true, capped: false, rows: [{ day: '2026-10-01', query: 'arbeidsmiljø', impressions: 10, clicks: 2, position: 3.4 }] })
     const refused = await searchAnalytics('t', 'sc-domain:orgpuls.com', '2026-10-01', '2026-10-01', 'day', (async () => new Response('{"error":{"message":"User does not have sufficient permission"}}', { status: 403 })) as typeof fetch)
     expect(refused).toEqual({ ok: false, code: 'http_403' })
+  })
+  it('reads day × query × page rows with the page as its path, never the host (0072)', async () => {
+    let asked: Record<string, unknown> = {}
+    const f = (async (_u: unknown, init?: RequestInit) => {
+      asked = JSON.parse(String(init?.body))
+      return new Response(JSON.stringify({ rows: [
+        { keys: ['2026-10-01', 'anonym medarbeiderundersøkelse', 'https://www.orgpuls.com/artikler/anonym-medarbeiderundersokelse'], impressions: 8, clicks: 0, position: 15.6 },
+        { keys: ['2026-10-01', 'x', 'not a url'], impressions: 1, clicks: 0, position: 3 },
+      ] }), { status: 200 })
+    }) as typeof fetch
+    const r = await searchAnalytics('t', 'sc-domain:orgpuls.com', '2026-10-01', '2026-10-01', 'page', f)
+    expect(asked).toMatchObject({ dimensions: ['date', 'query', 'page'] })
+    expect(r).toEqual({ ok: true, capped: false, rows: [{ day: '2026-10-01', query: 'anonym medarbeiderundersøkelse', page: '/artikler/anonym-medarbeiderundersokelse', impressions: 8, clicks: 0, position: 15.6 }] })
+    expect(pagePath('https://www.orgpuls.com/')).toBe('/')
+    expect(pagePath('https://se.orgpuls.com/priser?x=1')).toBe('/priser?x=1')
+    expect(pagePath('javascript:alert(1)')).toBeNull()
   })
   it('splits a period into windows, oldest first', () => {
     expect(windows('2026-01-01', '2026-03-05', 30)).toEqual([

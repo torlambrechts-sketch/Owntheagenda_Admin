@@ -32,7 +32,8 @@ export function Header({ shell, route, product, status, openMenu }: {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-surface">
-      <div className="flex min-h-[60px] items-center gap-[14px] px-4 py-[10px] md:px-7">
+      {/* the design's min-height 60 includes the header's 1px border (border-box) */}
+      <div className="flex min-h-[59px] items-center gap-[14px] px-4 py-[10px] md:px-7">
         <button
           type="button"
           onClick={openMenu}

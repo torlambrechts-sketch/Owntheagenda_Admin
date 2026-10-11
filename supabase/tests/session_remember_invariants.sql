@@ -27,7 +27,8 @@ select pg_temp.as_s('tor@orgpuls.no', (select tor from t_s), 'aal1');
 select pg_temp.expect_error('select public.session_remember()', 'forbidden', 'a session without its second factor cannot be remembered');
 
 select pg_temp.as_s('tor@orgpuls.no', (select tor from t_s));
-select pg_temp.check((public.session_remember() ->> 'ok')::boolean
+create temp table t_r as select public.session_remember() r;
+select pg_temp.check((select (r ->> 'ok')::boolean from t_r)
                      and (select trusted_until between now() + interval '29 days' and now() + interval '31 days' from app.staff_sessions where session_id = (select tor from t_s)),
                      'the person''s own session is remembered for 30 days');
 select pg_temp.check((select trusted_until is null from app.staff_sessions where session_id = (select ingrid from t_s)), 'nobody else''s');
@@ -44,7 +45,9 @@ select pg_temp.check(exists (select 1 from jsonb_array_elements(public.security_
                              where (x ->> 'session_id')::uuid = (select tor from t_s) and x ->> 'remembered_until' is not null),
                      'Live sessions shows it, remembered, where it can be ended');
 
--- the owner's switch takes it away at once
+-- the owner's switch takes it away at once (the report above made it active again; idle it once more)
+update app.staff_sessions set last_seen_at = now() - interval '2 hours' where session_id = (select tor from t_s);
+select pg_temp.check(app.session_ok((select tor from t_s)), 'still remembered while the option is on');
 select public.setting_set('session_remember', 'off', '', null);
 select pg_temp.check(not app.session_ok((select tor from t_s)), 'with the option off, the idle rule applies again');
 

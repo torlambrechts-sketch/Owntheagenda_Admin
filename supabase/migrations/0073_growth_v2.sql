@@ -408,6 +408,13 @@ begin
       'series', coalesce(v_series, '[]'::jsonb),
       -- the hour of the day most signups began in, over the scope
       'peak_hour', (select extract(hour from s.lt)::int from s where s.started group by 1 order by count(*) desc, 1 limit 1),
+      -- visits and signups begun by device, for the Overview's opportunities
+      'devices', coalesce((select jsonb_agg(jsonb_build_object('device', d.device, 'visits', d.n, 'started', d.st) order by d.n desc) from (
+          select coalesce(x.device, 'unknown') device, count(*) n, count(*) filter (where exists (select 1 from app.web_events e where e.session_id = x.id and e.name = 'signup_started')) st
+          from app.web_sessions x
+          where x.site_id = any (v_sites) and x.started_at >= w.t0 and x.started_at < w.t1 and x.device is not null
+            and (p_channel is null or coalesce(x.channel, 'direct') = p_channel) and (p_device is null or x.device = p_device)
+          group by 1) d), '[]'::jsonb),
       'channels', coalesce((select jsonb_agg(jsonb_build_object('channel', c.channel, 'visits', case when v_since is not null then coalesce(v.n, 0) end,
                                                                  'started', case when v_since is not null then coalesce(v.st, 0) end,
                                                                  'accounts', case when not v_dev then coalesce(ac.n, 0) end,
@@ -498,12 +505,13 @@ begin
       -- why they stopped: where the visits that stopped at the step ended, and what the signup form reported
       'reasons', case when st <= 4 then coalesce((select jsonb_agg(x order by (x ->> 'count')::int desc, x ->> 'value') from (
           select jsonb_build_object('kind', 'exit', 'value', r.exit_path, 'count', count(*)) x from r
-          where r.cur and r.reached = st and r.exit_path is not null group by r.exit_path order by count(*) desc, r.exit_path limit 4) y), '[]'::jsonb)
+          where r.cur and r.reached = st and (st < 4 or r.t5 is null) and r.exit_path is not null group by r.exit_path order by count(*) desc, r.exit_path limit 4) y), '[]'::jsonb)
           || coalesce((select jsonb_agg(jsonb_build_object('kind', 'error', 'value', q.value, 'count', q.n) order by q.n desc, q.value) from (
                          select e.value, count(distinct e.session_id) n from app.web_events e join r on r.id = e.session_id
-                         where st >= 3 and r.cur and r.reached = st and e.name = 'signup_error' and e.value is not null group by e.value) q), '[]'::jsonb)
+                         where st >= 3 and r.cur and r.reached = st and (st < 4 or r.t5 is null) and e.name = 'signup_error' and e.value is not null group by e.value) q), '[]'::jsonb)
         else '[]'::jsonb end,
-      'stopped', case when st <= 4 then (select count(*) from r where r.cur and r.reached = st) end,
+      -- a visit that finished signup on the site did not stop at step 4
+      'stopped', case when st <= 4 then (select count(*) from r where r.cur and r.reached = st and (st < 4 or r.t5 is null)) end,
       -- the continue rate by channel and by device (session steps), by the account's channel (account steps)
       'segments', case
           when st <= 3 then coalesce((select jsonb_agg(jsonb_build_object('kind', g.kind, 'key', g.key, 'entered', g.n, 'continued', g.c) order by g.kind, g.n desc, g.key) from (
@@ -597,7 +605,8 @@ begin
             from app.search_console_pages p where p.site_id = v_site and p.page = v_path and p.day > current_date - greatest(w.d, 28)
             group by 1 having sum(p.impressions) > 0 order by 2 desc, 1 limit 8) k), '[]'::jsonb)) end,
       -- other sites that sent visits (search engines are not referring sites): this period, the one before, when first seen
-      'referrers', coalesce((select jsonb_agg(jsonb_build_object('host', h.host, 'channel', h.channel, 'visits', h.n, 'started', h.st, 'prev', h.prev, 'first_seen', h.first)
+      'referrers', coalesce((select jsonb_agg(jsonb_build_object('host', h.host, 'channel', h.channel, 'visits', h.n, 'started', h.st, 'prev', h.prev, 'first_seen', h.first,
+                                                                 'is_new', h.first >= w.t0)
                                               order by h.n desc, h.prev desc, h.host) from (
           select coalesce(c.host, p.host) host, coalesce(c.channel, p.channel) channel, coalesce(c.n, 0) n, coalesce(c.st, 0) st, coalesce(p.n, 0) prev,
                  (select min(x.started_at) from app.web_sessions x where x.site_id = any (v_sites) and x.referrer_host = coalesce(c.host, p.host)) first
@@ -642,6 +651,113 @@ begin
         select p.page, sum(p.impressions) i, sum(p.clicks) c from app.search_console_pages p
         where p.site_id = v_site.id and p.query = lower(btrim(p_query)) and p.day > current_date - d
         group by 1 having sum(p.impressions) > 0 order by 2 desc, 1 limit 5) p), '[]'::jsonb));
+end $fn$;
+
+-- ===========================================================================
+-- 7b. SEO › Keywords' Technical SEO: what Search Console and PageSpeed see that the crawl cannot (seo_get, 0072, extended)
+-- ===========================================================================
+create or replace function public.seo_get(p_product text default null, p_days int default 30) returns jsonb
+  language plpgsql stable security definer set search_path = ''
+as $fn$
+declare
+  v_me uuid := app.require_marketing_reports();
+  d int := case when p_days in (7, 30, 90) then p_days when p_days = 1 then 7 else 30 end;
+  v_site app.web_sites := app.product_site(nullif(p_product, 'all'));
+  v_conn boolean := app.connected('search_console');
+  c app.integration_connections;
+  sc app.search_console_sites;
+  v_pages boolean;
+  v_pages_prev boolean;
+begin
+  select * into c from app.integration_connections where provider = 'search_console';
+  select * into sc from app.search_console_sites where site_id = v_site.id;
+  -- a period counts pages only once pages were imported for it (0072 starts the import)
+  v_pages := exists (select 1 from app.search_console_pages p where p.site_id = v_site.id and p.day > current_date - d);
+  v_pages_prev := exists (select 1 from app.search_console_pages p where p.site_id = v_site.id and p.day > current_date - 2 * d and p.day <= current_date - d);
+  return jsonb_build_object(
+    'connected', v_conn, 'days', d,
+    'site', case when v_site.id is not null then jsonb_build_object('id', v_site.id, 'hostname', v_site.hostname) end,
+    'search_console', jsonb_build_object(
+      'status', c.status,
+      'can_manage', exists (select 1 from app.admins where id = v_me and role = 'owner'),
+      'key_stored', exists (select 1 from vault.secrets where name = 'search_console_key'),
+      'client_email', c.config ->> 'client_email',
+      'last_error', c.config ->> 'last_error',
+      'property', sc.property,
+      'site_error', sc.last_error,
+      'last_import_at', sc.last_import_at,
+      'last_day', sc.last_day),
+    'totals', case when v_conn and v_site.id is not null and sc.property is not null then (
+      select jsonb_build_object(
+        'clicks', sum(t.clicks) filter (where t.day > current_date - d),
+        'clicks_prev', sum(t.clicks) filter (where t.day <= current_date - d),
+        'impressions', sum(t.impressions) filter (where t.day > current_date - d),
+        'impressions_prev', sum(t.impressions) filter (where t.day <= current_date - d),
+        'position', round(sum(t.position * t.impressions) filter (where t.day > current_date - d and t.position is not null)
+                          / nullif(sum(t.impressions) filter (where t.day > current_date - d and t.position is not null), 0), 1),
+        'position_prev', round(sum(t.position * t.impressions) filter (where t.day <= current_date - d and t.position is not null)
+                               / nullif(sum(t.impressions) filter (where t.day <= current_date - d and t.position is not null), 0), 1))
+        -- pages Google showed in search in the period (0072), the honest stand-in for «Indexed pages»; null before pages are imported
+        || jsonb_build_object(
+             'pages', case when v_pages then (select count(distinct p.page) from app.search_console_pages p
+                                              where p.site_id = v_site.id and p.day > current_date - d and p.impressions > 0) end,
+             'pages_prev', case when v_pages_prev then (select count(distinct p.page) from app.search_console_pages p
+                                                        where p.site_id = v_site.id and p.day > current_date - 2 * d and p.day <= current_date - d and p.impressions > 0) end)
+      from app.search_console_totals t where t.site_id = v_site.id and t.day > current_date - 2 * d) end,
+    'keywords', coalesce((select jsonb_agg(jsonb_build_object(
+        'id', k.id, 'query', k.query, 'created_at', k.created_at, 'mine', k.created_by = v_me,
+        'impressions', case when v_conn then x.i end, 'clicks', case when v_conn then x.c end,
+        'position', case when v_conn then x.p end, 'position_prev', case when v_conn then x.pp end,
+        -- the page Google showed most for it in the period (0072)
+        'page', case when v_conn then (select p.page from app.search_console_pages p where p.site_id = k.site_id and p.query = k.query and p.day > current_date - d
+                                       group by p.page having sum(p.impressions) > 0 order by sum(p.impressions) desc, p.page limit 1) end) order by k.created_at, k.query)
+      from app.seo_keywords k
+      left join lateral (
+        select sum(sc2.impressions) filter (where sc2.day > current_date - d) i, sum(sc2.clicks) filter (where sc2.day > current_date - d) c,
+               round(sum(sc2.position * sc2.impressions) filter (where sc2.day > current_date - d and sc2.position is not null)
+                     / nullif(sum(sc2.impressions) filter (where sc2.day > current_date - d and sc2.position is not null), 0), 1) p,
+               round(sum(sc2.position * sc2.impressions) filter (where sc2.day <= current_date - d and sc2.position is not null)
+                     / nullif(sum(sc2.impressions) filter (where sc2.day <= current_date - d and sc2.position is not null), 0), 1) pp
+        from app.search_console_daily sc2 where sc2.site_id = k.site_id and sc2.query = k.query and sc2.day > current_date - 2 * d) x on true
+      where k.site_id = v_site.id), '[]'::jsonb),
+    -- Site health (0072): the last crawl and its open issues; an issue marked fixed waits for the next crawl to agree
+    'health', case when v_site.id is not null then jsonb_build_object(
+      'last_crawl_at', (select max(cr.finished_at) from app.seo_crawls cr where cr.site_id = v_site.id),
+      'last_error', (select cr.error from app.seo_crawls cr where cr.site_id = v_site.id order by cr.finished_at desc limit 1),
+      'pages', (select cr.pages from app.seo_crawls cr where cr.site_id = v_site.id and cr.pages > 0 order by cr.finished_at desc limit 1),
+      'awaiting_check', (select count(*) from app.seo_issues i where i.site_id = v_site.id and i.resolved_at is null and i.fixed_at is not null),
+      'issues', coalesce((select jsonb_agg(jsonb_build_object('kind', i.kind, 'severity', i.severity, 'count', i.count, 'paths', i.paths, 'value', i.value,
+                                                              'ms', i.ms, 'first_seen_at', i.first_seen_at, 'reopened', i.reopened_at is not null)
+                                           order by case i.severity when 'high' then 0 else 1 end, i.first_seen_at, i.kind)
+                          from app.seo_issues i where i.site_id = v_site.id and i.resolved_at is null and i.fixed_at is null), '[]'::jsonb)) end,
+    -- Content ideas (0072): searches Google already shows the site for, outside its top ten, not tracked yet; the last
+    -- 28 days at least, so a 7-day range still has something to go on
+    'ideas', case when v_conn and v_site.id is not null then coalesce((select jsonb_agg(jsonb_build_object('query', q.query, 'impressions', q.i, 'position', q.p, 'days', q.days,
+                                                                                   'page', q.page, 'planned', q.planned) order by q.planned, q.i desc, q.query)
+      from (select s.query, sum(s.impressions) i, greatest(d, 28) days,
+                   round(sum(s.position * s.impressions) filter (where s.position is not null) / nullif(sum(s.impressions) filter (where s.position is not null), 0), 1) p,
+                   (select p.page from app.search_console_pages p where p.site_id = v_site.id and p.query = s.query and p.day > current_date - greatest(d, 28)
+                    group by p.page having sum(p.impressions) > 0 order by sum(p.impressions) desc, p.page limit 1) page,
+                   exists (select 1 from app.seo_content_plan cp where cp.site_id = v_site.id and cp.query = s.query) planned
+            from app.search_console_daily s
+            where s.site_id = v_site.id and s.day > current_date - greatest(d, 28)
+              and not exists (select 1 from app.seo_keywords k where k.site_id = v_site.id and k.query = s.query)
+            group by s.query
+            having sum(s.impressions) >= 3
+               and sum(s.position * s.impressions) filter (where s.position is not null) / nullif(sum(s.impressions) filter (where s.position is not null), 0) > 10
+            order by sum(s.impressions) desc, s.query limit 6) q), '[]'::jsonb) end,
+    -- Technical SEO beyond the crawl (0073): searches two or more of the site's pages split (each with at least a fifth of
+    -- the impressions), and landing pages PageSpeed Insights measured slow on mobile
+    'cannibal', case when v_conn and v_site.id is not null then coalesce((select jsonb_agg(jsonb_build_object('query', cb.query, 'pages', cb.pages) order by cb.i desc, cb.query) from (
+        select x.query, sum(x.i) i, jsonb_agg(jsonb_build_object('page', x.page, 'impressions', x.i) order by x.i desc, x.page) pages
+        from (select p.query, p.page, sum(p.impressions) i, sum(sum(p.impressions)) over (partition by p.query) qt
+              from app.search_console_pages p where p.site_id = v_site.id and p.day > current_date - greatest(d, 28)
+              group by 1, 2) x
+        where x.qt >= 10 and x.i >= x.qt * 0.2
+        group by x.query having count(*) >= 2
+        order by 2 desc, 1 limit 5) cb), '[]'::jsonb) end,
+    'slow', case when v_site.id is not null then coalesce((select jsonb_agg(jsonb_build_object('path', v.path, 'lcp_ms', v.lcp_ms, 'inp_ms', v.inp_ms, 'field', v.field) order by v.lcp_ms desc)
+        from app.page_vitals v where v.site_id = v_site.id and v.strategy = 'mobile' and (v.lcp_ms > 2500 or v.inp_ms > 200)), '[]'::jsonb) end);
 end $fn$;
 
 -- ===========================================================================
@@ -726,7 +842,7 @@ begin
     score = excluded.score, field = excluded.field, fetched_at = excluded.fetched_at;
   get diagnostics n = row_count;
   -- a refused key turns the connection to «error» with its code; a reading clears it
-  update app.integration_connections set status = case when p_error ~ '^(key|http_400|http_403)' and n = 0 then 'error' else status end,
+  update app.integration_connections set status = case when p_error ~ '^(key|http_400|http_403)' and n = 0 then 'error' when n > 0 then 'connected' else status end,
     config = config || jsonb_build_object('last_error', case when n = 0 then p_error end, 'last_run_at', now())
   where provider = 'pagespeed' and status <> 'not_connected';
   insert into app.growth_sync_log (source, site_id, rows, info, state)
@@ -795,9 +911,13 @@ insert into app.integration_connections (provider, status) values ('pagespeed', 
 alter table app.intake_nonces drop constraint if exists intake_nonces_purpose_check;
 alter table app.intake_nonces add constraint intake_nonces_purpose_check check (purpose is null or purpose in ('brevo', 'search_console', 'pagespeed'));
 
-create or replace function public.store_product_secrets(p_nonce text, p_secrets jsonb) returns jsonb
-  language plpgsql volatile security definer set search_path = ''
-as $fn$
+-- 0065's store_product_secrets, with PageSpeed's branch
+CREATE OR REPLACE FUNCTION public.store_product_secrets(p_nonce text, p_secrets jsonb)
+ RETURNS jsonb
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO ''
+AS $function$
 declare k text; v text; n int := 0; v_product text; v_purpose text; v_key jsonb;
 begin
   delete from app.intake_nonces where hash = extensions.digest(coalesce(p_nonce, ''), 'sha256') and expires_at > now() returning product, purpose into v_product, v_purpose;
@@ -823,7 +943,7 @@ begin
     if n > 0 then
       update app.integration_connections set status = 'not_connected', config = config || jsonb_build_object('provider', 'brevo', 'key_stored_at', now())
       where provider = 'email';
-      update app.mail_settings set last_error = null, last_check_at = null, updated_at = now();
+      update app.mail_settings set last_error = null, last_check_at = null, updated_at = now() where id;
     end if;
     return jsonb_build_object('ok', true, 'stored', n);
   end if;
@@ -894,7 +1014,7 @@ begin
     update app.installations set enabled = true, updated_at = now() where product = v_product and not enabled;
   end if;
   return jsonb_build_object('ok', true, 'stored', n);
-end $fn$;
+end $function$;
 
 revoke all on function public.store_product_secrets(text, jsonb) from public, anon, authenticated;
 grant execute on function public.store_product_secrets(text, jsonb) to service_role;

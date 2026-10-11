@@ -85,6 +85,18 @@ export const Usage = z.object({
 })
 export type Usage = z.infer<typeof Usage>
 
+// the session counts a row carries (0068): visits, one-page visits in percent, the signup form opened, the
+// organisation number sent and the site's own «done»
+const Funnelled = { sessions: n, bounce: nn, started: n, completed: n }
+export const WebStep = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('view'), path: z.string(), seconds: n }),
+  z.object({ kind: z.literal('event'), name: z.string(), value: z.string().nullable(), seconds: n }),
+])
+export const WebAttempt = z.object({
+  at: z.string(), channel: z.string(), source: z.string().nullable(), device: z.string(), entry: z.string().nullable(),
+  seconds: nn, outcome: z.enum(['opened', 'started', 'completed']), steps: z.array(WebStep),
+})
+export type WebAttempt = z.infer<typeof WebAttempt>
 export const Web = z.object({
   sites: z.array(z.object({ id: z.string().uuid(), hostname: z.string() })),
   search_console: z.string().nullable(),
@@ -93,14 +105,31 @@ export const Web = z.object({
   pageviews: n,
   bounces: n,
   signups: n,
-  daily: z.array(z.object({ day: z.string(), visitors: n, sessions: n, signups: n.optional() })),
-  channels: z.array(z.object({ channel: z.string(), sessions: n, bounce: nn.optional(), signups: n.optional() })),
+  // the previous period (null before the tracker ran then) and the average length of a visit with a second hit (0068)
+  visitors_prev: nn.optional(),
+  sessions_prev: nn.optional(),
+  avg_seconds: nn.optional(),
+  daily: z.array(z.object({ day: z.string(), visitors: n, sessions: n, pageviews: n.optional(), signups: n.optional() })),
+  channels: z.array(z.object({ channel: z.string(), sessions: n, bounce: nn.optional(), signups: n.optional(), started: n.optional(), completed: n.optional() })),
   // per utm_campaign; sessions null while nothing was tracked in the period (0034)
   campaigns: z.array(z.object({ campaign: z.string(), sessions: nn, signups: n, paid: n })).optional(),
-  landing: z.array(z.object({ path: z.string().nullable(), sessions: n, bounce: nn })),
+  landing: z.array(z.object({ path: z.string().nullable(), sessions: n, bounce: nn, pages: nn.optional(), opened: n.optional(), started: n.optional(), completed: n.optional() })),
   events: z.array(z.object({ name: z.string(), value: z.string().nullable(), count: n })),
   companies: n,
-  search: z.array(z.object({ query: z.string(), impressions: n, clicks: n, position: nn.optional() })),
+  search: z.array(z.object({ query: z.string(), impressions: n, clicks: n, position: nn.optional(), ctr: nn.optional() })),
+  // 0068
+  sources: z.array(z.object({ source: z.string().nullable(), medium: z.string().nullable(), campaign: z.string().nullable(), channel: z.string(), ...Funnelled })).default([]),
+  top_pages: z.array(z.object({ path: z.string(), views: n, sessions: n })).default([]),
+  exits: z.array(z.object({ path: z.string(), exits: n, sessions: n, rate: n })).default([]),
+  devices: z.array(z.object({ device: z.string(), opened: n, ...Funnelled })).default([]),
+  paid_terms: z.array(z.object({ term: z.string(), ...Funnelled })).default([]),
+  signup: z.object({
+    cta: n, opened: n, started: n, completed: n,
+    ctas: z.array(z.object({ value: z.string(), sessions: n })),
+    steps: z.array(z.object({ value: z.string(), sessions: n })),
+    errors: z.array(z.object({ value: z.string(), count: n, sessions: n })),
+  }).nullable().default(null),
+  attempts: z.array(WebAttempt).default([]),
 })
 export type Web = z.infer<typeof Web>
 

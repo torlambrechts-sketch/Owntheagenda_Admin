@@ -17,8 +17,10 @@ select pg_temp.check(exists (select 1 from app.web_sessions s join app.web_sites
                      'a page view makes today''s session (the time is the server''s, never the browser''s)');
 select public.worker_web_track(jsonb_build_object('site', 'orgpuls.com', 'visitor_hash', (select h from t_h), 'path', '/priser'));
 select public.worker_web_track(jsonb_build_object('site', 'orgpuls.com', 'visitor_hash', (select h from t_h), 'path', '/', 'event', '{"name":"cta","value":"kom-i-gang"}'::jsonb));
+select public.worker_web_track(jsonb_build_object('site', 'orgpuls.com', 'visitor_hash', (select h from t_h), 'path', '/registrer', 'event', '{"name":"signup_started"}'::jsonb));
 select pg_temp.check((select count(*) from app.web_pageviews p join app.web_sessions s on s.id = p.session_id where s.visitor_hash = (select h from t_h)) = 2
-                     and exists (select 1 from app.web_events e join app.web_sessions s on s.id = e.session_id where s.visitor_hash = (select h from t_h) and e.name = 'cta'),
+                     and exists (select 1 from app.web_events e join app.web_sessions s on s.id = e.session_id where s.visitor_hash = (select h from t_h) and e.name = 'cta')
+                     and exists (select 1 from app.web_events e join app.web_sessions s on s.id = e.session_id where s.visitor_hash = (select h from t_h) and e.name = 'signup_started'),
                      'page views and presses land in one session');
 
 -- the cap

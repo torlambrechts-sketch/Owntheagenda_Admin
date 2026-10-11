@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { getFormatter, getTranslations } from 'next-intl/server'
 import { formatNumber, money, percent, type NumberFormat } from '@/lib/format'
 import { share } from '@/lib/data/analytics-calc'
@@ -130,6 +131,9 @@ export async function Analytics({ d, nf, app }: { d: Overview; nf: NumberFormat;
         {d.pages.length === 0 ? <div className={emptyRow}>{d.tracked ? t('pages.none') : noTracker}</div> : null}
         {d.pages.length > 0 ? <div className="px-[18px] py-[10px] text-12 text-muted">{t('pages.signupsMissing')}</div> : null}
       </div>
+
+      {/* the same right (growth_overview and analytics_web both ask require_marketing_reports) opens the full web view (0068) */}
+      <Link href="/analytics?tab=web" className="self-start text-13 font-bold text-link hover:underline">{t('fullWeb')}</Link>
     </div>
   )
 }

@@ -10,7 +10,10 @@ import { toHex } from './signing.ts'
 const NEVER = /^\/(s|bli-med|r|inn|auth|admin|api|logg-inn|nytt-passord)(\/|$)/
 const BOT = /(bot|crawl|spider|slurp|headless|lighthouse|pagespeed|preview|facebookexternalhit|embedly|curl|wget|python|axios|node-fetch|undici|go-http|java\/|okhttp|monitor|pingdom|uptime|scan|httpclient|phantom|selenium|playwright|puppeteer)/i
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const
-const EVENTS = new Set(['cta', 'signup_started', 'signup_completed', 'pricing_viewed'])
+// signup_step and signup_error say where the signup form was left (a step's key, an error's code, never a typed value);
+// persona_click is a press on one of the «Who are you?» cards (0068)
+const EVENTS = new Set(['cta', 'signup_started', 'signup_completed', 'pricing_viewed', 'signup_step', 'signup_error', 'persona_click'])
+export type Device = 'mobile' | 'tablet' | 'desktop'
 
 export type Beacon = { k: 'view' | 'event'; p: string; r?: string; u?: Record<string, string>; e?: string; l?: string }
 
@@ -70,10 +73,18 @@ export async function visitorHash(salt: string, site: string, ip: string, ua: st
   return toHex(new Uint8Array(d)).slice(0, 32)
 }
 
+/** the device class read from the browser string before it is hashed (0068); the string itself goes no further */
+export function deviceOf(ua: string | null): Device | null {
+  if (!ua) return null
+  if (/ipad|tablet|kindle|silk|playbook|(android(?!.*mobile))/i.test(ua)) return 'tablet'
+  if (/mobi|iphone|ipod|android|windows phone|blackberry|opera mini/i.test(ua)) return 'mobile'
+  return 'desktop'
+}
+
 /** the item worker_web_track takes */
-export function item(b: Beacon, site: string, hash: string) {
+export function item(b: Beacon, site: string, hash: string, device: Device | null = null) {
   return {
-    site, visitor_hash: hash, path: b.p, ...(b.r ? { referrer_host: b.r } : {}), utm: b.u ?? {},
+    site, visitor_hash: hash, path: b.p, ...(b.r ? { referrer_host: b.r } : {}), utm: b.u ?? {}, ...(device ? { device } : {}),
     ...(b.k === 'event' ? { event: { name: b.e, ...(b.l ? { value: b.l } : {}) } } : {}),
   }
 }

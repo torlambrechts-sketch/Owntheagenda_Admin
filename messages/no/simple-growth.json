@@ -43,7 +43,7 @@
         "title": "Fra besøk til betalende kunde",
         "visited": "Besøkte nettsiden",
         "viewed_pricing": "Så prisene",
-        "started_signup": "Startet registrering",
+        "started_signup": "Sendte org.nr.",
         "account_created": "Opprettet konto",
         "survey_sent": "Sendte første undersøkelse",
         "paying": "Ble betalende",
@@ -72,7 +72,8 @@
         "partner": "Henvisning",
         "email": "E-post",
         "paid_social": "Betalt sosialt"
-      }
+      },
+      "fullWeb": "Full nettanalyse: kilder, søkeord og hvor registreringen stopper →"
     },
     "seo": {
       "kpi": {

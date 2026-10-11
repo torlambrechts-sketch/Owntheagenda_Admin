@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isBot, item, parseBeacon, siteFor, visitorHash } from '../supabase/functions/_shared/web-collect'
+import { deviceOf, isBot, item, parseBeacon, siteFor, visitorHash } from '../supabase/functions/_shared/web-collect'
 
 describe('web-collect (0066)', () => {
   const sites = ['orgpuls.com', 'www.owntheagenda.com']
@@ -39,5 +39,23 @@ describe('web-collect (0066)', () => {
     const it2 = item({ k: 'view', p: '/' }, 'orgpuls.com', a)
     expect(JSON.stringify(it2)).not.toContain('203.0.113.7')
     expect(it2).toEqual({ site: 'orgpuls.com', visitor_hash: a, path: '/', utm: {} })
+  })
+  it('takes the signup form\'s steps and errors and the persona cards as codes, never a typed value (0068)', () => {
+    expect(parseBeacon(JSON.stringify({ k: 'event', p: '/registrer', e: 'signup_step', l: 'step2' }))).toEqual({ k: 'event', p: '/registrer', e: 'signup_step', l: 'step2' })
+    expect(parseBeacon(JSON.stringify({ k: 'event', p: '/registrer', e: 'signup_error', l: 'lookup_not_found' }))).toEqual({ k: 'event', p: '/registrer', e: 'signup_error', l: 'lookup_not_found' })
+    expect(parseBeacon(JSON.stringify({ k: 'event', p: '/', e: 'persona_click', l: 'verneombud' }))).toEqual({ k: 'event', p: '/', e: 'persona_click', l: 'verneombud' })
+    // an organisation number or an address typed into the form is not a code and is not kept
+    expect(parseBeacon(JSON.stringify({ k: 'event', p: '/registrer', e: 'signup_error', l: 'ola@firma.no' }))).toEqual({ k: 'event', p: '/registrer', e: 'signup_error' })
+    expect(parseBeacon(JSON.stringify({ k: 'event', p: '/registrer', e: 'signup_error', l: '923 456 789' }))).toEqual({ k: 'event', p: '/registrer', e: 'signup_error' })
+  })
+  it('reads only the device class from the browser string (0068)', () => {
+    expect(deviceOf('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148')).toBe('mobile')
+    expect(deviceOf('Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36')).toBe('mobile')
+    expect(deviceOf('Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15')).toBe('tablet')
+    expect(deviceOf('Mozilla/5.0 (Linux; Android 14; SM-X710) AppleWebKit/537.36 Chrome/120 Safari/537.36')).toBe('tablet')
+    expect(deviceOf('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36')).toBe('desktop')
+    expect(deviceOf(null)).toBeNull()
+    const it3 = item({ k: 'view', p: '/' }, 'orgpuls.com', 'ab'.repeat(16), 'mobile')
+    expect(it3).toEqual({ site: 'orgpuls.com', visitor_hash: 'ab'.repeat(16), path: '/', utm: {}, device: 'mobile' })
   })
 })

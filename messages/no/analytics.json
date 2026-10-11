@@ -269,7 +269,10 @@
         "sessions": "Økter",
         "pages": "Sider / besøk",
         "bounce": "Fluktfrekvens",
-        "signups": "Registreringer"
+        "signups": "Registreringer",
+        "time": "Tid på siden",
+        "timeTip": "Snitt for besøk med mer enn én sidevisning eller hendelse; ett treff har ingen lengde uten informasjonskapsler",
+        "prevTip": "Mot forrige periode av samme lengde"
       },
       "empty": {
         "title": "Ingen besøk registrert ennå",
@@ -284,9 +287,12 @@
       "funnel": {
         "title": "Trakt på nettsiden",
         "visit": "Besøk",
-        "kom_i_gang": "Klikk på «Kom i gang»",
         "orgnr_entered": "Org.nr. fylt inn",
-        "account_created": "Konto opprettet"
+        "account_created": "Konto opprettet",
+        "cta": "Klikk mot registrering",
+        "opened": "Åpnet registreringen",
+        "completed": "Fullført på nettsiden",
+        "note": "Konto opprettet kommer fra produktet og kan ikke knyttes til et besøk; de andre stegene er økter."
       },
       "personas": {
         "title": "Inngang per persona — «Hvem er du?»",
@@ -345,7 +351,8 @@
           "query": "Søk",
           "impr": "Visn.",
           "clicks": "Klikk",
-          "pos": "Pos."
+          "pos": "Pos.",
+          "ctr": "CTR"
         },
         "empty": "Ingen søk importert for perioden.",
         "notConnected": {
@@ -353,6 +360,114 @@
           "title": "Search Console er ikke tilkoblet",
           "body": "Ingen søk importeres, så ingen vises. Når den er tilkoblet, kommer visninger og klikk per søk hver natt."
         }
+      },
+      "signup": {
+        "title": "Hvor registreringen stopper",
+        "sub": "Registreringsskjemaet, økter i perioden",
+        "leftBefore": "Forlot uten å sende org.nr.",
+        "leftAfter": "Sendte org.nr., fullførte ikke",
+        "steps": "Steg nådd",
+        "errors": "Feil i skjemaet",
+        "errorsCount": "{count} ganger i {sessions} økter",
+        "ctas": "Klikk mot registrering per knapp",
+        "noDetail": "Nettsiden melder ennå ikke hvilket steg eller hvilken feil skjemaet stoppet på (signup_step, signup_error). Når den gjør det, vises det her.",
+        "none": "Ingen åpnet registreringen i perioden."
+      },
+      "devices": {
+        "title": "Enheter",
+        "cols": {
+          "device": "Enhet",
+          "visits": "Besøk",
+          "bounce": "Flukt",
+          "opened": "Åpnet reg.",
+          "started": "Org.nr."
+        },
+        "names": {
+          "mobile": "Mobil",
+          "tablet": "Nettbrett",
+          "desktop": "Datamaskin",
+          "unknown": "Ukjent"
+        },
+        "unknownNote": "Besøk fra før enhetstypen ble lagret står som ukjent."
+      },
+      "referrers": {
+        "title": "Henvisende sider og kampanjer",
+        "sub": "utm_source eller henvisende side · medium · kampanje",
+        "cols": {
+          "source": "Kilde",
+          "visits": "Besøk",
+          "bounce": "Flukt",
+          "started": "Org.nr.",
+          "completed": "Fullført"
+        },
+        "direct": "(direkte eller skjult)",
+        "directTip": "Ingen henvisning og ingen utm: skrevet inn, bokmerke, e-post eller en app som skjuler hvor klikket kom fra"
+      },
+      "landing": {
+        "sub": "Første side i besøket",
+        "cols": {
+          "path": "Side",
+          "visits": "Besøk",
+          "bounce": "Flukt",
+          "started": "Org.nr.",
+          "completed": "Fullført"
+        }
+      },
+      "topPages": {
+        "title": "Mest leste sider",
+        "cols": {
+          "path": "Side",
+          "views": "Visninger",
+          "sessions": "Besøk"
+        }
+      },
+      "exits": {
+        "title": "Hvor besøket slutter",
+        "sub": "Siste side i besøket, mot besøk som så siden",
+        "cols": {
+          "path": "Side",
+          "exits": "Slutt her",
+          "rate": "Andel"
+        }
+      },
+      "paid": {
+        "title": "Betalte søkeord",
+        "sub": "Fra utm_term i annonsens lenke",
+        "cols": {
+          "term": "Søkeord",
+          "visits": "Besøk",
+          "bounce": "Flukt",
+          "started": "Org.nr.",
+          "completed": "Fullført"
+        },
+        "empty": "Ingen besøk med utm_term i perioden. Med utm_term={keyword} i Google Ads-annonsenes sporingsmal vises søkeordet som ga klikket her."
+      },
+      "attempts": {
+        "title": "Siste registreringsforsøk",
+        "sub": "Anonyme besøk som åpnet registreringen: sidene og hendelsene i rekkefølge, sekunder fra start",
+        "outcome": {
+          "opened": "Sendte ikke org.nr.",
+          "started": "Fullførte ikke",
+          "completed": "Fullført"
+        },
+        "entry": "inngang {path}",
+        "via": "via {source}",
+        "empty": "Ingen åpnet registreringen i perioden.",
+        "events": {
+          "signup_started": "org.nr. sendt",
+          "signup_completed": "fullført",
+          "cta": "klikk {value}",
+          "signup_step": "steg {value}",
+          "signup_error": "feil {value}",
+          "persona_click": "persona {value}",
+          "pricing_viewed": "så priser",
+          "other": "{name}"
+        }
+      },
+      "dur": {
+        "s": "{s} s",
+        "ms": "{m} min {s} s",
+        "none": "ett treff"
       }
     },
     "attribution": {

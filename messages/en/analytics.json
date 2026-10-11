@@ -269,7 +269,10 @@
         "sessions": "Sessions",
         "pages": "Pages / visit",
         "bounce": "Bounce",
-        "signups": "Signups"
+        "signups": "Signups",
+        "time": "Time on site",
+        "timeTip": "Average over visits with more than one page view or event; a single hit has no length without cookies",
+        "prevTip": "Against the previous period of the same length"
       },
       "empty": {
         "title": "No visits recorded yet",
@@ -284,9 +287,12 @@
       "funnel": {
         "title": "Website funnel",
         "visit": "Visit",
-        "kom_i_gang": "«Kom i gang» click",
         "orgnr_entered": "Org.nr entered",
-        "account_created": "Account created"
+        "account_created": "Account created",
+        "cta": "Click towards signup",
+        "opened": "Opened the signup form",
+        "completed": "Completed on the site",
+        "note": "Account created comes from the product and cannot be tied to a visit; the other steps are sessions."
       },
       "personas": {
         "title": "Persona entry points — «Hvem er du?»",
@@ -345,7 +351,8 @@
           "query": "Query",
           "impr": "Impr.",
           "clicks": "Clicks",
-          "pos": "Pos."
+          "pos": "Pos.",
+          "ctr": "CTR"
         },
         "empty": "No query imported for this period.",
         "notConnected": {
@@ -353,6 +360,114 @@
           "title": "Search Console is not connected",
           "body": "No queries are imported, so none are shown. Once it is connected, impressions and clicks per query arrive every night."
         }
+      },
+      "signup": {
+        "title": "Where signups stop",
+        "sub": "The signup form, sessions in the period",
+        "leftBefore": "Left without sending the org. number",
+        "leftAfter": "Sent the org. number, did not finish",
+        "steps": "Steps reached",
+        "errors": "Form errors",
+        "errorsCount": "{count} times in {sessions} sessions",
+        "ctas": "Clicks towards signup by button",
+        "noDetail": "The site does not yet report which step or error the form stopped at (signup_step, signup_error). When it does, it shows here.",
+        "none": "Nobody opened the signup form in this period."
+      },
+      "devices": {
+        "title": "Devices",
+        "cols": {
+          "device": "Device",
+          "visits": "Visits",
+          "bounce": "Bounce",
+          "opened": "Opened form",
+          "started": "Org. no."
+        },
+        "names": {
+          "mobile": "Mobile",
+          "tablet": "Tablet",
+          "desktop": "Desktop",
+          "unknown": "Unknown"
+        },
+        "unknownNote": "Visits from before the device type was stored read as unknown."
+      },
+      "referrers": {
+        "title": "Referrers and campaigns",
+        "sub": "utm_source or referring site · medium · campaign",
+        "cols": {
+          "source": "Source",
+          "visits": "Visits",
+          "bounce": "Bounce",
+          "started": "Org. no.",
+          "completed": "Completed"
+        },
+        "direct": "(direct or hidden)",
+        "directTip": "No referrer and no utm: typed in, a bookmark, an email or an app that hides where the click came from"
+      },
+      "landing": {
+        "sub": "First page of the visit",
+        "cols": {
+          "path": "Page",
+          "visits": "Visits",
+          "bounce": "Bounce",
+          "started": "Org. no.",
+          "completed": "Completed"
+        }
+      },
+      "topPages": {
+        "title": "Most viewed pages",
+        "cols": {
+          "path": "Page",
+          "views": "Views",
+          "sessions": "Visits"
+        }
+      },
+      "exits": {
+        "title": "Where visits end",
+        "sub": "Last page of the visit, against the visits that saw it",
+        "cols": {
+          "path": "Page",
+          "exits": "Ended here",
+          "rate": "Share"
+        }
+      },
+      "paid": {
+        "title": "Paid search terms",
+        "sub": "From utm_term in the ad's link",
+        "cols": {
+          "term": "Search term",
+          "visits": "Visits",
+          "bounce": "Bounce",
+          "started": "Org. no.",
+          "completed": "Completed"
+        },
+        "empty": "No visit with utm_term in this period. With utm_term={keyword} in the Google Ads tracking template, the keyword behind each click shows here."
+      },
+      "attempts": {
+        "title": "Recent signup attempts",
+        "sub": "Anonymous visits that opened the signup form: their pages and events in order, seconds from the start",
+        "outcome": {
+          "opened": "No org. number sent",
+          "started": "Did not finish",
+          "completed": "Completed"
+        },
+        "entry": "entry {path}",
+        "via": "via {source}",
+        "empty": "Nobody opened the signup form in this period.",
+        "events": {
+          "signup_started": "org. number sent",
+          "signup_completed": "completed",
+          "cta": "click {value}",
+          "signup_step": "step {value}",
+          "signup_error": "error {value}",
+          "persona_click": "persona {value}",
+          "pricing_viewed": "viewed pricing",
+          "other": "{name}"
+        }
+      },
+      "dur": {
+        "s": "{s} s",
+        "ms": "{m} min {s} s",
+        "none": "one hit"
       }
     },
     "attribution": {

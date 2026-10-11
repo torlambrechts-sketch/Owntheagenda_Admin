@@ -43,7 +43,7 @@
         "title": "From visit to paying customer",
         "visited": "Visited the site",
         "viewed_pricing": "Viewed pricing",
-        "started_signup": "Started signup",
+        "started_signup": "Sent org. number",
         "account_created": "Created account",
         "survey_sent": "Sent first survey",
         "paying": "Became paying",
@@ -72,7 +72,8 @@
         "partner": "Referral",
         "email": "Email",
         "paid_social": "Paid social"
-      }
+      },
+      "fullWeb": "Full web analytics: sources, search terms and where signups stop →"
     },
     "seo": {
       "kpi": {

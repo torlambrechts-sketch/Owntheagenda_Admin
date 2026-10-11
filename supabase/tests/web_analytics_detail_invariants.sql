@@ -30,6 +30,10 @@ select pg_temp.check((select device from app.web_sessions where visitor_hash = (
 
 select pg_temp.as_staff('tor@orgpuls.no');
 create temp table t_w as select public.analytics_web(null, 30) w;
+-- Growth › Analytics reads one site over its own ranges (0069)
+select pg_temp.check((public.analytics_web((select id from app.web_sites where hostname = 'orgpuls.com'), 7) ->> 'sessions')::int >= 3
+                     and (public.analytics_web((select id from app.web_sites where hostname = 'www.owntheagenda.com'), 7) -> 'attempts') = '[]'::jsonb,
+                     'seven days of one site: its own sessions and attempts, none of another site''s');
 select pg_temp.check((select (w -> 'signup' ->> 'opened')::int >= 2 and (w -> 'signup' ->> 'started')::int >= 1 and (w -> 'signup' ->> 'completed')::int >= 1
                              and (w -> 'signup' ->> 'cta')::int >= 1 from t_w),
                      'the signup form''s funnel counts sessions: a press, the form opened, the org.nr sent, done');

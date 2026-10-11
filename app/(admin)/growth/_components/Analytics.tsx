@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { getFormatter, getTranslations } from 'next-intl/server'
 import { formatNumber, money, percent, type NumberFormat } from '@/lib/format'
 import { share } from '@/lib/data/analytics-calc'
@@ -14,7 +13,7 @@ const PAGE_COLS = '[grid-template-columns:minmax(0,1.8fr)_80px_70px_70px]'
  * tracker (D-37): «—» and the empty treatment, never a number. Cost per customer is spend typed in ÷ new paying customers
  * of the same months, «—» without spend.
  */
-export async function Analytics({ d, nf, app }: { d: Overview; nf: NumberFormat; app: string }) {
+export async function Analytics({ d, nf, app, detail = false }: { d: Overview; nf: NumberFormat; app: string; detail?: boolean }) {
   const t = await getTranslations('simpleGrowth.analytics')
   const format = await getFormatter()
   const k = d.kpis
@@ -118,7 +117,8 @@ export async function Analytics({ d, nf, app }: { d: Overview; nf: NumberFormat;
         </div>
       </div>
 
-      <div className={cardTable}>
+      {/* with the web detail below (V-WEB-05) its landing pages, with signups, replace this visits-only list */}
+      {detail ? null : <div className={cardTable}>
         <div className={cardHead}><b className="text-15">{t('pages.title')}</b><span className="text-12 text-muted">{t('pages.sub')}</span></div>
         {d.pages.map((p) => (
           <div key={p.path} className={`grid gap-[10px] ${rowLine} text-13 tabular-nums ${PAGE_COLS}`}>
@@ -130,10 +130,7 @@ export async function Analytics({ d, nf, app }: { d: Overview; nf: NumberFormat;
         ))}
         {d.pages.length === 0 ? <div className={emptyRow}>{d.tracked ? t('pages.none') : noTracker}</div> : null}
         {d.pages.length > 0 ? <div className="px-[18px] py-[10px] text-12 text-muted">{t('pages.signupsMissing')}</div> : null}
-      </div>
-
-      {/* the same right (growth_overview and analytics_web both ask require_marketing_reports) opens the full web view (0068) */}
-      <Link href="/analytics?tab=web" className="self-start text-13 font-bold text-link hover:underline">{t('fullWeb')}</Link>
+      </div>}
     </div>
   )
 }

@@ -72,8 +72,7 @@
         "partner": "Referral",
         "email": "Email",
         "paid_social": "Paid social"
-      },
-      "fullWeb": "Full web analytics: sources, search terms and where signups stop →"
+      }
     },
     "seo": {
       "kpi": {

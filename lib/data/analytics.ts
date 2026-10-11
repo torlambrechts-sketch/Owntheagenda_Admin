@@ -174,6 +174,8 @@ export const loadRetention = (product: string, mode: 'logos' | 'revenue') =>
 export const loadUsage = (product: string, range: RangeKey) =>
   rpc('analytics_usage', { p_product: scope(product), p_days: RANGE_DAYS[range] }, Usage)
 export const loadWeb = (range: RangeKey) => rpc('analytics_web', { p_site: null, p_days: RANGE_DAYS[range] }, Web)
+/** One site's web figures over 7, 30, 90 or 365 days: Growth › Analytics, scoped to the application's site (0069). */
+export const loadWebSite = (site: string, days: 7 | 30 | 90 | 365) => rpc('analytics_web', { p_site: site, p_days: days }, Web)
 export const loadAttribution = (touch: 'first' | 'last', range: RangeKey) =>
   rpc('analytics_attribution', { p_touch: touch, p_days: RANGE_DAYS[range] }, Attribution)
 export const loadChurns = (product: string, range: RangeKey) =>

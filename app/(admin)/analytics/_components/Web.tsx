@@ -15,6 +15,7 @@ const SC_COLS = '[grid-template-columns:minmax(0,1.6fr)_64px_54px_54px_54px]'
 const row = 'grid gap-[10px] border-b border-line px-[18px] py-[9px] text-13 tabular-nums'
 const head = `grid gap-[10px] border-b border-line px-[18px] py-[9px] ${colHead}`
 const path = 'truncate font-[ui-monospace,Menlo,monospace] text-12'
+const pair = 'grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))]'
 const OUTCOME_TONE: Record<WebAttempt['outcome'], string> = {
   opened: 'bg-tile text-muted', started: 'bg-highlight text-amber-ink', completed: 'bg-ok-bg text-ok-ink',
 }
@@ -25,7 +26,8 @@ const OUTCOME_TONE: Record<WebAttempt['outcome'], string> = {
  * daily uniques. Before the tracker sends anything the tab shows its empty state; Search Console shows its
  * connection state; campaign spend is what people entered. 0068 adds where visits come from (referrers and utm),
  * what they searched for (Search Console's queries, the ads' utm_term), where they end, and the signup form's own
- * funnel down to the last attempts as anonymous journeys (V-WEB-03).
+ * funnel down to the last attempts as anonymous journeys (V-WEB-03); those parts are WebDetail, which Growth ›
+ * Analytics shows too (V-WEB-05).
  */
 export async function Web({ d, spend, canSpend, range, nf, now }: {
   d: WebData; spend: Spend[]; canSpend: boolean; range: RangeKey; nf: NumberFormat; now: Date
@@ -35,11 +37,7 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
   const sites = d.sites.map((s) => s.hostname).join(', ')
   const has = d.sessions > 0
   const pct = (n: number | null) => (n === null ? '—' : percent(n, nf))
-  const num = (n: number | null | undefined) => (n == null ? '—' : formatNumber(n, nf))
   const channel = (c: string) => (t.has(`channels.${c}`) ? t(`channels.${c}`) : c)
-  const device = (v: string) => (t.has(`web.devices.names.${v}`) ? t(`web.devices.names.${v}`) : v)
-  const dur = (s: number | null | undefined) =>
-    s == null ? t('web.dur.none') : s < 60 ? t('web.dur.s', { s }) : t('web.dur.ms', { m: Math.floor(s / 60), s: s % 60 })
   const delta = (cur: number, prev: number | null | undefined) => {
     if (prev == null || prev === 0) return { delta: null, tone: undefined }
     const p = Math.round(((cur - prev) / prev) * 100)
@@ -57,7 +55,6 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
   // signups × 20, drawn only on the days the read returns (a day with sessions)
   const hasSignups = d.daily.some((x) => typeof x.signups === 'number')
   const sign = dayKeys.flatMap((k, i) => { const x = daily.get(k); return typeof x?.signups === 'number' ? [xy(i, x.signups * 20)] : [] }).join(' ')
-  const posTone = (p: number) => (p <= 3 ? 'text-link' : p <= 6 ? 'text-warn-ink' : 'text-danger')
 
   // the website funnel: sessions down to the site's own «done»; the account count is the products' (not a session)
   const su = d.signup
@@ -73,9 +70,6 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
   const persona = (v: string) => (t.has(`web.personas.names.${v}`) ? t(`web.personas.names.${v}`) : v)
   const monthLabel = Object.fromEntries(spend.map((s) => [s.month, format.dateTime(new Date(`${s.month}-15T12:00:00Z`), { month: 'short', year: 'numeric' })]))
   const thisMonth = now.toISOString().slice(0, 7)
-  const connected = d.search_console === 'connected'
-  const event = (name: string, value: string | null) =>
-    t.has(`web.attempts.events.${name}`) ? t(`web.attempts.events.${name}`, { value: value ?? '', name }) : t('web.attempts.events.other', { name })
   const vis = delta(d.visitors, d.visitors_prev)
   const ses = delta(d.sessions, d.sessions_prev)
 
@@ -90,7 +84,7 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
             <Kpi size={24} label={t('web.kpi.sessions')} value={formatNumber(d.sessions, nf)} delta={ses.delta} tone={ses.tone} tip={ses.delta ? t('web.kpi.prevTip') : undefined} />
             <Kpi size={24} label={t('web.kpi.pages')} value={formatNumber(d.pageviews / d.sessions, nf, 1)} />
             <Kpi size={24} label={t('web.kpi.bounce')} value={pct(share(d.bounces, d.sessions))} />
-            <Kpi size={24} label={t('web.kpi.time')} value={d.avg_seconds == null ? '—' : dur(d.avg_seconds)} tip={t('web.kpi.timeTip')} />
+            <Kpi size={24} label={t('web.kpi.time')} value={d.avg_seconds == null ? '—' : await duration(d.avg_seconds)} tip={t('web.kpi.timeTip')} />
             <Kpi size={24} label={t('web.kpi.signups')} value={formatNumber(d.signups, nf)} />
           </div>
 
@@ -110,7 +104,7 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
             </div>
           </div>
 
-          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))]">
+          <div className={pair}>
             <div className={cardChart}>
               <div className={`${title} mb-3`}>{t('web.funnel.title')}</div>
               {funnel.map((f, i) => {
@@ -126,7 +120,90 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
               })}
               <div className="mt-2 text-11.5 text-muted">{t('web.funnel.note')}</div>
             </div>
+            <div className={cardChart}>
+              <div className={`${title} mb-3`}>{t('web.personas.title')}</div>
+              {personas.length ? (
+                <div className="grid grid-cols-2 gap-[10px]">
+                  {personas.map((p) => (
+                    <div key={p.value} className="rounded-15 border border-line bg-canvas px-[14px] py-3">
+                      <b className="text-13">{persona(p.value!)}</b>
+                      <div className="mt-1 font-serif text-24 font-semibold">{formatNumber(p.count, nf)}</div>
+                      <div className="text-11.5 text-muted">{t('web.personas.sub')}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : <Empty>{t('web.personas.empty')}</Empty>}
+            </div>
+          </div>
 
+          <div className={`${cardTable} overflow-x-auto`}>
+            <div className={`border-b border-line px-[18px] py-[14px] ${title}`}>{t('web.sources.title')}</div>
+            <div className={`${head} min-w-[420px] ${SRC_COLS}`}>
+              <span>{t('web.sources.cols.source')}</span><span>{t('web.sources.cols.visits')}</span><span>{t('web.sources.cols.bounce')}</span>
+              <span>{t('web.sources.cols.signups')}</span><span>{t('web.sources.cols.conv')}</span>
+            </div>
+            {d.channels.map((s) => (
+              <div key={s.channel} className={`${row} min-w-[420px] ${SRC_COLS}`}>
+                <b>{channel(s.channel)}</b><span>{formatNumber(s.sessions, nf)}</span>
+                <span className="text-muted">{s.bounce != null ? percent(s.bounce, nf) : '—'}</span>
+                <span>{s.signups != null ? formatNumber(s.signups, nf) : '—'}</span>
+                <b>{s.signups != null ? pct(share(s.signups, s.sessions)) : '—'}</b>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className="rounded-20 border border-dashed border-line-strong bg-surface px-[22px] py-10 text-center">
+          <div className="text-15 font-bold">{t('web.empty.title')}</div>
+          <div className="mt-2 text-13 text-muted">{t('web.empty.body', { sites })}</div>
+        </div>
+      )}
+
+      <WebDetail d={d} nf={nf} />
+
+      <div className={cardTable}>
+        <div className="flex flex-wrap justify-between gap-2 border-b border-line px-[18px] py-[14px]">
+          <span className={title}>{t('web.campaigns.title')}</span><span className={sub}>{t('web.campaigns.sub')}</span>
+        </div>
+        <Campaigns rows={spend} figures={d.campaigns ?? []} canEdit={canSpend} nf={nf} thisMonth={thisMonth} monthLabel={monthLabel} />
+      </div>
+    </div>
+  )
+}
+
+/** «8 s», «8 min 39 s», or «one hit» for a visit without a second hit */
+async function duration(s: number | null | undefined): Promise<string> {
+  const t = await getTranslations('analytics')
+  return s == null ? t('web.dur.none') : s < 60 ? t('web.dur.s', { s }) : t('web.dur.ms', { m: Math.floor(s / 60), s: s % 60 })
+}
+
+/**
+ * The detail of analytics_web (0068) that answers where visits come from, what they searched for and where signup
+ * stops: the signup form's stops, devices, the last signup attempts, referrers and campaigns, landing pages, most viewed
+ * pages and where visits end (all from the tracker, shown once it has a session), then Search Console's queries and the
+ * ads' search terms. Analytics › Web and Growth › Analytics both show it (V-WEB-05).
+ */
+export async function WebDetail({ d, nf }: { d: WebData; nf: NumberFormat }) {
+  const t = await getTranslations('analytics')
+  const format = await getFormatter()
+  const has = d.sessions > 0
+  const pct = (n: number | null) => (n === null ? '—' : percent(n, nf))
+  const num = (n: number | null | undefined) => (n == null ? '—' : formatNumber(n, nf))
+  const channel = (c: string) => (t.has(`channels.${c}`) ? t(`channels.${c}`) : c)
+  const device = (v: string) => (t.has(`web.devices.names.${v}`) ? t(`web.devices.names.${v}`) : v)
+  const dur = (s: number | null | undefined) =>
+    s == null ? t('web.dur.none') : s < 60 ? t('web.dur.s', { s }) : t('web.dur.ms', { m: Math.floor(s / 60), s: s % 60 })
+  const posTone = (p: number) => (p <= 3 ? 'text-link' : p <= 6 ? 'text-warn-ink' : 'text-danger')
+  const event = (name: string, value: string | null) =>
+    t.has(`web.attempts.events.${name}`) ? t(`web.attempts.events.${name}`, { value: value ?? '', name }) : t('web.attempts.events.other', { name })
+  const su = d.signup
+  const connected = d.search_console === 'connected'
+
+  return (
+    <>
+      {has ? (
+        <>
+          <div className={pair}>
             <div className={cardChart}>
               <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
                 <span className={title}>{t('web.signup.title')}</span><span className={sub}>{t('web.signup.sub')}</span>
@@ -174,6 +251,21 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
                 </div>
               ) : <Empty>{t('web.signup.none')}</Empty>}
             </div>
+
+            <div className={`${cardTable} overflow-x-auto`}>
+              <div className={`border-b border-line px-[18px] py-[14px] ${title}`}>{t('web.devices.title')}</div>
+              <div className={`${head} min-w-[400px] ${DEV_COLS}`}>
+                <span>{t('web.devices.cols.device')}</span><span>{t('web.devices.cols.visits')}</span><span>{t('web.devices.cols.bounce')}</span>
+                <span>{t('web.devices.cols.opened')}</span><span>{t('web.devices.cols.started')}</span>
+              </div>
+              {d.devices.map((s) => (
+                <div key={s.device} className={`${row} min-w-[400px] ${DEV_COLS}`}>
+                  <b>{device(s.device)}</b><span>{formatNumber(s.sessions, nf)}</span><span className="text-muted">{pct(s.bounce)}</span>
+                  <span>{formatNumber(s.opened, nf)}</span><b>{formatNumber(s.started, nf)}</b>
+                </div>
+              ))}
+              {d.devices.some((s) => s.device === 'unknown') ? <div className="px-[18px] py-[10px] text-11.5 text-muted">{t('web.devices.unknownNote')}</div> : null}
+            </div>
           </div>
 
           <div className={cardTable}>
@@ -205,41 +297,24 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
             {d.attempts.length === 0 ? <div className="px-[18px] py-4 text-12.5 text-muted">{t('web.attempts.empty')}</div> : null}
           </div>
 
-          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))]">
-            <div className={`${cardTable} overflow-x-auto`}>
-              <div className={`border-b border-line px-[18px] py-[14px] ${title}`}>{t('web.sources.title')}</div>
-              <div className={`${head} min-w-[420px] ${SRC_COLS}`}>
-                <span>{t('web.sources.cols.source')}</span><span>{t('web.sources.cols.visits')}</span><span>{t('web.sources.cols.bounce')}</span>
-                <span>{t('web.sources.cols.signups')}</span><span>{t('web.sources.cols.conv')}</span>
-              </div>
-              {d.channels.map((s) => (
-                <div key={s.channel} className={`${row} min-w-[420px] ${SRC_COLS}`}>
-                  <b>{channel(s.channel)}</b><span>{formatNumber(s.sessions, nf)}</span>
-                  <span className="text-muted">{s.bounce != null ? percent(s.bounce, nf) : '—'}</span>
-                  <span>{s.signups != null ? formatNumber(s.signups, nf) : '—'}</span>
-                  <b>{s.signups != null ? pct(share(s.signups, s.sessions)) : '—'}</b>
-                </div>
-              ))}
+          <div className={`${cardTable} overflow-x-auto`}>
+            <div className="flex flex-wrap justify-between gap-2 border-b border-line px-[18px] py-[14px]">
+              <span className={title}>{t('web.referrers.title')}</span><span className={sub}>{t('web.referrers.sub')}</span>
             </div>
-            <div className={`${cardTable} overflow-x-auto`}>
-              <div className="flex flex-wrap justify-between gap-2 border-b border-line px-[18px] py-[14px]">
-                <span className={title}>{t('web.referrers.title')}</span><span className={sub}>{t('web.referrers.sub')}</span>
-              </div>
-              <div className={`${head} min-w-[440px] ${REF_COLS}`}>
-                <span>{t('web.referrers.cols.source')}</span><span>{t('web.referrers.cols.visits')}</span><span>{t('web.referrers.cols.bounce')}</span>
-                <span>{t('web.referrers.cols.started')}</span><span>{t('web.referrers.cols.completed')}</span>
-              </div>
-              {d.sources.map((s) => (
-                <div key={`${s.source}|${s.medium}|${s.campaign}`} className={`${row} min-w-[440px] ${REF_COLS}`}>
-                  <span className="flex min-w-0 flex-col">
-                    {s.source ? <b className="truncate">{s.source}</b> : <b className="truncate text-muted" title={t('web.referrers.directTip')}>{t('web.referrers.direct')}</b>}
-                    {s.medium || s.campaign ? <span className="truncate text-11 text-muted">{[s.medium, s.campaign].filter(Boolean).join(' · ')}</span> : null}
-                  </span>
-                  <span>{formatNumber(s.sessions, nf)}</span><span className="text-muted">{pct(s.bounce)}</span>
-                  <span>{formatNumber(s.started, nf)}</span><b>{formatNumber(s.completed, nf)}</b>
-                </div>
-              ))}
+            <div className={`${head} min-w-[440px] ${REF_COLS}`}>
+              <span>{t('web.referrers.cols.source')}</span><span>{t('web.referrers.cols.visits')}</span><span>{t('web.referrers.cols.bounce')}</span>
+              <span>{t('web.referrers.cols.started')}</span><span>{t('web.referrers.cols.completed')}</span>
             </div>
+            {d.sources.map((s) => (
+              <div key={`${s.source}|${s.medium}|${s.campaign}`} className={`${row} min-w-[440px] ${REF_COLS}`}>
+                <span className="flex min-w-0 flex-col">
+                  {s.source ? <b className="truncate">{s.source}</b> : <b className="truncate text-muted" title={t('web.referrers.directTip')}>{t('web.referrers.direct')}</b>}
+                  {s.medium || s.campaign ? <span className="truncate text-11 text-muted">{[s.medium, s.campaign].filter(Boolean).join(' · ')}</span> : null}
+                </span>
+                <span>{formatNumber(s.sessions, nf)}</span><span className="text-muted">{pct(s.bounce)}</span>
+                <span>{formatNumber(s.started, nf)}</span><b>{formatNumber(s.completed, nf)}</b>
+              </div>
+            ))}
           </div>
 
           <div className={`${cardTable} overflow-x-auto`}>
@@ -258,7 +333,7 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
             ))}
           </div>
 
-          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))]">
+          <div className={pair}>
             <div className={cardTable}>
               <div className={`border-b border-line px-[18px] py-[14px] ${title}`}>{t('web.topPages.title')}</div>
               <div className={`${head} ${VIEW_COLS}`}>
@@ -280,46 +355,10 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
               ))}
             </div>
           </div>
-
-          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))]">
-            <div className={`${cardTable} overflow-x-auto`}>
-              <div className={`border-b border-line px-[18px] py-[14px] ${title}`}>{t('web.devices.title')}</div>
-              <div className={`${head} min-w-[400px] ${DEV_COLS}`}>
-                <span>{t('web.devices.cols.device')}</span><span>{t('web.devices.cols.visits')}</span><span>{t('web.devices.cols.bounce')}</span>
-                <span>{t('web.devices.cols.opened')}</span><span>{t('web.devices.cols.started')}</span>
-              </div>
-              {d.devices.map((s) => (
-                <div key={s.device} className={`${row} min-w-[400px] ${DEV_COLS}`}>
-                  <b>{device(s.device)}</b><span>{formatNumber(s.sessions, nf)}</span><span className="text-muted">{pct(s.bounce)}</span>
-                  <span>{formatNumber(s.opened, nf)}</span><b>{formatNumber(s.started, nf)}</b>
-                </div>
-              ))}
-              {d.devices.some((s) => s.device === 'unknown') ? <div className="px-[18px] py-[10px] text-11.5 text-muted">{t('web.devices.unknownNote')}</div> : null}
-            </div>
-            <div className={cardChart}>
-              <div className={`${title} mb-3`}>{t('web.personas.title')}</div>
-              {personas.length ? (
-                <div className="grid grid-cols-2 gap-[10px]">
-                  {personas.map((p) => (
-                    <div key={p.value} className="rounded-15 border border-line bg-canvas px-[14px] py-3">
-                      <b className="text-13">{persona(p.value!)}</b>
-                      <div className="mt-1 font-serif text-24 font-semibold">{formatNumber(p.count, nf)}</div>
-                      <div className="text-11.5 text-muted">{t('web.personas.sub')}</div>
-                    </div>
-                  ))}
-                </div>
-              ) : <Empty>{t('web.personas.empty')}</Empty>}
-            </div>
-          </div>
         </>
-      ) : (
-        <div className="rounded-20 border border-dashed border-line-strong bg-surface px-[22px] py-10 text-center">
-          <div className="text-15 font-bold">{t('web.empty.title')}</div>
-          <div className="mt-2 text-13 text-muted">{t('web.empty.body', { sites })}</div>
-        </div>
-      )}
+      ) : null}
 
-      <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))]">
+      <div className={pair}>
         <div className={`${cardTable} overflow-x-auto`}>
           <div className="flex flex-wrap justify-between gap-2 border-b border-line px-[18px] py-[14px]">
             <span className={title}>{t('web.search.title')}</span>
@@ -367,13 +406,6 @@ export async function Web({ d, spend, canSpend, range, nf, now }: {
           ) : <div className="px-[18px] py-4 text-12.5 text-muted">{t('web.paid.empty')}</div>}
         </div>
       </div>
-
-      <div className={cardTable}>
-        <div className="flex flex-wrap justify-between gap-2 border-b border-line px-[18px] py-[14px]">
-          <span className={title}>{t('web.campaigns.title')}</span><span className={sub}>{t('web.campaigns.sub')}</span>
-        </div>
-        <Campaigns rows={spend} figures={d.campaigns ?? []} canEdit={canSpend} nf={nf} thisMonth={thisMonth} monthLabel={monthLabel} />
-      </div>
-    </div>
+    </>
   )
 }

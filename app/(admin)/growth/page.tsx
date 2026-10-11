@@ -7,7 +7,9 @@ import { RpcError } from '@/lib/rpc'
 import {
   loadAdCampaigns, loadEmailConnected, loadLists, loadOverview, loadProposalStage, loadSeo, loadSequences,
 } from '@/lib/data/simple-growth'
-import { GROWTH_RANGES, GROWTH_TABS, RANGED, type GrowthTab } from '@/lib/data/simple-growth-shared'
+import { GROWTH_RANGES, GROWTH_TABS, RANGED, RANGE_DAYS, type GrowthTab } from '@/lib/data/simple-growth-shared'
+import { loadWebSite } from '@/lib/data/analytics'
+import { WebDetail } from '../analytics/_components/Web'
 import { GrowthTabs } from './_components/GrowthTabs'
 import { Analytics } from './_components/Analytics'
 import { SeoTab } from './_components/Seo'
@@ -54,7 +56,15 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
   let body: React.ReactNode = noAccess
   try {
     if (tab === 'analytics') {
-      body = <Analytics d={need(await loadOverview(product, p.range))} nf={nf} app={app?.name ?? product} />
+      // the overview, then the full web detail of the application's own site over the same days (V-WEB-05)
+      const overview = need(await loadOverview(product, p.range))
+      const web = overview.site ? need(await loadWebSite(overview.site.id, RANGE_DAYS[p.range])) : null
+      body = (
+        <>
+          <Analytics d={overview} nf={nf} app={app?.name ?? product} detail={web !== null} />
+          {web ? <WebDetail d={web} nf={nf} /> : null}
+        </>
+      )
     } else if (tab === 'seo') {
       body = <SeoTab d={need(await loadSeo(product, p.range))} nf={nf} product={product} app={app?.name ?? product} canAdd={can(shell, 'campaigns', 'add')} editOthers={can(shell, 'campaigns', 'edit_others')} />
     } else if (tab === 'campaigns') {

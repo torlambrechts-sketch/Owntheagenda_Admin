@@ -468,6 +468,14 @@
         "s": "{s} s",
         "ms": "{m} min {s} s",
         "none": "ett treff"
+      },
+      "hosts": {
+        "title": "Nettsteder",
+        "sub": "Hvilket nettsted besøket kom til: orgpuls.com, se.orgpuls.com, empvibe.com",
+        "cols": {
+          "host": "Nettsted"
+        },
+        "unknown": "Ukjent (før det ble lagret)"
       }
     },
     "attribution": {

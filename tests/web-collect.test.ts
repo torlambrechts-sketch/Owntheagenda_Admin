@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { deviceOf, isBot, item, parseBeacon, siteFor, visitorHash } from '../supabase/functions/_shared/web-collect'
+import { deviceOf, hostOf, isBot, item, parseBeacon, siteFor, visitorHash } from '../supabase/functions/_shared/web-collect'
 
 describe('web-collect (0066)', () => {
   const sites = ['orgpuls.com', 'www.owntheagenda.com']
@@ -57,5 +57,15 @@ describe('web-collect (0066)', () => {
     expect(deviceOf(null)).toBeNull()
     const it3 = item({ k: 'view', p: '/' }, 'orgpuls.com', 'ab'.repeat(16), 'mobile')
     expect(it3).toEqual({ site: 'orgpuls.com', visitor_hash: 'ab'.repeat(16), path: '/', utm: {}, device: 'mobile' })
+  })
+  it('reads an alias like a hostname, and keeps the host the visit came to (0070)', () => {
+    const sites = ['orgpuls.com', 'empvibe.com', 'www.owntheagenda.com']
+    expect(siteFor('https://www.empvibe.com', sites)).toBe('empvibe.com')
+    expect(siteFor('https://se.orgpuls.com', sites)).toBe('orgpuls.com')
+    expect(hostOf('https://WWW.Empvibe.com')).toBe('www.empvibe.com')
+    expect(hostOf(null)).toBeNull()
+    expect(hostOf('not a url')).toBeNull()
+    expect(item({ k: 'view', p: '/' }, 'empvibe.com', 'ab'.repeat(16), 'desktop', 'www.empvibe.com'))
+      .toEqual({ site: 'empvibe.com', visitor_hash: 'ab'.repeat(16), path: '/', utm: {}, device: 'desktop', host: 'www.empvibe.com' })
   })
 })

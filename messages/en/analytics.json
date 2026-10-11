@@ -468,6 +468,14 @@
         "s": "{s} s",
         "ms": "{m} min {s} s",
         "none": "one hit"
+      },
+      "hosts": {
+        "title": "Sites",
+        "sub": "Which site the visit came to: orgpuls.com, se.orgpuls.com, empvibe.com",
+        "cols": {
+          "host": "Site"
+        },
+        "unknown": "Unknown (before it was stored)"
       }
     },
     "attribution": {

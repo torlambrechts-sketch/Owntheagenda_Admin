@@ -6,10 +6,10 @@
  * Only an origin that belongs to a registered site is read. Bots, a browser that asks not to be tracked (the site does
  * not send then), and every page that carries a capability token are dropped. The address and the browser string are
  * hashed with the day's salt and go no further (the device class, mobile, tablet or desktop, is read from the browser
- * string first, 0068); logs carry counts only.
+ * string first, 0068); the host the origin names is kept beside its site (0070); logs carry counts only.
  */
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2'
-import { deviceOf, isBot, item, parseBeacon, siteFor, visitorHash } from '../_shared/web-collect.ts'
+import { deviceOf, hostOf, isBot, item, parseBeacon, siteFor, visitorHash } from '../_shared/web-collect.ts'
 
 const log = (s: string) => console.log(`[web-collect] ${s}`)
 let sites: { at: number; list: string[] } | null = null
@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
   if (!s) { log('no salt'); return reply(origin) }
   const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0]?.trim() || req.headers.get('x-real-ip') || ''
   const hash = await visitorHash(s, site, ip, ua ?? '')
-  const { error } = await svc.rpc('worker_web_track', { p_item: item(beacon, site, hash, deviceOf(ua)) })
+  const { error } = await svc.rpc('worker_web_track', { p_item: item(beacon, site, hash, deviceOf(ua), hostOf(origin)) })
   if (error) log(`refused ${error.code ?? ''}`.trim())
   return reply(origin)
 })

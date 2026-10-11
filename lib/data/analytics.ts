@@ -122,6 +122,8 @@ export const Web = z.object({
   top_pages: z.array(z.object({ path: z.string(), views: n, sessions: n })).default([]),
   exits: z.array(z.object({ path: z.string(), exits: n, sessions: n, rate: n })).default([]),
   devices: z.array(z.object({ device: z.string(), opened: n, ...Funnelled })).default([]),
+  // the host each visit came to (0070); null before 0070
+  hosts: z.array(z.object({ host: z.string().nullable(), opened: n, ...Funnelled })).default([]),
   paid_terms: z.array(z.object({ term: z.string(), ...Funnelled })).default([]),
   signup: z.object({
     cta: n, opened: n, started: n, completed: n,

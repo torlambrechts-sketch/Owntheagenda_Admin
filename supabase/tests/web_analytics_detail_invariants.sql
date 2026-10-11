@@ -28,6 +28,12 @@ select pg_temp.check((select device from app.web_sessions where visitor_hash = (
                      and (select device from app.web_sessions where visitor_hash = (select c from t_h)) is null,
                      'the device class is one of three words, anything else is dropped');
 
+-- 0070: Empvibe is orgpuls.com's alias; its visit is filed under orgpuls.com with the host it came to
+select pg_temp.check(public.worker_web_sites() ? 'empvibe.com', 'the collector learns the aliases');
+select public.worker_web_track(jsonb_build_object('site', 'empvibe.com', 'visitor_hash', repeat('e4', 16), 'path', '/sign-up', 'host', 'www.empvibe.com'));
+select pg_temp.check(exists (select 1 from app.web_sessions s join app.web_sites w on w.id = s.site_id
+                             where w.hostname = 'orgpuls.com' and s.visitor_hash = repeat('e4', 16) and s.host = 'www.empvibe.com'),
+                     'an alias''s visit is the site''s, and keeps its host');
 select pg_temp.as_staff('tor@orgpuls.no');
 create temp table t_w as select public.analytics_web(null, 30) w;
 -- Growth › Analytics reads one site over its own ranges (0069)
@@ -53,6 +59,8 @@ select pg_temp.check((select x ->> 'outcome' from t_w, jsonb_array_elements(w ->
                      and (select x ->> 'outcome' from t_w, jsonb_array_elements(w -> 'attempts') x where x ->> 'entry' = '/artikler/x0068') = 'completed'
                      and (select jsonb_array_length(x -> 'steps') from t_w, jsonb_array_elements(w -> 'attempts') x where x ->> 'entry' = '/artikler/x0068') = 5,
                      'each signup attempt is a journey of pages and events, and how far it got');
+select pg_temp.check(exists (select 1 from t_w, jsonb_array_elements(w -> 'hosts') x where x ->> 'host' = 'www.empvibe.com' and (x ->> 'opened')::int >= 1),
+                     'visits per host, and /sign-up is the form opened');
 select pg_temp.check((select w::text from t_w) not like '%' || (select a from t_h) || '%',
                      'no visitor hash leaves the database');
 select pg_temp.check((select x -> 'search' is not null and x ? 'top_pages' and x ? 'avg_seconds' and x ? 'visitors_prev' from t_w, lateral (select w x) y),

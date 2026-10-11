@@ -180,7 +180,7 @@ async function duration(s: number | null | undefined): Promise<string> {
 /**
  * The detail of analytics_web (0068) that answers where visits come from, what they searched for and where signup
  * stops: the signup form's stops, devices, the last signup attempts, referrers and campaigns, landing pages, most viewed
- * pages and where visits end (all from the tracker, shown once it has a session), then Search Console's queries and the
+ * pages and where visits end, the hosts visits came to (all from the tracker, shown once it has a session), then Search Console's queries and the
  * ads' search terms. Analytics › Web and Growth › Analytics both show it (V-WEB-05).
  */
 export async function WebDetail({ d, nf }: { d: WebData; nf: NumberFormat }) {
@@ -296,6 +296,25 @@ export async function WebDetail({ d, nf }: { d: WebData; nf: NumberFormat }) {
             ))}
             {d.attempts.length === 0 ? <div className="px-[18px] py-4 text-12.5 text-muted">{t('web.attempts.empty')}</div> : null}
           </div>
+
+          {d.hosts.some((h) => h.host) ? (
+            <div className={`${cardTable} overflow-x-auto`}>
+              <div className="flex flex-wrap justify-between gap-2 border-b border-line px-[18px] py-[14px]">
+                <span className={title}>{t('web.hosts.title')}</span><span className={sub}>{t('web.hosts.sub')}</span>
+              </div>
+              <div className={`${head} min-w-[400px] ${DEV_COLS}`}>
+                <span>{t('web.hosts.cols.host')}</span><span>{t('web.devices.cols.visits')}</span><span>{t('web.devices.cols.bounce')}</span>
+                <span>{t('web.devices.cols.opened')}</span><span>{t('web.devices.cols.started')}</span>
+              </div>
+              {d.hosts.map((s) => (
+                <div key={s.host ?? ''} className={`${row} min-w-[400px] ${DEV_COLS}`}>
+                  {s.host ? <b className="truncate">{s.host}</b> : <b className="text-muted">{t('web.hosts.unknown')}</b>}
+                  <span>{formatNumber(s.sessions, nf)}</span><span className="text-muted">{pct(s.bounce)}</span>
+                  <span>{formatNumber(s.opened, nf)}</span><b>{formatNumber(s.started, nf)}</b>
+                </div>
+              ))}
+            </div>
+          ) : null}
 
           <div className={`${cardTable} overflow-x-auto`}>
             <div className="flex flex-wrap justify-between gap-2 border-b border-line px-[18px] py-[14px]">

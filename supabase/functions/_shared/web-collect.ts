@@ -17,7 +17,8 @@ export type Device = 'mobile' | 'tablet' | 'desktop'
 
 export type Beacon = { k: 'view' | 'event'; p: string; r?: string; u?: Record<string, string>; e?: string; l?: string }
 
-/** the registered site an origin belongs to: the host itself, without www., or the site it is a subdomain of */
+/** the registered site an origin belongs to: the host itself, without www., or the site it is a subdomain of; an alias
+ *  (empvibe.com, 0070) is in the list like a hostname, and worker_web_track files it under its site */
 export function siteFor(origin: string | null, sites: string[]): string | null {
   if (!origin) return null
   let host: string
@@ -81,10 +82,20 @@ export function deviceOf(ua: string | null): Device | null {
   return 'desktop'
 }
 
+/** the host an origin names, kept so a site's visits can be told apart by host (www.orgpuls.com, se.orgpuls.com, www.empvibe.com; 0070) */
+export function hostOf(origin: string | null): string | null {
+  try {
+    return origin ? new URL(origin).hostname.toLowerCase() || null : null
+  } catch {
+    return null
+  }
+}
+
 /** the item worker_web_track takes */
-export function item(b: Beacon, site: string, hash: string, device: Device | null = null) {
+export function item(b: Beacon, site: string, hash: string, device: Device | null = null, host: string | null = null) {
   return {
     site, visitor_hash: hash, path: b.p, ...(b.r ? { referrer_host: b.r } : {}), utm: b.u ?? {}, ...(device ? { device } : {}),
+    ...(host ? { host } : {}),
     ...(b.k === 'event' ? { event: { name: b.e, ...(b.l ? { value: b.l } : {}) } } : {}),
   }
 }

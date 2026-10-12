@@ -43,3 +43,20 @@ export async function signOut(): Promise<void> {
   ;(await cookies()).delete(SEEN_COOKIE)
   redirect('/login')
 }
+
+/**
+ * After 30 minutes without input the screen asks the session register whether this session is still good — the same
+ * question the middleware asks on every page (session-report «seen»). The register ends an idle session unless its
+ * device is remembered (0071), so a remembered device stays signed in, and an idle tab no longer signs out a session the
+ * person is using in another tab. «ended» signs out here; «unknown» (the register could not be asked) lets the caller
+ * try once more before it signs out.
+ */
+export async function sessionCheck(): Promise<'ok' | 'ended' | 'unknown'> {
+  const supabase = await createClient()
+  const token = (await supabase.auth.getSession()).data.session?.access_token
+  if (!token) return 'ended'
+  const reply = await report({ kind: 'seen', token, origin: originOf(await headers()), device: (await cookies()).get(DEVICE_COOKIE)?.value ?? null })
+  if (!reply) return 'unknown'
+  return reply.ok ? 'ok' : 'ended'
+}
+

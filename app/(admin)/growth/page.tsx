@@ -4,6 +4,7 @@ import { currentProduct } from '@/lib/product'
 import type { RpcResult } from '@/lib/rpc'
 import { RpcError } from '@/lib/rpc'
 import { loadAdCampaigns, loadEmailConnected, loadLists, loadProposalStage, loadSeo, loadSequences } from '@/lib/data/simple-growth'
+import { loadCampaignDetail, loadSendTimes, loadSequenceResults } from '@/lib/data/growth-v3'
 import { loadAds, loadAudiences, loadBudget, loadCalendar, loadDeliverability, loadExperiments, loadFlows, loadFunnel, loadIntegrations, loadKeywordHistory, loadOutcomes,
   loadPages, loadScope, loadSenderDomains, loadSeoAlerts, loadSeoChanges, loadSeoClusters, loadSeoLinks, loadSeoOpps, loadSeoOverview, loadSeoPlan,
   loadTrial } from '@/lib/data/growth'
@@ -194,9 +195,14 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
             return <CreativeView ads={ads.ok ? ads.data : null} nf={nf} canLink={can(shell, 'campaigns', 'edit_others')} />
           }
           case 'calendar': return <CalendarView d={need(await loadCalendar(product))} product={product} canAdd={canAdd} />
-          default: return (
+          default: {
+            const camps = need(await loadAdCampaigns(product))
+            // the first campaign's days, ads and keywords (0083); the others are read when chosen
+            const first = camps.rows[0]?.figures ? await loadCampaignDetail(camps.rows[0].id) : null
+            return (
             <CampaignsTab
-              d={need(await loadAdCampaigns(product))}
+              d={camps}
+              initialDetail={first?.ok ? first.data : null}
               nf={nf}
               product={product}
               app={appName}
@@ -204,7 +210,8 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
               editOthers={can(shell, 'campaigns', 'edit_others')}
               canSpend={can(shell, 'campaigns', 'reports_others')}
             />
-          )
+            )
+          }
         }
       })
       body = (
@@ -227,10 +234,16 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
             return <DeliverabilityView d={need(dl)} domains={dom.ok ? dom.data.rows : null} nf={nf} />
           }
           default: {
-            const [sequences, stage, lists, emailConnected] = await Promise.all([loadSequences(), loadProposalStage(), loadLists(), loadEmailConnected()])
+            const [sequences, stage, lists, emailConnected, times] = await Promise.all([loadSequences(), loadProposalStage(), loadLists(), loadEmailConnected(), loadSendTimes(product)])
+            const seqs = need(sequences)
+            // the first sequence's last 30 days per step (0083); the others are read when chosen
+            const results = seqs[0] ? await loadSequenceResults(seqs[0].id) : null
             return (
               <EmailTab
-                sequences={need(sequences)}
+                sequences={seqs}
+                product={product}
+                initialResults={results?.ok ? results.data : null}
+                sendTimes={times.ok ? times.data : null}
                 stage={stage}
                 lists={lists}
                 emailConnected={emailConnected}

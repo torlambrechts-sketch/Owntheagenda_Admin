@@ -8,7 +8,8 @@
  *   - "run": the nightly cron (header x-worker-key = Vault «ads_worker_secret») or the owner. For every account linked to
  *     an application: its campaigns and ads, and its days from a week before the last imported day (ninety days the first
  *     time), thirty days at a time, while about two minutes allow. LinkedIn's access token is renewed with its refresh
- *     token when it has less than a week left.
+ *     token when it has less than a week left. For Google Ads also its keywords and their days (keyword_view) and each
+ *     campaign's bidding strategy (0083); never the search terms people typed.
  *
  * Logs carry kinds, counts and status codes. Never a name, a figure or a credential.
  */
@@ -192,6 +193,13 @@ Deno.serve(async (req) => {
       })
       if (!done) { failed++; break }
       rows += done.rows
+      // Google's keywords and their days (0083), read only; a refusal leaves the campaigns and ads imported
+      if (t.provider === 'google_ads' && r.keywords && r.keywordDaily) {
+        const kw = await rpc<{ rows: number }>(svc, 'worker_ads_keywords', {
+          p_account: t.id, p_from: w.from, p_to: w.to, p_keywords: r.keywords, p_daily: r.keywordDaily, p_bidding: r.bidding ?? null,
+        })
+        if (kw) rows += kw.rows
+      }
     }
     imported++
   }

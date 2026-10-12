@@ -3,7 +3,10 @@
 -- the right people write and that cannot be deleted once published; the Claude key, Vercel's and the CI's signing secrets
 -- handed over only by the owner (fresh second factor, an intake number bound to its purpose, each name checked by shape)
 -- and read only by the service role; the Claude gateway refuses without the feature's right, without a key and over the
--- hourly cap, builds its input only through a registered app.ai_ctx_* function, and records calls with codes only.
+-- hourly cap — which reserves each call before Claude is asked, under a per-person lock, completed by id and swept to a
+-- timeout when its run died — builds its input only through a registered app.ai_ctx_* function, records calls with codes
+-- only, and keeps a person's own subject's drafts (a test question) to that person. A request links only tickets and deals
+-- the linker may see, and a reader is shown only the links they may see.
 \ir _helpers.psql
 begin;
 
@@ -43,9 +46,12 @@ select pg_temp.check(not exists (
 select pg_temp.check((select count(*) from pg_class c where c.relnamespace = 'app'::regnamespace
                       and c.relname in ('feature_requests', 'feature_request_votes', 'feature_request_links', 'release_notes', 'ai_settings', 'ai_features', 'ai_outputs')) = 7,
                      'all seven exist');
-select pg_temp.check(not has_function_privilege('authenticated', 'public.worker_ai_record(text, uuid, uuid, text, text, int, int, int, text, text)'::regprocedure, 'execute')
-                     and has_function_privilege('service_role', 'public.worker_ai_record(text, uuid, uuid, text, text, int, int, int, text, text)'::regprocedure, 'execute'),
+select pg_temp.check(not has_function_privilege('authenticated', 'public.worker_ai_record(text, uuid, uuid, text, text, int, int, int, text, text, bigint)'::regprocedure, 'execute')
+                     and has_function_privilege('service_role', 'public.worker_ai_record(text, uuid, uuid, text, text, int, int, int, text, text, bigint)'::regprocedure, 'execute'),
                      'only the service role records a Claude call');
+select pg_temp.check(not has_function_privilege('authenticated', f::regprocedure, 'execute') and not has_function_privilege('anon', f::regprocedure, 'execute'),
+                     'no client role calls ' || f)
+from unnest(array['app.ai_calls_sweep()', 'app.ai_subject_ok(text, uuid)']) f;
 select pg_temp.check(not has_function_privilege('authenticated', f::regprocedure, 'execute'), 'nobody signed in calls ' || f)
 from unnest(array['app.store_v3_secrets(text, jsonb)', 'app.require_any(text, text)', 'app.dev_product_ok(text)', 'public.product_secret(text)',
                   'public.store_product_secrets(text, jsonb)']) f;
@@ -72,8 +78,22 @@ select pg_temp.check((public.feature_request_vote((select id from t_fr), (select
                      'one vote per organisation: a second vote by the same organisation counts once');
 select pg_temp.check((public.feature_request_vote((select id from t_fr), (select id from app.organizations order by name offset 1 limit 1), true) ->> 'votes')::int = 2,
                      'another organisation''s vote counts');
-select pg_temp.check(jsonb_array_length(public.feature_request_link((select id from t_fr), 'ticket', (select id from app.tickets limit 1), true) -> 'tickets') = 1,
-                     'a request links to a real ticket');
+create temp table t_tk on commit drop as
+  select (select id from app.tickets where queue_key = 'support' and visibility = 'all' and deleted_at is null order by number limit 1) as open_id,
+         (select id from app.tickets where queue_key = 'personvern' and deleted_at is null order by number limit 1) as closed_id,
+         (select id from app.deals where deleted_at is null and visibility = 'all' order by created_at, id limit 1) as private_deal,
+         (select id from app.deals where deleted_at is null and visibility = 'all' order by created_at desc, id desc limit 1) as open_deal;
+grant all on t_tk to authenticated;
+select pg_temp.check((select open_id is not null and closed_id is not null and private_deal <> open_deal from t_tk), 'the seed has a Support ticket, a personvern one and two deals');
+select pg_temp.check(jsonb_array_length(public.feature_request_link((select id from t_fr), 'ticket', (select open_id from t_tk), true) -> 'tickets') = 1,
+                     'a request links to a real ticket the linker may see');
+select pg_temp.expect_detail(format($$select public.feature_request_link(%L, 'ticket', %L, true)$$, (select id from t_fr), (select closed_id from t_tk)), 'not_found', 'ticket',
+                             'a ticket in a queue the linker is not in is «not found» (Sales and personvern)');
+update app.deals set visibility = 'owner', owner_id = (select id from app.admins where email = 'eirik@orgpuls.no') where id = (select private_deal from t_tk);
+select pg_temp.expect_detail(format($$select public.feature_request_link(%L, 'deal', %L, true)$$, (select id from t_fr), (select private_deal from t_tk)), 'not_found', 'deal',
+                             'another person''s private deal is «not found»');
+select pg_temp.check(jsonb_array_length(public.feature_request_link((select id from t_fr), 'deal', (select open_deal from t_tk), true) -> 'deals') = 1,
+                     'a deal the linker may see is linked');
 select pg_temp.expect_detail(format($$select public.feature_request_link(%L, 'ticket', gen_random_uuid(), true)$$, (select id from t_fr)), 'not_found', 'ticket',
                              'a link to a ticket that does not exist is refused');
 select pg_temp.expect_detail(format($$select public.feature_request_link(%L, 'invoice', gen_random_uuid(), true)$$, (select id from t_fr)), 'invalid', 'kind',
@@ -83,6 +103,14 @@ select pg_temp.check(public.feature_request_set((select id from t_fr), '{"status
 select pg_temp.check(public.feature_request_set((select id from t_fr), '{"status": "planned"}') ->> 'shipped_at' is null, 'un-shipping clears it');
 select pg_temp.expect_detail(format($$select public.feature_request_set(%L, '{"ref": 5}')$$, (select id from t_fr)), 'invalid', 'ref', 'only title, problem and status change');
 select pg_temp.check(public.feature_request_add('sentral', 'Help widget context payload') ->> 'product' = 'sentral', 'Sentral itself is a product in Development');
+select pg_temp.as_staff('hanna@orgpuls.no');    -- Support: in the personvern queue
+select pg_temp.check(jsonb_array_length(public.feature_request_link((select id from t_fr), 'ticket', (select closed_id from t_tk), true) -> 'tickets') = 2,
+                     'someone in the personvern queue links its ticket and is shown both');
+select pg_temp.as_staff('ingrid@orgpuls.no');
+select pg_temp.check((select r -> 'tickets' = jsonb_build_array((select open_id from t_tk)) from jsonb_array_elements(public.feature_requests_list('orgpuls')) r
+                      where (r ->> 'id')::uuid = (select id from t_fr)), 'a reader outside the personvern queue is shown only the ticket they may see');
+select pg_temp.expect_detail(format($$select public.feature_request_link(%L, 'ticket', %L, false)$$, (select id from t_fr), (select closed_id from t_tk)), 'not_found', 'ticket',
+                             'nor can they remove a link they may not see');
 select pg_temp.as_staff('sara@orgpuls.no');     -- Read-only: dev:see, global:see, no add
 select pg_temp.check(jsonb_array_length(public.feature_requests_list('orgpuls')) >= 1, 'Read-only reads the requests');
 select pg_temp.expect_detail($$select public.feature_request_add('orgpuls', 'Another one')$$, 'forbidden', 'dev:add|global:add', 'Read-only adds none');
@@ -141,26 +169,114 @@ end $$;
 select pg_temp.as_staff('ingrid@orgpuls.no');
 select pg_temp.expect_detail(format($$select public.ai_prepare('test_note', %L)$$, (select id from t_fr)), 'forbidden', 'dev:add', 'the feature''s right is required');
 select pg_temp.as_staff('hanna@orgpuls.no');
-select pg_temp.check(public.ai_prepare('test_note', (select id from t_fr)) ->> 'prompt' = 'Import employees from Visma'
-                     and public.ai_prepare('test_note', (select id from t_fr)) ->> 'model' = 'claude-opus-5-5', 'the input comes from the context function');
+select pg_temp.check((select provolatile = 'v' and prosrc ~ 'pg_advisory_xact_lock' from pg_proc where oid = 'public.ai_prepare(text, uuid)'::regprocedure),
+                     'ai_prepare writes its reservation (volatile) under a lock, so parallel requests are counted one after another');
+create temp table t_prep on commit drop as select public.ai_prepare('test_note', (select id from t_fr)) as p;
+grant all on t_prep to authenticated;
+select pg_temp.check((select p ->> 'prompt' = 'Import employees from Visma' and p ->> 'model' = 'claude-opus-5-5' from t_prep), 'the input comes from the context function');
+select pg_temp.check((select c.state = 'pending' and c.feature = 'test_note' and c.staff_id = app.me() and c.subject_id = (select id from t_fr)
+                             and c.input_tokens is null and c.error_code is null
+                      from app.ai_calls c where c.id = (select (p ->> 'call')::bigint from t_prep)),
+                     'the call is reserved before Claude is asked: a pending row of the person''s');
 select pg_temp.expect_detail($$select public.ai_prepare('test_note', gen_random_uuid())$$, 'not_found', 'subject', 'an unknown subject builds no request');
 select pg_temp.expect_detail(format($$select public.ai_prepare('nothing', %L)$$, (select id from t_fr)), 'not_found', 'feature', 'an unknown feature is refused');
 select pg_temp.check(not (public.ai_status() ? 'anthropic_api_key') and (public.ai_status() ->> 'connected')::boolean
                      and not (public.ai_status() ->> 'can_manage')::boolean, 'the status names the connection, never the key; only the owner manages');
 select pg_temp.as_service();
 create temp table t_rec on commit drop as
-  select public.worker_ai_record('test_note', (select id from t_fr), (select id from app.admins where email = 'hanna@orgpuls.no'), 'Draft text', 'claude-opus-5-5', 120, 80, 900, 'ok', null) as r;
+  select public.worker_ai_record('test_note', (select id from t_fr), (select id from app.admins where email = 'hanna@orgpuls.no'), 'Draft text', 'claude-opus-5-5',
+                                 120, 80, 900, 'ok', null, (select (p ->> 'call')::bigint from t_prep)) as r;
 grant all on t_rec to authenticated;
-select pg_temp.check((select (r ->> 'output') is not null from t_rec), 'an answer becomes a draft');
+select pg_temp.check((select (r ->> 'output') is not null and (r ->> 'call')::bigint = (select (p ->> 'call')::bigint from t_prep) from t_rec), 'an answer becomes a draft');
+select pg_temp.check((select c.state = 'ok' and c.input_tokens = 120 and c.output_tokens = 80 and c.latency_ms = 900 and c.error_code is null
+                      from app.ai_calls c where c.id = (select (p ->> 'call')::bigint from t_prep))
+                     and (select o.ai_call_id from app.ai_outputs o where o.id = (select (r ->> 'output')::uuid from t_rec)) = (select (p ->> 'call')::bigint from t_prep),
+                     'the reserved row is completed by its id, and the draft names it');
+select pg_temp.expect_detail(format($$select public.worker_ai_record('test_note', %L, %L, 'Again', 'claude-opus-5-5', 1, 1, 1, 'ok', null, %s)$$,
+                                    (select id from t_fr), (select id from app.admins where email = 'hanna@orgpuls.no'), (select (p ->> 'call')::bigint from t_prep)),
+                             'conflict', 'call', 'a completed call is not completed again');
+select pg_temp.expect_error(format($$update app.ai_calls set state = 'error', error_code = 'timeout' where id = %s$$, (select (p ->> 'call')::bigint from t_prep)),
+                            'the AI call log is append-only', 'a completed call never changes');
+select pg_temp.as_staff('hanna@orgpuls.no');
+create temp table t_prep2 on commit drop as select public.ai_prepare('test_note', (select id from t_fr)) as p;
+grant all on t_prep2 to authenticated;
+select pg_temp.as_service();
+select pg_temp.expect_detail(format($$select public.worker_ai_record('test_note', gen_random_uuid(), %L, 'X', 'claude-opus-5-5', 1, 1, 1, 'ok', null, %s)$$,
+                                    (select id from app.admins where email = 'hanna@orgpuls.no'), (select (p ->> 'call')::bigint from t_prep2)),
+                             'invalid', 'call', 'a reserved call is completed only for its own subject');
+select pg_temp.expect_error(format($$update app.ai_calls set feature = 'spec_draft', state = 'ok' where id = %s$$, (select (p ->> 'call')::bigint from t_prep2)),
+                            'the AI call log is append-only', 'completing a reserved call never changes what it was for');
+select pg_temp.check((public.worker_ai_record('test_note', (select id from t_fr), (select id from app.admins where email = 'hanna@orgpuls.no'), null, 'claude-opus-5-5',
+                                              0, 0, 1200, 'not_connected', 'not_connected', (select (p ->> 'call')::bigint from t_prep2)) ->> 'output') is null,
+                     'a reserved call that never reached Claude leaves no draft');
+select pg_temp.check((select state = 'not_connected' and error_code = 'not_connected' from app.ai_calls where id = (select (p ->> 'call')::bigint from t_prep2)),
+                     'and is completed with its code');
+select pg_temp.as_staff('hanna@orgpuls.no');
+create temp table t_prep3 on commit drop as select public.ai_prepare('test_note', (select id from t_fr)) as p;
+grant all on t_prep3 to authenticated;
+select pg_temp.as_service();
+select public.worker_ai_record('test_note', (select id from t_fr), null, null, null, 0, 0, 0, 'invalid', 'prepare_shape', (select (p ->> 'call')::bigint from t_prep3));
+select pg_temp.check((select state = 'invalid' and error_code = 'prepare_shape' and model = 'claude-opus-5-5'
+                             and staff_id = (select id from app.admins where email = 'hanna@orgpuls.no')
+                      from app.ai_calls where id = (select (p ->> 'call')::bigint from t_prep3)),
+                     'a request ai-run could not parse completes its reservation as invalid, keeping who reserved it and the model');
 select pg_temp.check((public.worker_ai_record('test_note', (select id from t_fr), null, null, 'claude-opus-5-5', 10, 0, 300, 'invalid', 'refusal') ->> 'output') is null,
                      'a refusal leaves no draft');
 select pg_temp.check((select error_code from app.ai_calls order by id desc limit 1) = 'refusal', 'a refusal is recorded by its code');
 select pg_temp.as_staff('hanna@orgpuls.no');
 select pg_temp.check(public.ai_outputs_get('test_note', (select id from t_fr)) -> 0 ->> 'body' = 'Draft text', 'the draft is read under the feature''s right');
 select pg_temp.check((public.ai_output_set((select (r ->> 'output')::uuid from t_rec), 'used') ->> 'ok')::boolean, 'a draft is marked used');
+select pg_temp.as_staff('magnus@orgpuls.no');   -- Support too: the same right, another person
+select pg_temp.check(public.ai_outputs_get('test_note', (select id from t_fr)) -> 0 ->> 'body' = 'Draft text', 'a shared subject''s drafts are read by anyone with the right');
+
+-- the hourly cap counts reservations: with room for one more call, the first is prepared and the second refused
+select pg_temp.as_staff('hanna@orgpuls.no');
+update app.ai_settings set hourly_cap = (select count(*) + 1 from app.ai_calls c where c.staff_id = app.me() and c.at > now() - interval '1 hour');
+select pg_temp.check(public.ai_prepare('test_note', (select id from t_fr)) ? 'call', 'the last call of the hour is prepared and reserved');
+select pg_temp.expect_detail(format($$select public.ai_prepare('test_note', %L)$$, (select id from t_fr)), 'rate_limited', null,
+                             'the next one in the same hour is refused while the first has not answered: the reservation counts');
 update app.ai_settings set hourly_cap = 1;
 select pg_temp.expect_detail(format($$select public.ai_prepare('test_note', %L)$$, (select id from t_fr)), 'rate_limited', null, 'the hourly cap holds');
 update app.ai_settings set hourly_cap = 30;
+create temp table t_n on commit drop as select count(*) as n from app.ai_calls;
+grant all on t_n to authenticated;
+select pg_temp.expect_detail($$select public.ai_prepare('test_note', gen_random_uuid())$$, 'not_found', 'subject', 'a subject that builds no request is refused');
+select pg_temp.check((select count(*) from app.ai_calls) = (select n from t_n), 'and reserves nothing');
+
+-- a reservation nobody completed is a timeout after ten minutes, and still counts
+insert into app.ai_calls (feature, staff_id, subject_type, subject_id, provider, model, state, at)
+values ('test_note', (select id from app.admins where email = 'hanna@orgpuls.no'), 'feature_request', (select id from t_fr), 'anthropic', 'claude-opus-5-5', 'pending', now() - interval '11 minutes'),
+       ('test_note', (select id from app.admins where email = 'hanna@orgpuls.no'), 'feature_request', (select id from t_fr), 'anthropic', 'claude-opus-5-5', 'pending', now() - interval '2 minutes');
+select pg_temp.check((app.ai_calls_sweep() ->> 'timed_out')::int >= 1, 'the sweep reports what it timed out');
+select pg_temp.check((select state = 'error' and error_code = 'timeout' from app.ai_calls where feature = 'test_note' and at = now() - interval '11 minutes')
+                     and (select state = 'pending' from app.ai_calls where feature = 'test_note' and at = now() - interval '2 minutes'),
+                     'the sweep turns a reservation older than ten minutes into error/timeout and leaves a recent one');
+select pg_temp.check(exists (select 1 from app.job_defs where key = 'ai_sweep' and fn = 'app.ai_calls_sweep' and source = 'cron' and quiet)
+                     and exists (select 1 from cron.job where jobname = 'platform-ai-sweep' and command = 'select app.run_job(''ai_sweep'')'),
+                     'the sweep runs every five minutes through the job monitor');
+select pg_temp.check((public.ai_status() ->> 'failed_30d')::int
+                     = (select count(*) from app.ai_calls c where c.provider = 'anthropic' and c.at > now() - interval '30 days' and c.state not in ('ok', 'retried_ok', 'pending')),
+                     'a call in flight is not counted as failed');
+
+-- a person's own subject (a test question, 0081): its drafts are theirs alone
+create temp table t_hq on commit drop as
+  with q as (insert into app.help_test_questions (product, locale, question, created_by)
+             values ('orgpuls', 'nb', 'Hvordan legger jeg til ansatte?', (select id from app.admins where email = 'hanna@orgpuls.no')) returning id)
+  select id from q;
+grant all on t_hq to authenticated;
+select pg_temp.as_service();
+create temp table t_hrec on commit drop as
+  select public.worker_ai_record('help_answer_preview', (select id from t_hq), (select id from app.admins where email = 'hanna@orgpuls.no'), 'Svar', 'claude-opus-5-5',
+                                 50, 20, 700, 'ok', null) as r;
+grant all on t_hrec to authenticated;
+select pg_temp.as_staff('magnus@orgpuls.no');   -- Support, tickets:ai, not the asker
+select pg_temp.check(public.ai_outputs_get('help_answer_preview', (select id from t_hq)) = '[]'::jsonb, 'another person with the right does not read the asker''s draft');
+select pg_temp.expect_detail(format($$select public.ai_output_set(%L, 'discarded')$$, (select (r ->> 'output')::uuid from t_hrec)), 'not_found', null, 'nor decides it');
+select pg_temp.as_mfa('tor@orgpuls.no');
+select pg_temp.check(public.ai_outputs_get('help_answer_preview', (select id from t_hq)) = '[]'::jsonb, 'nor does the owner');
+select pg_temp.as_staff('hanna@orgpuls.no');
+select pg_temp.check(public.ai_outputs_get('help_answer_preview', (select id from t_hq)) -> 0 ->> 'body' = 'Svar'
+                     and (public.ai_output_set((select (r ->> 'output')::uuid from t_hrec), 'used') ->> 'ok')::boolean, 'the asker reads and decides it');
 select pg_temp.as_mfa('tor@orgpuls.no');
 select pg_temp.check((public.v3_disconnect('anthropic') ->> 'ok')::boolean, 'the owner disconnects Claude');
 select pg_temp.check(not exists (select 1 from vault.secrets where name = 'anthropic_api_key')

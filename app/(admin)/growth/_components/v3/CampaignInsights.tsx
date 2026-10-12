@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
 import { formatNumber, money, type NumberFormat } from '@/lib/format'
-import { CPS_RED, adRows, barMode, campaignTips, dailyBars, rowCps, type CampaignDetail, type CampaignTip } from '@/lib/growth/v3'
+import { CPS_RED, adRows, barMode, campaignTips, dailyBars, endedBeforeWindow, rowCps, type CampaignDetail, type CampaignTip } from '@/lib/growth/v3'
 import { TipBox } from './TipBox'
 
 const label = 'text-11 font-bold uppercase tracking-[.1em] text-muted'
@@ -62,41 +62,46 @@ export function CampaignInsights({ d, state, nf }: { d: CampaignDetail | null; s
   const barTitle = (b: (typeof bars)[number]) => {
     const date = dayName(b.day)
     if (d.starts_on && b.day < d.starts_on) return t('daily.beforeStart', { date })
+    if (b.empty && d.ends_on && b.day > d.ends_on) return t('daily.afterEnd', { date })
     return t('daily.tip', { date, spend: kr(b.spend), n: b.signups })
   }
 
   return (
     <>
       <div className={label}>{t('daily.title')}</div>
-      <div role="group" aria-label={t('daily.group', { from: dayName(d.from), to: dayName(d.to) })} className="flex h-20 items-end gap-[3px] border-b border-line-strong">
-        {bars.map((b) => {
-          if (b.empty) return <span key={b.day} className="h-full flex-1" title={barTitle(b)} aria-hidden="true" />
-          const on = cday === b.day
-          const tip = barTitle(b)
-          return (
-            <button
-              key={b.day}
-              type="button"
-              onClick={() => setCday(on ? null : b.day)}
-              title={tip}
-              aria-label={tip}
-              aria-pressed={on}
-              className="flex h-full min-w-0 flex-1 cursor-pointer flex-col justify-end border-0 bg-transparent p-0"
-            >
-              {b.h === null ? (
-                // signups alone: no spend bar is drawn
-                <span className="relative block h-full">
-                  <span className={`absolute inset-x-1/4 bottom-0 ${on ? 'bg-primary' : 'bg-link'}`} style={{ height: `${b.sh}%` }} />
-                </span>
-              ) : (
-                <span className={`relative block rounded-t-[3px] ${on ? 'bg-primary' : 'bg-sand'}`} style={{ height: `${b.h}%` }}>
-                  <span className="absolute inset-x-1/4 bottom-0 bg-link" style={{ height: `${b.sh}%` }} />
-                </span>
-              )}
-            </button>
-          )
-        })}
-      </div>
+      {d.ends_on && endedBeforeWindow(d, bars) ? (
+        <div className="text-12 text-muted">{t('daily.ended', { date: dayName(d.ends_on), days: d.days_n })}</div>
+      ) : (
+        <div role="group" aria-label={t('daily.group', { from: dayName(d.from), to: dayName(d.to) })} className="flex h-20 items-end gap-[3px] border-b border-line-strong">
+          {bars.map((b) => {
+            if (b.empty) return <span key={b.day} className="h-full flex-1" title={barTitle(b)} aria-hidden="true" />
+            const on = cday === b.day
+            const tip = barTitle(b)
+            return (
+              <button
+                key={b.day}
+                type="button"
+                onClick={() => setCday(on ? null : b.day)}
+                title={tip}
+                aria-label={tip}
+                aria-pressed={on}
+                className="flex h-full min-w-0 flex-1 cursor-pointer flex-col justify-end border-0 bg-transparent p-0"
+              >
+                {b.h === null ? (
+                  // signups alone: no spend bar is drawn
+                  <span className="relative block h-full">
+                    <span className={`absolute inset-x-1/4 bottom-0 ${on ? 'bg-primary' : 'bg-link'}`} style={{ height: `${b.sh}%` }} />
+                  </span>
+                ) : (
+                  <span className={`relative block rounded-t-[3px] ${on ? 'bg-primary' : 'bg-sand'}`} style={{ height: `${b.h}%` }}>
+                    <span className="absolute inset-x-1/4 bottom-0 bg-link" style={{ height: `${b.sh}%` }} />
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
       {picked ? (
         <div className="rounded-10 border border-line bg-canvas px-[10px] py-2 text-12" aria-live="polite">
           {picked.spend !== null && picked.signups > 0

@@ -11,6 +11,18 @@ import { rpc } from '@/lib/rpc'
 const Reply = z.object({ ok: z.boolean(), code: z.string().regex(/^[a-z0-9_]{1,40}$/).optional(), output: z.string().uuid().nullable().optional(), truncated: z.boolean().optional() })
 export type AiReply = z.infer<typeof Reply>
 
+/** how long the app waits for ai-run, whose own budget (130 s, supabase/functions/_shared/ai.ts) ends before this */
+export const AI_RUN_WAIT_MS = 150_000
+
+/**
+ * A request to ai-run that threw: the app's own wait ran out («timeout»: Claude is connected but did not answer in time,
+ * and ai-run, whose budget ends first, records it so), or the gateway was not reached at all («not_connected»).
+ */
+export function aiRunFailure(e: unknown): 'timeout' | 'not_connected' {
+  const name = e && typeof e === 'object' && 'name' in e ? String((e as { name: unknown }).name) : ''
+  return name === 'TimeoutError' || name === 'AbortError' ? 'timeout' : 'not_connected'
+}
+
 export async function aiRun(feature: string, subject: string): Promise<AiReply> {
   if (!/^[a-z][a-z_]{2,39}$/.test(feature) || !z.string().uuid().safeParse(subject).success) return { ok: false, code: 'invalid' }
   const env = supabaseEnv()
@@ -23,13 +35,13 @@ export async function aiRun(feature: string, subject: string): Promise<AiReply> 
       headers: { apikey: env.key, authorization: `Bearer ${token}`, 'content-type': 'application/json' },
       body: JSON.stringify({ feature, subject }),
       cache: 'no-store',
-      signal: AbortSignal.timeout(150_000),
+      signal: AbortSignal.timeout(AI_RUN_WAIT_MS),
     })
     if (res.status === 404 && !res.headers.get('content-type')?.includes('json')) return { ok: false, code: 'not_deployed' }
     const parsed = Reply.safeParse(await res.json().catch(() => null))
     return parsed.success ? parsed.data : { ok: false, code: 'unexpected_reply' }
-  } catch {
-    return { ok: false, code: 'not_connected' }
+  } catch (e) {
+    return { ok: false, code: aiRunFailure(e) }
   }
 }
 

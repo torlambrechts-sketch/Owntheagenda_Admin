@@ -103,8 +103,11 @@ export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights, 
   const errorText = (r: { code: RpcCode; detail?: string | null }) =>
     r.detail === 'trigger.not_available' ? t('errors.trigger') : te(r.code)
 
-  /** Save the latest draft after the saves before it; adopt the campaign ids of new emails from the answer. */
-  const commit = (next: Draft) => {
+  /**
+   * Save the latest draft after the saves before it; adopt the campaign ids of new emails from the answer. `onSaved` runs
+   * once the save that carries this change is confirmed (a toast says what was saved, never before; V-V3G-18).
+   */
+  const commit = (next: Draft, onSaved?: () => void) => {
     setDraft(next)
     latest.current = next
     changes.current += 1
@@ -130,11 +133,12 @@ export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights, 
       latest.current = merged
       setDraft(merged)
       if (mine === changes.current) changes.current = 0
+      onSaved?.()
       router.refresh()
     })
   }
-  const setModel = (patch: Partial<SimpleModel>) => draft && commit({ ...draft, model: { ...draft.model, ...patch } })
-  const setSteps = (steps: SimpleStep[]) => setModel({ steps })
+  const setModel = (patch: Partial<SimpleModel>, onSaved?: () => void) => draft && commit({ ...draft, model: { ...draft.model, ...patch } }, onSaved)
+  const setSteps = (steps: SimpleStep[], onSaved?: () => void) => setModel({ steps }, onSaved)
 
   const newSequence = () => start(async () => {
     const r = await saveSequence({ id: null, version: null, name: t('defaults.name'), trigger: 'form_submitted', stage_id: null, list: null, exit: 'reply_unsub',
@@ -275,8 +279,9 @@ export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights, 
                     onAdd={() => {
                       setInsertAt(null)
                       if (draft.model.steps.length >= 30) { flash(te('invalid')); return }
-                      setSteps([...draft.model.steps.slice(0, i), { kind: 'cond', cond: 'employees_missing' }, ...draft.model.steps.slice(i)])
-                      flash(t3('insert.added', { n: insertAt.email }))
+                      const n = insertAt.email
+                      setSteps([...draft.model.steps.slice(0, i), { kind: 'cond', cond: 'employees_missing' }, ...draft.model.steps.slice(i)],
+                        () => flash(t3('insert.added', { n })))
                     }}
                   />
                 ) : null}

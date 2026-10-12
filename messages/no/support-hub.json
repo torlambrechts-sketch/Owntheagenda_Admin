@@ -1,3 +1,415 @@
 {
-  "supportHub": {}
+  "supportHub": {
+    "subsLabel": "Hjelpesenter og støtte",
+    "subs": {
+      "metrics": "Støtteresultater",
+      "widget": "Hjelpewidget",
+      "center": "Hjelpesenter",
+      "channels": "Kontaktskjema og e-post",
+      "portal": "Kundeportal",
+      "assist": "AI-hjelp",
+      "proactive": "Status og endringslogg"
+    },
+    "errors": {
+      "module_off": "AI-svar er slått av for denne applikasjonen (Hjelpewidget › Innstillinger for widgeten).",
+      "not_connected": "Claude er ikke koblet til: eieren legger inn nøkkelen under Plattform.",
+      "rate_limited": "Du har nådd timesgrensen for Claude. Prøv igjen senere.",
+      "not_deployed": "AI-porten er ikke satt i drift ennå.",
+      "refused": "Claude ville ikke svare på dette spørsmålet.",
+      "empty": "Claude ga ikke noe svar.",
+      "record": "Svaret kunne ikke lagres. Prøv igjen.",
+      "bad_key": "Claude-nøkkelen ble avvist: eieren bytter den under Plattform.",
+      "provider_rate_limited": "Claude er opptatt. Prøv igjen om et minutt.",
+      "provider_invalid": "Claude kunne ikke lese forespørselen.",
+      "network": "Fikk ikke kontakt med Claude. Prøv igjen.",
+      "unexpected_reply": "AI-porten svarte på en uventet måte.",
+      "error": "Claude kunne ikke svare. Prøv igjen."
+    },
+    "results": {
+      "kpi": {
+        "sessions": "Hjelpeøkter",
+        "sessionsSub": "widget + hjelpesenter",
+        "selfService": "Selvbetjeningsgrad",
+        "selfServiceSub": "løst uten sak",
+        "tickets": "Saker opprettet",
+        "tickets_fewer": "færre enn de forrige {days} dagene",
+        "tickets_more": "flere enn de forrige {days} dagene",
+        "tickets_same": "like mange som de forrige {days} dagene",
+        "ticketsNoDelta": "ingen tidligere periode ennå",
+        "aiAccepted": "AI-svar godtatt",
+        "aiAcceptedSub": "«Ja, løst»",
+        "csat": "CSAT",
+        "csatValue": "{avg} / 5",
+        "csatSub": "etter løsning · {n} svar",
+        "csatNone": "Ingen undersøkelser besvart",
+        "effort": "Kundeinnsats",
+        "effortSub": "ikke spurt"
+      },
+      "ends": {
+        "title": "Hvor hjelpeøktene ender",
+        "solvedArticle": "Løst av artikkel",
+        "solvedAi": "Løst av AI-svar",
+        "ticket": "Sak opprettet",
+        "left": "Gikk uten svar",
+        "empty": "Ingen hjelpeøkter registrert ennå: widgeten er ikke bygget inn i applikasjonen."
+      },
+      "gaps": {
+        "title": "Vanligste spørsmål uten en god artikkel",
+        "period": "{days} dager",
+        "sub": "{n, plural, one {# sak} other {# saker}} · ingen publisert artikkel",
+        "write": "Skriv artikkel",
+        "done": "✓ Utkast laget",
+        "toast": "Utkast laget · åpne det i Hjelpesenter",
+        "empty": "Alle kategorier med saker har en publisert artikkel.",
+        "note": "Fra saker etter kategori. Det kundene skriver i et søk lagres ikke, så det finnes ingen søketall.",
+        "why": "Å skrive en artikkel krever retten til å redigere andres saker."
+      },
+      "articles": {
+        "title": "Artikler etter resultat",
+        "definition": "Løst = ingen sak innen 24 t",
+        "notMeasured": "Ingen visninger registrert ennå: visninger, «løst» og «nyttig» telles når hjelpewidgeten er bygget inn.",
+        "empty": "Ingen publiserte artikler ennå.",
+        "solvedWhy": "Krever widgetens økt på hver sak: sendes ikke av applikasjonen ennå",
+        "helpfulWhy": "Ingen kan stemme «nyttig» før widgeten er bygget inn"
+      }
+    },
+    "widget": {
+      "modesLabel": "Hvor widgeten vises",
+      "modes": {
+        "app": "I appen",
+        "web": "På nettstedet"
+      },
+      "page": "Side",
+      "greetApp": "Hei [fornavn]",
+      "greetWeb": "Hei! Hvordan kan vi hjelpe?",
+      "ctxApp": "[Organisasjon] · [Rolle] · {page}",
+      "ctxWeb": "{product} · besøkende",
+      "search": "Hva lurer du på?",
+      "matches": "Artikler som passer",
+      "sugApp": "Foreslått for denne siden",
+      "sugWeb": "Nyeste artikler",
+      "sugEmpty": "Ingen publisert artikkel vises på {page}: velg siden i Hjelpesenter.",
+      "noMatch": "Ingen publisert artikkel passer.",
+      "noArticles": "Ingen publiserte artikler ennå.",
+      "ai": {
+        "hint": "Søker mens du skriver · Enter ber om et svar fra de publiserte artiklene",
+        "asking": "Spør Claude …",
+        "noRight": "AI-svar krever AI-retten for saker: bare søk.",
+        "notConnected": "Claude er ikke koblet til: bare søk.",
+        "off": "AI-svar er slått av for {product}: bare søk."
+      },
+      "answer": {
+        "label": "AI-svar fra artiklene våre",
+        "source": "Kilde: {title}",
+        "noSource": "—",
+        "none": "Ingen publisert artikkel svarer på dette.",
+        "yes": "Ja, løst",
+        "talk": "Snakk med oss",
+        "why": "En forhåndsvisning: ingenting her telles eller sendes."
+      },
+      "actions": {
+        "talk": "Snakk med oss",
+        "book": "Book en samtale",
+        "demo": "Book en demo",
+        "sales": "Kontakt salg",
+        "why": "Knappene i widgeten virker når applikasjonen har bygget inn widgeten; «Book en samtale» trenger også en bookinglenke."
+      },
+      "captured": {
+        "title": "Sendes med hver sak fra widgeten",
+        "from": "Fra {ref}, den nyeste forespørselen fra appen",
+        "none": "Ingen forespørsel fra appen ennå",
+        "web": "En besøkende på nettstedet er anonym: sporingen setter ingen informasjonskapsel.",
+        "user": "Bruker",
+        "organization": "Organisasjon",
+        "plan": "Plan og status",
+        "page": "Side",
+        "lastError": "Siste feil",
+        "browser": "Nettleser",
+        "version": "Appversjon",
+        "notSent": "sendes ikke av {product} ennå",
+        "visitor": "Besøkende",
+        "anonymous": "anonym · ingen besøks-ID",
+        "source": "Kilde",
+        "company": "Selskap (IP-oppslag)",
+        "notConnected": "— · ikke koblet til",
+        "never": "Sendes aldri: svar på undersøkelser, kommentarer eller respondenters identitet."
+      },
+      "settings": {
+        "title": "Innstillinger for widgeten",
+        "ai": {
+          "name": "AI-svar",
+          "sub": "Svar bare fra publiserte artikler"
+        },
+        "tickets": {
+          "name": "Vis åpne forespørsler",
+          "sub": "Innloggede brukere ser organisasjonens saker"
+        },
+        "chat": {
+          "name": "Livechat i åpningstiden",
+          "sub": "Man–fre 08–16, ellers sak"
+        },
+        "consent": {
+          "name": "Last bare etter samtykke til informasjonskapsler",
+          "sub": "På nettstedet; alltid på i appen"
+        },
+        "why": {
+          "configure": "Å endre den krever retten til å konfigurere saker.",
+          "tickets": "Krever at applikasjonen viser brukerne sakene deres.",
+          "chat": "Livechat er ikke bemannet: en beslutning som gjenstår.",
+          "consent": "Venter på innbyggingen og en beslutning om samtykke."
+        },
+        "aiOn": "AI-svar slått på for {product}",
+        "aiOff": "AI-svar slått av for {product}",
+        "embed": "Ingen innbyggingskode ennå: widgeten venter på en beslutning om vertsadresse og på at applikasjonen bygger den inn."
+      }
+    },
+    "center": {
+      "all": "Alle",
+      "known": "Kjente problemer",
+      "add": "＋ Artikkel",
+      "noCategory": "Ingen kategori",
+      "newTitle": "Ny artikkel {n}",
+      "created": "Utkast laget",
+      "editWhy": "Å skrive artikler krever retten til å redigere andres saker.",
+      "notMeasured": "Ingen visninger registrert ennå: de telles når hjelpewidgeten er bygget inn.",
+      "empty": "Ingen artikler i denne kategorien.",
+      "langs": {
+        "nb": "Bokmål",
+        "nn": "Nynorsk",
+        "en": "Engelsk"
+      },
+      "views": "{n} visninger",
+      "helpfulWhy": "Ingen kan stemme «nyttig» før widgeten er bygget inn",
+      "state": {
+        "published": "Publisert",
+        "draft": "Utkast"
+      },
+      "none": "Velg en artikkel, eller legg til en.",
+      "titleLabel": "Tittel",
+      "langsLabel": "Språk",
+      "slug": "Adresse /{slug} · ingen offentlig vert ennå",
+      "missing": "Ingen {lang}-versjon ennå.",
+      "createLang": "Lag {lang}-versjon",
+      "bodyLabel": "Artikkeltekst",
+      "seo": "SEO-tittel",
+      "seoPlaceholder": "{title} | {product} hjelp",
+      "page": "Vis i appen på siden",
+      "pageNone": "Ikke i appen",
+      "category": "Kategori",
+      "linked": "lenket fra {n, plural, one {# sak} other {# saker}}",
+      "problem": "kjent problem {ref}",
+      "reviewed": "sist gjennomgått {when} av {by}",
+      "notReviewed": "aldri gjennomgått",
+      "markReviewed": "Merk som gjennomgått",
+      "ai": "AI: forbedre fra saker",
+      "aiWhy": "Sakstekst sendes ikke til AI",
+      "save": "Lagre",
+      "publish": "Publiser",
+      "unpublish": "Avpubliser",
+      "publishWhy": "Å publisere krever retten til å konfigurere saker.",
+      "saved": "Lagret",
+      "published": "Publisert · vises i Sentrals forhåndsvisninger; ingenting er offentlig ennå",
+      "unpublished": "Tilbake til utkast",
+      "reviewedToast": "Merket som gjennomgått"
+    },
+    "channels": {
+      "form": {
+        "title": "Kontaktskjema · {product}",
+        "topicsLabel": "Emner",
+        "org": "Organisasjon",
+        "email": "E-post",
+        "message": "Hva gjelder det?",
+        "route": "Oppretter en sak i {queue} ({category}).",
+        "routePrivacy": "Oppretter en personvernforespørsel i {queue} med 30 dagers frist; bare køens rettighetssett ser den. Det lages ikke noe CRM-emne.",
+        "count": "{n} på {days} dager.",
+        "noTopics": "Ingen kontaktskjema sender emner for {product} ennå.",
+        "note": "Skjemaet er applikasjonens eget; dette viser emnene og hvor hvert emne havner. Organisasjonsfeltet er fritekst, og ingen besøkende får vite om et selskap er kunde."
+      },
+      "topics": {
+        "product": "Produkt",
+        "pricing": "Priser",
+        "first_send": "Første utsending",
+        "privacy": "Personvern"
+      },
+      "list": {
+        "title": "Kanaler inn til saker",
+        "in_app": {
+          "name": "Hjelpeforespørsel i appen",
+          "sub": "konteksten fanges automatisk"
+        },
+        "contact_form": {
+          "name": "Kontaktskjema",
+          "sub": "rutes etter emne"
+        },
+        "email": {
+          "name": "E-post",
+          "sub": "svar i samme tråd"
+        },
+        "staff": {
+          "name": "Opprettet av ansatte",
+          "sub": "registrert i Sentral"
+        },
+        "note": "{n, plural, one {# sak} other {# saker}} på {days} dager. En widget på nettstedet og en kundeportal er ikke kanaler ennå."
+      },
+      "threading": {
+        "title": "E-posttråder",
+        "body": "Svar beholder saks-ID-en i emnefeltet og en skjult referanse i toppteksten, så kundens svar havner i samme sak. Autosvar og returer gjenkjennes og gjenåpner aldri en sak.",
+        "mailOff": "Svar sendes ikke på e-post ennå: e-post er ikke klar for {product}.",
+        "inboundOk": "Kundesvar kommer inn på support@{domain}.",
+        "inboundOff": "Svar på e-post når ikke Sentral ennå: ingen svardomene er satt opp."
+      }
+    },
+    "portal": {
+      "org": "Organisasjon",
+      "title": "Kundeportal · {org}",
+      "sub": "Det organisasjonens brukere ville sett · fra Sentrals saker",
+      "badge": "Forhåndsvisning",
+      "cases": "Saker for organisasjonen",
+      "noTickets": "Ingen saker",
+      "empty": "Ingen organisasjon har saker for {product} ennå.",
+      "state": {
+        "us": "Venter på oss",
+        "you": "Venter på deg",
+        "done": "Løst"
+      },
+      "waiting": "Venter på deg",
+      "approvals": {
+        "access": "Støttetilgang i 24 timer",
+        "accessSub": "Krever applikasjonen: støttetilgang finnes ikke ennå",
+        "deletion": "Sletting av tidligere ansatt",
+        "deletionSub": "Håndteres i applikasjonen; Sentral har bare forespørselen og fristen",
+        "deletionOpen": "{n, plural, one {# åpen personvernforespørsel} other {# åpne personvernforespørsler}} · håndteres i applikasjonen, aldri med navn",
+        "band": "Nytt prisbånd",
+        "bandSub": "Krever at applikasjonen kan endre en plan",
+        "decline": "Avslå",
+        "approve": "Godkjenn",
+        "why": "Kundene godkjenner i portalen, som venter på applikasjonen."
+      },
+      "rules": {
+        "title": "Tilgang til portalen",
+        "preview": "Denne forhåndsvisningen viser organisasjonens saker slik Sentral har dem, med ordene brukerne ville sett.",
+        "roles": "Hvilke roller i {product} som ser alle organisasjonens saker og kan godkjenne, er ikke bestemt ennå.",
+        "signin": "Kundene logger inn der portalen plasseres; ingenting her gir en kunde tilgang.",
+        "access": "Støttetilgang og godkjenninger krever kommandoer i {product} som ikke finnes ennå."
+      }
+    },
+    "assist": {
+      "off": "Sakstekst sendes ikke til AI",
+      "noTicket": "Ingen åpen sak",
+      "pick": "Sak",
+      "summary": "Sammendrag:",
+      "summaryOff": "Sakstekst sendes ikke til AI. Sammendrag, sortering og svarutkast venter til det er tillatt.",
+      "category": "Foreslått kategori:",
+      "priority": "Prioritet:",
+      "link": "Lenke:",
+      "draftLabel": "Svarutkast",
+      "shorter": "Kortere",
+      "toArticle": "Lag artikkel fra svaret",
+      "approve": "Godkjenn og send",
+      "footer": "AI sender aldri noe selv · bruker bare publiserte hjelpeartikler · ingen sakstekst, ingen undersøkelsesdata",
+      "usage": {
+        "title": "AI-bruk · 30 dager",
+        "drafts": "Utkast til saker",
+        "draftsWhy": "sakstekst sendes ikke til AI",
+        "previews": "Svar fra publiserte artikler",
+        "calls": "Claude-kall, hele Sentral",
+        "failed": "Mislykkede kall"
+      },
+      "preview": {
+        "title": "Svar fra publiserte artikler",
+        "sub": "Skriv et spørsmål en kunde kunne stilt. Claude leser bare de publiserte artiklene til {product} på språket du velger, aldri en sak.",
+        "placeholder": "Hva lurer du på?",
+        "lang": "Språk",
+        "ask": "Spør",
+        "asking": "Spør …",
+        "noRight": "Å spørre krever AI-retten for saker.",
+        "notConnected": "Claude er ikke koblet til: eieren legger inn nøkkelen under Plattform.",
+        "off": "AI-svar er slått av for {product} (Hjelpewidget › Innstillinger for widgeten).",
+        "label": "AI-svar fra artiklene våre",
+        "source": "Kilde: {title}",
+        "noSource": "—",
+        "none": "Ingen publisert artikkel svarer på dette."
+      }
+    },
+    "status": {
+      "pageTitle": "Statusside",
+      "notPublic": "Ikke offentlig",
+      "notPublicWhy": "En offentlig statusside venter på en beslutning om vertsadresse; dette er Sentrals egne registreringer.",
+      "editWhy": "Å endre statusen krever retten til å redigere andres saker.",
+      "componentsEmpty": "Ingen komponenter ennå.",
+      "componentName": "Navn på komponent",
+      "addComponent": "＋ Komponent",
+      "componentAdded": "{name} lagt til",
+      "remove": "Fjern {name}",
+      "stateOf": "Status for {name}",
+      "stateSet": "{name}: {state}",
+      "states": {
+        "operational": "I drift",
+        "degraded": "Redusert",
+        "partial_outage": "Delvis nede",
+        "maintenance": "Vedlikehold"
+      },
+      "noIncidents": "Ingen åpne hendelser.",
+      "incidentStates": {
+        "investigating": "Undersøker",
+        "identified": "Årsak funnet",
+        "monitoring": "Overvåker",
+        "resolved": "Løst"
+      },
+      "affected": "{n, plural, one {# kunde} other {# kunder}} · problem {ref}",
+      "chips": {
+        "notice": "Varsel på det offentlige nettstedet",
+        "linked": "Lenket til {n, plural, one {# sak} other {# saker}}",
+        "noticeCleared": "Varsel fjernet",
+        "resolved": "{n, plural, one {# sak løst} other {# saker løst}}",
+        "emailed": "{n, plural, one {# svar sendt på e-post} other {# svar sendt på e-post}}"
+      },
+      "resolve": "Løs og varsle berørte kunder",
+      "resolveOnly": "Løs",
+      "update": "Legg ut oppdatering",
+      "updateState": "Status",
+      "updatePlaceholder": "Hva har endret seg",
+      "resolveMessage": "Meldingen alle berørte kunder får",
+      "resolveNote": "Hva som ble gjort",
+      "resolveWhat": "Alle åpne saker under {ref} får dette svaret og løses; et varsel knyttet til problemet fjernes.",
+      "cancel": "Avbryt",
+      "send": "Send og løs",
+      "post": "Legg ut",
+      "resolvedToast": "Løst · {n, plural, =0 {ingen åpne saker å varsle} one {# kunde varslet} other {# kunder varslet}}",
+      "updatedToast": "Oppdatering lagt ut",
+      "new": {
+        "open": "＋ Hendelse",
+        "opened": "Hendelse åpnet",
+        "title": "Offentlig tittel",
+        "body": "Hva kundene bør vite",
+        "problem": "Problem",
+        "problemNone": "Ingen problemsak",
+        "components": "Berørte komponenter",
+        "note": "Når et problem er lenket, svarer «Løs og varsle» alle saker som venter på det.",
+        "cancel": "Avbryt",
+        "submit": "Åpne hendelse"
+      },
+      "changelog": "Endringslogg",
+      "changelogEmpty": "Ingen versjonsnotater publisert ennå.",
+      "kinds": {
+        "new": "Nytt",
+        "improved": "Forbedret",
+        "fixed": "Rettet"
+      }
+    },
+    "csat": {
+      "mail": {
+        "question": "Hvor fornøyd er du med hjelpen du fikk?",
+        "scale": "Klikk på et tall: 1 er ikke fornøyd i det hele tatt, 5 er svært fornøyd.",
+        "low": "Ikke fornøyd",
+        "high": "Svært fornøyd"
+      },
+      "page": {
+        "thanks": "Takk. Svaret ditt, {score} av 5, er registrert.",
+        "used": "Denne lenken er allerede brukt eller gjelder ikke lenger.",
+        "browser": "Svaret ble ikke registrert. Åpne lenken i nettleseren din for å svare.",
+        "invalid": "Lenken er ikke komplett. Bruk lenken i e-posten."
+      }
+    }
+  }
 }

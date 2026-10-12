@@ -2,7 +2,8 @@
   "simpleCustomers": {
     "tabs": {
       "accounts": "Kontoer",
-      "tickets": "Saker og forespørsler"
+      "tickets": "Saker og forespørsler",
+      "support": "Hjelpesenter og støtte"
     },
     "kpi": {
       "mrr": "MRR",

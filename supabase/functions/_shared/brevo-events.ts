@@ -71,8 +71,36 @@ export function sortEvents(payload: unknown): Sorted {
 /** Brevo's inbound parsing: the items Sentral may thread (sender address, subject, the new text, Brevo's id) */
 export type Inbound = { id: string; from: string; subject: string; body: string }
 export function inboundItems(payload: unknown): Inbound[] {
+  return inboundMail(payload).map((m) => ({ id: m.id, from: m.from, subject: m.subject, body: m.body }))
+}
+
+/**
+ * The same items with the few headers that decide threading (0081, F-S2): the hidden reference (In-Reply-To, References)
+ * and the marks of an auto-reply (Auto-Submitted, Precedence, X-Autoreply, X-Autorespond, X-Auto-Response-Suppress).
+ * Every other header is left unread. Names are lower-cased; a repeated header is joined with a space.
+ */
+export const THREAD_HEADERS = ['in-reply-to', 'references', 'auto-submitted', 'precedence', 'x-autoreply', 'x-autorespond', 'x-auto-response-suppress'] as const
+export type ThreadHeaders = Partial<Record<(typeof THREAD_HEADERS)[number], string>>
+export type InboundMail = Inbound & { headers: ThreadHeaders }
+
+export function threadHeaders(e: Raw): ThreadHeaders {
+  const out: ThreadHeaders = {}
+  const raw = e.Headers && typeof e.Headers === 'object' && !Array.isArray(e.Headers) ? (e.Headers as Raw) : {}
+  for (const [name, value] of Object.entries(raw)) {
+    const key = name.toLowerCase() as (typeof THREAD_HEADERS)[number]
+    if (!(THREAD_HEADERS as readonly string[]).includes(key)) continue
+    const v = (Array.isArray(value) ? value : [value]).filter((x): x is string => typeof x === 'string').join(' ').trim()
+    if (v) out[key] = v.slice(0, 2000)
+  }
+  // Brevo also lifts In-Reply-To to the item itself
+  const top = str(e.InReplyTo, 2000)
+  if (top && !out['in-reply-to']) out['in-reply-to'] = top
+  return out
+}
+
+export function inboundMail(payload: unknown): InboundMail[] {
   const items = payload && typeof payload === 'object' && Array.isArray((payload as Raw).items) ? ((payload as Raw).items as unknown[]) : []
-  const out: Inbound[] = []
+  const out: InboundMail[] = []
   for (const it of items.slice(0, 50)) {
     if (!it || typeof it !== 'object') continue
     const e = it as Raw
@@ -81,7 +109,7 @@ export function inboundItems(payload: unknown): Inbound[] {
     const from = e.From && typeof e.From === 'object' ? str((e.From as Raw).Address, 254) : null
     const subject = str(e.Subject, 500) ?? ''
     const body = str(e.ExtractedMarkdownMessage, 20000) ?? str(e.RawTextBody, 20000)
-    if (id && from && body) out.push({ id, from, subject, body })
+    if (id && from && body) out.push({ id, from, subject, body, headers: threadHeaders(e) })
   }
   return out
 }

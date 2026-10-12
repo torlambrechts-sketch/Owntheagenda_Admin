@@ -40,18 +40,56 @@ export function safeLink(base: string, path: string): string {
   return u.toString()
 }
 
-export function ticketReply(m: { lang: Lang; ref: string; subject: string; body: string; agent: string | null; fromName: string }): Rendered {
+export function ticketReply(m: { lang: Lang; ref: string; subject: string; body: string; agent: string | null; fromName: string; csat?: string[] | null }): Rendered {
   const t = MAIL_TEXTS[m.lang]
   const subject = fill(t.ticketReply.subject, { ref: m.ref, subject: m.subject }).slice(0, 250)
   const sig = fill(t.ticketReply.signature, { agent: m.agent ?? m.fromName, from_name: m.fromName })
   const answer = fill(t.ticketReply.answer, { ref: m.ref })
   // the customer hears from the application only; Sentral is not named to them
   const footer = fill(t.ticketReply.footer, { from_name: m.fromName })
+  const csat = m.csat && m.csat.length === 5 ? csatBlock(m.lang, m.csat) : null
   return {
     subject,
-    html: page([para(m.body), para(sig), para(answer, true)], footer),
-    text: `${m.body}\n\n${sig}\n\n${answer}\n\n— ${footer}`,
+    html: page([para(m.body), para(sig), ...(csat ? [csat.html] : []), para(answer, true)], footer),
+    text: [m.body, sig, csat?.text, answer, `— ${footer}`].filter(Boolean).join('\n\n'),
   }
+}
+
+/**
+ * The CSAT question on the reply that resolves a ticket (0081): five links, one per score, each opening the csat function
+ * with the ticket's single-use token. The links are built by the caller; this only lays them out.
+ */
+function csatBlock(lang: Lang, links: string[]): { html: string; text: string } {
+  const c = MAIL_TEXTS[lang].csat.mail
+  const cell = (href: string, n: number) =>
+    `<a href="${escapeHtml(href)}" style="display:inline-block;width:38px;padding:9px 0;margin:0 6px 6px 0;border-radius:10px;border:1px solid ${INK};background:#FFFDF6;color:${INK};font-weight:bold;text-align:center;text-decoration:none;">${n}</a>`
+  const html = `<div style="margin:22px 0 14px;padding:14px 16px;border-radius:14px;border:1px solid ${LINE};background:#FFFDF6;">`
+    + `<p style="margin:0 0 6px;font-weight:bold;">${escapeHtml(c.question)}</p>`
+    + `<p style="margin:0 0 12px;color:${MUTED};font-size:13px;">${escapeHtml(c.scale)}</p>`
+    + `<div>${links.map((l, i) => cell(l, i + 1)).join('')}</div>`
+    + `<p style="margin:4px 0 0;color:${MUTED};font-size:12px;">1 = ${escapeHtml(c.low)} · 5 = ${escapeHtml(c.high)}</p>`
+    + '</div>'
+  const text = [c.question, c.scale, ...links.map((l, i) => `${i + 1}: ${l}`)].join('\n')
+  return { html, text }
+}
+
+/** the five CSAT links for one token: the csat function's address, the score and the email's language */
+export function csatLinks(functionsUrl: string, token: string, lang: Lang): string[] | null {
+  if (!/^[A-Za-z0-9_-]{32}$/.test(token)) return null
+  let base: URL
+  try {
+    base = new URL('/functions/v1/csat', functionsUrl)
+  } catch {
+    return null
+  }
+  if (base.protocol !== 'https:' && base.protocol !== 'http:') return null
+  return [1, 2, 3, 4, 5].map((s) => {
+    const u = new URL(base)
+    u.searchParams.set('t', token)
+    u.searchParams.set('s', String(s))
+    u.searchParams.set('l', lang)
+    return u.toString()
+  })
 }
 
 export function invite(m: { lang: Lang; by: string | null; link: string; fromName: string }): Rendered {

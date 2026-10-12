@@ -15,21 +15,27 @@ import { orgNr } from './_components/fmt'
 import { SimpleTabs } from './_components/SimpleTabs'
 import { SimpleAccounts, type AccountPanel, type AccountRow, type ActionKey, type Kpi } from './_components/SimpleAccounts'
 import { SimpleTickets, type CannedReply, type ThreadMsg, type TicketItem, type TicketView } from './_components/SimpleTickets'
+import { SupportHub } from './_components/support/SupportHub'
+import { SUBS } from './_components/support/logic'
 
 const first = (v: unknown) => (Array.isArray(v) ? v[0] : v)
 const Params = z.object({
-  tab: z.preprocess(first, z.enum(['accounts', 'tickets']).optional()).catch(undefined),
+  tab: z.preprocess(first, z.enum(['accounts', 'tickets', 'support']).optional()).catch(undefined),
   org: z.preprocess(first, z.string().uuid().optional()).catch(undefined),
   queue: z.preprocess(first, z.enum(QUEUES).default('open')).catch('open'),
   ticket: z.preprocess(first, z.string().uuid().optional()).catch(undefined),
+  // Help centre and support (SupportHub.dc.html): its sub-tab and the article in the editor
+  sub: z.preprocess(first, z.enum(SUBS).default('metrics')).catch('metrics'),
+  article: z.preprocess(first, z.string().uuid().optional()).catch(undefined),
 })
 
 type T = Awaited<ReturnType<typeof getTranslations<'simpleCustomers'>>>
 
 /**
- * Sentral Simple › Customers (design-reference/sentral-simple/SimpleCustomers.dc.html): «Accounts» and «Tickets and
- * requests» for the application chosen in the rail. The selected account (?org=) and ticket (?ticket=) live in the
- * address, so the links other screens already use (/customers?org=…) open the same account here.
+ * Sentral Simple › Customers (design-reference/sentral-simple/SimpleCustomers.dc.html): «Accounts», «Tickets and
+ * requests» and «Help centre and support» (SupportHub.dc.html, ?tab=support&sub=…) for the application chosen in the rail.
+ * The selected account (?org=) and ticket (?ticket=) live in the address, so the links other screens already use
+ * (/customers?org=…) open the same account here.
  */
 export default async function CustomersPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const p = Params.parse(await searchParams)
@@ -40,14 +46,29 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
   const nf = shell.me.number_format
   const canAccounts = can(shell, 'deals', 'see')
   const canTickets = can(shell, 'tickets', 'see')
-  const tab = (p.tab === 'tickets' && canTickets) || !canAccounts ? 'tickets' : 'accounts'
+  const tab = p.tab === 'support' && canTickets ? 'support' : (p.tab === 'tickets' && canTickets) || !canAccounts ? 'tickets' : 'accounts'
   const age = (iso: string) => { const a = ageOf(iso, now); return t(`age.${a.unit}`, { n: a.n }) }
   const productName = shell.products.find((x) => x.key === product)?.name ?? product
 
   let body: React.ReactNode
   let counts: { accounts: number | null; tickets: number | null }
 
-  if (tab === 'accounts') {
+  if (tab === 'support') {
+    // the other two pills keep their counts: the open tickets and the accounts, as on their own tabs
+    const [summary, accounts] = await Promise.all([loadSummary(product), canAccounts ? loadAccounts(product) : Promise.resolve(null)])
+    counts = { accounts: accounts ? accounts.rows.length : null, tickets: summary?.open_tickets ?? null }
+    body = (
+      <SupportHub
+        product={product}
+        productName={productName}
+        sub={p.sub}
+        article={p.article ?? null}
+        org={p.org ?? null}
+        ticket={p.ticket ?? null}
+        nf={nf}
+      />
+    )
+  } else if (tab === 'accounts') {
     const [summary, list] = await Promise.all([loadSummary(product), loadAccounts(product)])
     counts = { accounts: list.rows.length, tickets: summary?.open_tickets ?? null }
     const rows: AccountRow[] = list.rows.map((o) => ({
@@ -126,6 +147,8 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
   const tabs = [
     ...(canAccounts ? [{ key: 'accounts', label: t('tabs.accounts'), count: counts.accounts, href: '/customers', on: tab === 'accounts' }] : []),
     ...(canTickets ? [{ key: 'tickets', label: t('tabs.tickets'), count: counts.tickets, href: '/customers?tab=tickets', on: tab === 'tickets' }] : []),
+    // the third pill has no count (SimpleCustomers.dc.html passes null)
+    ...(canTickets ? [{ key: 'support', label: t('tabs.support'), count: null, href: '/customers?tab=support', on: tab === 'support' }] : []),
   ]
 
   return (

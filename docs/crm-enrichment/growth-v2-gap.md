@@ -105,5 +105,8 @@ the screens show the real, small numbers and the design's empty treatments.
    deviations V-GR2-23 to 32.
 4. The playbook: outcomes, budget, experiments, calendar, audiences; trial, flow library, deliverability — **built (0076)**;
    deviations V-GR2-33 to 41.
+5. The ad platforms: Google Ads, LinkedIn Ads and Meta Ads, read only — **built (0077)**; spend, ad variants with fatigue and
+   platform campaigns into the views above; deviations V-GR2-42 to 46. Audience sync and conversions sent back are left out
+   on purpose (V-GR2-45, 46).
 
 Each step is released to production on its own, with its migration, tests and pixel check.

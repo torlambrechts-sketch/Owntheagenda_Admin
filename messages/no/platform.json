@@ -579,7 +579,8 @@
       "search_console_import": "Import fra Google Search Console",
       "seo_crawl": "Sjekk av nettstedshelse (crawler)",
       "pagespeed": "Måling med PageSpeed Insights",
-      "seo_alerts": "Sjekk av SEO-varsler"
+      "seo_alerts": "Sjekk av SEO-varsler",
+      "ads": "Import fra annonseplattformer"
     },
     "flags": {
       "title": "Funksjonsflagg — globalt og per organisasjon",

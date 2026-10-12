@@ -579,7 +579,8 @@
       "search_console_import": "Google Search Console import",
       "seo_crawl": "Site health check (crawler)",
       "pagespeed": "PageSpeed Insights measurement",
-      "seo_alerts": "SEO alerts check"
+      "seo_alerts": "SEO alerts check",
+      "ads": "Ad platform import"
     },
     "flags": {
       "title": "Feature flags — global and per organization",

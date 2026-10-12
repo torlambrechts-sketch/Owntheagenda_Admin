@@ -143,8 +143,11 @@ export const AdCampaign = z.object({
   version: n,
   created_at: z.string(),
   mine: z.boolean().nullable(),
+  /** the ad platform campaign this counts as (0077); absent before it */
+  platform: z.object({ provider: z.enum(['google_ads', 'linkedin_ads', 'meta_ads']), name: z.string(), count: n }).nullable().optional(),
   figures: z.object({
-    spend: z.array(z.object({ month: z.string(), amount: n, currency: z.string() })),
+    /** typed in, or imported from an ad platform (0077; absent before it means typed) */
+    spend: z.array(z.object({ month: z.string(), amount: n, currency: z.string(), source: z.enum(['typed', 'google_ads', 'linkedin_ads', 'meta_ads']).optional() })),
     spent: nn,
     visits: nn,
     signups: n,

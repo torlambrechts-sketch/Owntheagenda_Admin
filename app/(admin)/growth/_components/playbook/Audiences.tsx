@@ -1,14 +1,15 @@
 import { getTranslations } from 'next-intl/server'
 import { formatNumber, type NumberFormat } from '@/lib/format'
 import type { Segment } from '@/lib/data/campaigns-shared'
+import type { AdProvider } from '@/lib/growth/ads'
 import { cardTable, head } from '../v2kit'
 
 /**
  * Marketing campaigns › Audiences (GrowthPlaybook.dc.html, v.audiences) on segments_get (0037): the CRM's lists with how
- * many people match and how many can receive email. No ad platform is connected, so nothing is synced and the platform
- * pills and match rates are left out; results by persona need a role the product does not report (V-GR2-36).
+ * many people match and how many can receive email. Lists are not sent to the ad platforms, connected or not (0077): that
+ * would upload contacts' addresses to them, and nobody has decided to; the platform pills and match rates are left out; results by persona need a role the product does not report (V-GR2-36).
  */
-export async function AudiencesView({ lists, nf, app }: { lists: Segment[]; nf: NumberFormat; app: string }) {
+export async function AudiencesView({ lists, nf, app, connected }: { lists: Segment[]; nf: NumberFormat; app: string; connected: AdProvider[] }) {
   const t = await getTranslations('simpleGrowth.playbook.audiences')
   return (
     <div className="grid items-start gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr))]">
@@ -33,7 +34,7 @@ export async function AudiencesView({ lists, nf, app }: { lists: Segment[]; nf: 
             {a.description ? <span className="text-12 leading-[1.45] text-muted [overflow-wrap:anywhere]">{a.description}</span> : null}
           </div>
         ))}
-        <p className="m-0 px-[18px] py-[11px] text-12 text-muted">{t('noSync')}</p>
+        <p className="m-0 px-[18px] py-[11px] text-12 text-muted">{connected.length ? t('noSyncConnected') : t('noSync')}</p>
       </section>
       <section className={cardTable}>
         <div className={head}>

@@ -8,6 +8,8 @@ import type { Seo } from '@/lib/data/simple-growth-shared'
 import { SearchConsoleCard } from './SearchConsole'
 import { PageSpeedPanel } from './PageSpeedPanel'
 import { CrawlNow } from './CrawlNow'
+import { AdPlatformPanel } from './ads/AdPlatformPanel'
+import { AD_PROVIDERS, connectionState, type GrowthAds } from '@/lib/growth/ads'
 
 const DAY = 86_400_000
 type Card = {
@@ -18,11 +20,13 @@ type Card = {
 /**
  * Growth › Integrations (SimpleGrowth.dc.html, v.integrations) on growth_integrations: only what Sentral really reads from,
  * each with its true state, what it feeds and when it last did; the design's other cards (GA4, Google Ads, GTM, BigQuery,
- * Trends, Business Profile, Looker Studio, Ahrefs, Bing, Clarity, LinkedIn, Meta, Microsoft Ads, Stripe, Slack) have no
- * connector here and are not shown as if they had (V-GR2-20). Search Console's and PageSpeed's setup open below the cards.
+ * Trends, Business Profile, Looker Studio, Ahrefs, Bing, Clarity, Microsoft Ads, Stripe, Slack) have no connector here and
+ * are not shown as if they had (V-GR2-20). Google Ads, LinkedIn Ads and Meta Ads are connected here (0077). Search
+ * Console's, PageSpeed's and each ad platform's setup open below the cards.
  */
-export async function IntegrationsTab({ d, sc, open, nf, app, canMeasure }: {
-  d: GrowthIntegrations; sc: Seo | null; open: string | null; nf: NumberFormat; app: string; canMeasure: boolean
+export async function IntegrationsTab({ d, sc, ads, products, open, nf, app, canMeasure }: {
+  d: GrowthIntegrations; sc: Seo | null; ads: GrowthAds | null; products: { key: string; name: string }[]; open: string | null; nf: NumberFormat; app: string
+  canMeasure: boolean
 }) {
   const t = await getTranslations('simpleGrowth.integrations')
   const format = await getFormatter()
@@ -62,7 +66,7 @@ export async function IntegrationsTab({ d, sc, open, nf, app, canMeasure }: {
     sync: psiOn && d.pagespeed.last_at ? t('sync.psi', { ago: ago(d.pagespeed.last_at), pages: d.pagespeed.pages }) : null,
     action: { kind: 'link', label: psiOn ? t('manage') : t('connect'), href: growthHref('integrations', {}, { sub: open === 'psi' ? null : 'psi' }) },
   }
-  const products: Card[] = d.products.map((p) => ({
+  const productCards: Card[] = d.products.map((p) => ({
     key: `p:${p.product}`, ini: p.name.slice(0, 2).toUpperCase(), name: t('cards.product.name', { name: p.name }), on: recent(p.last_event_at, 7),
     state: p.last_event_at ? (recent(p.last_event_at, 7) ? t('state.receiving') : t('state.quiet', { ago: ago(p.last_event_at) })) : t('state.waiting'),
     desc: t('cards.product.desc', { name: p.name }), feeds: ['funnel', 'accounts', 'paying'],
@@ -73,10 +77,25 @@ export async function IntegrationsTab({ d, sc, open, nf, app, canMeasure }: {
     key: 'email', ini: 'BR', name: t('cards.email.name'), on: emailOn, state: emailOn ? t('state.on') : t('state.off'),
     desc: t('cards.email.desc'), feeds: ['email'], sync: null, action: null,
   }
+  // the ad platforms (0077): connected, refused, credentials waiting for a check, or nothing yet
+  const adCards: Card[] = (ads?.providers ?? []).map((p) => {
+    const st = connectionState(p)
+    const accts = (ads?.accounts ?? []).filter((a) => a.provider === p.provider && !a.manager)
+    const last = accts.map((a) => a.last_import_at).filter((x): x is string => !!x).sort().pop() ?? null
+    return {
+      key: p.provider, ini: { google_ads: 'GA', linkedin_ads: 'LI', meta_ads: 'ME' }[p.provider], name: t(`cards.${p.provider}.name`), on: st === 'connected',
+      state: st === 'connected' ? t('state.accounts', { n: accts.filter((a) => a.product).length, total: accts.length })
+        : st === 'error' ? t('state.failed') : st === 'stored' ? t('state.notChecked') : t('state.off'),
+      desc: t(`cards.${p.provider}.desc`), feeds: ['campaigns', 'outcomes', 'creative'],
+      sync: last ? t('sync.daily', { ago: ago(last) }) : null,
+      action: { kind: 'link', label: st === 'connected' ? t('manage') : t('connect'), href: growthHref('integrations', {}, { sub: open === p.provider ? null : p.provider }) },
+    }
+  })
   const groups = [
     { h: t('groups.site'), items: [tracker, crawler] },
     { h: t('groups.google'), items: [gsc, psi] },
-    { h: t('groups.products'), items: [...products, email] },
+    ...(adCards.length ? [{ h: t('groups.ads'), items: adCards }] : []),
+    { h: t('groups.products'), items: [...productCards, email] },
   ]
   const all = groups.flatMap((g) => g.items)
 
@@ -96,6 +115,8 @@ export async function IntegrationsTab({ d, sc, open, nf, app, canMeasure }: {
       case 'pagespeed': return t('log.what.pagespeed', { n: l.rows ?? 0 }) + code
       case 'product_events': return t('log.what.events', { n: l.rows ?? 0, kinds: Array.isArray(i.kinds) ? (i.kinds as string[]).join(', ') : '' })
       case 'url_inspection': return t('log.what.urlInspection', { n: l.rows ?? 0, indexed: Number(i.indexed ?? 0), pages: Number(i.pages ?? 0) })
+      case 'google_ads': case 'linkedin_ads': case 'meta_ads':
+        return (l.state === 'ok' ? t('log.what.ads', { n: l.rows ?? 0, months: Number(i.months ?? 0) }) : t('log.what.adsFailed')) + code
       default: return ''
     }
   }
@@ -136,6 +157,9 @@ export async function IntegrationsTab({ d, sc, open, nf, app, canMeasure }: {
           </div>
           {g.items.some((c) => c.key === 'gsc') && open === 'gsc' && sc ? (
             <SearchConsoleCard sc={sc.search_console} site={sc.site?.hostname ?? null} app={app} connected={sc.connected} />
+          ) : null}
+          {ads && g.items.some((c) => c.key === open) && (AD_PROVIDERS as readonly string[]).includes(open ?? '') ? (
+            <AdPlatformPanel provider={open as GrowthAds['providers'][number]['provider']} d={ads} products={products} />
           ) : null}
           {g.items.some((c) => c.key === 'psi') && open === 'psi' ? (
             <PageSpeedPanel status={d.pagespeed.status} lastError={d.pagespeed.last_error} lastAt={d.pagespeed.last_at} pages={d.pagespeed.pages}

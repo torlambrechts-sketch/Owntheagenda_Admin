@@ -639,7 +639,8 @@
       "groups": {
         "site": "Your website",
         "google": "Google",
-        "products": "Products and email"
+        "products": "Products and email",
+        "ads": "Ad platforms"
       },
       "cards": {
         "tracker": {
@@ -665,6 +666,18 @@
         "email": {
           "name": "Brevo",
           "desc": "Sends the email campaigns and flows; delivery events come back by webhook."
+        },
+        "google_ads": {
+          "name": "Google Ads",
+          "desc": "Campaigns, ads, cost and conversions every night; spend goes to the campaigns, Outcomes and the Budget planner."
+        },
+        "linkedin_ads": {
+          "name": "LinkedIn Ads",
+          "desc": "Campaign Manager's campaigns, ads, cost and conversions every night, with your LinkedIn sign-in."
+        },
+        "meta_ads": {
+          "name": "Meta Ads",
+          "desc": "Facebook and Instagram campaigns, ads, spend, reach and leads every night, with a system user's token."
         }
       },
       "state": {
@@ -677,7 +690,9 @@
         "connectedTo": "Connected · {what}",
         "noProperty": "Connected · no property found",
         "off": "Not connected",
-        "keyRefused": "Key refused"
+        "keyRefused": "Key refused",
+        "accounts": "Connected · {n} of {total} accounts linked",
+        "notChecked": "Not checked yet"
       },
       "sync": {
         "tracker": "Last visit {ago} · {n} visits in 24 h",
@@ -696,7 +711,10 @@
         "seo": "SEO",
         "accounts": "Accounts",
         "paying": "Paying",
-        "email": "Email"
+        "email": "Email",
+        "campaigns": "Campaigns",
+        "outcomes": "Outcomes",
+        "creative": "Creative"
       },
       "log": {
         "title": "Sync log",
@@ -712,7 +730,10 @@
           "pagespeed": "PageSpeed Insights",
           "product_events": "Product events",
           "email": "Email",
-          "url_inspection": "URL Inspection"
+          "url_inspection": "URL Inspection",
+          "google_ads": "Google Ads",
+          "linkedin_ads": "LinkedIn Ads",
+          "meta_ads": "Meta Ads"
         },
         "states": {
           "ok": "OK",
@@ -726,7 +747,9 @@
           "searchConsoleNone": "Import attempted",
           "pagespeed": "{n, plural, one {# page} other {# pages}} measured",
           "events": "{n, plural, one {# event} other {# events}} · {kinds}",
-          "urlInspection": "{n, plural, one {# page} other {# pages}} checked · {indexed} of {pages} indexed"
+          "urlInspection": "{n, plural, one {# page} other {# pages}} checked · {indexed} of {pages} indexed",
+          "ads": "{n, plural, one {# day row} other {# day rows}} · spend in {months, plural, one {# month} other {# months}}",
+          "adsFailed": "Refused"
         }
       },
       "pagespeed": {
@@ -1187,13 +1210,41 @@
         "kind": "CRM list",
         "noSync": "No ad platform is connected, so lists are not synced to Google Ads, LinkedIn or Meta, and there are no match rates.",
         "personas": "Results by persona",
-        "personasNone": "Splitting signups, conversion and CAC by persona needs the role of the person who signed up (daglig leder, HR, avdelingsleder, verneombud). {app} does not report it, so there is nothing to split by."
+        "personasNone": "Splitting signups, conversion and CAC by persona needs the role of the person who signed up (daglig leder, HR, avdelingsleder, verneombud). {app} does not report it, so there is nothing to split by.",
+        "noSyncConnected": "Lists are not sent to the connected ad platforms: that would upload contacts' email addresses (hashed) to Google, LinkedIn or Meta, and it is not switched on."
       },
       "creative": {
         "title": "Creative and landing pages",
         "note": "Not connected",
-        "needs": "The message matrix, ad variants with fatigue and landing page tests need impressions, click-through and frequency from the ad platforms, and results from an A/B testing tool. Neither is connected to Sentral, so nothing is shown here rather than figures that are not real.",
-        "today": "Each landing page’s visits, signups and conversion are measured today under <link>Pages and links</link>."
+        "today": "Each landing page’s visits, signups and conversion are measured today under <link>Pages and links</link>.",
+        "noData": "Connected · nothing imported yet",
+        "connectFirst": "Connect Google Ads, LinkedIn Ads or Meta Ads under <link>Integrations</link> to see each ad's click-through and fatigue here.",
+        "linkAccounts": "Link an ad account to this application under <link>Integrations</link>; its campaigns and ads show here after the next import.",
+        "variants": "Ad variants",
+        "fatigueRule": "Fatigued = click-through −30 % in 7 days",
+        "noAds": "No ad with impressions in the last 30 days.",
+        "ctr": "CTR {v}",
+        "impressions": "{n} impressions in 7 days",
+        "frequency": "{v} per person a day",
+        "changeTitle": "Click-through {now} in the last 7 days, {prev} the 7 before",
+        "states": {
+          "fatigued": "Fatigued",
+          "healthy": "Healthy",
+          "quiet": "Too few impressions"
+        },
+        "campaigns": "Platform campaigns",
+        "campaignsNote": "Last 30 days · each counts as a Sentral campaign",
+        "status": {
+          "live": "Live",
+          "paused": "Paused",
+          "ended": "Ended"
+        },
+        "d30": "{impressions} impressions · {clicks} clicks · CTR {ctr} · {spend} · {conversions} conversions",
+        "countsAs": "Counts as",
+        "countsAsLabel": "Sentral campaign that {name} counts as",
+        "auto": "{name} (by its link)",
+        "autoNone": "Its own campaign (made once it is running or has activity)",
+        "matrixNone": "The message matrix needs each ad tagged by pain point and persona, and landing page tests need an A/B testing tool; neither exists in Sentral."
       },
       "calendar": {
         "rows": {
@@ -1352,6 +1403,120 @@
           }
         },
         "thisMonth": "{n} this month"
+      }
+    },
+    "ads": {
+      "names": {
+        "google_ads": "Google Ads",
+        "linkedin_ads": "LinkedIn Ads",
+        "meta_ads": "Meta Ads"
+      },
+      "what": {
+        "google_ads": "Campaigns, ads and their daily impressions, clicks, cost and conversions from Google Ads, read through a service account. Sentral changes nothing in Google Ads.",
+        "linkedin_ads": "Campaigns, ads and their daily impressions, clicks, cost and conversions from LinkedIn Campaign Manager, read with your LinkedIn sign-in. Sentral changes nothing in LinkedIn.",
+        "meta_ads": "Campaigns, ads and their daily impressions, clicks, spend, reach and leads from Meta Ads Manager, read with a system user's token. Sentral changes nothing in Meta."
+      },
+      "state": {
+        "connected": "Connected",
+        "connectedAgo": "Connected · checked {ago}",
+        "stored": "Credentials stored · not checked yet",
+        "none": "Not connected"
+      },
+      "needs": "Still needed: {what}",
+      "missing": {
+        "developer_token": "the developer token",
+        "key": "a service account",
+        "client_id": "the client id",
+        "client_secret": "the client secret",
+        "sign_in": "a LinkedIn sign-in",
+        "token": "the system user's token"
+      },
+      "check": "Check again",
+      "importNow": "Import now",
+      "change": "Change credentials",
+      "disconnect": "Disconnect",
+      "checked": "Connected · {n, plural, one {# ad account} other {# ad accounts}} found",
+      "imported": "Imported · {rows, plural, one {# day row} other {# day rows}}",
+      "disconnected": "Disconnected. What was imported stays.",
+      "saved": "Saved. Now sign in with LinkedIn.",
+      "linked": "Saved",
+      "campaignLinked": "Saved · the spend moves with it",
+      "ownerOnly": "Only the owner connects an ad platform.",
+      "freshMfa": "Confirm with your second factor first, then sign in again.",
+      "accounts": "Ad accounts",
+      "noAccounts": "The credentials work, but they may not read any ad account. Give the service account, user or system user access to one.",
+      "accountsAfter": "The ad accounts show here once the connection is checked.",
+      "manager": "manager account",
+      "lastImport": "imported {ago} · {n, plural, one {# campaign} other {# campaigns}}",
+      "notNok": "not NOK: the spend is kept but not counted in kroner",
+      "countsFor": "Application {name} counts for",
+      "noApplication": "No application",
+      "followsPlatform": "Paused and resumed in {platform}; Sentral follows it",
+      "fromPlatform": "From {platform}: «{name}»{more, plural, =0 {} one { and # more} other { and # more}} · state and spend follow the platform",
+      "spendImported": "This month's spend is imported from {platform}, so it is not typed in here.",
+      "codes": {
+        "bad_key": "The credentials were not accepted: check that they were copied whole.",
+        "expired": "The form waited too long. Try again.",
+        "token": "Google did not accept the service account key.",
+        "sign_in": "LinkedIn's sign-in has run out. Sign in with LinkedIn again.",
+        "forbidden_google_ads": "Google Ads refused: check the developer token's access level and that the service account is a user on the ad account.",
+        "forbidden_linkedin_ads": "LinkedIn refused: the app needs the Advertising API, and the person who signed in needs access to the ad account.",
+        "forbidden_meta_ads": "Meta refused: the token needs ads_read, and the system user needs access to the ad account.",
+        "rate": "The platform asked to wait (too many requests). The nightly import tries again.",
+        "unreachable": "The import could not be reached. Try again in a minute.",
+        "other": "The platform answered with «{code}»."
+      },
+      "oauth": {
+        "ok": "Signed in with LinkedIn · the ad accounts are listed below",
+        "denied": "The LinkedIn sign-in was cancelled.",
+        "failed": "LinkedIn did not complete the sign-in. Try again.",
+        "no_access": "Signed in, but LinkedIn gave no access to ad accounts: the app needs the Advertising API.",
+        "not_configured": "Save the client id and secret first."
+      },
+      "linkedin": {
+        "signIn": "Sign in with LinkedIn",
+        "signInNote": "Opens LinkedIn. Sign in as someone with access to the ad account; you come back here.",
+        "tokenUntil": "Signed in until {date}.",
+        "refreshUntil": "Renewed automatically until {date}.",
+        "noRefresh": "LinkedIn gave no renewal: sign in again before then."
+      },
+      "form": {
+        "stored": "Stored · leave empty to keep it",
+        "developerToken": "Developer token",
+        "managerId": "Manager account id (if you use one)",
+        "serviceAccount": "Service account",
+        "useSearchConsole": "Use the Search Console service account ({email})",
+        "noSearchConsole": "Search Console's service account (not connected)",
+        "ownKey": "Its own service account key (JSON)",
+        "theServiceAccount": "the service account's address",
+        "clientId": "Client id",
+        "clientSecret": "Client secret",
+        "systemToken": "System user access token",
+        "appSecret": "App secret (if the app requires appsecret_proof)",
+        "optional": "Optional",
+        "connect": "Connect",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "steps": {
+        "google_ads": {
+          "1": "In Google Ads, open Admin › API Center and apply for a developer token (Basic access is enough). Paste it below.",
+          "2": "Use the Search Console service account, or create one in Google Cloud and download its JSON key.",
+          "3": "In Google Ads, open Admin › Access and security and add {email} as a user with Read only access.",
+          "4": "If your ad accounts sit under a manager account, give its id; the service account is then added there."
+        },
+        "linkedin_ads": {
+          "1": "At linkedin.com/developers, create an app for your company page and request the Advertising API product.",
+          "2": "Under Auth, add this redirect URL: {redirect}",
+          "3": "Copy the client id and client secret below and save.",
+          "4": "Sign in with LinkedIn as someone with access to the ad account."
+        },
+        "meta_ads": {
+          "1": "In Meta Business Settings, open Users › System users and create one (Employee is enough).",
+          "2": "Assign it your ad accounts with View performance.",
+          "3": "Generate a token for your app with ads_read and read_insights, and paste it below.",
+          "4": "If the app requires appsecret_proof, paste the app secret too."
+        }
       }
     }
   }

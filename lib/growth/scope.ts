@@ -78,7 +78,7 @@ export function parseGrowth(sp: Record<string, string | string[] | undefined>): 
     lf: z.enum(LOG_FILTERS).catch('all').parse(g('lf') ?? 'all'),
     page: path && path.startsWith('/') && path.length <= 500 ? path : null,
     sort: z.enum(PAGE_SORTS).catch('opportunity').parse(g('sort') ?? 'opportunity'),
-    sub: g('sub') && /^[a-z]{2,20}$/.test(g('sub')!) ? g('sub')! : null,
+    sub: g('sub') && /^[a-z][a-z_]{1,19}$/.test(g('sub')!) ? g('sub')! : null,
     kt: z.enum(KW_TABS).catch('all').parse(g('kt') ?? 'all'),
     kw: g('kw') && g('kw')!.length <= 200 ? g('kw')! : null,
     cl: g('cl') && g('cl')!.startsWith('/') && g('cl')!.length <= 300 ? g('cl')! : null,

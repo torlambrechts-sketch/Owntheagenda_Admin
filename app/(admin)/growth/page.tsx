@@ -4,7 +4,7 @@ import { currentProduct } from '@/lib/product'
 import type { RpcResult } from '@/lib/rpc'
 import { RpcError } from '@/lib/rpc'
 import { loadAdCampaigns, loadEmailConnected, loadLists, loadProposalStage, loadSeo, loadSequences } from '@/lib/data/simple-growth'
-import { loadAudiences, loadBudget, loadCalendar, loadDeliverability, loadExperiments, loadFlows, loadFunnel, loadIntegrations, loadKeywordHistory, loadOutcomes,
+import { loadAds, loadAudiences, loadBudget, loadCalendar, loadDeliverability, loadExperiments, loadFlows, loadFunnel, loadIntegrations, loadKeywordHistory, loadOutcomes,
   loadPages, loadScope, loadSenderDomains, loadSeoAlerts, loadSeoChanges, loadSeoClusters, loadSeoLinks, loadSeoOpps, loadSeoOverview, loadSeoPlan,
   loadTrial } from '@/lib/data/growth'
 import { SEO_VIEWS, seoOpportunities, valuePerClick, type SeoView } from '@/lib/growth/seo'
@@ -173,8 +173,9 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
       }
       body = <div className="flex flex-col gap-[14px]">{subTabs}{inner}</div>
     } else if (tab === 'integrations') {
-      const [d, seo] = await Promise.all([loadIntegrations(product), loadSeo(product, '30d')])
-      body = <IntegrationsTab d={need(d)} sc={seo.ok ? seo.data : null} open={p.sub} nf={nf} app={app?.name ?? product} canMeasure={canAdd} />
+      const [d, seo, ads] = await Promise.all([loadIntegrations(product), loadSeo(product, '30d'), loadAds(product)])
+      body = <IntegrationsTab d={need(d)} sc={seo.ok ? seo.data : null} ads={ads.ok ? ads.data : null} products={shell.products.map((x) => ({ key: x.key, name: x.name }))}
+        open={p.sub} nf={nf} app={app?.name ?? product} canMeasure={canAdd} />
     } else if (tab === 'campaigns') {
       // Marketing campaigns and the playbook's views (GrowthPlaybook.dc.html, 0076) under their own sub-tabs
       const view: CampView = (CAMP_VIEWS as readonly string[]).includes(p.sub ?? '') ? (p.sub as CampView) : 'base'
@@ -184,8 +185,14 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
           case 'outcomes': return <OutcomesView d={need(await loadOutcomes(product, p.am))} nf={nf} app={appName} />
           case 'budget': return <BudgetView d={need(await loadBudget(product))} nf={nf} product={product} app={appName} canEdit={can(shell, 'campaigns', 'reports_others')} />
           case 'experiments': return <ExperimentsView d={need(await loadExperiments(product))} nf={nf} product={product} canAdd={canAdd} />
-          case 'audiences': return <AudiencesView lists={need(await loadAudiences())} nf={nf} app={appName} />
-          case 'creative': return <CreativeView />
+          case 'audiences': {
+            const [lists, ads] = await Promise.all([loadAudiences(), loadAds(product)])
+            return <AudiencesView lists={need(lists)} nf={nf} app={appName} connected={ads.ok ? ads.data.providers.filter((x) => x.status === 'connected').map((x) => x.provider) : []} />
+          }
+          case 'creative': {
+            const ads = await loadAds(product)
+            return <CreativeView ads={ads.ok ? ads.data : null} nf={nf} canLink={can(shell, 'campaigns', 'edit_others')} />
+          }
           case 'calendar': return <CalendarView d={need(await loadCalendar(product))} product={product} canAdd={canAdd} />
           default: return (
             <CampaignsTab

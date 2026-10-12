@@ -5,6 +5,7 @@ import { Segment, SenderDomains } from '@/lib/data/campaigns-shared'
 import { GrowthFunnel, GrowthIntegrations, GrowthPages, GrowthScope, KeywordHistory } from '@/lib/growth/types'
 import { SeoAlerts, SeoChanges, SeoClusters, SeoLinks, SeoOpps, SeoOverview, SeoPlan } from '@/lib/growth/seo'
 import { Budget, Calendar, Deliverability, Experiments, Flows, Outcomes, Trial } from '@/lib/growth/playbook'
+import { GrowthAds } from '@/lib/growth/ads'
 import { RANGE_DAYS, osloToday, scopeDay, type Scope } from '@/lib/growth/scope'
 
 /**
@@ -52,3 +53,6 @@ export const loadFlows = () => rpc('growth_flows', {}, Flows)
 export const loadDeliverability = (product: string) => rpc('growth_deliverability', { p_product: product }, Deliverability)
 export const loadAudiences = () => rpc('segments_get', {}, z.array(Segment))
 export const loadSenderDomains = () => rpc('sender_domains_get', {}, SenderDomains)
+
+// Growth › the ad platforms (0077): connections, accounts, campaigns and ads with their figures
+export const loadAds = (product: string) => rpc('growth_ads', { p_product: product }, GrowthAds)

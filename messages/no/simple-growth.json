@@ -639,7 +639,8 @@
       "groups": {
         "site": "Nettstedet",
         "google": "Google",
-        "products": "Produkter og e-post"
+        "products": "Produkter og e-post",
+        "ads": "Annonseplattformer"
       },
       "cards": {
         "tracker": {
@@ -665,6 +666,18 @@
         "email": {
           "name": "Brevo",
           "desc": "Sender e-postkampanjer og flyter; leveransehendelser kommer tilbake via webhook."
+        },
+        "google_ads": {
+          "name": "Google Ads",
+          "desc": "Kampanjer, annonser, kostnad og konverteringer hver natt; forbruket går til kampanjene, Resultater og Budsjettplanen."
+        },
+        "linkedin_ads": {
+          "name": "LinkedIn Ads",
+          "desc": "Kampanjer, annonser, kostnad og konverteringer fra Campaign Manager hver natt, med din LinkedIn-innlogging."
+        },
+        "meta_ads": {
+          "name": "Meta Ads",
+          "desc": "Kampanjer, annonser, forbruk, rekkevidde og leads fra Facebook og Instagram hver natt, med en systembrukers token."
         }
       },
       "state": {
@@ -677,7 +690,9 @@
         "connectedTo": "Tilkoblet · {what}",
         "noProperty": "Tilkoblet · ingen eiendom funnet",
         "off": "Ikke tilkoblet",
-        "keyRefused": "Nøkkelen ble avvist"
+        "keyRefused": "Nøkkelen ble avvist",
+        "accounts": "Tilkoblet · {n} av {total} kontoer knyttet",
+        "notChecked": "Ikke sjekket ennå"
       },
       "sync": {
         "tracker": "Siste besøk {ago} · {n} besøk siste døgn",
@@ -696,7 +711,10 @@
         "seo": "SEO",
         "accounts": "Kontoer",
         "paying": "Betalende",
-        "email": "E-post"
+        "email": "E-post",
+        "campaigns": "Kampanjer",
+        "outcomes": "Resultater",
+        "creative": "Annonser"
       },
       "log": {
         "title": "Synkroniseringslogg",
@@ -712,7 +730,10 @@
           "pagespeed": "PageSpeed Insights",
           "product_events": "Produkthendelser",
           "email": "E-post",
-          "url_inspection": "URL-inspeksjon"
+          "url_inspection": "URL-inspeksjon",
+          "google_ads": "Google Ads",
+          "linkedin_ads": "LinkedIn Ads",
+          "meta_ads": "Meta Ads"
         },
         "states": {
           "ok": "OK",
@@ -726,7 +747,9 @@
           "searchConsoleNone": "Import forsøkt",
           "pagespeed": "{n, plural, one {# side} other {# sider}} målt",
           "events": "{n, plural, one {# hendelse} other {# hendelser}} · {kinds}",
-          "urlInspection": "{n, plural, one {# side} other {# sider}} sjekket · {indexed} av {pages} indeksert"
+          "urlInspection": "{n, plural, one {# side} other {# sider}} sjekket · {indexed} av {pages} indeksert",
+          "ads": "{n, plural, one {# dagsrad} other {# dagsrader}} · forbruk i {months, plural, one {# måned} other {# måneder}}",
+          "adsFailed": "Avvist"
         }
       },
       "pagespeed": {
@@ -1187,13 +1210,41 @@
         "kind": "CRM-liste",
         "noSync": "Ingen annonseplattform er koblet til, så listene synkroniseres ikke til Google Ads, LinkedIn eller Meta, og det finnes ingen treffprosent.",
         "personas": "Resultater per persona",
-        "personasNone": "Å dele registreringer, konvertering og CAC per persona krever rollen til den som registrerte seg (daglig leder, HR, avdelingsleder, verneombud). {app} rapporterer den ikke, så det er ingenting å dele på."
+        "personasNone": "Å dele registreringer, konvertering og CAC per persona krever rollen til den som registrerte seg (daglig leder, HR, avdelingsleder, verneombud). {app} rapporterer den ikke, så det er ingenting å dele på.",
+        "noSyncConnected": "Listene sendes ikke til de tilkoblede annonseplattformene: det ville lastet opp kontaktenes e-postadresser (hashet) til Google, LinkedIn eller Meta, og det er ikke slått på."
       },
       "creative": {
         "title": "Annonser og landingssider",
         "note": "Ikke koblet til",
-        "needs": "Budskapsmatrisen, annonsevarianter med slitasje og tester av landingssider krever visninger, klikkrate og frekvens fra annonseplattformene, og resultater fra et A/B-testverktøy. Ingen av dem er koblet til Sentral, så her vises ingenting i stedet for tall som ikke er ekte.",
-        "today": "Besøk, registreringer og konvertering for hver landingsside måles i dag under <link>Sider og lenker</link>."
+        "today": "Besøk, registreringer og konvertering for hver landingsside måles i dag under <link>Sider og lenker</link>.",
+        "noData": "Tilkoblet · ingenting importert ennå",
+        "connectFirst": "Koble til Google Ads, LinkedIn Ads eller Meta Ads under <link>Integrasjoner</link> for å se klikkrate og slitasje for hver annonse her.",
+        "linkAccounts": "Knytt en annonsekonto til denne applikasjonen under <link>Integrasjoner</link>; kampanjer og annonser vises her etter neste import.",
+        "variants": "Annonsevarianter",
+        "fatigueRule": "Slitt = klikkrate −30 % på 7 dager",
+        "noAds": "Ingen annonse med visninger de siste 30 dagene.",
+        "ctr": "CTR {v}",
+        "impressions": "{n} visninger på 7 dager",
+        "frequency": "{v} per person per dag",
+        "changeTitle": "Klikkrate {now} de siste 7 dagene, {prev} de 7 før",
+        "states": {
+          "fatigued": "Slitt",
+          "healthy": "Sunn",
+          "quiet": "For få visninger"
+        },
+        "campaigns": "Plattformkampanjer",
+        "campaignsNote": "Siste 30 dager · hver teller som en Sentral-kampanje",
+        "status": {
+          "live": "Aktiv",
+          "paused": "På pause",
+          "ended": "Avsluttet"
+        },
+        "d30": "{impressions} visninger · {clicks} klikk · CTR {ctr} · {spend} · {conversions} konverteringer",
+        "countsAs": "Teller som",
+        "countsAsLabel": "Sentral-kampanjen {name} teller som",
+        "auto": "{name} (etter lenken)",
+        "autoNone": "Sin egen kampanje (lages når den kjører eller har aktivitet)",
+        "matrixNone": "Budskapsmatrisen krever at hver annonse er merket med smertepunkt og persona, og tester av landingssider krever et A/B-testverktøy; ingen av dem finnes i Sentral."
       },
       "calendar": {
         "rows": {
@@ -1352,6 +1403,120 @@
           }
         },
         "thisMonth": "{n} denne måneden"
+      }
+    },
+    "ads": {
+      "names": {
+        "google_ads": "Google Ads",
+        "linkedin_ads": "LinkedIn Ads",
+        "meta_ads": "Meta Ads"
+      },
+      "what": {
+        "google_ads": "Kampanjer, annonser og daglige visninger, klikk, kostnad og konverteringer fra Google Ads, lest gjennom en tjenestekonto. Sentral endrer ingenting i Google Ads.",
+        "linkedin_ads": "Kampanjer, annonser og daglige visninger, klikk, kostnad og konverteringer fra LinkedIn Campaign Manager, lest med din LinkedIn-innlogging. Sentral endrer ingenting i LinkedIn.",
+        "meta_ads": "Kampanjer, annonser og daglige visninger, klikk, forbruk, rekkevidde og leads fra Meta Ads Manager, lest med en systembrukers token. Sentral endrer ingenting i Meta."
+      },
+      "state": {
+        "connected": "Tilkoblet",
+        "connectedAgo": "Tilkoblet · sjekket {ago}",
+        "stored": "Påloggingsdata lagret · ikke sjekket ennå",
+        "none": "Ikke tilkoblet"
+      },
+      "needs": "Mangler fortsatt: {what}",
+      "missing": {
+        "developer_token": "utviklertokenet",
+        "key": "en tjenestekonto",
+        "client_id": "klient-ID-en",
+        "client_secret": "klienthemmeligheten",
+        "sign_in": "en LinkedIn-innlogging",
+        "token": "systembrukerens token"
+      },
+      "check": "Sjekk igjen",
+      "importNow": "Importer nå",
+      "change": "Endre påloggingsdata",
+      "disconnect": "Koble fra",
+      "checked": "Tilkoblet · {n, plural, one {# annonsekonto} other {# annonsekontoer}} funnet",
+      "imported": "Importert · {rows, plural, one {# dagsrad} other {# dagsrader}}",
+      "disconnected": "Koblet fra. Det som er importert, blir værende.",
+      "saved": "Lagret. Logg inn med LinkedIn nå.",
+      "linked": "Lagret",
+      "campaignLinked": "Lagret · forbruket følger med",
+      "ownerOnly": "Bare eieren kobler til en annonseplattform.",
+      "freshMfa": "Bekreft med den andre faktoren først, og logg inn på nytt.",
+      "accounts": "Annonsekontoer",
+      "noAccounts": "Påloggingsdataene virker, men de får ikke lese noen annonsekonto. Gi tjenestekontoen, brukeren eller systembrukeren tilgang til en.",
+      "accountsAfter": "Annonsekontoene vises her når tilkoblingen er sjekket.",
+      "manager": "administratorkonto",
+      "lastImport": "importert {ago} · {n, plural, one {# kampanje} other {# kampanjer}}",
+      "notNok": "ikke NOK: forbruket lagres, men telles ikke i kroner",
+      "countsFor": "Applikasjonen {name} teller for",
+      "noApplication": "Ingen applikasjon",
+      "followsPlatform": "Settes på pause og gjenopptas i {platform}; Sentral følger etter",
+      "fromPlatform": "Fra {platform}: «{name}»{more, plural, =0 {} one { og # til} other { og # til}} · status og forbruk følger plattformen",
+      "spendImported": "Denne månedens forbruk er importert fra {platform}, så det føres ikke inn her.",
+      "codes": {
+        "bad_key": "Påloggingsdataene ble ikke godtatt: sjekk at alt ble kopiert.",
+        "expired": "Skjemaet ventet for lenge. Prøv igjen.",
+        "token": "Google godtok ikke nøkkelen til tjenestekontoen.",
+        "sign_in": "LinkedIn-innloggingen har gått ut. Logg inn med LinkedIn på nytt.",
+        "forbidden_google_ads": "Google Ads sa nei: sjekk tilgangsnivået til utviklertokenet og at tjenestekontoen er bruker på annonsekontoen.",
+        "forbidden_linkedin_ads": "LinkedIn sa nei: appen trenger Advertising API, og den som logget inn trenger tilgang til annonsekontoen.",
+        "forbidden_meta_ads": "Meta sa nei: tokenet trenger ads_read, og systembrukeren trenger tilgang til annonsekontoen.",
+        "rate": "Plattformen ba oss vente (for mange forespørsler). Nattens import prøver igjen.",
+        "unreachable": "Importen kunne ikke nås. Prøv igjen om et minutt.",
+        "other": "Plattformen svarte «{code}»."
+      },
+      "oauth": {
+        "ok": "Logget inn med LinkedIn · annonsekontoene står nedenfor",
+        "denied": "LinkedIn-innloggingen ble avbrutt.",
+        "failed": "LinkedIn fullførte ikke innloggingen. Prøv igjen.",
+        "no_access": "Logget inn, men LinkedIn ga ikke tilgang til annonsekontoer: appen trenger Advertising API.",
+        "not_configured": "Lagre klient-ID og klienthemmelighet først."
+      },
+      "linkedin": {
+        "signIn": "Logg inn med LinkedIn",
+        "signInNote": "Åpner LinkedIn. Logg inn som en med tilgang til annonsekontoen; du kommer tilbake hit.",
+        "tokenUntil": "Innlogget til {date}.",
+        "refreshUntil": "Fornyes automatisk til {date}.",
+        "noRefresh": "LinkedIn ga ingen fornyelse: logg inn på nytt før det."
+      },
+      "form": {
+        "stored": "Lagret · la stå tomt for å beholde",
+        "developerToken": "Utviklertoken",
+        "managerId": "ID for administratorkonto (hvis dere bruker en)",
+        "serviceAccount": "Tjenestekonto",
+        "useSearchConsole": "Bruk tjenestekontoen til Search Console ({email})",
+        "noSearchConsole": "Tjenestekontoen til Search Console (ikke tilkoblet)",
+        "ownKey": "En egen nøkkel for tjenestekontoen (JSON)",
+        "theServiceAccount": "adressen til tjenestekontoen",
+        "clientId": "Klient-ID",
+        "clientSecret": "Klienthemmelighet",
+        "systemToken": "Tilgangstoken for systembruker",
+        "appSecret": "Apphemmelighet (hvis appen krever appsecret_proof)",
+        "optional": "Valgfritt",
+        "connect": "Koble til",
+        "save": "Lagre",
+        "cancel": "Avbryt"
+      },
+      "steps": {
+        "google_ads": {
+          "1": "I Google Ads, åpne Administrator › API-senter og søk om et utviklertoken (Basic-tilgang holder). Lim det inn nedenfor.",
+          "2": "Bruk tjenestekontoen til Search Console, eller opprett en i Google Cloud og last ned JSON-nøkkelen.",
+          "3": "I Google Ads, åpne Administrator › Tilgang og sikkerhet og legg til {email} som bruker med lesetilgang.",
+          "4": "Hvis annonsekontoene ligger under en administratorkonto, oppgi ID-en; tjenestekontoen legges da til der."
+        },
+        "linkedin_ads": {
+          "1": "På linkedin.com/developers, opprett en app for firmasiden og be om produktet Advertising API.",
+          "2": "Under Auth, legg til denne redirect-adressen: {redirect}",
+          "3": "Kopier klient-ID og klienthemmelighet nedenfor og lagre.",
+          "4": "Logg inn med LinkedIn som en med tilgang til annonsekontoen."
+        },
+        "meta_ads": {
+          "1": "I Meta Business Settings, åpne Brukere › Systembrukere og opprett en (Ansatt holder).",
+          "2": "Gi den annonsekontoene med Se resultater.",
+          "3": "Generer et token for appen med ads_read og read_insights, og lim det inn nedenfor.",
+          "4": "Hvis appen krever appsecret_proof, lim inn apphemmeligheten også."
+        }
       }
     }
   }

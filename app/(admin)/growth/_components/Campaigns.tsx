@@ -169,15 +169,19 @@ function Detail({ c, host, app, nf, dates, mayEdit, canSpend, pending, onToggle,
 }) {
   const t = useTranslations('simpleGrowth.campaigns')
   const te = useTranslations('common.errors')
+  const ta = useTranslations('simpleGrowth.ads')
   const format = useFormatter()
   const flash = useToast()
   const f = c.figures
+  // an ad platform campaign's spend is imported (0077): its months are the platform's, and its state follows the platform
+  const platform = c.platform ?? null
   const dash = '—'
   const url = trackingUrl(host, c.landing_path, c.utm)
   const used = f && f.spent !== null && c.budget ? Math.round((f.spent / c.budget) * 100) : f && c.budget ? 0 : null
   const thisMonth = new Date().toISOString().slice(0, 7)
   const [month, setMonth] = useState(thisMonth)
   const entered = f?.spend.find((s) => s.month === month)
+  const imported = !!entered?.source && entered.source !== 'typed'
   const [amount, setAmount] = useState(entered ? formatNumber(entered.amount, nf, Number.isInteger(entered.amount) ? 0 : 2) : '')
   useEffect(() => { setAmount(entered ? formatNumber(entered.amount, nf, Number.isInteger(entered.amount) ? 0 : 2) : '') }, [entered, nf])
   const monthLabel = (m: string) => format.dateTime(new Date(`${m}-15T12:00:00Z`), { month: 'short', year: 'numeric' })
@@ -199,14 +203,16 @@ function Detail({ c, host, app, nf, dates, mayEdit, canSpend, pending, onToggle,
         <button
           type="button"
           onClick={onToggle}
-          disabled={!mayEdit || pending}
-          title={mayEdit ? undefined : t('toggle.noRight')}
+          disabled={!mayEdit || pending || !!platform}
+          title={platform ? ta('followsPlatform', { platform: ta(`names.${platform.provider}`) }) : mayEdit ? undefined : t('toggle.noRight')}
           className="h-8 flex-none cursor-pointer whitespace-nowrap rounded-9 border border-ink bg-surface px-3 text-12 font-bold disabled:cursor-not-allowed disabled:opacity-50"
         >
           {toggleLabel}
         </button>
       </div>
-      {c.state !== 'ended' ? <div className="-mt-1 text-11.5 text-muted">{t('toggle.recordOnly', { channel: t(`channels.${c.channel}`) })}</div> : null}
+      {platform ? (
+        <div className="-mt-1 text-11.5 text-muted">{ta('fromPlatform', { platform: ta(`names.${platform.provider}`), name: platform.name, more: platform.count - 1 })}</div>
+      ) : c.state !== 'ended' ? <div className="-mt-1 text-11.5 text-muted">{t('toggle.recordOnly', { channel: t(`channels.${c.channel}`) })}</div> : null}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {stats.map(([k, v]) => (
           <div key={k} className="rounded-13 border border-line bg-canvas px-[10px] py-[9px]">
@@ -223,7 +229,7 @@ function Detail({ c, host, app, nf, dates, mayEdit, canSpend, pending, onToggle,
         <div className="flex flex-col gap-[6px]">
           <div className="text-11 font-bold uppercase tracking-[.1em] text-muted">{t('spend.title')}</div>
           <div className="text-12 text-muted">
-            {f.spend.length ? f.spend.map((s) => `${monthLabel(s.month)}: ${money(s.amount, nf, s.currency)}`).join(' · ') : t('spend.none')}
+            {f.spend.length ? f.spend.map((s) => `${monthLabel(s.month)}: ${money(s.amount, nf, s.currency)}${s.source && s.source !== 'typed' ? ` (${ta(`names.${s.source}`)})` : ''}`).join(' · ') : t('spend.none')}
           </div>
           <form
             className="flex flex-wrap items-center gap-[6px]"
@@ -235,9 +241,10 @@ function Detail({ c, host, app, nf, dates, mayEdit, canSpend, pending, onToggle,
             }}
           >
             <input type="month" value={month} onChange={(e) => setMonth(e.target.value || thisMonth)} aria-label={t('spend.month')} className="h-[30px] rounded-9 border border-line bg-canvas px-2 text-12" />
-            <input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" placeholder={t('spend.amount')} aria-label={t('spend.amount')} className="h-[30px] w-[110px] rounded-9 border border-line bg-canvas px-2 text-12.5" />
-            <button type="submit" disabled={pending} className="h-[30px] cursor-pointer whitespace-nowrap rounded-9 border border-line bg-transparent px-[11px] text-12 font-semibold">{t('spend.save')}</button>
+            <input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" placeholder={t('spend.amount')} aria-label={t('spend.amount')} disabled={imported} className="h-[30px] w-[110px] rounded-9 border border-line bg-canvas px-2 text-12.5" />
+            <button type="submit" disabled={pending || imported} className="h-[30px] cursor-pointer whitespace-nowrap rounded-9 border border-line bg-transparent px-[11px] text-12 font-semibold disabled:cursor-default disabled:opacity-60">{t('spend.save')}</button>
           </form>
+          {imported && entered?.source ? <div className="text-11.5 text-muted">{ta('spendImported', { platform: ta(`names.${entered.source}`) })}</div> : null}
         </div>
       ) : null}
       <div className="text-11 font-bold uppercase tracking-[.1em] text-muted">{t('link.title')}</div>

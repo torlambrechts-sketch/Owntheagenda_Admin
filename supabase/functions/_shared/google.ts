@@ -51,10 +51,11 @@ export async function serviceJwt(key: ServiceKey, scope: string, nowSec: number)
   return `${head}.${body}.${toBase64Url(sig)}`
 }
 
-export async function accessToken(key: ServiceKey, f: Fetch = fetch, nowSec = Math.floor(Date.now() / 1000)): Promise<{ ok: true; token: string } | Fail> {
+/** an access token for the service account, for Search Console unless another scope is asked for (Google Ads, 0077) */
+export async function accessToken(key: ServiceKey, f: Fetch = fetch, nowSec = Math.floor(Date.now() / 1000), scope = SCOPE): Promise<{ ok: true; token: string } | Fail> {
   let assertion: string
   try {
-    assertion = await serviceJwt(key, SCOPE, nowSec)
+    assertion = await serviceJwt(key, scope, nowSec)
   } catch {
     return { ok: false, code: 'bad_key' }
   }

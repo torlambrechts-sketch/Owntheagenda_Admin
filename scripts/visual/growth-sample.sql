@@ -297,3 +297,57 @@ insert into app.suppressions (email_sha256, scope, reason, created_at)
 select sha256(convert_to('sample' || g || '@example.invalid', 'UTF8')), 'marketing', r, now() - make_interval(days => g % 9)
 from (values (160, 'unsubscribed'), (320, 'unsubscribed'), (480, 'unsubscribed'), (140, 'hard_bounce'), (280, 'hard_bounce'), (420, 'hard_bounce'), (321, 'complaint'), (7, 'manual')) v(g, r)
 on conflict do nothing;
+
+-- ---------------------------------------------------------------------------
+-- Ad platforms (0077): Google Ads and Meta connected with one account each, sixty days through the import itself
+do $$
+begin
+  if not exists (select 1 from vault.secrets where name = 'google_ads_developer_token') then
+    perform vault.create_secret('sample-developer-token-local', 'google_ads_developer_token', 'LOCAL SAMPLE ONLY');
+    perform vault.create_secret('sampletokenforlocalvisualqaonlynotarealmetatoken0000', 'meta_ads_token', 'LOCAL SAMPLE ONLY');
+  end if;
+end $$;
+update app.integration_connections set status = 'connected', connected_at = now() - interval '3 days',
+  config = config || jsonb_build_object('last_check_at', now() - interval '2 hours', 'key_source', 'search_console', 'last_error', null)
+where provider in ('google_ads', 'meta_ads');
+insert into app.ad_accounts (provider, external_id, name, currency, time_zone, product)
+values ('google_ads', '1234567890', 'Orgpuls — Google Ads', 'NOK', 'Europe/Oslo', 'orgpuls'), ('meta_ads', '987654321', 'Orgpuls', 'NOK', 'Europe/Oslo', 'orgpuls')
+on conflict do nothing;
+create temp table g_ad (provider text, campaign text, ad text, headline text, imp int, ctr0 numeric, ctr1 numeric, cpc numeric, reach numeric);
+insert into g_ad values
+  ('google_ads', '111', '9001', 'Er dere dekket av lovkravet fra 1. januar?', 900, .062, .060, 9.5, null),
+  ('google_ads', '111', '9002', 'Gratis mal for medarbeiderundersøkelse', 700, .079, .078, 6.0, null),
+  ('google_ads', '112', '9003', 'Orgpuls — medarbeiderundersøkelse', 300, .041, .040, 4.0, null),
+  ('meta_ads', '211', '8001', 'Prøv gratis i 30 dager', 1400, .011, .005, 12.0, .55),
+  ('meta_ads', '212', '8002', 'Medarbeiderundersøkelse på 18 minutter', 1100, .009, .009, 14.0, .7),
+  ('meta_ads', '212', '8003', 'Fem er gulvet. Anonymt, alltid.', 800, .014, .013, 11.0, .72);
+-- each ad's day: impressions with a weekday swing; its click-through moves from ctr0 (two weeks back) to ctr1 (this week)
+create temp table g_ad_day as
+select a.*, d::date as day, (a.imp * (case when extract(dow from d) in (0, 6) then .6 else 1 end) * (0.85 + random() * .3))::int impressions,
+       a.ctr0 + (a.ctr1 - a.ctr0) * greatest(0, least(1, (14 - ((now() at time zone 'Europe/Oslo')::date - d::date)) / 7.0)) ctr
+from g_ad a cross join generate_series((now() at time zone 'Europe/Oslo')::date - 60, (now() at time zone 'Europe/Oslo')::date - 1, interval '1 day') d;
+select public.worker_ads_import((select id from app.ad_accounts where provider = 'google_ads' and external_id = '1234567890'),
+  (now() at time zone 'Europe/Oslo')::date - 60, (now() at time zone 'Europe/Oslo')::date - 1,
+  '[{"id": "111", "name": "Lovkrav — Q4 (Search)", "status": "live", "kind": "search", "utm_campaign": "lovkrav-q4"},
+    {"id": "112", "name": "Merkevare — Orgpuls", "status": "live", "kind": "search"},
+    {"id": "113", "name": "Høstundersøkelse 2025", "status": "ended", "kind": "search", "starts_on": "2025-09-01", "ends_on": "2025-10-15"}]',
+  (select jsonb_agg(jsonb_build_object('id', ad, 'campaign', campaign, 'headline', headline, 'status', 'live')) from g_ad where provider = 'google_ads'),
+  (select jsonb_agg(x) from (
+     select jsonb_build_object('level', 'ad', 'id', ad, 'day', day, 'impressions', impressions, 'clicks', round(impressions * ctr), 'spend', round(impressions * ctr * cpc, 2),
+                               'conversions', round(impressions * ctr * .08)) x from g_ad_day where provider = 'google_ads'
+     union all
+     select jsonb_build_object('level', 'campaign', 'id', campaign, 'day', day, 'impressions', sum(impressions), 'clicks', sum(round(impressions * ctr)),
+                               'spend', sum(round(impressions * ctr * cpc, 2)), 'conversions', sum(round(impressions * ctr * .08)))
+     from g_ad_day where provider = 'google_ads' group by campaign, day) y));
+select public.worker_ads_import((select id from app.ad_accounts where provider = 'meta_ads' and external_id = '987654321'),
+  (now() at time zone 'Europe/Oslo')::date - 60, (now() at time zone 'Europe/Oslo')::date - 1,
+  '[{"id": "211", "name": "Retargeting /pris", "status": "live", "kind": "outcome_traffic", "utm_campaign": "meta-retarget"},
+    {"id": "212", "name": "HR-ledere — video", "status": "paused", "kind": "outcome_leads"}]',
+  (select jsonb_agg(jsonb_build_object('id', ad, 'campaign', campaign, 'headline', headline, 'status', 'live')) from g_ad where provider = 'meta_ads'),
+  (select jsonb_agg(x) from (
+     select jsonb_build_object('level', 'ad', 'id', ad, 'day', day, 'impressions', impressions, 'clicks', round(impressions * ctr), 'spend', round(impressions * ctr * cpc, 2),
+                               'conversions', round(impressions * ctr * .05), 'reach', round(impressions * reach)) x from g_ad_day where provider = 'meta_ads'
+     union all
+     select jsonb_build_object('level', 'campaign', 'id', campaign, 'day', day, 'impressions', sum(impressions), 'clicks', sum(round(impressions * ctr)),
+                               'spend', sum(round(impressions * ctr * cpc, 2)), 'conversions', sum(round(impressions * ctr * .05)), 'reach', sum(round(impressions * reach)))
+     from g_ad_day where provider = 'meta_ads' group by campaign, day) y));

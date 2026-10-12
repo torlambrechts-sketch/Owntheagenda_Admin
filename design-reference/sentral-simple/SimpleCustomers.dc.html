@@ -89,6 +89,7 @@
       </div>
     </div>
   </sc-if>
+  <sc-if value="{{ v.support }}" hint-placeholder-val="{{ false }}"><dc-import name="SupportHub" hint-size="100%,700px"></dc-import></sc-if>
   <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
 </div>
 </x-dc>
@@ -101,13 +102,13 @@ class Component extends DCLogic {
   renderVals() {
     const D = window.SA; const st = this.state;
     if (!D) return { tabs: [], v: {}, kpis: [], filters: [], list: [], acc: { facts: [], log: [] }, actions: [], queues: [], tickets: [], tk: { thread: [] }, modes: [], canned: [] };
-    const tab = st.tab || (this.props.tab === 'tickets' ? 'tickets' : 'accounts');
+    const tab = st.tab || (['tickets', 'support'].includes(this.props.tab) ? this.props.tab : 'accounts');
     const product = this.props.product || 'orgpuls';
     const orgs = D.orgs.filter((o) => o.products.includes(product)).map((o) => ({ ...o, ...(st.over[o.id] || {}) }));
     const allT = D.tickets.filter((t) => product === 'orgpuls' || t.product === product).map((t) => ({ ...t, ...(st.tover[t.id] || {}) }));
     const isOpen = (t) => t.status !== 'Resolved' && t.status !== 'Closed';
     const pill = (on) => ({ bg: on ? '#191510' : 'transparent', c: on ? '#FCF6E9' : '#191510', bc: on ? '#191510' : '#C4BCA8', fw: on ? 700 : 500 });
-    const tabs = [['accounts', 'Accounts', orgs.length], ['tickets', 'Tickets and requests', allT.filter(isOpen).length]].map(([k, n, count]) => ({ n, count, pick: () => this.setState({ tab: k }), ...pill(tab === k) }));
+    const tabs = [['accounts', 'Accounts', orgs.length], ['tickets', 'Tickets and requests', allT.filter(isOpen).length], ['support', 'Help centre and support', null]].map(([k, n, count]) => ({ n, count, pick: () => this.setState({ tab: k }), ...pill(tab === k) }));
     const mrr = orgs.reduce((a, o) => a + o.mrr, 0);
     const kpis = [['MRR', D.kr(mrr), 'ARR ' + D.kr(mrr * 12)], ['Paying accounts', orgs.filter((o) => o.mrr > 0).length, 'Active and past due'], ['Trials', orgs.filter((o) => o.status === 'Trial').length, 'Trial → paid 31 %'], ['Open tickets', allT.filter(isOpen).length, 'Median first reply 2 h']].map(([n, v, s]) => ({ n, v: String(v), s }));
     const filters = ['All', 'Trial', 'Active', 'Past due', 'Suspended'].map((n) => ({ n, pick: () => this.setState({ status: n }), bg: st.status === n ? '#FBEBBE' : 'transparent', bc: st.status === n ? '#191510' : '#E8DFC9', fw: st.status === n ? 700 : 500 }));

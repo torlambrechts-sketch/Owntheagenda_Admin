@@ -56,6 +56,7 @@ a:hover{color:#1E3D1A;text-decoration:underline}
       <sc-if value="{{ r.customers }}" hint-placeholder-val="{{ true }}"><dc-import name="SimpleCustomers" go="{{ go }}" product="{{ product }}" tab="{{ tab }}" hint-size="100%,800px"></dc-import></sc-if>
       <sc-if value="{{ r.crm }}"><dc-import name="SimpleCRM" go="{{ go }}" product="{{ product }}" tab="{{ tab }}" hint-size="100%,800px"></dc-import></sc-if>
       <sc-if value="{{ r.growth }}"><dc-import name="SimpleGrowth" go="{{ go }}" product="{{ product }}" tab="{{ tab }}" hint-size="100%,800px"></dc-import></sc-if>
+      <sc-if value="{{ r.dev }}"><dc-import name="DevHub" hint-size="100%,800px"></dc-import></sc-if>
       <sc-if value="{{ r.platform }}"><dc-import name="SimplePlatform" go="{{ go }}" product="{{ product }}" tab="{{ tab }}" hint-size="100%,800px"></dc-import></sc-if>
     </div>
   </main>
@@ -72,8 +73,8 @@ class Component extends DCLogic {
   go = (section, tab) => { this.setState({ section, tab: tab || null }); try { localStorage.setItem('ss.section', section); } catch (e) {} window.scrollTo(0, 0); };
   renderVals() {
     const D = window.SA; const st = this.state;
-    const I = { customers: 'M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M20 20v-1.5a3.5 3.5 0 0 0-2.5-3.35M15.5 4.2a3.5 3.5 0 0 1 0 6.6', crm: 'M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v6h-4z', growth: 'M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6', platform: 'M9 4h4v2a1.5 1.5 0 0 0 3 0V4h4v4h-2a1.5 1.5 0 0 0 0 3h2v4h-4v-2a1.5 1.5 0 0 0-3 0v2H9v-4H7a1.5 1.5 0 0 1 0-3h2z' };
-    const S = [['customers', 'Customers', 'Accounts, tickets'], ['crm', 'CRM', 'Deals, lists'], ['growth', 'Growth', 'Analytics, SEO, email'], ['platform', 'Platform', 'Apps, plans, team']];
+    const I = { dev: 'M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14', customers: 'M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M20 20v-1.5a3.5 3.5 0 0 0-2.5-3.35M15.5 4.2a3.5 3.5 0 0 1 0 6.6', crm: 'M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v6h-4z', growth: 'M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6', platform: 'M9 4h4v2a1.5 1.5 0 0 0 3 0V4h4v4h-2a1.5 1.5 0 0 0 0 3h2v4h-4v-2a1.5 1.5 0 0 0-3 0v2H9v-4H7a1.5 1.5 0 0 1 0-3h2z' };
+    const S = [['customers', 'Customers', 'Accounts, tickets'], ['crm', 'CRM', 'Deals, lists'], ['growth', 'Growth', 'Analytics, SEO, email'], ['platform', 'Platform', 'Apps, plans, team'], ['dev', 'Development', 'Roadmap, bugs, releases']];
     const nav = S.map(([k, label, sub]) => { const on = st.section === k; return { label, sub, icon: I[k], cur: on ? 'page' : undefined, bg: on ? '#FBEBBE' : 'transparent', tile: on ? '#F5C64A' : '#F2EAD6', fw: on ? 700 : 600, go: () => this.go(k) }; });
     const products = D ? D.products : [{ id: 'orgpuls', name: 'Orgpuls' }];
     const p = D ? D.productById[st.product] || D.products[0] : { name: 'Orgpuls', status: 'Operational' };

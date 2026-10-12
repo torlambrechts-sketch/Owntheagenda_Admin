@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="admin-data.js"></script>
+<style>body{margin:0;background:#FCF6E9;font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#191510}a{color:#2F5D2A;text-decoration:none}a:hover{color:#1E3D1A;text-decoration:underline}</style>
+</helmet>
+<div style="display:flex; flex-direction:column; gap:14px; color:#191510; font-size:14px">
+
+  <sc-if value="{{ v.access }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Admin roles</b><span style="font-size:12px; color:#5F5849">✓ allowed · A needs approval · – not allowed</span></div>
+        <div style="overflow-x:auto"><div style="min-width:760px">
+          <div style="display:grid; grid-template-columns:minmax(0,1.7fr) repeat(6,minmax(70px,1fr)); gap:6px; padding:9px 18px; border-bottom:1px solid #E8DFC9; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#5F5849"><span>Action</span><sc-for list="{{ roleHead }}" as="h"><span style="text-align:center">{{ h }}</span></sc-for></div>
+          <sc-for list="{{ roleRows }}" as="r"><div style="display:grid; grid-template-columns:minmax(0,1.7fr) repeat(6,minmax(70px,1fr)); gap:6px; align-items:center; padding:7px 18px; border-bottom:1px solid #F2EAD6; font-size:12.5px"><span>{{ r.n }}</span><sc-for list="{{ r.cells }}" as="c"><button onClick="{{ c.cycle }}" style="height:26px; border-radius:7px; border:1px solid {{ c.bc }}; background:{{ c.bg }}; font-size:12px; font-weight:700; color:{{ c.c }}; cursor:pointer">{{ c.v }}</button></sc-for></div></sc-for>
+        </div></div>
+        <div style="padding:10px 18px; font-size:11.5px; color:#5F5849">Super-admin and Billing require two-factor login with a security key · all actions are logged · click a cell to change it</div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Waiting for approval</b><span style="font-size:12px; color:#5F5849">A second person must approve · {{ pendingN }} open</span></div>
+        <sc-for list="{{ approvals }}" as="a"><div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9"><span style="flex:1 1 300px; display:flex; flex-direction:column; gap:2px"><b style="font-size:13px">{{ a.t }}</b><span style="font-size:11.5px; color:#5F5849">Requested by {{ a.by }} · {{ a.when }} · reason: {{ a.why }}</span></span><b style="font-size:13px; white-space:nowrap">{{ a.amt }}</b><sc-if value="{{ a.pending }}"><span style="display:flex; gap:6px"><button onClick="{{ a.no }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:12px; font-weight:600; cursor:pointer">Reject</button><button onClick="{{ a.yes }}" style="height:30px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Approve</button></span></sc-if><sc-if value="{{ a.done }}"><b style="font-size:12px; color:{{ a.dc }}">{{ a.done }}</b></sc-if></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.ops }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Gradual rollouts</b><span style="font-size:12px; color:#5F5849">Rolls back automatically if the error rate doubles</span></div>
+        <sc-for list="{{ rollouts }}" as="r"><div style="display:flex; flex-direction:column; gap:8px; padding:12px 18px; border-bottom:1px solid #E8DFC9">
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:center"><span style="display:flex; flex-direction:column"><b style="font-size:13px">{{ r.n }}</b><span style="font-size:11.5px; color:#5F5849">{{ r.app }} · errors {{ r.err }} · adoption {{ r.adopt }}</span></span><span style="display:flex; gap:6px"><button onClick="{{ r.rollback }}" style="height:30px; padding:0 11px; border-radius:9px; border:1px solid #E38258; background:transparent; color:#8A3A16; font-size:12px; font-weight:600; cursor:pointer">Roll back</button><button onClick="{{ r.next }}" style="height:30px; padding:0 12px; border-radius:9px; border:1px solid #191510; background:{{ r.nbg }}; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap">{{ r.nextLabel }}</button></span></div>
+          <div style="display:flex; gap:4px"><sc-for list="{{ r.stages }}" as="s"><span style="flex:1; height:26px; border-radius:7px; background:{{ s.bg }}; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:{{ s.fw }}; color:{{ s.c }}; white-space:nowrap; overflow:hidden">{{ s.n }}</span></sc-for></div>
+        </div></sc-for>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+          <b style="font-size:15px">Announcement in the app</b>
+          <textarea value="{{ ann.text }}" onChange="{{ setAnnText }}" style="min-height:60px; padding:9px 11px; border-radius:11px; border:1px solid #E8DFC9; background:#FCF6E9; font-size:13px"></textarea>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center"><span style="font-size:12px; color:#5F5849">Show to</span><sc-for list="{{ annTargets }}" as="t"><button onClick="{{ t.toggle }}" style="padding:4px 10px; border-radius:999px; font-size:11.5px; cursor:pointer; border:1px solid {{ t.bc }}; background:{{ t.bg }}; font-weight:{{ t.fw }}; white-space:nowrap">{{ t.n }}</button></sc-for></div>
+          <div style="padding:10px 12px; border-radius:12px; background:#FBEBBE; font-size:12.5px"><b>Preview:</b> {{ ann.text }}</div>
+          <button onClick="{{ publishAnn }}" style="align-self:flex-start; height:32px; padding:0 13px; border-radius:9px; border:1px solid #191510; background:#F5C64A; font-size:12px; font-weight:700; cursor:pointer">Publish · {{ ann.reach }}</button>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Accounts near a plan limit</b><span style="font-size:12px; color:#5F5849">Warn at 80 %</span></div>
+          <sc-for list="{{ limits }}" as="l"><div style="display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 110px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ l.org }}</b><span style="font-size:11.5px; color:#5F5849">{{ l.what }}</span></span><span style="display:flex; flex-direction:column; gap:3px"><span style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ l.w }}%; background:{{ l.c }}"></span></span><span style="font-size:11px; color:#5F5849">{{ l.v }}</span></span><button onClick="{{ l.raise }}" style="height:28px; border-radius:8px; border:1px solid #191510; background:{{ l.bg }}; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap">{{ l.cta }}</button></div></sc-for>
+        </div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Errors per customer · last 24 h</b><span style="font-size:12px; color:#5F5849">From the application error logs and email delivery</span></div>
+        <sc-for list="{{ health }}" as="h"><div style="display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1.6fr) 70px 110px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b>{{ h.org }}</b><span style="color:#5F5849">{{ h.err }}</span><b style="color:{{ h.c }}">{{ h.n }}</b><button onClick="{{ h.ticket }}" style="height:28px; border-radius:8px; border:1px solid #E8DFC9; background:transparent; font-size:11.5px; font-weight:600; cursor:pointer; white-space:nowrap">{{ h.cta }}</button></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.success }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px">
+          <div style="display:flex; justify-content:space-between; align-items:baseline"><b style="font-size:15px">Onboarding checklist</b><span style="font-size:12px; color:#5F5849">Shown in the app · completion by step</span></div>
+          <sc-for list="{{ checklist }}" as="c"><div style="display:grid; grid-template-columns:22px minmax(0,1fr) 110px 44px; gap:10px; align-items:center; font-size:12.5px; padding:5px 0"><button onClick="{{ c.toggle }}" style="width:20px; height:20px; border-radius:6px; border:1.5px solid #191510; background:{{ c.bg }}; font-size:11px; cursor:pointer; padding:0">{{ c.mark }}</button><span style="text-decoration:{{ c.td }}">{{ c.n }}</span><span style="height:8px; border-radius:999px; background:#F2EAD6; overflow:hidden"><span style="display:block; height:100%; width:{{ c.w }}%; background:#5C9A55"></span></span><b style="text-align:right">{{ c.v }}</b></div></sc-for>
+          <span style="font-size:11.5px; color:#5F5849">Untick a step to hide it from the in-app checklist</span>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:10px">
+          <div style="display:flex; justify-content:space-between; align-items:baseline"><b style="font-size:15px">NPS</b><span style="font-size:12px; color:#5F5849">Asked in the app every 90 days</span></div>
+          <div style="display:flex; align-items:baseline; gap:10px"><span style="font-family:'Playfair Display',serif; font-size:40px; font-weight:600; color:#2F5D2A">+42</span><span style="font-size:12.5px; color:#5F5849">214 answers · +5 vs last quarter</span></div>
+          <div style="display:flex; height:16px; border-radius:6px; overflow:hidden"><span style="width:56%; background:#5C9A55"></span><span style="width:30%; background:#F5DC96"></span><span style="width:14%; background:#D4633A"></span></div>
+          <div style="display:flex; gap:14px; font-size:11.5px; color:#5F5849"><span>Promoters 56 %</span><span>Passives 30 %</span><span>Detractors 14 %</span></div>
+          <span style="font-size:12px; color:#3A342A">Detractors automatically create a task for the customer success manager.</span>
+        </div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Feature requests</b><span style="font-size:12px; color:#5F5849">Votes from customers · linked tickets and deals</span></div>
+        <sc-for list="{{ requests }}" as="r"><div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:11px 18px; border-bottom:1px solid #E8DFC9"><button onClick="{{ r.vote }}" style="width:52px; height:46px; flex:none; border-radius:11px; border:1px solid #191510; background:{{ r.vbg }}; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer"><span style="font-size:11px">▲</span><b style="font-size:13px">{{ r.votes }}</b></button><span style="flex:1 1 260px; display:flex; flex-direction:column; gap:2px"><b style="font-size:13px">{{ r.t }}</b><span style="font-size:11.5px; color:#5F5849">{{ r.tickets }} tickets · {{ r.deals }} · {{ r.mrr }} MRR asking</span></span><select value="{{ r.status }}" onChange="{{ r.setStatus }}" style="height:30px; border-radius:8px; border:1px solid #E8DFC9; background:{{ r.sbg }}; font-size:12px; font-weight:700"><option>Under review</option><option>Planned</option><option>In progress</option><option>Shipped</option><option>Not planned</option></select></div></sc-for>
+        <div style="padding:10px 18px; font-size:11.5px; color:#5F5849">When a request is set to Shipped, everyone who voted gets an email and the changelog is updated.</div>
+      </div>
+      <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+        <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Renewal and expansion</b><span style="font-size:12px; color:#5F5849">Next 60 days</span></div>
+        <sc-for list="{{ renewals }}" as="r"><div style="display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1.6fr) 90px 110px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><b>{{ r.org }}</b><span style="color:#5F5849">{{ r.sig }}</span><b style="color:{{ r.c }}">{{ r.kind }}</b><button onClick="{{ r.deal }}" style="height:28px; border-radius:8px; border:1px solid #191510; background:{{ r.bg }}; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap">{{ r.cta }}</button></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ v.billing }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; align-items:flex-start">
+      <div style="background:#FFFDF6; border:1px solid #191510; border-radius:20px; overflow:hidden">
+        <div style="padding:14px 18px; background:#FCF6E9; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><span style="display:flex; flex-direction:column"><b style="font-size:15px">Self-service billing · Lumio AS</b><span style="font-size:12px; color:#5F5849">What the customer sees in Innstillinger → Abonnement</span></span><span style="padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; background:#FBEBBE; align-self:flex-start">Preview</span></div>
+        <div style="padding:14px 18px; display:flex; flex-direction:column; gap:10px">
+          <div style="display:flex; justify-content:space-between; font-size:13px"><span>Abonnement</span><b>26–100 ansatte · 565 kr/mnd</b></div>
+          <div style="display:flex; gap:6px"><sc-for list="{{ planOpts }}" as="p"><button onClick="{{ p.pick }}" style="flex:1; padding:9px 6px; border-radius:11px; border:1px solid {{ p.bc }}; background:{{ p.bg }}; font-size:12px; font-weight:{{ p.fw }}; cursor:pointer">{{ p.n }}<div style="font-size:11px; font-weight:500; color:#5F5849">{{ p.price }}</div></button></sc-for></div>
+          <div style="display:flex; padding:3px; border-radius:10px; background:#F2EAD6"><sc-for list="{{ payOpts }}" as="p"><button onClick="{{ p.pick }}" style="flex:1; padding:7px; border-radius:7px; border:none; font-size:12px; cursor:pointer; background:{{ p.bg }}; font-weight:{{ p.fw }}">{{ p.n }}</button></sc-for></div>
+          <sc-for list="{{ invoices }}" as="i"><div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid #F2EAD6"><span>{{ i.no }} · {{ i.d }}</span><span style="display:flex; gap:10px"><b>{{ i.a }}</b><a href="#">PDF</a></span></div></sc-for>
+          <span style="font-size:11.5px; color:#5F5849">Billing tickets dropped 38 % after the portal launched</span>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; overflow:hidden">
+          <div style="padding:13px 18px; border-bottom:1px solid #E8DFC9; display:flex; justify-content:space-between"><b style="font-size:15px">Refunds and credit notes</b><span style="font-size:12px; color:#5F5849">Over 2 000 kr needs approval</span></div>
+          <sc-for list="{{ refunds }}" as="r"><div style="display:grid; grid-template-columns:minmax(0,1.3fr) 90px 110px; gap:10px; align-items:center; padding:10px 18px; border-bottom:1px solid #E8DFC9; font-size:12.5px"><span style="display:flex; flex-direction:column"><b>{{ r.org }}</b><span style="font-size:11.5px; color:#5F5849">{{ r.why }}</span></span><b>{{ r.a }}</b><span style="font-size:11.5px; font-weight:700; color:{{ r.c }}">{{ r.st }}</span></div></sc-for>
+        </div>
+        <div style="background:#FFFDF6; border:1px solid #E8DFC9; border-radius:20px; padding:16px 18px; display:flex; flex-direction:column; gap:8px"><b style="font-size:15px">Failed payments recovered · 30 days</b><div style="display:flex; align-items:baseline; gap:10px"><span style="font-family:'Playfair Display',serif; font-size:30px; font-weight:600; color:#2F5D2A">68 %</span><span style="font-size:12.5px; color:#5F5849">{{ recovered }}</span></div><sc-for list="{{ dunning }}" as="d"><div style="display:flex; justify-content:space-between; font-size:12.5px; padding:4px 0; border-bottom:1px solid #F2EAD6"><span>{{ d.n }}</span><b>{{ d.v }}</b></div></sc-for></div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:95; background:#191510; color:#FCF6E9; padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600">{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { perm: {}, apr: {}, stage: {}, rolled: {}, ann: 'Nytt: pulsundersøkelser med fem spørsmål. Prøv dem under Målinger.', targets: { 'All products': false, Orgpuls: true, Admins: true, Trial: false }, raised: {}, ticketed: {}, check: {}, votes: {}, rstatus: {}, deals: {}, plan: 1, pay: 'Card', toast: null, ready: !!window.SA };
+  componentDidMount() { if (!window.SA) this.t = setInterval(() => { if (window.SA) { clearInterval(this.t); this.setState({ ready: true }); } }, 40); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 2400); }
+  renderVals() {
+    const D = window.SA; const st = this.state;
+    if (!D) return { v: {}, roleHead: [], roleRows: [], approvals: [], rollouts: [], ann: {}, annTargets: [], limits: [], health: [], checklist: [], requests: [], renewals: [], planOpts: [], payOpts: [], invoices: [], refunds: [], dunning: [] };
+    const kr = D.kr; const view = this.props.view || 'access';
+    const roleHead = ['Super-admin', 'Support', 'Billing', 'Ops', 'Sales', 'Read-only'];
+    const RR = [['View accounts and users', 'YYYYYY'], ['Reply to tickets', 'YYY-Y-'], ['Extend trial', 'YYA-Y-'], ['Request support access', 'YY----'], ['Change plan or price', 'YAY-A-'], ['Refund or credit note', 'Y-A---'], ['Discount over 20 %', 'Y-A-A-'], ['Delete account or user data', 'A-----'], ['Change feature flags and rollouts', 'Y--A--'], ['Publish announcements', 'YY-Y--'], ['Export customer lists', 'YAY-A-'], ['Manage admin roles', 'A-----']];
+    const sym = { Y: ['✓', '#CFE7E4', '#20431C', '#2F5D2A'], A: ['A', '#FBEBBE', '#5C4600', '#191510'], '-': ['–', 'transparent', '#8A8272', '#E8DFC9'] };
+    const nxt = { Y: 'A', A: '-', '-': 'Y' };
+    const roleRows = RR.map(([n, s], ri) => ({ n, cells: s.split('').map((ch, ci) => { const k = ri + '_' + ci; const cur = st.perm[k] || ch; const [v, bg, c, bc] = sym[cur]; return { v, bg, c, bc, cycle: () => this.setState({ perm: { ...st.perm, [k]: nxt[cur] } }) }; }) }));
+    const AP = [['a1', 'Refund 3 390 kr to Kvamme Regnskap AS', 'Sara Haugen', '20 min ago', 'Double charge in September', '3 390 kr'], ['a2', 'Delete organization Rimfrost Bakeri AS', 'Magnus Berg', '2 h ago', 'Cancelled, retention ended', '—'], ['a3', 'Discount 35 % for 12 months — Elvebakken kommune', 'Ingrid Solberg', 'Yesterday', 'Tender requirement', '−2 380 kr/mo'], ['a4', 'Export all customer contacts (4 120)', 'Jonas Dahl', 'Yesterday', 'Newsletter migration', '4 120 rows']];
+    const approvals = AP.map(([k, t, by, when, why, amt]) => { const d = st.apr[k]; return { t, by, when, why, amt, pending: !d, done: d === 'yes' ? '✓ Approved by Tor' : d === 'no' ? 'Rejected' : null, dc: d === 'yes' ? '#2F5D2A' : '#A33A16', yes: () => { this.setState({ apr: { ...st.apr, [k]: 'yes' } }); this.flash('Approved · action executed and logged'); }, no: () => this.setState({ apr: { ...st.apr, [k]: 'no' } }) }; });
+    const STG = ['Internal', '1 pilot org', '5 %', '25 %', '50 %', '100 %'];
+    const RO = [['New results dashboard', 'Orgpuls', 2, '0,3 %', '61 %'], ['Pulse surveys', 'Orgpuls', 4, '0,2 %', '38 %'], ['Shift swap marketplace', 'Skiftly', 1, '1,9 %', '—'], ['Photo upload on mobile', 'Avvikspunkt', 5, '0,1 %', '72 %']];
+    const rollouts = RO.map(([n, app, s0, err, adopt]) => { const s = st.stage[n] != null ? st.stage[n] : s0; const rb = st.rolled[n]; return { n, app, err, adopt, stages: STG.map((x, i) => ({ n: x, bg: rb ? '#F2EAD6' : i < s ? '#CFE7E4' : i === s ? '#F5C64A' : '#F2EAD6', fw: i === s ? 700 : 500, c: i <= s && !rb ? '#191510' : '#8A8272' })), nextLabel: rb ? 'Restart' : s >= 5 ? 'Fully rolled out' : 'Widen to ' + STG[s + 1], nbg: s >= 5 && !rb ? '#CFE7E4' : '#F5C64A',
+      next: () => { if (rb) { this.setState({ rolled: { ...st.rolled, [n]: false }, stage: { ...st.stage, [n]: 0 } }); return; } if (s < 5) { this.setState({ stage: { ...st.stage, [n]: s + 1 } }); this.flash(n + ' now at ' + STG[s + 1]); } }, rollback: () => { this.setState({ rolled: { ...st.rolled, [n]: true } }); this.flash(n + ' rolled back for everyone'); } }; });
+    const annTargets = Object.keys(st.targets).map((n) => { const on = st.targets[n]; return { n, bg: on ? '#FBEBBE' : 'transparent', bc: on ? '#191510' : '#C4BCA8', fw: on ? 700 : 500, toggle: () => this.setState({ targets: { ...st.targets, [n]: !on } }) }; });
+    const reach = (st.targets['All products'] ? 2400 : st.targets.Orgpuls ? 1240 : 600) * (st.targets.Admins ? 0.3 : 1) * (st.targets.Trial ? 0.25 : 1);
+    const ann = { text: st.ann, reach: Math.round(reach) + ' users' };
+    const LM = [['Bergheim Bygg AS', 'Employees 96 of 100 in band', 96, 'Notify about band'], ['Fjellheim skole', 'Admins 3 of 3', 100, 'Raise to 5'], ['Lumio AS', 'SMS invitations 410 of 500 / month', 82, 'Raise to 1 000'], ['Tveit Omsorg AS', 'Storage 4,3 of 5 GB', 86, 'Raise to 10 GB']];
+    const limits = LM.map(([org, what, p, cta]) => { const r = st.raised[org]; return { org, what, w: r ? 60 : p, v: r ? 'Raised · ' + Math.round(p * 0.6) + ' %' : p + ' %', c: p >= 95 && !r ? '#D4633A' : '#E0A21F', cta: r ? '✓ Done' : cta, bg: r ? '#CFE7E4' : '#FFFDF6', raise: () => { this.setState({ raised: { ...st.raised, [org]: true } }); this.flash(cta + ' · logged on the account'); } }; });
+    const HE = [['Lumio AS', '14 invitations held by mail server (451)', 14], ['Mørkved IT AS', 'PDF export timed out twice', 2], ['Skiftly · Hamnvik Fiskeri', 'Calendar sync 504 from provider', 38], ['Solstrand Helse AS', 'No errors', 0]];
+    const health = HE.map(([org, err, n]) => { const t = st.ticketed[org]; return { org, err, n: String(n), c: n > 10 ? '#A33A16' : n > 0 ? '#8A6A00' : '#2F5D2A', cta: t ? '✓ Ticket open' : n ? 'Create ticket' : '—', ticket: () => { if (n && !t) { this.setState({ ticketed: { ...st.ticketed, [org]: true } }); this.flash('Ticket created with the error log attached'); } } }; });
+    const CL = [['Create account', 100], ['Upload employee list', 88], ['Invite HR and leaders', 64], ['Schedule first survey', 74], ['Send first survey', 69], ['View results', 57], ['Create first tiltak', 44]];
+    const checklist = CL.map(([n, v]) => { const on = st.check[n] !== false; return { n, w: v, v: v + ' %', mark: on ? '✓' : '', bg: on ? '#CFE7E4' : 'transparent', td: on ? 'none' : 'line-through', toggle: () => this.setState({ check: { ...st.check, [n]: !on } }) }; });
+    const RQ = [['Nynorsk version of the survey', 48, 6, '2 deals', 14], ['Two owners on one tiltak', 41, 6, '1 deal', 8], ['SSO with Entra ID', 33, 4, '3 deals', 22], ['Import employees from Visma', 29, 3, '—', 6], ['Shift swap from the mobile app (Skiftly)', 24, 5, '1 deal', 4]];
+    const SC = { 'Under review': '#F2EAD6', Planned: '#FBEBBE', 'In progress': '#CFE0F5', Shipped: '#CFE7E4', 'Not planned': '#FBD5C4' };
+    const requests = RQ.map(([t, v, tk, dl, mrr]) => { const voted = !!st.votes[t]; const s = st.rstatus[t] || (t.startsWith('SSO') ? 'Planned' : 'Under review'); return { t, votes: v + (voted ? 1 : 0), tickets: tk, deals: dl, mrr: kr(mrr * 620), vbg: voted ? '#FBEBBE' : '#FFFDF6', vote: () => this.setState({ votes: { ...st.votes, [t]: !voted } }), status: s, sbg: SC[s], setStatus: (e) => { this.setState({ rstatus: { ...st.rstatus, [t]: e.target.value } }); if (e.target.value === 'Shipped') this.flash(v + ' voters emailed · added to the changelog'); } }; });
+    const RN = [['Bergheim Bygg AS', '96 employees · will cross into 101–250', 'Expansion'], ['Lumio AS', 'Trial of Skiftly · 48 shift workers', 'Cross-sell'], ['Kvamme Regnskap AS', 'Logins −60 % · renews in 34 days', 'At risk'], ['Strandby Hotell AS', 'Uses Orgpuls only · 80 shift staff', 'Cross-sell']];
+    const renewals = RN.map(([org, sig, kind]) => { const d = st.deals[org]; return { org, sig, kind, c: kind === 'At risk' ? '#A33A16' : '#2F5D2A', cta: d ? '✓ Created' : kind === 'At risk' ? 'CSM task' : 'Create deal', bg: d ? '#CFE7E4' : '#F5C64A', deal: () => { this.setState({ deals: { ...st.deals, [org]: true } }); this.flash(kind === 'At risk' ? 'Task created for the customer success manager' : 'Expansion deal created in CRM'); } }; });
+    const planOpts = D.bands.map((b, i) => ({ n: b.label, price: kr(b.price), pick: () => this.setState({ plan: i }), bg: st.plan === i ? '#FBEBBE' : 'transparent', bc: st.plan === i ? '#191510' : '#E8DFC9', fw: st.plan === i ? 700 : 500 }));
+    const payOpts = ['Card', 'EHF invoice'].map((n) => ({ n, pick: () => this.setState({ pay: n }), bg: st.pay === n ? '#FFFDF6' : 'transparent', fw: st.pay === n ? 700 : 500 }));
+    const invoices = [['INV-40161', '1 Oct', '706 kr'], ['INV-40124', '1 Sep', '706 kr'], ['INV-40087', '1 Aug', '331 kr']].map(([no, d, a]) => ({ no, d, a }));
+    const refunds = [['Kvamme Regnskap AS', 'Double charge · credit note', '3 390 kr', st.apr.a1 === 'yes' ? 'Refunded' : 'Waiting for approval', st.apr.a1 === 'yes' ? '#2F5D2A' : '#8A6A00'], ['Strandby Hotell AS', 'Downgrade mid-period', '420 kr', 'Refunded', '#2F5D2A'], ['Granli Eiendom AS', 'Goodwill after outage', '565 kr', 'Credit on next invoice', '#2F5D2A']].map(([org, why, a, s, c]) => ({ org, why, a, st: s, c }));
+    const dunning = [['Recovered on retry (day 1)', '9'], ['Recovered after email with card link', '6'], ['Switched to EHF invoice', '2'], ['Not recovered → suspended', '8']].map(([n, v]) => ({ n, v }));
+    return { v: { [view]: true }, roleHead, roleRows, approvals, pendingN: approvals.filter((a) => a.pending).length, rollouts, ann, setAnnText: (e) => this.setState({ ann: e.target.value }), annTargets, publishAnn: () => this.flash('Announcement live for ' + ann.reach), limits, health, checklist, requests, renewals, planOpts, payOpts, invoices, refunds, recovered: '17 of 25 failed payments · ' + kr(17 * 706) + ' saved', dunning, toast: st.toast };
+  }
+}
+</script>
+</body>
+</html>

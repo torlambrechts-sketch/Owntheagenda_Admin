@@ -1,3 +1,558 @@
 {
-  "devDelivery": {}
+  "devDelivery": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "sentral": "Sentral",
+    "errors": {
+      "name_taken": "This application already has a release with that name.",
+      "name": "Give the release a name of at most 80 characters.",
+      "sha": "A commit is 7 to 40 hexadecimal characters.",
+      "planned_on": "Check the date.",
+      "recorded": "This release is recorded: its checklist and changelog no longer change.",
+      "checklist": "Every item must pass before the release is recorded.",
+      "note": "A rollback plan needs its text (at most 500 characters).",
+      "item": "That item is filled automatically and cannot be signed by hand.",
+      "product": "Only a note of the release's own application can join its changelog.",
+      "published": "A published note cannot join a release.",
+      "other_release": "That note already belongs to another release.",
+      "no_change": "Record an upcoming change before planning an upgrade.",
+      "change_text": "An upcoming change is at most 200 characters; its date and link need the change.",
+      "change_url": "The link must start with https://.",
+      "change_none": "«None announced» and an upcoming change cannot both be recorded.",
+      "owner": "Choose an active staff member as the owner.",
+      "secret_shape": "That does not look like the secret: check its length and characters.",
+      "bad_key": "Vault did not accept the secret.",
+      "expired": "The intake number ran out. Try again.",
+      "not_deployed": "The intake function is not deployed.",
+      "not_connected": "The intake could not be reached.",
+      "fresh_mfa": "Confirm with your authenticator code first.",
+      "owner_only": "Only the owner can do this.",
+      "days": "Choose a period of 7 to 365 days."
+    },
+    "mfa": {
+      "title": "Confirm it is you",
+      "body": "This needs your authenticator code from the last ten minutes.",
+      "code": "6-digit code",
+      "verify": "Confirm",
+      "failed": "That code was not accepted."
+    },
+    "kinds": {
+      "new": "New",
+      "improved": "Improved",
+      "fixed": "Fixed"
+    },
+    "state": {
+      "building": "Building",
+      "ready": "Ready",
+      "error": "Error",
+      "canceled": "Canceled",
+      "rolled_back": "Rolled back"
+    },
+    "units": {
+      "min": "{n} min",
+      "hours": "{n} h",
+      "days": "{n} days"
+    },
+    "levels": {
+      "elite": "Elite",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "checks": {
+      "tests": {
+        "release": "Tests pass (unit, integration, end-to-end)",
+        "gate": "CI: unit, integration and end-to-end tests"
+      },
+      "migrations": {
+        "release": "No database migrations waiting for production",
+        "gate": "Supabase migrations: none waiting for production"
+      },
+      "rls": {
+        "release": "RLS and anonymity tests pass",
+        "gate": "RLS and anonymity tests pass"
+      },
+      "deps": {
+        "release": "Security scan has no high findings",
+        "gate": "No high security findings"
+      },
+      "deploy": {
+        "release": "Live in production",
+        "gate": "Live in production"
+      },
+      "notes": {
+        "release": "Release note written",
+        "gate": "Release note written"
+      },
+      "flag": {
+        "release": "New code behind a feature flag",
+        "gate": "New code behind a flag"
+      },
+      "anonymity": {
+        "release": "Anonymity check: no new path to survey data",
+        "gate": "Anonymity check: no new path to survey data"
+      },
+      "preview": {
+        "release": "Preview checked by product",
+        "gate": "Preview checked by product"
+      },
+      "rollback": {
+        "release": "Rollback plan written",
+        "gate": "Rollback plan reviewed"
+      },
+      "help": {
+        "release": "Help centre articles updated",
+        "gate": "Help-centre articles updated"
+      },
+      "manual": "manual",
+      "auto": {
+        "ci": "auto · CI",
+        "vercel": "auto · Vercel",
+        "changelog": "auto · changelog"
+      },
+      "from": {
+        "ci": "from CI",
+        "vercel": "from Vercel",
+        "changelog": "from the changelog",
+        "person": "from a named person"
+      },
+      "signed": "{by} · {day}",
+      "signedNote": "{by} · {day} · {note}",
+      "evidence": {
+        "anonymityPass": "CI: anonymity tests pass ({n})",
+        "anonymityFail": "CI: {n} anonymity tests failing",
+        "help": "{n, plural, =0 {No help article changed} one {# help article changed} other {# help articles changed}} since {day}",
+        "preview": "Preview: {host}",
+        "previewSame": "Preview of this commit: {host}"
+      },
+      "unknown": {
+        "building": "The commit's deployment is still building",
+        "notDeployed": "Not in production yet",
+        "noProject": "No Vercel project is set to this application",
+        "rls": "No RLS or anonymity suite in the CI result",
+        "deps": "The CI result carries no dependency findings",
+        "noCi": "No CI result for this commit"
+      },
+      "fail": {
+        "failing": "{failed} of {total} failing",
+        "migrations": "Waiting: {names}",
+        "deps": "{critical} critical · {high} high",
+        "rolledBack": "Rolled back in Vercel",
+        "deploy": "The production deployment failed",
+        "notes": "The changelog has no line yet"
+      }
+    },
+    "releases": {
+      "checklist": "Release checklist · {done} of {total}",
+      "recordedOn": "Recorded · {day}",
+      "planned": "Planned · {day}",
+      "notPlanned": "No date planned",
+      "record": "Record release",
+      "complete": "Complete the checklist to record",
+      "completeTitle": "{n, plural, one {# item is} other {# items are}} still open",
+      "recordedButton": "✓ Recorded · {day}",
+      "recordedToast": "Release recorded · {n, plural, =0 {no note} one {# note} other {# notes}} published",
+      "signedToast": "Signed off",
+      "unsignedToast": "Sign-off withdrawn",
+      "rollbackPlan": "Rollback plan",
+      "rollbackHint": "How production goes back if this release fails",
+      "signOff": "Sign off",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create release",
+      "noRight": "You may read releases. Recording one needs Development › Add.",
+      "commit": {
+        "release": "Commit {sha} · named on the release",
+        "deploy": "Commit {sha} · the live production deployment",
+        "ci": "Commit {sha} · the newest CI run on main",
+        "none": "No commit known yet: connect Vercel or the CI"
+      },
+      "ciRun": "CI run →",
+      "toGate": "Release gate →",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteConfirm": "Delete this release? Its notes stay as drafts.",
+      "deletedToast": "Release deleted",
+      "savedToast": "Release saved",
+      "addedToast": "Release created",
+      "none": {
+        "title": "No release yet",
+        "body": "Name a release to check it against CI, Vercel and the people who sign it off. Recording it deploys nothing."
+      },
+      "form": {
+        "product": "Application",
+        "name": "Name",
+        "namePlaceholder": "v2.15.0",
+        "planned": "Planned for",
+        "sha": "Commit (optional)",
+        "shaPlaceholder": "7 to 40 hex characters"
+      },
+      "changelog": {
+        "title": "Changelog",
+        "from": "From {n, plural, =0 {no release notes} one {# release note} other {# release notes}} · edit before publishing",
+        "published": "Published with the release · {n, plural, one {# line} other {# lines}}",
+        "empty": "No line yet.",
+        "add": "＋ Add a line",
+        "fromDrafts": "Add from drafts…",
+        "addDraft": "Add",
+        "editLine": "Edit this line",
+        "kind": "Kind",
+        "line": "Line",
+        "linePlaceholder": "What changed, in the customer's words",
+        "save": "Save",
+        "remove": "Remove from release",
+        "cancel": "Cancel",
+        "savedToast": "Line saved",
+        "addedToast": "Line added",
+        "removedToast": "Line removed; it stays a draft"
+      },
+      "recent": {
+        "title": "Recent releases",
+        "new": "＋ New release",
+        "empty": "No release yet.",
+        "open": "Open",
+        "unknown": "—",
+        "unknownTitle": "No Vercel project is set to this application, so rollbacks are unknown",
+        "noRollback": "No rollback",
+        "rolledBack": "Rolled back {n}×",
+        "notes": "{n, plural, one {# note} other {# notes}}"
+      }
+    },
+    "gate": {
+      "title": "Release gate · {release}",
+      "recorded": "Recorded",
+      "ready": "Ready",
+      "blocking": "{n, plural, one {# item blocking} other {# items blocking}}",
+      "subtitle": "Filled automatically from CI and Vercel's deployments. Manual items need a named person.",
+      "ok": "Passed",
+      "notOk": "Not passed",
+      "signOff": "Sign off",
+      "fix": "Ask Claude to fix",
+      "fixReason": "Ask Claude to fix needs GitHub, which Sentral does not reach: code jobs stay off.",
+      "rollbackPlan": "Rollback plan",
+      "rollbackHint": "How production goes back if this release fails",
+      "cancel": "Cancel",
+      "signedToast": "Signed off",
+      "recordedButton": "✓ Recorded · {day}",
+      "toRecord": "Ready · record it in Releases →",
+      "blocked": "Blocked — clear the items above",
+      "none": {
+        "title": "No release to gate yet",
+        "body": "A gate belongs to a release. Name one under Releases; its verdict appears here.",
+        "link": "Releases →"
+      },
+      "releases": {
+        "title": "Releases",
+        "note": "Choose one to see its gate",
+        "empty": "No release yet.",
+        "open": "Open",
+        "recorded": "Recorded · {day}"
+      }
+    },
+    "register": {
+      "title": "Integrations register",
+      "note": "Every external API we depend on",
+      "cols": {
+        "integration": "Integration",
+        "owner": "Owner",
+        "version": "API version",
+        "errors": "Errors",
+        "errorsTitle": "Failed runs or calls in the last 30 days",
+        "token": "Token expires",
+        "change": "Upcoming change"
+      },
+      "rows": {
+        "search_console": {
+          "name": "Google Search Console",
+          "use": "SEO data and URL inspection"
+        },
+        "pagespeed": {
+          "name": "PageSpeed Insights",
+          "use": "Core Web Vitals"
+        },
+        "google_ads": {
+          "name": "Google Ads",
+          "use": "campaigns and conversions"
+        },
+        "linkedin_ads": {
+          "name": "LinkedIn Ads",
+          "use": "campaigns and audiences"
+        },
+        "meta_ads": {
+          "name": "Meta Ads",
+          "use": "campaigns and spend"
+        },
+        "email": {
+          "name": "Email provider (Brevo)",
+          "use": "transactional + marketing"
+        },
+        "ai": {
+          "name": "Claude API",
+          "use": "drafts through ai-run"
+        },
+        "orgpuls_api": {
+          "name": "Orgpuls API",
+          "use": "commands through product-command"
+        },
+        "vercel": {
+          "name": "Vercel deployment webhooks",
+          "use": "deploys in, signed"
+        },
+        "ci": {
+          "name": "CI results",
+          "use": "build facts in, signed"
+        }
+      },
+      "status": {
+        "off": "not connected",
+        "error": "failing"
+      },
+      "editTitle": "Edit the owner and the upcoming change",
+      "inbound": "Inbound: {n} deliveries in 30 days; errors are not counted",
+      "runs": "{failed} of {total} runs or calls failed in 30 days",
+      "expired": "expired",
+      "inDays": "{n, plural, =0 {today} one {in # day} other {in # days}}",
+      "changeDue": "{text} · by {day}",
+      "noneAnnounced": "None announced",
+      "renew": "Renew token",
+      "planned": "✓ Planned",
+      "plan": "Plan upgrade",
+      "noRight": "Planning needs Development › Add.",
+      "plannedToast": "Upgrade planned for {owner}",
+      "noOwner": "no owner yet",
+      "planLine": "Planned by {by} on {day} for {owner}: {change}",
+      "planDue": "due {day}",
+      "markDone": "Mark done",
+      "doneToast": "Upgrade marked done",
+      "edit": {
+        "title": "{name}: owner and upcoming change",
+        "owner": "Owner",
+        "change": "Upcoming change",
+        "changePlaceholder": "v25 sunsets 27 Jan — upgrade to v26",
+        "due": "Due",
+        "url": "Link to the announcement",
+        "none": "None announced",
+        "save": "Save",
+        "cancel": "Cancel",
+        "savedToast": "Register updated"
+      }
+    },
+    "code": {
+      "deploys": "Deploys per environment",
+      "sourceVercel": "Vercel",
+      "sourceCi": "CI",
+      "noSource": "No source connected",
+      "app": "App",
+      "noDeploys": "No deployment has arrived from Vercel yet.",
+      "connect": "Connect Vercel and the CI →",
+      "previews": "Previews",
+      "previewsNote": "Preview link per branch",
+      "noPreviews": "No preview in the last 14 days.",
+      "preview": "Preview →",
+      "security": "Security, dependencies and migrations",
+      "noCi": "No CI result has arrived yet.",
+      "connectCi": "Connect the CI →",
+      "at": "{ref} · {sha} · {ago}",
+      "depsHigh": "{n, plural, one {# high finding} other {# high findings}} in dependencies",
+      "depsCounts": "{critical} critical · {high} high · {moderate} moderate",
+      "depsModerate": "{n, plural, one {# moderate dependency update} other {# moderate dependency updates}}",
+      "depsNoHigh": "No high or critical findings",
+      "depsNone": "No dependency findings",
+      "migrations": "{n, plural, one {# database migration} other {# database migrations}} waiting for production",
+      "noMigrations": "No migrations waiting for production",
+      "rlsFail": "Row-level security tests fail",
+      "rlsPass": "Row-level security tests pass",
+      "failing": "{n} failing",
+      "rlsAnonymity": "Includes the anonymity firewall tests · {n} passing",
+      "checks": "{n} passing",
+      "prTitle": "#{n} {title}"
+    },
+    "metrics": {
+      "frequency": "Deploy frequency",
+      "lead": "Lead time for changes",
+      "failure": "Change failure rate",
+      "restore": "Time to restore",
+      "perDay": "{n} / day",
+      "frequencySub": "production deploys, all apps · {days} days",
+      "leadSub": "commit → production · median of {n}",
+      "leadNone": "commit → production · needs commit times from CI",
+      "failureSub": "{bad} of {n} production deploys failed or rolled back",
+      "failureNone": "failed or rolled-back production deploys",
+      "restoreSub": "median in {days} days · {n, plural, =0 {no failure} one {# failure} other {# failures}}",
+      "levelTitle": "DORA level: Accelerate State of DevOps 2019",
+      "noSource": "Delivery metrics come from Vercel's deployment webhooks and the CI's results; neither has arrived yet.",
+      "cycle": "Where time goes · median cycle time",
+      "segments": {
+        "coding": "Coding",
+        "waiting": "Waiting for review",
+        "review": "In review",
+        "staging": "Staging and QA",
+        "rollout": "Rollout"
+      },
+      "cycleNone": "These need pull request times from GitHub, which Sentral does not read.",
+      "health": "Health",
+      "prodDeploys": "Production deploys · {days} days",
+      "prodBad": "Failed or rolled back · {days} days",
+      "flags": "Feature flags",
+      "flagsTitle": "Needs Orgpuls' flags.list command",
+      "coverage": "Test coverage · {app}",
+      "coverageNone": "Test coverage",
+      "coverageTitle": "Arrives with the CI's result when it sends a coverage figure"
+    },
+    "env": {
+      "preview": "Preview",
+      "production": "Production",
+      "staging": "Staging",
+      "flow": "Delivery flow",
+      "steps": {
+        "push": "Push to a branch",
+        "preview": "Vercel preview",
+        "ci": "CI: tests, RLS and anonymity",
+        "merge": "Merge to main",
+        "production": "Vercel production",
+        "record": "Release recorded in Sentral"
+      },
+      "vercel": "Vercel",
+      "projects": "{n, plural, one {# project} other {# projects}} · from deployment webhooks",
+      "notConnected": "not connected",
+      "openInVercel": "Open in Vercel",
+      "openInVercelTitle": "Rolling back happens in Vercel; Sentral holds no Vercel token",
+      "supabase": "Supabase",
+      "fromCi": "from CI · migrations not yet in production",
+      "noCi": "from CI · none yet",
+      "waiting": "{app} · waiting for production",
+      "pendingProd": "Pending prod",
+      "approve": "Approve for prod",
+      "approveReason": "Nothing applies a product's migrations on Sentral's word: each product applies its own.",
+      "noneWaiting": "No migrations waiting",
+      "ciAt": "{app} · CI {ago}",
+      "upToDate": "Up to date",
+      "rls": "RLS and anonymity tests",
+      "rlsFor": "RLS and anonymity tests · {app}",
+      "failing": "{n} failing",
+      "passing": "{n} passing",
+      "pr": "{name} · PR #{n}"
+    },
+    "connect": {
+      "state": {
+        "connected": "Connected",
+        "waiting": "Secret stored · no event yet",
+        "off": "Not connected"
+      },
+      "last": "Last event {ago}",
+      "noDelivery": "No event received",
+      "count": "{n} in 30 days{ignored, plural, =0 {} other { · # ignored}}",
+      "url": "Address to send to",
+      "replace": "Replace the stored secret",
+      "secretNote": "It goes to Vault through a one-time intake number and is never shown again.",
+      "save": "Save secret",
+      "saveNew": "Replace secret",
+      "disconnect": "Disconnect",
+      "savedToast": "Secret stored",
+      "disconnectedToast": "Disconnected",
+      "ownerOnly": "Only the owner connects this.",
+      "vercel": {
+        "title": "Vercel deployment webhooks",
+        "body": "Vercel posts each deployment's events here, signed. Sentral holds no Vercel token.",
+        "step1": "In Vercel: Team Settings › Webhooks › Create webhook (Pro or Enterprise plan).",
+        "step2": "Events: deployment created, succeeded, error, canceled and promoted.",
+        "step3": "Projects: the ones Sentral should follow. Endpoint: the address above.",
+        "step4": "Vercel shows the webhook's secret once: paste it below.",
+        "secret": "Webhook secret",
+        "secretPlaceholder": "the secret Vercel showed",
+        "shape": "16 to 256 letters, digits, - or _",
+        "disconnectConfirm": "Disconnect Vercel? The secret is removed and deployments are no longer received.",
+        "projects": "Projects",
+        "projectsNote": "Which application each Vercel project deploys.",
+        "projectApp": "Application for {name}",
+        "noApp": "No application",
+        "mappedToast": "Project updated"
+      },
+      "ci": {
+        "title": "CI results",
+        "body": "Each product's CI posts its counts here, signed: tests, RLS and anonymity suites, dependency findings, migrations waiting.",
+        "step1": "Make a secret:",
+        "step2": "Store it in the repository as the secret SENTRAL_CI_SECRET, and the address above as the variable SENTRAL_EVENTS_URL.",
+        "step3": "Paste the same secret below.",
+        "step4": "Add scripts/sentral-report.mjs and its workflow step from Repo rules.",
+        "secret": "CI secret",
+        "secretPlaceholder": "at least 32 characters",
+        "shape": "32 to 256 letters, digits, - or _",
+        "disconnectConfirm": "Disconnect the CI? The secret is removed and results are no longer received.",
+        "request": "The request",
+        "requestNote": "A post older than five minutes is refused; a delivery id is kept once, so a repeat changes nothing.",
+        "fields": "Only these fields are kept: ids, shas, counts and file names. Never send test output or logs.",
+        "copyExample": "Copy the example"
+      }
+    },
+    "repo": {
+      "files": "Starter kit files",
+      "allCorrections": "All corrections",
+      "allIntro": "The design's starter kit, corrected where it contradicts the rules the two repositories live by:",
+      "groups": {
+        "memory": "Memory",
+        "roadmap": "Roadmap",
+        "skills": "Skills",
+        "agents": "Subagents",
+        "hooks": "Hooks",
+        "workflows": "Workflows",
+        "mcp": "MCP"
+      },
+      "status": {
+        "as_designed": "as designed",
+        "corrected": "corrected",
+        "new": "new",
+        "removed": "removed"
+      },
+      "removed": "Not in the kit: it would break the rules listed below.",
+      "correctedHere": "Corrected here",
+      "download": "Download",
+      "footer": "Files to copy into a product's repository. Sentral does not read the repository, so it cannot tell whether yours has drifted from these.",
+      "what": {
+        "claude_md": "Project memory loaded in every Claude session.",
+        "readme": "What the kit holds, and the secrets and variables it needs in GitHub.",
+        "roadmap": "Now / Next / Later, downloaded from Sentral's Markdown roadmap.",
+        "feature_template": "Template for new feature files.",
+        "op412": "An example feature file.",
+        "bug_template": "Template for bug files.",
+        "start": "/start ‹id› — branch, status in-progress, draft PR.",
+        "ship": "/ship — the gates, the release note's draft, status review.",
+        "triage": "/triage ‹bug id› — a bug file from a Sentral bug, ids only.",
+        "plan_feature": "/plan-feature ‹id› — a spec and a task list.",
+        "code_reviewer": "Reviews diffs. Read-only tools.",
+        "anonymity_guard": "Looks for any path to survey answers in a diff. A review aid, not the control.",
+        "settings": "Hooks: protect files, lint after edits.",
+        "protect": "Blocks edits to files only people may change, and to existing migrations.",
+        "log_to_sentral": "The design's Stop hook that posted each session's summary to Sentral.",
+        "claude_yml": "Runs Claude on @claude mentions.",
+        "roadmap_sync": "Keeps feature files and GitHub Issues in step, nightly.",
+        "sentral_report_yml": "Runs the gates and sends their counts to Sentral.",
+        "sentral_report_mjs": "Builds and signs the CI's request to Sentral.",
+        "mcp": "Shared MCP servers for developers."
+      },
+      "fix": {
+        "k": "«n >= 5» becomes k-anonymity as Orgpuls enforces it: floor 3, default 5, frozen per round, in the database.",
+        "npm": "pnpm becomes npm: both repositories use npm.",
+        "repos": "«One monorepo (apps/web, apps/sentral)» becomes two repositories: Orgpuls, and Sentral on its own; Sentral reaches Orgpuls only by signed commands and events.",
+        "forward": "«Migrations are reversible» becomes forward-only: an applied migration is superseded, never edited; objects are set aside instead of dropped.",
+        "suites": "«pgTAP / supabase test db» becomes the SQL suites in supabase/tests (npm run test:db).",
+        "stopHook": "The Stop hook that posted a session summary to Sentral is removed: a public address, a static token on every laptop, no replay protection, and free text Sentral may not receive (rules 2, 4, 5 and 6).",
+        "dispatch": "«Ask Claude» by repository_dispatch with a free-text prompt is removed: Sentral does not reach GitHub, and a free prompt could carry a person's words.",
+        "auditPost": "roadmap-sync's step that posted findings to Sentral with SENTRAL_WEBHOOK_TOKEN is removed.",
+        "mcpProd": "The Supabase MCP on production is removed: even read-only, SQL on production can read survey answers (Orgpuls invariants 1 and 2).",
+        "sentry": "Sentry is removed: no product uses it.",
+        "secrets": "GitHub secrets: SENTRAL_WEBHOOK_TOKEN, VERCEL_TOKEN and a «read-only» SUPABASE_ACCESS_TOKEN are gone; SENTRAL_CI_SECRET and SENTRAL_EVENTS_URL are added.",
+        "readsRepo": "«Sentral reads the files through the GitHub API» becomes: Sentral does not read the repository; deploys come from Vercel's webhooks, builds from the CI's report.",
+        "ciReport": "New: the CI's signed report to Sentral (sentral-report.yml and scripts/sentral-report.mjs).",
+        "changelog": "«CHANGELOG.md under Unreleased» becomes the changelog in Sentral › Releases; the PR body carries the draft.",
+        "ids": "Links and triage carry ids only (tickets, deals, PRs), never a customer's name, words or amounts: git history cannot be erased.",
+        "rls": "«Check RLS policies exist» becomes: RLS on in the same migration; the answer tables get no policy and no grant.",
+        "guard": "The anonymity guard is a review aid; the SQL suites are the control.",
+        "protect": "protect.sh matched «*_applied*», which no file is named; it now refuses editing any existing migration.",
+        "targets": "Bug targets as Sentral counts them: S1 same business day 16:00, S2 3 business days, S3 14 days.",
+        "rollout": "Rollout: flags are on or off today; a percentage needs a flag service that does not exist yet.",
+        "roadmapGen": "ROADMAP.md is generated by Sentral (Markdown roadmap), not by roadmap-sync."
+      }
+    }
+  }
 }

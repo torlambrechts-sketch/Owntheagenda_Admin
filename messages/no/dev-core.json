@@ -1,3 +1,520 @@
 {
-  "devCore": {}
+  "devCore": {
+    "sentral": "Sentral",
+    "status": {
+      "backlog": "Backlog",
+      "spec": "Spesifikasjon",
+      "in_progress": "Pågår",
+      "review": "Gjennomgang",
+      "staging": "Staging",
+      "rollout": "Utrulling",
+      "done": "Ferdig"
+    },
+    "kind": {
+      "story": "Historie",
+      "bug": "Feil",
+      "task": "Oppgave",
+      "spike": "Utforsking"
+    },
+    "roadmap": {
+      "all": "Alle",
+      "filter": "Produkter",
+      "note": "Veikart = resultater · oppgavene ligger i trackeren",
+      "lanes": {
+        "now": "Nå",
+        "next": "Neste",
+        "later": "Senere"
+      },
+      "moved": "{title} → {lane}",
+      "moveTo": "Flytt til {lane}",
+      "promoteFrom": "Løft fra",
+      "promotedToast": "Lagt til i Senere med grunnlaget sitt",
+      "source": {
+        "feature_request": "Funksjonsønske: {title}",
+        "experiment": "Vekstforsøk: {title}",
+        "seo_plan": "SEO: {title}"
+      },
+      "nothingToPromote": "Ingenting venter: ingen åpne funksjonsønsker, vinnende forsøk eller planlagte SEO-punkter som ikke er på veikartet.",
+      "newItem": "＋ Nytt punkt",
+      "edit": "Rediger {title}",
+      "goal": "Mål: {goal}",
+      "noGoal": "Sett et målepunkt",
+      "ev": {
+        "votes": "{n, plural, one {# stemme} other {# stemmer}}",
+        "tickets": "{n, plural, one {# sak} other {# saker}}",
+        "deals": "{n, plural, one {# avtale} other {# avtaler}}",
+        "dealsMrr": "{n, plural, one {# avtale} other {# avtaler}} · {mrr} MRR",
+        "experiment": "Forsøk · {state}",
+        "seo": "SEO-plan · {stage}"
+      },
+      "expState": {
+        "backlog": "Backlog",
+        "ready": "Klar",
+        "running": "Pågår",
+        "done": "Ferdig",
+        "win": "Vant",
+        "no_effect": "Ingen effekt",
+        "loss": "Tapte"
+      },
+      "seoStage": {
+        "idea": "Idé",
+        "writing": "Skrives",
+        "published": "Publisert",
+        "measuring": "Måles"
+      },
+      "from": {
+        "feature_request": "Fra funksjonsønske",
+        "experiment": "Fra forsøk",
+        "seo_plan": "Fra SEO"
+      },
+      "progressTitle": "{done} av {total} arbeidsoppgaver ferdige",
+      "newTitle": "Nytt punkt på veikartet",
+      "add": "Legg til på veikartet",
+      "added": "Lagt til på veikartet",
+      "fields": {
+        "product": "Produkt",
+        "title": "Resultat",
+        "goal": "Mål",
+        "lane": "Bane",
+        "status": "Leveransestatus",
+        "owner": "Eier"
+      },
+      "goalHint": "Besøk → konto +25 %",
+      "editTitle": "Veikartpunkt {key}",
+      "save": "Lagre",
+      "saved": "Lagret",
+      "archive": "Arkiver",
+      "archived": "Arkivert: punktet er tatt av veikartet",
+      "noOwner": "Ingen eier",
+      "evidence": "Grunnlag",
+      "kind": {
+        "feature_request": "Ønske",
+        "ticket": "Sak",
+        "deal": "Avtale",
+        "experiment": "Forsøk",
+        "seo_plan": "SEO"
+      },
+      "unlink": "Fjern koblingen",
+      "unlinked": "Koblingen er fjernet",
+      "noEvidence": "Ingenting er koblet ennå.",
+      "linkRequest": "Koble et funksjonsønske",
+      "pickRequest": "Funksjonsønske …",
+      "noRequests": "Ingen andre funksjonsønsker for dette produktet",
+      "link": "Koble",
+      "linked": "Koblet",
+      "ticketHint": "Saksnummer, f.eks. T-2316",
+      "linkTicket": "Koble en sak med nummeret",
+      "linkDeal": "Koble en åpen avtale",
+      "pickDeal": "Åpen avtale …",
+      "noDeals": "Ingen andre åpne avtaler du kan se"
+    },
+    "board": {
+      "moved": "{key} → {column}",
+      "day": "dag {day} av {days}",
+      "points": "Forpliktet <b>{committed} poeng</b> · ferdig <b>{done} poeng</b>",
+      "noSprint": "Ingen sprint pågår",
+      "editSprint": "Rediger sprint",
+      "newSprint": "Ny sprint",
+      "newItem": "＋ Ny arbeidsoppgave",
+      "keyboardHint": "Alt+høyrepil og Alt+venstrepil flytter kortet til neste eller forrige kolonne. Enter åpner det.",
+      "empty": "Ingen arbeidsoppgaver ennå.",
+      "kindPoints": "{kind} · {pts} p",
+      "bugLink": "↳ BUG-{n} i Feiltriage",
+      "editTitle": "Arbeidsoppgave {key}",
+      "newTitle": "Ny arbeidsoppgave",
+      "save": "Lagre",
+      "add": "Legg på tavlen",
+      "saved": "Lagret",
+      "added": "{key} er lagt på tavlen",
+      "archive": "Arkiver",
+      "archived": "Arkivert: kortet er tatt av tavlen",
+      "fields": {
+        "product": "Produkt",
+        "kind": "Type",
+        "points": "Poeng",
+        "title": "Tittel",
+        "column": "Kolonne",
+        "assignee": "Ansvarlig",
+        "epic": "Epos (veikartpunkt)",
+        "sprint": "Sprint",
+        "bug": "Feil",
+        "sprintName": "Navn",
+        "starts": "Første dag",
+        "ends": "Siste dag"
+      },
+      "nobody": "Ingen",
+      "noEpic": "Intet epos",
+      "noSprintPick": "Ingen sprint",
+      "noBug": "Ingen feil",
+      "pointsRange": "Poeng er et heltall fra 0 til 100.",
+      "sprintSaved": "Sprinten er lagret",
+      "sprintHint": "Sprint 41"
+    },
+    "bugs": {
+      "dash": "—",
+      "minutes": "{n} min",
+      "hours": "{n} t",
+      "days": "{n} dager",
+      "kpi": {
+        "open": "Åpne feil",
+        "openSub": "{s1} S1 · {s2} S2 · {s3} S3",
+        "within": "Innenfor mål",
+        "withinSub": "siste 30 dager",
+        "withinNone": "Ingen feil ble rettet de siste 30 dagene",
+        "withinTitle": "{within} av {fixed} feil rettet på 30 dager ble rettet innen fristen",
+        "escaped": "Sluppet ut i produksjon",
+        "escapedSub": "per måned · mål under {goal}",
+        "escapedTitle": "Feil kundene fant (fra en sak) de siste 30 dagene; sammenslåtte duplikater teller ikke",
+        "median": "Mediantid til retting",
+        "medianSub": "S1 {s1} · S2 {s2}",
+        "medianTitle": "Fra funnet til rettet, for feil rettet de siste 90 dagene"
+      },
+      "title": "Feiltriage",
+      "targets": "Alvorlighet × kunder berørt · mål S1 {s1} · S2 {s2} virkedager · S3 {s3} dager",
+      "sameDay": "samme dag",
+      "newBug": "＋ Ny feil",
+      "empty": "Ingen feil her.",
+      "fixed": "Rettet",
+      "merged": "Slått sammen",
+      "dueToday": "Frist i dag {time}",
+      "overdue": "{n, plural, =0 {Over fristen} one {# dag over fristen} other {# dager over fristen}}",
+      "daysLeft": "{n, plural, one {# dag igjen} other {# dager igjen}}",
+      "tickets": "{n, plural, one {# sak} other {# saker}}",
+      "knownProblem": "Kjent problem {ref}",
+      "problemResolved": "Problem {ref} løst",
+      "problem": "Problem {ref}",
+      "customers": "{n, plural, one {# kunde} other {# kunder}}",
+      "internal": "Funnet internt",
+      "fixedOn": "Rettet {date}",
+      "problemClosed": "problemet er løst",
+      "mergedInto": "Slått sammen med BUG-{n}",
+      "assigned": "Tildelt {name}",
+      "onBoard": "{key} {column}",
+      "notStarted": "Ikke startet",
+      "edit": "Rediger denne feilen",
+      "merge": "Slå sammen duplikat",
+      "markFixed": "Merk som rettet",
+      "newTitle": "Ny feil",
+      "add": "Legg til feilen",
+      "added": "Feilen er lagt til",
+      "fields": {
+        "product": "Produkt",
+        "severity": "Alvorlighet",
+        "source": "Funnet av",
+        "title": "Tittel",
+        "problem": "Problemsak",
+        "tickets": "Saker (numre)",
+        "assignee": "Tildelt",
+        "duplicates": "Den er et duplikat av"
+      },
+      "severity": {
+        "s1": "S1 · stopper kunder",
+        "s2": "S2 · ett område stoppet",
+        "s3": "S3 · resten"
+      },
+      "sourceTicket": "En kunde (saker)",
+      "sourceInternal": "Oss (funnet internt)",
+      "noProblem": "Ingen problemsak",
+      "dueNote": "Fristen følger av alvorligheten og målene i Innstillinger, regnet fra nå.",
+      "save": "Lagre",
+      "saved": "Lagret",
+      "toBoard": "Legg på arbeidstavlen",
+      "onBoardToast": "{key} ligger på arbeidstavlen",
+      "nobody": "Ingen",
+      "linkedTickets": "Saker",
+      "noTickets": "Ingen sak er koblet.",
+      "ticketNumber": "Saksnummer",
+      "link": "Koble",
+      "ticketLinked": "Saken er koblet",
+      "unlink": "Fjern koblingen",
+      "ticketUnlinked": "Koblingen til saken er fjernet",
+      "incidentsNote": "De åpne hendelsene på problemsaken teller også; de kobles på problemet, under Kunder › Saker.",
+      "mergeTitle": "BUG-{n} er et duplikat",
+      "mergeBody": "Velg feilen denne er et duplikat av. Sakene og problemet flyttes dit, kortene på tavlen følger med, og denne lukkes som duplikat.",
+      "mergedToast": "Slått sammen med BUG-{n}",
+      "noOthers": "Det finnes ingen annen feil for dette produktet å slå den sammen med.",
+      "fixTitle": "Merk BUG-{n} som rettet",
+      "fixPlain": "Feilen lukkes. Ingen kunde får beskjed: den har ingen problemsak med åpne hendelser.",
+      "fixTells": "Problemet {ref} løses, og kundene på {n, plural, one {# åpen sak} other {# åpne saker}} får denne meldingen.",
+      "fixProblem": "Problemet {ref} løses også. Det har ingen åpne hendelser, så ingen kunde får beskjed.",
+      "fixNeedsRight": "Å løse problemet krever Saker › Rediger andres.",
+      "fixMessage": "Melding til kundene på de åpne koblede sakene",
+      "fixedToast": "Rettet",
+      "fixedToastProblem": "Rettet · problemet er løst · {n, plural, one {# sak} other {# saker}} har fått beskjed"
+    },
+    "specs": {
+      "status": {
+        "draft": "Utkast",
+        "in_review": "Til gjennomgang",
+        "approved": "Godkjent"
+      },
+      "empty": "Ingen spesifikasjoner ennå.",
+      "newSpec": "＋ Ny spesifikasjon",
+      "fields": {
+        "title": "Tittel",
+        "status": "Status",
+        "item": "Veikartpunkt",
+        "product": "Produkt"
+      },
+      "forItem": "For {key} {title}",
+      "revision": "Revisjon {n}",
+      "statusSet": "Statusen er endret",
+      "cancel": "Avbryt",
+      "save": "Lagre",
+      "saved": "Lagret som ny revisjon",
+      "edit": "Rediger",
+      "lapseNote": "Lagrer du en endring i teksten, blir det en ny revisjon: godkjenningene på denne faller bort, og en godkjent spesifikasjon går tilbake til gjennomgang.",
+      "sections": {
+        "problem": "Problem",
+        "options": "Alternativer",
+        "decision": "Beslutning",
+        "privacy": "Personvern og anonymitet",
+        "rollout": "Utrulling"
+      },
+      "notWritten": "Ikke skrevet",
+      "signoff": "Godkjenning",
+      "signedBy": "Godkjent av {name}, {date}",
+      "lapsed": "Falt bort: {name} godkjente revisjon {n}",
+      "notSigned": "Ikke godkjent",
+      "signedToast": "{role} har godkjent",
+      "unsignedToast": "Godkjenningen fra {role} er trukket",
+      "roles": {
+        "product": "Produkt",
+        "engineering": "Utvikling",
+        "security_privacy": "Sikkerhet og personvern",
+        "support": "Kundestøtte"
+      },
+      "newTitle": "Ny spesifikasjon",
+      "add": "Legg til spesifikasjonen",
+      "added": "Spesifikasjonen er lagt til",
+      "noItem": "Ingen: en egen spesifikasjon"
+    },
+    "md": {
+      "generated": "laget {time}",
+      "all": "Alle",
+      "noneWithStatus": "Ingen fil har denne statusen.",
+      "empty": "Ingen veikartpunkter eller feil ennå.",
+      "newFile": "＋ Ny funksjonsfil",
+      "lastChange": "sist endret {ago} av {by}",
+      "download": "Last ned .md",
+      "status": "status",
+      "owner": "eier",
+      "rollout": "utrulling",
+      "bugStatusNote": "Statusen til en feil følger kortet på arbeidstavlen",
+      "rolloutNote": "Ingen tjeneste for funksjonsflagg registrerer en utrulling",
+      "saved": "Lagret på posten",
+      "tasks": "Oppgaver · {done} av {total}",
+      "done": "ferdig:",
+      "open": "åpen:",
+      "noTasks": "Ingen arbeidsoppgaver på tavlen for dette punktet.",
+      "noBugTasks": "Intet kort på tavlen for denne feilen.",
+      "linked": "Koblet",
+      "noLinks": "Ingenting er koblet.",
+      "commitNote": "Denne filen lages av Sentrals poster; en endring gjøres på posten. Å committe den til et repository krever GitHub.",
+      "commitDisabled": "GitHub er ikke koblet til",
+      "commit": "Commit endringen",
+      "workLog": "Arbeidslogg",
+      "noLog": "Ingenting er registrert ennå.",
+      "fieldNames": {
+        "title": "tittel",
+        "goal": "mål",
+        "status": "status",
+        "owner_id": "eier",
+        "severity": "alvorlighet",
+        "assignee_id": "ansvarlig",
+        "problem_id": "problem"
+      }
+    },
+    "log": {
+      "dev_roadmap_added": {
+        "title": "Opprettet",
+        "detail": "i {lane}"
+      },
+      "dev_roadmap_promoted": {
+        "title": "Løftet",
+        "detail": "fra {kind}"
+      },
+      "dev_roadmap_moved": {
+        "title": "Flyttet",
+        "detail": "til {lane}"
+      },
+      "dev_roadmap_status": {
+        "title": "Status → {status}",
+        "detail": ""
+      },
+      "dev_roadmap_changed": {
+        "title": "Endret",
+        "detail": "{fields}"
+      },
+      "dev_roadmap_linked": {
+        "title": "{on, select, off {Grunnlag fjernet} other {Grunnlag koblet}}",
+        "detail": "{kind}"
+      },
+      "dev_roadmap_archived": {
+        "title": "Arkivert",
+        "detail": ""
+      },
+      "dev_work_planned": {
+        "title": "Arbeid planlagt med Claude",
+        "detail": "{n, plural, one {# arbeidsoppgave} other {# arbeidsoppgaver}} lagt til"
+      },
+      "dev_ai_used": {
+        "title": "Utkast fra Claude brukt",
+        "detail": "{feature}"
+      },
+      "dev_bug_added": {
+        "title": "Feil registrert",
+        "detail": "{severity}"
+      },
+      "dev_bug_changed": {
+        "title": "Endret",
+        "detail": "{fields}"
+      },
+      "dev_bug_linked": {
+        "title": "{on, select, off {Sak frakoblet} other {Sak koblet}}",
+        "detail": ""
+      },
+      "dev_bug_merged": {
+        "title": "Slått sammen som duplikat",
+        "detail": "med BUG-{n}"
+      },
+      "dev_bug_fixed": {
+        "title": "Merket som rettet",
+        "detail": ""
+      }
+    },
+    "ai": {
+      "ask": "Spør Claude",
+      "asking": "Spør Claude …",
+      "asks": {
+        "spec": "Skriv spesifikasjon",
+        "plan": "Planlegg oppgaver",
+        "implement": "Implementer",
+        "review": "Gjennomgå PR",
+        "notes": "Skriv endringsnotat"
+      },
+      "needsGithub": "Implementer og Gjennomgå PR arbeider i et repository, og GitHub er ikke koblet til.",
+      "needsRight": "Å spørre Claude krever Utvikling › Legg til.",
+      "notConnected": "Claude er ikke koblet til: eieren kobler til under Claude-jobber.",
+      "noDoneWork": "Et endringsnotat skrives fra ferdige arbeidsoppgaver, og ingen er ferdige ennå.",
+      "ready": "Utkastet fra Claude ligger under",
+      "readyTruncated": "Utkastet fra Claude ligger under; det ble kuttet ved lengdegrensen",
+      "draftOf": "Utkast · {what}",
+      "features": {
+        "spec_draft": "Skriv spesifikasjon",
+        "task_plan": "Planlegg oppgaver",
+        "release_note_draft": "Skriv endringsnotat"
+      },
+      "useNote": {
+        "spec_draft": "Bruk skriver de fem delene inn i punktets spesifikasjon som en ny revisjon (godkjenningene faller bort). Rediger den der.",
+        "task_plan": "Bruk legger hver linje til som en arbeidsoppgave i Backlog, koblet til dette punktet. Rediger dem på arbeidstavlen.",
+        "release_note_draft": "Bruk legger hver linje til som et utkast til endringsnotat. Ingenting publiseres før en person publiserer det."
+      },
+      "use": "Bruk",
+      "discard": "Forkast",
+      "discarded": "Utkastet er forkastet",
+      "used": {
+        "spec_draft": "Spesifikasjonen har nå utkastet",
+        "task_plan": "{n, plural, one {# arbeidsoppgave} other {# arbeidsoppgaver}} lagt til i Backlog",
+        "release_note_draft": "{n, plural, one {# utkast til endringsnotat} other {# utkast til endringsnotater}} lagt til"
+      },
+      "codes": {
+        "network": "Fikk ikke kontakt med Claude",
+        "error": "Kallet feilet",
+        "bad_key": "Nøkkelen ble avvist",
+        "provider_rate_limited": "Claude var opptatt",
+        "provider_invalid": "Forespørselen ble avvist",
+        "refusal": "Claude avslo",
+        "empty": "Tomt svar",
+        "not_connected": "Ikke koblet til"
+      }
+    },
+    "jobs": {
+      "dash": "—",
+      "seconds": "{n} s",
+      "minutes": "{n} min",
+      "kpi": {
+        "drafts": "Utkast · 30 d",
+        "draftsSub": "{calls, plural, one {# kall} other {# kall}} · {failed} feilet",
+        "accepted": "Tatt i bruk",
+        "acceptedSub": "brukt av en person, deretter redigert",
+        "median": "Mediantid til utkast",
+        "medianSub": "fra forespørselen",
+        "spend": "Forbruk",
+        "spendSub": "tokens denne måneden",
+        "spendTitle": "Sentral registrerer tokens, ikke en pris: kostnaden i kroner er ikke kjent her"
+      },
+      "title": "Claude-jobber",
+      "note": "Sentrals Claude-port · startet fra Markdown-veikartet",
+      "failedCode": "feilet: {code}",
+      "out": "{tokens} tokens · {s} s",
+      "state": {
+        "ready": "Utkast klart",
+        "used": "Brukt",
+        "discarded": "Forkastet",
+        "failed": "Feilet"
+      },
+      "empty": "Ingen Claude-jobber de siste 30 dagene.",
+      "emptyNotConnected": "Ingen Claude-jobber: Claude er ikke koblet til.",
+      "quality": {
+        "title": "Kvaliteten på Claudes arbeid · 30 dager",
+        "used": "Brukt",
+        "discarded": "Forkastet",
+        "waiting": "Venter på en beslutning",
+        "note": "Andel av utkastene laget de siste 30 dagene."
+      },
+      "claude": {
+        "title": "Tilkobling til Claude",
+        "connected": "Koblet til",
+        "connectedSince": "Koblet til · nøkkel lagret {date}",
+        "notConnected": "Ikke koblet til",
+        "what": "Claude leser bare Sentrals egne poster for disse utkastene: veikartpunktet, spesifikasjonen, arbeidsoppgavene og antall av det som er koblet. Aldri teksten i en sak, navnet på en kunde eller undersøkelsesdata.",
+        "model": "Modell",
+        "effort": "Innsats",
+        "efforts": {
+          "low": "Lav",
+          "medium": "Middels",
+          "high": "Høy"
+        },
+        "saveSettings": "Lagre",
+        "settingsSaved": "Modell og innsats er lagret",
+        "key": "API-nøkkel",
+        "replaceKey": "En ny API-nøkkel",
+        "connect": "Koble til",
+        "replace": "Bytt nøkkelen",
+        "disconnect": "Koble fra",
+        "keyNote": "Nøkkelen går rett til hvelvet med et engangsnummer etter koden fra autentiseringsappen; den vises aldri igjen.",
+        "ownerOnly": "Bare eieren kobler til Claude."
+      }
+    },
+    "errors": {
+      "generic": "Noe gikk galt ({code}).",
+      "promoted": "Dette er allerede på veikartet.",
+      "signoffs": "Godkjenning krever alle fire godkjenningene på denne revisjonen.",
+      "overlap": "En annen sprint dekker noen av disse dagene.",
+      "dates": "Siste dag er samme dag som eller etter den første, høyst 60 dager senere.",
+      "body": "Skriv meldingen kundene på de åpne sakene får.",
+      "state": "Denne er allerede lukket.",
+      "tickets": "En feil kundene fant, oppgir en sak eller et problem.",
+      "placeholder": "Meldingen har fortsatt en [plassholder] i seg.",
+      "empty_draft": "Ingenting i dette utkastet kan brukes. Forkast det eller spør igjen.",
+      "roadmap_item_id": "Det veikartpunktet hører til et annet produkt, eller har allerede en spesifikasjon.",
+      "title": "Skriv en tittel på 3 til 200 tegn.",
+      "product": "Velg et produkt.",
+      "points": "Poeng er et heltall fra 0 til 100.",
+      "into": "Velg en annen feil.",
+      "ticket": "Det finnes ingen sak med det nummeret som du kan se.",
+      "problem": "Den problemsaken finnes ikke eller er ikke synlig for deg.",
+      "not_connected": "Claude er ikke koblet til: eieren kobler til under Claude-jobber.",
+      "rate_limited": "Du har spurt Claude mange ganger denne timen. Prøv igjen senere.",
+      "refused": "Claude avslo denne forespørselen.",
+      "not_deployed": "Claude-porten er ikke tatt i bruk ennå.",
+      "bad_key": "Nøkkelen ble avvist. Sjekk den og prøv igjen.",
+      "network": "Fikk ikke kontakt med Claude. Prøv igjen.",
+      "provider_rate_limited": "Claude er opptatt. Prøv igjen om et minutt.",
+      "empty": "Claude ga et tomt svar. Prøv igjen.",
+      "expired": "Engangsnummeret er utløpt. Prøv igjen.",
+      "unexpected_reply": "Claude-porten ga et svar Sentral ikke forstår."
+    }
+  }
 }

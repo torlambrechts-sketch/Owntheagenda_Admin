@@ -1,3 +1,520 @@
 {
-  "devCore": {}
+  "devCore": {
+    "sentral": "Sentral",
+    "status": {
+      "backlog": "Backlog",
+      "spec": "Spec",
+      "in_progress": "In progress",
+      "review": "Review",
+      "staging": "Staging",
+      "rollout": "Rollout",
+      "done": "Done"
+    },
+    "kind": {
+      "story": "Story",
+      "bug": "Bug",
+      "task": "Task",
+      "spike": "Spike"
+    },
+    "roadmap": {
+      "all": "All",
+      "filter": "Products",
+      "note": "Roadmap = outcomes · tasks live in the tracker",
+      "lanes": {
+        "now": "Now",
+        "next": "Next",
+        "later": "Later"
+      },
+      "moved": "{title} → {lane}",
+      "moveTo": "Move to {lane}",
+      "promoteFrom": "Promote from",
+      "promotedToast": "Added to Later with its evidence",
+      "source": {
+        "feature_request": "Feature request: {title}",
+        "experiment": "Growth experiment: {title}",
+        "seo_plan": "SEO: {title}"
+      },
+      "nothingToPromote": "Nothing waiting: no open feature request, winning experiment or planned SEO item that is not on the roadmap.",
+      "newItem": "＋ New item",
+      "edit": "Edit {title}",
+      "goal": "Goal: {goal}",
+      "noGoal": "Set a target metric",
+      "ev": {
+        "votes": "{n, plural, one {# vote} other {# votes}}",
+        "tickets": "{n, plural, one {# ticket} other {# tickets}}",
+        "deals": "{n, plural, one {# deal} other {# deals}}",
+        "dealsMrr": "{n, plural, one {# deal} other {# deals}} · {mrr} MRR",
+        "experiment": "Experiment · {state}",
+        "seo": "SEO plan · {stage}"
+      },
+      "expState": {
+        "backlog": "Backlog",
+        "ready": "Ready",
+        "running": "Running",
+        "done": "Done",
+        "win": "Win",
+        "no_effect": "No effect",
+        "loss": "Loss"
+      },
+      "seoStage": {
+        "idea": "Idea",
+        "writing": "Writing",
+        "published": "Published",
+        "measuring": "Measuring"
+      },
+      "from": {
+        "feature_request": "From feature request",
+        "experiment": "From experiment",
+        "seo_plan": "From SEO"
+      },
+      "progressTitle": "{done} of {total} work items done",
+      "newTitle": "New roadmap item",
+      "add": "Add to the roadmap",
+      "added": "Added to the roadmap",
+      "fields": {
+        "product": "Product",
+        "title": "Outcome",
+        "goal": "Goal",
+        "lane": "Lane",
+        "status": "Delivery status",
+        "owner": "Owner"
+      },
+      "goalHint": "Visit → account +25 %",
+      "editTitle": "Roadmap item {key}",
+      "save": "Save",
+      "saved": "Saved",
+      "archive": "Archive",
+      "archived": "Archived: it has left the roadmap",
+      "noOwner": "No owner",
+      "evidence": "Evidence",
+      "kind": {
+        "feature_request": "Request",
+        "ticket": "Ticket",
+        "deal": "Deal",
+        "experiment": "Experiment",
+        "seo_plan": "SEO"
+      },
+      "unlink": "Unlink",
+      "unlinked": "Unlinked",
+      "noEvidence": "Nothing linked yet.",
+      "linkRequest": "Link a feature request",
+      "pickRequest": "Feature request…",
+      "noRequests": "No other feature request for this product",
+      "link": "Link",
+      "linked": "Linked",
+      "ticketHint": "Ticket number, e.g. T-2316",
+      "linkTicket": "Link a ticket by its number",
+      "linkDeal": "Link an open deal",
+      "pickDeal": "Open deal…",
+      "noDeals": "No other open deal you can see"
+    },
+    "board": {
+      "moved": "{key} → {column}",
+      "day": "day {day} of {days}",
+      "points": "Committed <b>{committed} pts</b> · done <b>{done} pts</b>",
+      "noSprint": "No sprint is running",
+      "editSprint": "Edit sprint",
+      "newSprint": "New sprint",
+      "newItem": "＋ New work item",
+      "keyboardHint": "Alt+Right arrow and Alt+Left arrow move the card to the next or previous column. Enter opens it.",
+      "empty": "No work items yet.",
+      "kindPoints": "{kind} · {pts} pt",
+      "bugLink": "↳ BUG-{n} in Bug triage",
+      "editTitle": "Work item {key}",
+      "newTitle": "New work item",
+      "save": "Save",
+      "add": "Add to the board",
+      "saved": "Saved",
+      "added": "{key} added to the board",
+      "archive": "Archive",
+      "archived": "Archived: it has left the board",
+      "fields": {
+        "product": "Product",
+        "kind": "Kind",
+        "points": "Points",
+        "title": "Title",
+        "column": "Column",
+        "assignee": "Assignee",
+        "epic": "Epic (roadmap item)",
+        "sprint": "Sprint",
+        "bug": "Bug",
+        "sprintName": "Name",
+        "starts": "First day",
+        "ends": "Last day"
+      },
+      "nobody": "Nobody",
+      "noEpic": "No epic",
+      "noSprintPick": "No sprint",
+      "noBug": "No bug",
+      "pointsRange": "Points are a whole number from 0 to 100.",
+      "sprintSaved": "Sprint saved",
+      "sprintHint": "Sprint 41"
+    },
+    "bugs": {
+      "dash": "—",
+      "minutes": "{n} min",
+      "hours": "{n} h",
+      "days": "{n} days",
+      "kpi": {
+        "open": "Open bugs",
+        "openSub": "{s1} S1 · {s2} S2 · {s3} S3",
+        "within": "Within target",
+        "withinSub": "last 30 days",
+        "withinNone": "No bug was fixed in the last 30 days",
+        "withinTitle": "{within} of {fixed} bugs fixed in 30 days were fixed by their due time",
+        "escaped": "Escaped to production",
+        "escapedSub": "per month · goal under {goal}",
+        "escapedTitle": "Bugs found by customers (from a ticket) in the last 30 days; merged duplicates do not count",
+        "median": "Median time to fix",
+        "medianSub": "S1 {s1} · S2 {s2}",
+        "medianTitle": "From found to fixed, bugs fixed in the last 90 days"
+      },
+      "title": "Bug triage",
+      "targets": "Severity × customers affected · targets S1 {s1} · S2 {s2} business days · S3 {s3} days",
+      "sameDay": "same day",
+      "newBug": "＋ New bug",
+      "empty": "No bugs here.",
+      "fixed": "Fixed",
+      "merged": "Merged",
+      "dueToday": "Due today {time}",
+      "overdue": "{n, plural, =0 {Overdue} one {Overdue by # day} other {Overdue by # days}}",
+      "daysLeft": "{n, plural, one {# day left} other {# days left}}",
+      "tickets": "{n, plural, one {# ticket} other {# tickets}}",
+      "knownProblem": "Known problem {ref}",
+      "problemResolved": "Problem {ref} resolved",
+      "problem": "Problem {ref}",
+      "customers": "{n, plural, one {# customer} other {# customers}}",
+      "internal": "Found internally",
+      "fixedOn": "Fixed {date}",
+      "problemClosed": "problem resolved",
+      "mergedInto": "Merged into BUG-{n}",
+      "assigned": "Assigned {name}",
+      "onBoard": "{key} {column}",
+      "notStarted": "Not started",
+      "edit": "Edit this bug",
+      "merge": "Merge duplicate",
+      "markFixed": "Mark fixed",
+      "newTitle": "New bug",
+      "add": "Add the bug",
+      "added": "Bug added",
+      "fields": {
+        "product": "Product",
+        "severity": "Severity",
+        "source": "Found by",
+        "title": "Title",
+        "problem": "Problem ticket",
+        "tickets": "Tickets (numbers)",
+        "assignee": "Assigned to",
+        "duplicates": "It duplicates"
+      },
+      "severity": {
+        "s1": "S1 · blocks customers",
+        "s2": "S2 · one area blocked",
+        "s3": "S3 · the rest"
+      },
+      "sourceTicket": "A customer (tickets)",
+      "sourceInternal": "Us (found internally)",
+      "noProblem": "No problem ticket",
+      "dueNote": "The due time follows from the severity and the targets in Settings, counted from now.",
+      "save": "Save",
+      "saved": "Saved",
+      "toBoard": "Put on the work board",
+      "onBoardToast": "{key} is on the work board",
+      "nobody": "Nobody",
+      "linkedTickets": "Tickets",
+      "noTickets": "No ticket linked.",
+      "ticketNumber": "Ticket number",
+      "link": "Link",
+      "ticketLinked": "Ticket linked",
+      "unlink": "Unlink",
+      "ticketUnlinked": "Ticket unlinked",
+      "incidentsNote": "The open incidents of the problem ticket count too; they are linked on the problem, in Customers › Tickets.",
+      "mergeTitle": "BUG-{n} is a duplicate",
+      "mergeBody": "Pick the bug this one duplicates. Its tickets and its problem move there, its cards on the board follow, and this one closes as a duplicate.",
+      "mergedToast": "Merged into BUG-{n}",
+      "noOthers": "There is no other bug of this product to merge into.",
+      "fixTitle": "Mark BUG-{n} fixed",
+      "fixPlain": "The bug closes. No customer is told: it has no problem ticket with open incidents.",
+      "fixTells": "The problem {ref} is resolved and the customers on its {n, plural, one {# open ticket} other {# open tickets}} get this message.",
+      "fixProblem": "The problem {ref} is resolved too. It has no open incidents, so no customer is told.",
+      "fixNeedsRight": "Resolving the problem needs Tickets › Edit others.",
+      "fixMessage": "Message to the customers on the open linked tickets",
+      "fixedToast": "Fixed",
+      "fixedToastProblem": "Fixed · problem resolved · {n, plural, one {# ticket} other {# tickets}} told"
+    },
+    "specs": {
+      "status": {
+        "draft": "Draft",
+        "in_review": "In review",
+        "approved": "Approved"
+      },
+      "empty": "No spec documents yet.",
+      "newSpec": "＋ New spec",
+      "fields": {
+        "title": "Title",
+        "status": "Status",
+        "item": "Roadmap item",
+        "product": "Product"
+      },
+      "forItem": "For {key} {title}",
+      "revision": "Revision {n}",
+      "statusSet": "Status changed",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saved": "Saved as a new revision",
+      "edit": "Edit",
+      "lapseNote": "Saving a change to the text makes a new revision: the sign-offs given on this one lapse, and an approved spec goes back to review.",
+      "sections": {
+        "problem": "Problem",
+        "options": "Options",
+        "decision": "Decision",
+        "privacy": "Privacy and anonymity",
+        "rollout": "Rollout"
+      },
+      "notWritten": "Not written",
+      "signoff": "Sign-off",
+      "signedBy": "Signed by {name}, {date}",
+      "lapsed": "Lapsed: {name} signed revision {n}",
+      "notSigned": "Not signed",
+      "signedToast": "{role} signed off",
+      "unsignedToast": "{role} sign-off withdrawn",
+      "roles": {
+        "product": "Product",
+        "engineering": "Engineering",
+        "security_privacy": "Security and privacy",
+        "support": "Support"
+      },
+      "newTitle": "New spec",
+      "add": "Add the spec",
+      "added": "Spec added",
+      "noItem": "None: a spec of its own"
+    },
+    "md": {
+      "generated": "generated {time}",
+      "all": "All",
+      "noneWithStatus": "No file has this status.",
+      "empty": "No roadmap items or bugs yet.",
+      "newFile": "＋ New feature file",
+      "lastChange": "last change {ago} by {by}",
+      "download": "Download .md",
+      "status": "status",
+      "owner": "owner",
+      "rollout": "rollout",
+      "bugStatusNote": "A bug's status follows its card on the work board",
+      "rolloutNote": "No feature-flag service records a rollout",
+      "saved": "Saved on the record",
+      "tasks": "Tasks · {done} of {total}",
+      "done": "done:",
+      "open": "open:",
+      "noTasks": "No work items on the board for this item.",
+      "noBugTasks": "No card on the board for this bug.",
+      "linked": "Linked",
+      "noLinks": "Nothing linked.",
+      "commitNote": "This file is generated from Sentral's records; a change is made on the record. Committing it to a repository needs GitHub.",
+      "commitDisabled": "GitHub is not connected",
+      "commit": "Commit change",
+      "workLog": "Work log",
+      "noLog": "Nothing recorded yet.",
+      "fieldNames": {
+        "title": "title",
+        "goal": "goal",
+        "status": "status",
+        "owner_id": "owner",
+        "severity": "severity",
+        "assignee_id": "assignee",
+        "problem_id": "problem"
+      }
+    },
+    "log": {
+      "dev_roadmap_added": {
+        "title": "Created",
+        "detail": "in {lane}"
+      },
+      "dev_roadmap_promoted": {
+        "title": "Promoted",
+        "detail": "from {kind}"
+      },
+      "dev_roadmap_moved": {
+        "title": "Moved",
+        "detail": "to {lane}"
+      },
+      "dev_roadmap_status": {
+        "title": "Status → {status}",
+        "detail": ""
+      },
+      "dev_roadmap_changed": {
+        "title": "Changed",
+        "detail": "{fields}"
+      },
+      "dev_roadmap_linked": {
+        "title": "{on, select, off {Evidence unlinked} other {Evidence linked}}",
+        "detail": "{kind}"
+      },
+      "dev_roadmap_archived": {
+        "title": "Archived",
+        "detail": ""
+      },
+      "dev_work_planned": {
+        "title": "Work planned with Claude",
+        "detail": "{n, plural, one {# work item} other {# work items}} added"
+      },
+      "dev_ai_used": {
+        "title": "Claude draft used",
+        "detail": "{feature}"
+      },
+      "dev_bug_added": {
+        "title": "Bug filed",
+        "detail": "{severity}"
+      },
+      "dev_bug_changed": {
+        "title": "Changed",
+        "detail": "{fields}"
+      },
+      "dev_bug_linked": {
+        "title": "{on, select, off {Ticket unlinked} other {Ticket linked}}",
+        "detail": ""
+      },
+      "dev_bug_merged": {
+        "title": "Merged as a duplicate",
+        "detail": "into BUG-{n}"
+      },
+      "dev_bug_fixed": {
+        "title": "Marked fixed",
+        "detail": ""
+      }
+    },
+    "ai": {
+      "ask": "Ask Claude",
+      "asking": "Asking Claude…",
+      "asks": {
+        "spec": "Write spec",
+        "plan": "Plan tasks",
+        "implement": "Implement",
+        "review": "Review PR",
+        "notes": "Write release note"
+      },
+      "needsGithub": "Implement and Review PR work in a repository, and GitHub is not connected.",
+      "needsRight": "Asking Claude needs Development › Add.",
+      "notConnected": "Claude is not connected: the owner connects it under Claude jobs.",
+      "noDoneWork": "A release note is written from finished work items, and none is done yet.",
+      "ready": "Claude's draft is ready below",
+      "readyTruncated": "Claude's draft is ready below; it was cut off at its length limit",
+      "draftOf": "Draft · {what}",
+      "features": {
+        "spec_draft": "Write spec",
+        "task_plan": "Plan tasks",
+        "release_note_draft": "Write release note"
+      },
+      "useNote": {
+        "spec_draft": "Use writes the five sections into this item's spec as a new revision (sign-offs lapse). Edit it there.",
+        "task_plan": "Use adds each line as a work item in Backlog, linked to this item. Edit them on the work board.",
+        "release_note_draft": "Use adds each line as a draft release note. Nothing is published until a person publishes it."
+      },
+      "use": "Use",
+      "discard": "Discard",
+      "discarded": "Draft discarded",
+      "used": {
+        "spec_draft": "The spec now holds the draft",
+        "task_plan": "{n, plural, one {# work item} other {# work items}} added to Backlog",
+        "release_note_draft": "{n, plural, one {# draft release note} other {# draft release notes}} added"
+      },
+      "codes": {
+        "network": "Claude could not be reached",
+        "error": "The call failed",
+        "bad_key": "The key was refused",
+        "provider_rate_limited": "Claude was busy",
+        "provider_invalid": "The request was refused",
+        "refusal": "Claude declined",
+        "empty": "Empty answer",
+        "not_connected": "Not connected"
+      }
+    },
+    "jobs": {
+      "dash": "—",
+      "seconds": "{n} s",
+      "minutes": "{n} min",
+      "kpi": {
+        "drafts": "Drafts · 30 d",
+        "draftsSub": "{calls, plural, one {# call} other {# calls}} · {failed} failed",
+        "accepted": "Accepted",
+        "acceptedSub": "used by a person, then edited",
+        "median": "Median time to draft",
+        "medianSub": "from the request",
+        "spend": "Spend",
+        "spendSub": "tokens this month",
+        "spendTitle": "Sentral records tokens, not a price: the cost in kroner is not known here"
+      },
+      "title": "Claude jobs",
+      "note": "Sentral's Claude gateway · started from the Markdown roadmap",
+      "failedCode": "failed: {code}",
+      "out": "{tokens} tokens · {s} s",
+      "state": {
+        "ready": "Draft ready",
+        "used": "Used",
+        "discarded": "Discarded",
+        "failed": "Failed"
+      },
+      "empty": "No Claude jobs in the last 30 days.",
+      "emptyNotConnected": "No Claude jobs: Claude is not connected.",
+      "quality": {
+        "title": "Quality of Claude’s work · 30 days",
+        "used": "Used",
+        "discarded": "Discarded",
+        "waiting": "Waiting for a decision",
+        "note": "Share of the drafts made in the last 30 days."
+      },
+      "claude": {
+        "title": "Claude connection",
+        "connected": "Connected",
+        "connectedSince": "Connected · key stored {date}",
+        "notConnected": "Not connected",
+        "what": "Claude reads only Sentral's own records for these drafts: the roadmap item, its spec, its work items and counts of what is linked. Never a ticket's text, a customer's name or survey data.",
+        "model": "Model",
+        "effort": "Effort",
+        "efforts": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High"
+        },
+        "saveSettings": "Save",
+        "settingsSaved": "Model and effort saved",
+        "key": "API key",
+        "replaceKey": "A new API key",
+        "connect": "Connect",
+        "replace": "Replace the key",
+        "disconnect": "Disconnect",
+        "keyNote": "The key goes straight to the vault with a one-time number after your authenticator code; it is never shown again.",
+        "ownerOnly": "Only the owner connects Claude."
+      }
+    },
+    "errors": {
+      "generic": "Something went wrong ({code}).",
+      "promoted": "This is already on the roadmap.",
+      "signoffs": "Approval needs all four sign-offs on this revision.",
+      "overlap": "Another sprint covers some of these days.",
+      "dates": "The last day comes on or after the first, at most 60 days later.",
+      "body": "Write the message the customers on the open tickets get.",
+      "state": "This is closed already.",
+      "tickets": "A bug found by customers names a ticket or a problem.",
+      "placeholder": "The message still has a [placeholder] in it.",
+      "empty_draft": "Nothing in this draft can be used. Discard it or ask again.",
+      "roadmap_item_id": "That roadmap item belongs to another product, or has a spec already.",
+      "title": "Write a title of 3 to 200 characters.",
+      "product": "Pick a product.",
+      "points": "Points are a whole number from 0 to 100.",
+      "into": "Pick another bug.",
+      "ticket": "There is no ticket with that number that you can see.",
+      "problem": "That problem ticket does not exist or is not visible to you.",
+      "not_connected": "Claude is not connected: the owner connects it under Claude jobs.",
+      "rate_limited": "You have asked Claude often this hour. Try again later.",
+      "refused": "Claude declined this request.",
+      "not_deployed": "The Claude gateway is not deployed yet.",
+      "bad_key": "The key was refused. Check it and try again.",
+      "network": "Claude could not be reached. Try again.",
+      "provider_rate_limited": "Claude is busy. Try again in a minute.",
+      "empty": "Claude gave an empty answer. Try again.",
+      "expired": "The one-time number expired. Try again.",
+      "unexpected_reply": "The Claude gateway gave an answer Sentral does not understand."
+    }
+  }
 }

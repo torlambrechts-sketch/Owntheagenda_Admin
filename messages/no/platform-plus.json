@@ -1,3 +1,276 @@
 {
-  "platformPlus": {}
+  "platformPlus": {
+    "errors": {
+      "last_manager": "Noen må fortsatt kunne endre rollene: la én rolle være tillatt, eller to personer som kan godkjenne for hverandre.",
+      "own_request": "En annen person må godkjenne: du kan ikke godkjenne din egen forespørsel.",
+      "confirm_mismatch": "Organisasjonsnummeret stemmer ikke.",
+      "not_in_trial": "Kontoen er ikke i prøveperioden.",
+      "no_orgpuls": "Organisasjonen har ingen Orgpuls-konto.",
+      "not_needed": "Du kan gjøre dette selv: ingen godkjenning trengs.",
+      "changed_since": "Rollen ble endret av noen andre etter denne forespørselen.",
+      "unchanged": "Rollen har allerede denne innstillingen.",
+      "no_errors": "Sentral kjenner ikke til e-post til denne kontoen som feilet de siste 24 timene.",
+      "mode": "Godkjenning kan ikke slås på for denne handlingen ennå: køen kan ikke utføre den.",
+      "reason": "Skriv en begrunnelse på minst tre tegn.",
+      "state": "Denne forespørselen er allerede avgjort.",
+      "days": "Velg 1 til 60 dager.",
+      "approval": "Godkjenningen passet ikke til denne kommandoen."
+    },
+    "access": {
+      "roles": {
+        "title": "Administratorroller",
+        "legend": "✓ tillatt · A krever godkjenning · – ikke tillatt",
+        "action": "Handling",
+        "role": {
+          "admin": "Admin",
+          "sales": "Salg",
+          "support": "Kundestøtte",
+          "marketing": "Markedsføring",
+          "analyst": "Kun lesetilgang"
+        },
+        "actions": {
+          "accounts_view": "Se kontoer og brukere",
+          "tickets_reply": "Svare på saker",
+          "trial_extend": "Forlenge prøveperiode",
+          "support_access_request": "Be om støttetilgang",
+          "plan_change": "Endre plan eller pris",
+          "credit_note_issue": "Refusjon eller kreditnota",
+          "discount_over_threshold": "Rabatt over 20 %",
+          "account_delete": "Slette konto eller brukerdata",
+          "flags_change": "Endre funksjonsflagg og utrullinger",
+          "announcements_publish": "Publisere kunngjøringer",
+          "customers_export": "Eksportere kundelister",
+          "roles_manage": "Administrere administratorroller"
+        },
+        "notYet": "ikke tilgjengelig ennå",
+        "cellLabel": "{action} for {role}: {mode}",
+        "mode": {
+          "allow": "tillatt",
+          "approve": "krever godkjenning",
+          "deny": "ikke tillatt"
+        },
+        "why": {
+          "right": "Følger rollens rettighet {right}: endre den i Innstillinger › Roller",
+          "none": "Verken Sentral eller {product} kan gjøre dette ennå",
+          "readOnly": "Å endre matrisen krever Administrere administratorroller"
+        },
+        "rights": {
+          "global_see": "Globalt › Se",
+          "tickets_add": "Saker › Legge til",
+          "global_add": "Globalt › Legge til",
+          "deals_export": "Avtaler › Eksportere"
+        },
+        "footer": "Hver innlogging krever en andre faktor · alle endringer logges · klikk på en celle for å endre den",
+        "footerRead": "Hver innlogging krever en andre faktor · alle endringer logges",
+        "changed": "{action} for {role}: {mode}",
+        "requested": "Sendt til godkjenning: {action} for {role}",
+        "reasonTitle": "Hvorfor endre dette?",
+        "reasonBody": "{action} for {role}: {mode}. Endringer i rollene må godkjennes av en annen person; de ser begrunnelsen din.",
+        "reasonLabel": "Begrunnelse",
+        "send": "Send til godkjenning",
+        "cancel": "Avbryt"
+      },
+      "queue": {
+        "title": "Venter på godkjenning",
+        "sub": "En annen person må godkjenne · {count} åpne",
+        "request": "＋ Be om godkjenning",
+        "empty": "Ingenting venter på godkjenning.",
+        "by": "Forespurt av {name} · {when} · begrunnelse: {reason}",
+        "titleTrial": "Forleng prøveperioden til {org} med {days} dager",
+        "titleDelete": "Slett organisasjonen {org}",
+        "titlePolicy": "{action} for {role}: {from} → {to}",
+        "amountDays": "+{days} dager",
+        "reject": "Avvis",
+        "approve": "Godkjenn",
+        "waiting": "Venter på en annen person",
+        "state": {
+          "approved": "Godkjent av {name} · ikke utført",
+          "executed": "✓ Godkjent av {name}",
+          "rejected": "Avvist",
+          "failed": "Feilet ({code})",
+          "expired": "Utløpt"
+        },
+        "approvedToast": "Godkjent · handlingen er utført og logget",
+        "failedToast": "Godkjent, men handlingen ble ikke utført ({code})",
+        "rejectedToast": "Avvist",
+        "requestedToast": "Sendt til godkjenning som A-{ref}",
+        "confirmTitle": "Godkjenne sletting av {org}?",
+        "confirmBody": "Skriv organisasjonsnummeret på nytt. Orgpuls sletter organisasjonen og dataene; det kan ikke angres.",
+        "confirmLabel": "Organisasjonsnummer",
+        "dialog": {
+          "title": "Be om godkjenning",
+          "action": "Handling",
+          "account": "Konto",
+          "choose": "Velg en konto",
+          "days": "Dager",
+          "orgnr": "Organisasjonsnummer (skrives for å bekrefte)",
+          "reason": "Begrunnelse",
+          "send": "Send til godkjenning",
+          "cancel": "Avbryt"
+        }
+      }
+    },
+    "ops": {
+      "rollouts": {
+        "title": "Gradvise utrullinger",
+        "empty": "{name} har ennå ingen funksjonsflagg som kan rulles ut per organisasjon, så det er ingenting å utvide eller rulle tilbake herfra.",
+        "applications": "Spørsmålsmodulene ligger under Applikasjoner › Funksjonsflagg."
+      },
+      "announce": {
+        "title": "Kunngjøring i appen",
+        "label": "Kunngjøringstekst",
+        "placeholder": "Det kundene skal se når de logger inn",
+        "showTo": "Vis til",
+        "onlyProduct": "Bare {name} kan nås fra Sentral",
+        "admins": "Administratorer",
+        "adminsTitle": "Daglig leder i hver konto",
+        "trial": "Prøveperiode",
+        "preview": "Forhåndsvisning:",
+        "publish": "Publiser · {n} {count, plural, one {bruker} other {brukere}}",
+        "publishUnknown": "Publiser · — brukere",
+        "noCommand": "{name} har ennå ingen kommando for kunngjøringer i appen, så ingenting publiseres herfra. Rekkevidden teller de aktive brukerne {name} rapporterer."
+      },
+      "limits": {
+        "title": "Kontoer nær en plangrense",
+        "warn": "Varsle ved {pct} %",
+        "noUsage": "{name} har ikke rapportert antall ansatte ennå.",
+        "empty": "Ingen konto er på {pct} % av planens grense for ansatte.",
+        "what": "Ansatte {employees} av {max} i intervallet",
+        "notify": "Varsle om intervall",
+        "noFlow": "Å varsle en kunde eller heve en grense venter på en flyt i {name} selv."
+      },
+      "errors": {
+        "title": "Feil per kunde · siste 24 t",
+        "sub": "Fra Sentrals egen e-postlevering",
+        "empty": "Ingen e-post Sentral sendte til kunder av {name} feilet de siste 24 timene.",
+        "replies": "{count, plural, one {# svar på sak ikke levert} other {# svar på saker ikke levert}}",
+        "bounces": "{count, plural, one {# kampanje-e-post avvist} other {# kampanje-e-poster avvist}}",
+        "failed": "{count, plural, one {# kampanje-e-post feilet} other {# kampanje-e-poster feilet}}",
+        "open": "✓ Sak åpen",
+        "noRight": "Å opprette en sak krever Saker › Legge til",
+        "create": "Opprett sak",
+        "existing": "Sak {ref} er allerede åpen",
+        "created": "Sak {ref} opprettet med antall feil",
+        "clean": "{count, plural, one {Ingen feil siste 24 t for # annen konto} other {Ingen feil siste 24 t for # andre kontoer}}",
+        "productErrors": "Feiltall fra {name} selv sendes ikke til Sentral ennå.",
+        "ticketSubject": "E-post til {name} ikke levert (siste 24 t)",
+        "ticketIntro": "Sentrals egen e-post til denne kunden feilet de siste 24 timene:",
+        "ticketReplies": "{count, plural, one {# svar på sak ikke levert} other {# svar på saker ikke levert}}",
+        "ticketBounces": "{count, plural, one {# kampanje-e-post avvist} other {# kampanje-e-poster avvist}}",
+        "ticketFailed": "{count, plural, one {# kampanje-e-post feilet} other {# kampanje-e-poster feilet}}"
+      }
+    },
+    "success": {
+      "onboarding": {
+        "title": "Kom i gang-liste",
+        "sub": "Fullført per steg",
+        "steps": {
+          "account_created": "Opprette konto",
+          "employees_uploaded": "Laste opp ansattliste",
+          "team_invited": "Invitere HR og ledere",
+          "survey_scheduled": "Planlegge første måling",
+          "survey_sent": "Sende første måling",
+          "results_viewed": "Se resultater",
+          "first_tiltak": "Opprette første tiltak"
+        },
+        "cohort": "Kontoer opprettet de siste {days} dagene: {count}.",
+        "waiting": "Et steg vist som «—» er et {name} ikke rapporterer ennå."
+      },
+      "nps": {
+        "title": "NPS",
+        "noSource": "Ingen kilde: {name} spør ennå ikke kundene sine om en score."
+      },
+      "requests": {
+        "title": "Funksjonsønsker",
+        "sub": "Stemmer fra kunder · koblede saker og avtaler",
+        "empty": "Ingen funksjonsønsker for {name} ennå.",
+        "tickets": "{count, plural, one {# sak} other {# saker}}",
+        "deals": "{count, plural, one {# avtale} other {# avtaler}}",
+        "mrr": "{amount} MRR som ønsker",
+        "voteOf": "Registrer en stemme for {title}",
+        "readOnly": "Å registrere ønsker og stemmer krever Globalt › Legge til eller Utvikling › Legge til",
+        "statusOf": "Status for {title}",
+        "statusSet": "{title} er nå {status}",
+        "status": {
+          "under_review": "Til vurdering",
+          "planned": "Planlagt",
+          "in_progress": "Under arbeid",
+          "shipped": "Levert",
+          "declined": "Ikke planlagt"
+        },
+        "footer": "Å sette et ønske til Levert sender ingen e-post ennå.",
+        "add": "＋ Legg til ønske",
+        "voted": "Stemme registrert for {name}",
+        "added": "Ønsket er lagt til",
+        "voteTitle": "Registrer en stemme",
+        "voteBody": "Én stemme per organisasjon. Har stemt: {names}",
+        "voteNone": "Ingen organisasjon har stemt ennå. Én stemme per organisasjon.",
+        "orgLabel": "Organisasjon",
+        "choose": "Velg en organisasjon",
+        "cancel": "Avbryt",
+        "vote": "Registrer stemme",
+        "addTitle": "Legg til et funksjonsønske",
+        "titleLabel": "Hva det ønskes",
+        "askedBy": "Ønsket av (valgfritt)",
+        "none": "Ingen organisasjon",
+        "save": "Legg til ønske"
+      },
+      "renewal": {
+        "title": "Fornyelse og utvidelse",
+        "sub": "Fra bruk, helse og innlogginger",
+        "empty": "Ingen signaler om fornyelse eller utvidelse for {name} nå.",
+        "next": "{employees} ansatte · går over til {next}",
+        "employees": "{employees} ansatte · plangrense {max}",
+        "health": "Helse {from} → {to}",
+        "signIn": "Ingen innlogging på {days} dager",
+        "kind": {
+          "expansion": "Utvidelse",
+          "at_risk": "I faresonen"
+        },
+        "exists": "Allerede opprettet: den er fortsatt åpen",
+        "noRight": "Å opprette avtaler og oppgaver krever Avtaler › Legge til",
+        "taskDone": "Oppgave opprettet for kundeansvarlig",
+        "dealDone": "Utvidelsesavtale opprettet i CRM",
+        "created": "✓ Opprettet",
+        "task": "Oppgave til kundeansvarlig",
+        "deal": "Opprett avtale",
+        "dealTitle": "Utvidelse: {name}",
+        "taskSubject": "Følg opp: {name} er i faresonen"
+      }
+    },
+    "billing": {
+      "title": "Fakturering · {name}",
+      "sub": "Planen {product} fakturerer denne kontoen for",
+      "status": {
+        "trial": "Prøveperiode",
+        "active": "Aktiv",
+        "past_due": "Forfalt",
+        "suspended": "Suspendert",
+        "cancelled": "Avsluttet",
+        "expired": "Utløpt",
+        "free": "Gratis"
+      },
+      "none": "{product} har ingen kontoer ennå.",
+      "account": "Konto",
+      "plan": "Abonnement",
+      "planValue": "{band} ansatte · {price}/mnd",
+      "planUnknown": "{plan} (ikke i plankatalogen)",
+      "interval": "Faktureres",
+      "intervalValue": {
+        "month": "Månedlig",
+        "year": "Årlig"
+      },
+      "trialEnds": "Prøveperioden slutter",
+      "change": "Å endre planen venter på en plankommando i {product}. {product} fakturerer med e-post eller EHF utenfor Sentral, så kort, fakturaliste og purringer vises ikke her.",
+      "noPlans": "Det finnes ingen planer for {product} i plankatalogen.",
+      "tickets": "Faktureringssaker for denne kontoen: {open} åpne · {recent} de siste 30 dagene",
+      "noTicketsRight": "Antall faktureringssaker krever Saker › Se.",
+      "summary": {
+        "title": "Faktureringssaker · siste 30 dager",
+        "prev": "forrige 30 dager: {count}",
+        "open": "{count, plural, one {# åpen} other {# åpne}}",
+        "empty": "Ingen konto har en åpen faktureringssak."
+      }
+    }
+  }
 }

@@ -3,12 +3,16 @@
     "tabs": {
       "label": "Plattform",
       "apps": "Applikasjoner",
+      "ops": "Utrullinger og kunngjøringer",
       "plans": "Planer og priser",
-      "team": "Team og roller"
+      "billing": "Faktureringsportal",
+      "success": "Kundesuksess",
+      "team": "Team",
+      "access": "Roller og godkjenninger"
     },
     "noAccess": {
       "title": "Du kan ikke åpne denne fanen",
-      "body": "Applikasjoner og planer krever Global › Se poster. Be en administrator om rettigheten."
+      "body": "Denne fanen krever Global › Se poster. Be en administrator om rettigheten."
     },
     "apps": {
       "connect": "＋ Koble til en applikasjon",
@@ -75,13 +79,13 @@
     },
     "notice": {
       "title": "Statusmelding",
-      "placeholder": "Vises øverst i appen for alle brukere",
+      "placeholder": "Vises på applikasjonens offentlige nettsted, ikke inne i appen",
       "publish": "Publiser i {name}",
       "clear": "Fjern",
       "empty": "Skriv en melding først",
-      "live": "Statusmeldingen er ute i {name}",
+      "live": "Statusmeldingen er ute på det offentlige nettstedet til {name}",
       "saved": "Lagret i Sentral – ikke levert til {name} ({code})",
-      "clearedLive": "Statusmeldingen er fjernet fra {name}",
+      "clearedLive": "Statusmeldingen er fjernet fra det offentlige nettstedet til {name}",
       "clearedSaved": "Fjernet i Sentral – ikke levert til {name} ({code})",
       "since": "Publisert {ago}",
       "delivered": "levert til {name} {ago}",

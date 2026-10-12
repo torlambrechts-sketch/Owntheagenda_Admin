@@ -1,3 +1,276 @@
 {
-  "platformPlus": {}
+  "platformPlus": {
+    "errors": {
+      "last_manager": "Someone must still be able to change the roles: keep one role allowed, or two people who can approve each other.",
+      "own_request": "A second person must approve: you cannot approve your own request.",
+      "confirm_mismatch": "The organisation number does not match.",
+      "not_in_trial": "The account is not in its trial.",
+      "no_orgpuls": "The organisation has no Orgpuls account.",
+      "not_needed": "You may do this yourself: no approval is needed.",
+      "changed_since": "The role was changed by someone else after this request.",
+      "unchanged": "The role already has this setting.",
+      "no_errors": "Sentral knows of no failed email to this account in the last 24 hours.",
+      "mode": "Approval cannot be switched on for this action yet: the queue cannot carry it out.",
+      "reason": "Write a reason of at least three characters.",
+      "state": "This request has already been decided.",
+      "days": "Choose 1 to 60 days.",
+      "approval": "The approval did not match this command."
+    },
+    "access": {
+      "roles": {
+        "title": "Admin roles",
+        "legend": "✓ allowed · A needs approval · – not allowed",
+        "action": "Action",
+        "role": {
+          "admin": "Admin",
+          "sales": "Sales",
+          "support": "Support",
+          "marketing": "Marketing",
+          "analyst": "Read-only"
+        },
+        "actions": {
+          "accounts_view": "View accounts and users",
+          "tickets_reply": "Reply to tickets",
+          "trial_extend": "Extend trial",
+          "support_access_request": "Request support access",
+          "plan_change": "Change plan or price",
+          "credit_note_issue": "Refund or credit note",
+          "discount_over_threshold": "Discount over 20 %",
+          "account_delete": "Delete account or user data",
+          "flags_change": "Change feature flags and rollouts",
+          "announcements_publish": "Publish announcements",
+          "customers_export": "Export customer lists",
+          "roles_manage": "Manage admin roles"
+        },
+        "notYet": "not available yet",
+        "cellLabel": "{action} for {role}: {mode}",
+        "mode": {
+          "allow": "allowed",
+          "approve": "needs approval",
+          "deny": "not allowed"
+        },
+        "why": {
+          "right": "Follows the role's right {right}: change it in Settings › Roles",
+          "none": "Neither Sentral nor {product} can do this yet",
+          "readOnly": "Changing the matrix needs Manage admin roles"
+        },
+        "rights": {
+          "global_see": "Global › See",
+          "tickets_add": "Tickets › Add",
+          "global_add": "Global › Add",
+          "deals_export": "Deals › Export"
+        },
+        "footer": "Every sign-in needs a second factor · all changes are logged · click a cell to change it",
+        "footerRead": "Every sign-in needs a second factor · all changes are logged",
+        "changed": "{action} for {role}: {mode}",
+        "requested": "Sent for approval: {action} for {role}",
+        "reasonTitle": "Why change this?",
+        "reasonBody": "{action} for {role}: {mode}. Changes to the roles need a second person's approval; they see your reason.",
+        "reasonLabel": "Reason",
+        "send": "Send for approval",
+        "cancel": "Cancel"
+      },
+      "queue": {
+        "title": "Waiting for approval",
+        "sub": "A second person must approve · {count} open",
+        "request": "＋ Request approval",
+        "empty": "Nothing is waiting for approval.",
+        "by": "Requested by {name} · {when} · reason: {reason}",
+        "titleTrial": "Extend the trial of {org} by {days} days",
+        "titleDelete": "Delete organization {org}",
+        "titlePolicy": "{action} for {role}: {from} → {to}",
+        "amountDays": "+{days} days",
+        "reject": "Reject",
+        "approve": "Approve",
+        "waiting": "Waiting for a second person",
+        "state": {
+          "approved": "Approved by {name} · not carried out",
+          "executed": "✓ Approved by {name}",
+          "rejected": "Rejected",
+          "failed": "Failed ({code})",
+          "expired": "Expired"
+        },
+        "approvedToast": "Approved · action executed and logged",
+        "failedToast": "Approved, but the action was not carried out ({code})",
+        "rejectedToast": "Rejected",
+        "requestedToast": "Sent for approval as A-{ref}",
+        "confirmTitle": "Approve deleting {org}?",
+        "confirmBody": "Type the organisation number again. Orgpuls deletes the organisation and its data; it cannot be undone.",
+        "confirmLabel": "Organisation number",
+        "dialog": {
+          "title": "Request approval",
+          "action": "Action",
+          "account": "Account",
+          "choose": "Choose an account",
+          "days": "Days",
+          "orgnr": "Organisation number (typed to confirm)",
+          "reason": "Reason",
+          "send": "Send for approval",
+          "cancel": "Cancel"
+        }
+      }
+    },
+    "ops": {
+      "rollouts": {
+        "title": "Gradual rollouts",
+        "empty": "{name} has no feature flags that can be staged per organisation yet, so there is nothing to widen or roll back from here.",
+        "applications": "Its question modules are under Applications › Feature flags."
+      },
+      "announce": {
+        "title": "Announcement in the app",
+        "label": "Announcement text",
+        "placeholder": "What customers should see when they sign in",
+        "showTo": "Show to",
+        "onlyProduct": "Only {name} can be reached from Sentral",
+        "admins": "Admins",
+        "adminsTitle": "The daglig leder of each account",
+        "trial": "Trial",
+        "preview": "Preview:",
+        "publish": "Publish · {n} {count, plural, one {user} other {users}}",
+        "publishUnknown": "Publish · — users",
+        "noCommand": "{name} has no in-app announcement command yet, so nothing is published from here. The reach counts the active users {name} reports."
+      },
+      "limits": {
+        "title": "Accounts near a plan limit",
+        "warn": "Warn at {pct} %",
+        "noUsage": "{name} has not reported employee counts yet.",
+        "empty": "No account is at {pct} % of its plan's employee limit.",
+        "what": "Employees {employees} of {max} in band",
+        "notify": "Notify about band",
+        "noFlow": "Notifying a customer or raising a limit waits for a flow in {name} itself."
+      },
+      "errors": {
+        "title": "Errors per customer · last 24 h",
+        "sub": "From Sentral's own email delivery",
+        "empty": "No email Sentral sent to customers of {name} failed in the last 24 hours.",
+        "replies": "{count, plural, one {# ticket reply not delivered} other {# ticket replies not delivered}}",
+        "bounces": "{count, plural, one {# campaign email bounced} other {# campaign emails bounced}}",
+        "failed": "{count, plural, one {# campaign email failed} other {# campaign emails failed}}",
+        "open": "✓ Ticket open",
+        "noRight": "Creating a ticket needs Tickets › Add",
+        "create": "Create ticket",
+        "existing": "Ticket {ref} is already open",
+        "created": "Ticket {ref} created with the error counts",
+        "clean": "{count, plural, one {No errors in 24 h for # other account} other {No errors in 24 h for # other accounts}}",
+        "productErrors": "Error counts from {name} itself are not sent to Sentral yet.",
+        "ticketSubject": "Email to {name} not delivered (last 24 h)",
+        "ticketIntro": "Sentral's own email to this customer failed in the last 24 hours:",
+        "ticketReplies": "{count, plural, one {# ticket reply not delivered} other {# ticket replies not delivered}}",
+        "ticketBounces": "{count, plural, one {# campaign email bounced} other {# campaign emails bounced}}",
+        "ticketFailed": "{count, plural, one {# campaign email failed} other {# campaign emails failed}}"
+      }
+    },
+    "success": {
+      "onboarding": {
+        "title": "Onboarding checklist",
+        "sub": "Completion by step",
+        "steps": {
+          "account_created": "Create account",
+          "employees_uploaded": "Upload employee list",
+          "team_invited": "Invite HR and leaders",
+          "survey_scheduled": "Schedule first survey",
+          "survey_sent": "Send first survey",
+          "results_viewed": "View results",
+          "first_tiltak": "Create first tiltak"
+        },
+        "cohort": "Accounts created in the last {days} days: {count}.",
+        "waiting": "A step shown as «—» is one {name} does not report yet."
+      },
+      "nps": {
+        "title": "NPS",
+        "noSource": "No source: {name} does not ask its customers for a score yet."
+      },
+      "requests": {
+        "title": "Feature requests",
+        "sub": "Votes from customers · linked tickets and deals",
+        "empty": "No feature requests for {name} yet.",
+        "tickets": "{count, plural, one {# ticket} other {# tickets}}",
+        "deals": "{count, plural, one {# deal} other {# deals}}",
+        "mrr": "{amount} MRR asking",
+        "voteOf": "Record a vote for {title}",
+        "readOnly": "Recording requests and votes needs Global › Add or Development › Add",
+        "statusOf": "Status of {title}",
+        "statusSet": "{title} is now {status}",
+        "status": {
+          "under_review": "Under review",
+          "planned": "Planned",
+          "in_progress": "In progress",
+          "shipped": "Shipped",
+          "declined": "Not planned"
+        },
+        "footer": "Setting a request to Shipped emails no one yet.",
+        "add": "＋ Add request",
+        "voted": "Vote recorded for {name}",
+        "added": "Request added",
+        "voteTitle": "Record a vote",
+        "voteBody": "One vote per organisation. Voted: {names}",
+        "voteNone": "No organisation has voted yet. One vote per organisation.",
+        "orgLabel": "Organisation",
+        "choose": "Choose an organisation",
+        "cancel": "Cancel",
+        "vote": "Record vote",
+        "addTitle": "Add a feature request",
+        "titleLabel": "What is asked for",
+        "askedBy": "Asked by (optional)",
+        "none": "No organisation",
+        "save": "Add request"
+      },
+      "renewal": {
+        "title": "Renewal and expansion",
+        "sub": "From usage, health and sign-ins",
+        "empty": "No renewal or expansion signals for {name} right now.",
+        "next": "{employees} employees · will cross into {next}",
+        "employees": "{employees} employees · plan limit {max}",
+        "health": "Health {from} → {to}",
+        "signIn": "No sign-in for {days} days",
+        "kind": {
+          "expansion": "Expansion",
+          "at_risk": "At risk"
+        },
+        "exists": "Already created: it is still open",
+        "noRight": "Creating deals and tasks needs Deals › Add",
+        "taskDone": "Task created for the customer success manager",
+        "dealDone": "Expansion deal created in CRM",
+        "created": "✓ Created",
+        "task": "CSM task",
+        "deal": "Create deal",
+        "dealTitle": "Expansion: {name}",
+        "taskSubject": "Follow up: {name} is at risk"
+      }
+    },
+    "billing": {
+      "title": "Billing · {name}",
+      "sub": "The plan {product} bills this account for",
+      "status": {
+        "trial": "Trial",
+        "active": "Active",
+        "past_due": "Past due",
+        "suspended": "Suspended",
+        "cancelled": "Cancelled",
+        "expired": "Expired",
+        "free": "Free"
+      },
+      "none": "{product} has no accounts yet.",
+      "account": "Account",
+      "plan": "Subscription",
+      "planValue": "{band} employees · {price}/mo",
+      "planUnknown": "{plan} (not in the plan catalogue)",
+      "interval": "Billed",
+      "intervalValue": {
+        "month": "Monthly",
+        "year": "Yearly"
+      },
+      "trialEnds": "Trial ends",
+      "change": "Changing the plan waits for a plan command in {product}. {product} invoices by e-mail or EHF outside Sentral, so no card, invoice list or dunning is shown here.",
+      "noPlans": "There are no plans for {product} in the plan catalogue.",
+      "tickets": "Billing tickets for this account: {open} open · {recent} in the last 30 days",
+      "noTicketsRight": "Billing ticket counts need Tickets › See.",
+      "summary": {
+        "title": "Billing tickets · last 30 days",
+        "prev": "previous 30 days: {count}",
+        "open": "{count, plural, one {# open} other {# open}}",
+        "empty": "No account has an open billing ticket."
+      }
+    }
+  }
 }

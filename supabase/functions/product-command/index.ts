@@ -5,6 +5,9 @@
  *   - an admin of this platform signed in with a second factor (public.admin_whoami says admin), acting
  *     as their own address; or
  *   - the service role, acting as «platform» (scheduled work: a nightly sync, never a person).
+ * Before it signs for an admin it asks public.command_authorize with the admin's own token (0082, R-PL-1): the command's
+ * action and the admin's role decide — allowed, refused, or (approvals switched on for that action) only under an approval
+ * the admin decided and took, with exactly the approved arguments, once. The optional `approval` in the body names it.
  * The token it signs names that actor and only the scope the command needs, lives two minutes and is
  * used once. Every call that reaches the product is written to the audit with its argument names, never
  * their values. The token secret is in this project's Vault (orgpuls_token_secret, 0002), read by the
@@ -14,6 +17,10 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 import { commandClaims, isOrgpulsCommand } from '../_shared/orgpuls.ts'
 import { productSecret } from '../_shared/secrets.ts'
 import { sameText, signJwt } from '../_shared/signing.ts'
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+/** command_authorize's refusals, passed on as they are; anything else is «not_allowed» */
+const REFUSALS = new Set(['forbidden', 'approval_required', 'not_signed_in', 'invalid'])
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
@@ -26,7 +33,7 @@ Deno.serve(async (req) => {
   const token = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '')
   if (!token) return json({ error: 'unauthorized' }, 401)
 
-  let input: { product?: unknown; command?: unknown; args?: unknown }
+  let input: { product?: unknown; command?: unknown; args?: unknown; approval?: unknown }
   try {
     const raw = await req.text()
     if (raw.length > 200_000) return json({ error: 'too_large' }, 413)
@@ -40,6 +47,8 @@ Deno.serve(async (req) => {
     return json({ error: 'invalid' }, 400)
   }
   const command = input.command
+  const approval = input.approval ?? null
+  if (approval !== null && (typeof approval !== 'string' || !UUID.test(approval))) return json({ error: 'invalid' }, 400)
 
   // who is asking
   let actor: string | null = null
@@ -53,6 +62,21 @@ Deno.serve(async (req) => {
     const { data } = await asUser.rpc('admin_whoami')
     const who = data as { admin?: boolean; email?: string | null } | null
     if (who?.admin === true && typeof who.email === 'string') actor = who.email
+    if (actor) {
+      // may this admin run this command (their role's mode for its action), and under which approval
+      const { error: refused } = await asUser.rpc('command_authorize', {
+        p_product: 'orgpuls', p_command: command, p_approval: approval, p_args: approval ? args : null,
+      })
+      if (refused) {
+        const code = REFUSALS.has(refused.message) ? refused.message : 'not_allowed'
+        const svcAudit = createClient(url, serviceKey, { auth: { persistSession: false } })
+        await svcAudit.rpc('record_command', {
+          p_actor: actor, p_product: 'orgpuls', p_command: command, p_arg_names: Object.keys(args).sort(), p_ok: false, p_error: `refused:${code}`,
+        })
+        console.log(`[product-command] ${command} by admin: refused ${code}`)
+        return json({ ok: false, error: code }, 403)
+      }
+    }
   }
   if (!actor) return json({ error: 'not_allowed' }, 403)
 

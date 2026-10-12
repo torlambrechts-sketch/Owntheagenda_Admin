@@ -6,11 +6,14 @@ import { Staff } from './settings'
 import type { Health } from './platform-shared'
 
 /**
- * Sentral Simple › Platform (design-reference/sentral-simple/SimplePlatform.dc.html): the reads behind its three tabs. They
- * reuse the Platform screen's loaders (0044) and Settings' staff schema; 0057 adds plan_accounts and staff_list's role fields.
+ * Sentral Simple › Platform (design-reference/sentral-simple/SimplePlatform.dc.html): the reads behind Applications, Plans and
+ * prices and Team. They reuse the Platform screen's loaders (0044) and Settings' staff schema; 0057 adds plan_accounts and
+ * staff_list's role fields. The four tabs PlatformPlus.dc.html adds read through lib/data/platform-plus.ts (0082).
  * Every answer is parsed. No secret is read: the database says only whether one exists.
  */
-export const SIMPLE_PLATFORM_TABS = ['apps', 'plans', 'team'] as const
+/** the design's seven tabs in its order (v3): Applications · Rollouts and announcements · Plans and prices · Billing portal ·
+ *  Customer success · Team · Roles and approvals */
+export const SIMPLE_PLATFORM_TABS = ['apps', 'ops', 'plans', 'billing', 'success', 'team', 'access'] as const
 export type SimplePlatformTab = (typeof SIMPLE_PLATFORM_TABS)[number]
 
 // ---------------------------------------------------------------------------

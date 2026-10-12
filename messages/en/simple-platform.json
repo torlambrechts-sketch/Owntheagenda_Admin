@@ -3,12 +3,16 @@
     "tabs": {
       "label": "Platform",
       "apps": "Applications",
+      "ops": "Rollouts and announcements",
       "plans": "Plans and prices",
-      "team": "Team and roles"
+      "billing": "Billing portal",
+      "success": "Customer success",
+      "team": "Team",
+      "access": "Roles and approvals"
     },
     "noAccess": {
       "title": "You cannot open this tab",
-      "body": "Applications and plans need Global › See records. Ask an admin for the right."
+      "body": "This tab needs Global › See records. Ask an admin for the right."
     },
     "apps": {
       "connect": "＋ Connect an application",
@@ -75,13 +79,13 @@
     },
     "notice": {
       "title": "Status message",
-      "placeholder": "Shown at the top of the app for all users",
+      "placeholder": "Shown on the application's public website, not inside the app",
       "publish": "Publish to {name}",
       "clear": "Clear",
       "empty": "Write a message first",
-      "live": "Status message live in {name}",
+      "live": "Status message live on {name}'s public website",
       "saved": "Saved in Sentral — not delivered to {name} ({code})",
-      "clearedLive": "Status message removed from {name}",
+      "clearedLive": "Status message removed from {name}'s public website",
       "clearedSaved": "Cleared in Sentral — not delivered to {name} ({code})",
       "since": "Published {ago}",
       "delivered": "delivered to {name} {ago}",

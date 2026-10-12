@@ -5,19 +5,34 @@ import { getTranslations } from 'next-intl/server'
 import { can, getShell } from '@/lib/shell'
 import { currentProduct } from '@/lib/product'
 import { SIMPLE_PLATFORM_TABS, loadAppsTab, loadPlansTab, loadTeamTab, type SimplePlatformTab } from '@/lib/data/simple-platform'
+import { loadAccess, loadBilling, loadOps, loadSuccess } from '@/lib/data/platform-plus'
 import { NowProvider } from '../applications/_components/kit'
 import { AppsTab } from './_components/AppsTab'
 import { loadEmailProvider } from '@/lib/mail/provider'
 import { PlansTab } from './_components/PlansTab'
 import { TeamTab } from './_components/TeamTab'
+import { AccessTab } from './_components/plus/AccessTab'
+import { BillingTab } from './_components/plus/BillingTab'
+import { OpsTab } from './_components/plus/OpsTab'
+import { SuccessTab } from './_components/plus/SuccessTab'
 
-const HREF: Record<SimplePlatformTab, string> = { apps: '/platform', plans: '/platform?tab=plans', team: '/platform?tab=team' }
+const HREF: Record<SimplePlatformTab, string> = {
+  apps: '/platform',
+  ops: '/platform?tab=ops',
+  plans: '/platform?tab=plans',
+  billing: '/platform?tab=billing',
+  success: '/platform?tab=success',
+  team: '/platform?tab=team',
+  access: '/platform?tab=access',
+}
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? null
 
 /**
- * Platform (SimplePlatform.dc.html): Applications (default), Plans and prices (?tab=plans), Team and roles (?tab=team). The
- * design's pill buttons become links, so a tab has an address (control substitution, V-SPL-01). Everything is scoped to the
- * application chosen in the rail. Applications and Plans read with Global › See; the team list is every staff member's.
+ * Platform (SimplePlatform.dc.html, PlatformPlus.dc.html): Applications (default), Rollouts and announcements (?tab=ops), Plans
+ * and prices (?tab=plans), Billing portal (?tab=billing), Customer success (?tab=success), Team (?tab=team) and Roles and
+ * approvals (?tab=access). The design's pill buttons become links, so a tab has an address (control substitution, V-SPL-01).
+ * Everything is scoped to the application chosen in the rail. Every tab but Team reads with Global › See (D-PL-16); the team
+ * list is every staff member's. What a person may change is decided again by the database.
  */
 export default async function PlatformPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams
@@ -43,6 +58,29 @@ export default async function PlatformPage({ searchParams }: { searchParams: Pro
     )
   } else if (tab === 'plans') {
     body = <PlansTab plans={await loadPlansTab(product)} name={name} nf={nf} />
+  } else if (tab === 'access') {
+    const { matrix, approvals, accounts } = await loadAccess()
+    body = <AccessTab matrix={matrix} approvals={approvals} accounts={accounts} productName={name} />
+  } else if (tab === 'success') {
+    const s = await loadSuccess(product)
+    body = (
+      <SuccessTab
+        product={product}
+        name={name}
+        onboarding={s.onboarding}
+        requests={s.requests}
+        signals={s.signals}
+        accounts={s.accounts}
+        canAddRequest={can(shell, 'global', 'add') || can(shell, 'dev', 'add')}
+        canDeal={can(shell, 'deals', 'add')}
+        nf={nf}
+      />
+    )
+  } else if (tab === 'ops') {
+    const o = await loadOps(product)
+    body = <OpsTab product={product} name={name} reach={o.reach} limits={o.limits} errors={o.errors} canTicket={can(shell, 'tickets', 'add')} nf={nf} />
+  } else if (tab === 'billing') {
+    body = <BillingTab billing={await loadBilling(product)} product={name} nf={nf} />
   } else {
     const [{ apps, notice, flags }, email] = await Promise.all([loadAppsTab(product), loadEmailProvider()])
     body = (

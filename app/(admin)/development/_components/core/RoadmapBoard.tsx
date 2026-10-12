@@ -49,7 +49,7 @@ export function RoadmapBoard({ data, products, filter, nf }: { data: Roadmap; pr
             <button key={k} type="button" disabled={pending || !!done}
               onClick={() => cand && run(() => promote({ kind: k, ref: cand.id }), (r) => ('title' in r ? t('promotedToast') : null),
                                          (r) => { if ('title' in r) setPromoted((p) => ({ ...p, [k]: r.title })) })}
-              className={`h-[30px] cursor-pointer whitespace-nowrap rounded-9 border px-[11px] text-12 font-semibold text-ink disabled:cursor-default ${done ? 'border-link bg-ok-bg' : 'border-line-strong bg-transparent'}`}>
+              className={`min-h-[30px] max-w-full cursor-pointer whitespace-normal rounded-9 border px-[11px] py-[5px] text-left text-12 font-semibold text-ink [overflow-wrap:anywhere] disabled:cursor-default ${done ? 'border-link bg-ok-bg' : 'border-line-strong bg-transparent'}`}>
               {done ? `✓ ${done}` : t(`source.${k}`, { title: cand!.title })}
             </button>
           ))}

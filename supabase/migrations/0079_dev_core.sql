@@ -1023,12 +1023,14 @@ begin
 end $fn$;
 
 -- «Mark fixed»: the bug is closed; a linked problem that is not resolved yet is resolved through problem_resolve (0012),
--- which needs Tickets › Edit others and sends the person's message to every open incident of the problem
+-- which needs Tickets › Edit others and queues the person's message as the reply on every open incident of the problem.
+-- 'notified' counts those tickets (not customers); 'mail_ready' says whether the problem's application can email the
+-- replies at all (0061 mail_ready_for), so the toast says what really happened.
 create function public.dev_bug_fix(p_id uuid, p_version int, p_body text default null) returns jsonb
   language plpgsql volatile security definer set search_path = ''
 as $fn$
 declare v_me uuid := app.require('dev', 'add'); b app.dev_bugs; p app.tickets; v_open int := 0; v_notified int := 0; v_resolved boolean := false;
-        v_body text := nullif(btrim(coalesce(p_body, '')), '');
+        v_body text := nullif(btrim(coalesce(p_body, '')), ''); v_mail boolean;
 begin
   select * into b from app.dev_bugs x where x.id = p_id for update;
   if b.id is null then raise exception 'not_found' using errcode = 'no_data_found'; end if;
@@ -1041,10 +1043,11 @@ begin
     if v_open > 0 and v_body is null then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'body'; end if;
     v_notified := coalesce((public.problem_resolve(p.id, coalesce(v_body, '')) ->> 'notified')::int, 0);
     v_resolved := true;
+    v_mail := app.mail_ready_for(p.product);
   end if;
   update app.dev_bugs x set state = 'fixed', fixed_at = now(), fixed_by = v_me, updated_at = now(), version = x.version + 1 where x.id = p_id returning * into b;
   perform app.log('dev_bug.fixed', 'dev_bug', p_id::text, jsonb_build_object('problem_resolved', v_resolved, 'notified', v_notified));
-  return app.dev_bug_json(b) || jsonb_build_object('notified', v_notified, 'problem_resolved', v_resolved);
+  return app.dev_bug_json(b) || jsonb_build_object('notified', v_notified, 'problem_resolved', v_resolved, 'mail_ready', v_mail);
 end $fn$;
 
 -- ===========================================================================

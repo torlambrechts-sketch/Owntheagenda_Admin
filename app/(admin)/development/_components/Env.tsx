@@ -59,7 +59,7 @@ export async function EnvView(props: DevTabProps) {
             const name = prod ? p?.name ?? '' : x.pr ? t('env.pr', { name: p?.name ?? '', n: x.pr }) : `${p?.name ?? ''} · ${x.ref ?? shortSha(x.sha) ?? ''}`
             const state = x.rolled_back_at ? 'rolled_back' : x.state
             return (
-              <div key={x.id} className="grid items-center gap-x-[10px] gap-y-1 border-b border-line px-[18px] py-[9px] text-12.5 [grid-template-columns:auto_auto_minmax(0,1fr)] sm:[grid-template-columns:minmax(0,1.3fr)_90px_80px_90px]">
+              <div key={x.id} className="grid items-center gap-x-[10px] gap-y-1 border-b border-line px-[18px] py-[9px] text-12.5 [grid-template-columns:auto_auto_minmax(0,1fr)] sm:[grid-template-columns:minmax(0,1.3fr)_90px_80px_104px]">
                 <span className="col-span-3 flex min-w-0 flex-col sm:col-span-1">
                   <b className="[overflow-wrap:anywhere]">{name}</b>
                   <span className={`${d.mono} text-11 text-muted [overflow-wrap:anywhere]`}>{x.host ?? '—'}</span>
@@ -86,7 +86,7 @@ export async function EnvView(props: DevTabProps) {
           </div>
           {data.ci_runs.length === 0 ? <div className="px-[18px] py-[14px] text-12.5 text-muted">{t('code.noCi')}</div> : null}
           {data.ci_runs.flatMap((r) => r.migrations_pending.map((f) => (
-            <div key={`${r.product}-${f}`} className="grid items-center gap-x-[10px] gap-y-1 border-b border-line px-[18px] py-[9px] text-12.5 [grid-template-columns:auto_minmax(0,1fr)] sm:[grid-template-columns:minmax(0,1.4fr)_90px_120px]">
+            <div key={`${r.product}-${f}`} className="grid items-center gap-x-[10px] gap-y-1 border-b border-line px-[18px] py-[9px] text-12.5 [grid-template-columns:auto_minmax(0,1fr)] sm:[grid-template-columns:minmax(0,1.4fr)_90px_126px]">
               <span className="col-span-2 flex min-w-0 flex-col sm:col-span-1">
                 <b className={`${d.mono} text-12 [overflow-wrap:anywhere]`}>{f}</b>
                 <span className="text-11 text-muted">{t('env.waiting', { app: pname(r.product) })}</span>
@@ -98,7 +98,7 @@ export async function EnvView(props: DevTabProps) {
             </div>
           )))}
           {data.ci_runs.filter((r) => r.migrations_pending.length === 0).map((r) => (
-            <div key={`${r.product}-none`} className="grid items-center gap-x-[10px] gap-y-1 border-b border-line px-[18px] py-[9px] text-12.5 [grid-template-columns:auto_minmax(0,1fr)] sm:[grid-template-columns:minmax(0,1.4fr)_90px_120px]">
+            <div key={`${r.product}-none`} className="grid items-center gap-x-[10px] gap-y-1 border-b border-line px-[18px] py-[9px] text-12.5 [grid-template-columns:auto_minmax(0,1fr)] sm:[grid-template-columns:minmax(0,1.4fr)_90px_126px]">
               <span className="col-span-2 flex min-w-0 flex-col sm:col-span-1">
                 <b>{t('env.noneWaiting')}</b>
                 <span className="text-11 text-muted">{t('env.ciAt', { app: pname(r.product), ago: ago(r.finished_at) })}</span>
@@ -111,9 +111,11 @@ export async function EnvView(props: DevTabProps) {
             const rls = r.suites.filter((s) => s.kind === 'security' || s.kind === 'anonymity')
             const failed = rls.reduce((a, s) => a + s.failed, 0)
             const passed = rls.reduce((a, s) => a + s.passed, 0)
+            // «RLS and anonymity» only when the run has an anonymity suite (as Code and environments says it)
+            const label = rls.some((s) => s.kind === 'anonymity') ? 'rls' : 'rlsOnly'
             return (
               <div key={`${r.product}-rls`} className="flex justify-between gap-[10px] border-b border-line px-[18px] py-2 text-12.5">
-                <span className="text-muted">{data.ci_runs.length > 1 ? t('env.rlsFor', { app: pname(r.product) }) : t('env.rls')}</span>
+                <span className="text-muted">{data.ci_runs.length > 1 ? t(`env.${label}For`, { app: pname(r.product) }) : t(`env.${label}`)}</span>
                 <b className={`text-right ${!rls.length ? 'text-ink' : failed ? 'text-danger' : 'text-link'}`}>
                   {!rls.length ? '—' : failed ? t('env.failing', { n: failed }) : t('env.passing', { n: passed })}
                 </b>
@@ -133,6 +135,7 @@ export async function EnvView(props: DevTabProps) {
         canConfigure={data.can_configure}
         projects={data.projects.map((p) => ({ id: p.id, name: p.name, product: p.product }))}
         products={data.products.map((p) => ({ key: p.key, name: pname(p.key) }))}
+        repos={data.ci_repos}
       />
     </div>
   )

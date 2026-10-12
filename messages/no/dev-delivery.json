@@ -4,17 +4,17 @@
     "copied": "Kopiert",
     "sentral": "Sentral",
     "errors": {
-      "name_taken": "Denne applikasjonen har allerede en release med det navnet.",
-      "name": "Gi releasen et navn på høyst 80 tegn.",
+      "name_taken": "Denne applikasjonen har allerede en utgivelse med det navnet.",
+      "name": "Gi utgivelsen et navn på høyst 80 tegn.",
       "sha": "En commit er 7 til 40 heksadesimale tegn.",
       "planned_on": "Sjekk datoen.",
-      "recorded": "Denne releasen er registrert: sjekklisten og endringsloggen endres ikke lenger.",
-      "checklist": "Alle punktene må være bestått før releasen registreres.",
+      "recorded": "Denne utgivelsen er registrert: sjekklisten og endringsloggen endres ikke lenger.",
+      "checklist": "Alle punktene må være bestått før utgivelsen registreres.",
       "note": "En tilbakerullingsplan trenger tekst (høyst 500 tegn).",
       "item": "Det punktet fylles ut automatisk og kan ikke signeres for hånd.",
-      "product": "Bare en merknad fra releasens egen applikasjon kan legges i endringsloggen.",
-      "published": "En publisert merknad kan ikke legges til en release.",
-      "other_release": "Den merknaden hører allerede til en annen release.",
+      "product": "Bare en merknad fra utgivelsens egen applikasjon kan legges i endringsloggen.",
+      "published": "En publisert merknad kan ikke legges til en utgivelse.",
+      "other_release": "Den merknaden hører allerede til en annen utgivelse.",
       "no_change": "Registrer en kommende endring før du planlegger en oppgradering.",
       "change_text": "En kommende endring er på høyst 200 tegn; dato og lenke krever en endring.",
       "change_url": "Lenken må begynne med https://.",
@@ -27,7 +27,8 @@
       "not_connected": "Inntaket kunne ikke nås.",
       "fresh_mfa": "Bekreft med koden fra autentiseringsappen først.",
       "owner_only": "Bare eieren kan gjøre dette.",
-      "days": "Velg en periode på 7 til 365 dager."
+      "days": "Velg en periode på 7 til 365 dager.",
+      "repository": "Et repository er eier/navn, slik GitHub skriver det."
     },
     "mfa": {
       "title": "Bekreft at det er deg",
@@ -61,8 +62,8 @@
     },
     "checks": {
       "tests": {
-        "release": "Testene består (enhet, integrasjon, ende-til-ende)",
-        "gate": "CI: enhets-, integrasjons- og ende-til-ende-tester"
+        "release": "CI-testsuitene består",
+        "gate": "CI: testsuitene består"
       },
       "migrations": {
         "release": "Ingen databasemigreringer venter på produksjon",
@@ -81,8 +82,8 @@
         "gate": "Ute i produksjon"
       },
       "notes": {
-        "release": "Releasenotat skrevet",
-        "gate": "Releasenotat skrevet"
+        "release": "Endringsnotat skrevet",
+        "gate": "Endringsnotat skrevet"
       },
       "flag": {
         "release": "Ny kode bak et funksjonsflagg",
@@ -131,7 +132,9 @@
         "noProject": "Ingen Vercel-prosjekt er satt til denne applikasjonen",
         "rls": "Ingen RLS- eller anonymitetssuite i CI-resultatet",
         "deps": "CI-resultatet har ingen avhengighetsfunn",
-        "noCi": "Ingen CI-resultat for denne commiten"
+        "noCi": "Ingen CI-resultat for denne commiten",
+        "noAnonymity": "Ingen anonymitetssuite i CI-resultatet",
+        "noTests": "Ingen testsuite i CI-resultatet"
       },
       "fail": {
         "failing": "{failed} av {total} feiler",
@@ -143,54 +146,55 @@
       }
     },
     "releases": {
-      "checklist": "Sjekkliste for release · {done} av {total}",
+      "checklist": "Sjekkliste for utgivelse · {done} av {total}",
       "recordedOn": "Registrert · {day}",
       "planned": "Planlagt · {day}",
       "notPlanned": "Ingen dato planlagt",
-      "record": "Registrer release",
+      "record": "Registrer utgivelse",
       "complete": "Fullfør sjekklisten for å registrere",
       "completeTitle": "{n, plural, one {# punkt er} other {# punkter er}} fortsatt åpne",
       "recordedButton": "✓ Registrert · {day}",
-      "recordedToast": "Release registrert · {n, plural, =0 {ingen merknad} one {# merknad} other {# merknader}} publisert",
+      "recordedToast": "Utgivelse registrert · {n, plural, =0 {ingen merknad lagt i endringsloggen} one {# merknad lagt i endringsloggen (ikke offentlig ennå)} other {# merknader lagt i endringsloggen (ikke offentlig ennå)}}",
       "signedToast": "Signert",
       "unsignedToast": "Signaturen trukket tilbake",
       "rollbackPlan": "Tilbakerullingsplan",
-      "rollbackHint": "Hvordan produksjon går tilbake hvis denne releasen feiler",
+      "rollbackHint": "Hvordan produksjon går tilbake hvis denne utgivelsen feiler",
       "signOff": "Signer",
       "cancel": "Avbryt",
       "save": "Lagre",
-      "create": "Opprett release",
-      "noRight": "Du kan lese releaser. Å registrere en krever Utvikling › Legge til.",
+      "create": "Opprett utgivelse",
+      "noRight": "Du kan lese utgivelser. Å registrere en krever Utvikling › Legge til.",
       "commit": {
-        "release": "Commit {sha} · angitt på releasen",
+        "release": "Commit {sha} · angitt på utgivelsen",
         "deploy": "Commit {sha} · den aktive produksjonsutrullingen",
         "ci": "Commit {sha} · den nyeste CI-kjøringen på main",
         "none": "Ingen commit kjent ennå: koble til Vercel eller CI"
       },
       "ciRun": "CI-kjøring →",
-      "toGate": "Releaseport →",
+      "toGate": "Utgivelsesport →",
       "edit": "Rediger",
       "delete": "Slett",
-      "deleteConfirm": "Slette denne releasen? Merknadene blir værende som utkast.",
-      "deletedToast": "Release slettet",
-      "savedToast": "Release lagret",
-      "addedToast": "Release opprettet",
+      "deleteConfirm": "Slette denne utgivelsen? Merknadene blir værende som utkast.",
+      "deletedToast": "Utgivelse slettet",
+      "savedToast": "Utgivelse lagret",
+      "addedToast": "Utgivelse opprettet",
       "none": {
-        "title": "Ingen release ennå",
-        "body": "Gi en release et navn for å sjekke den mot CI, Vercel og personene som signerer. Å registrere den ruller ikke ut noe."
+        "title": "Ingen utgivelse ennå",
+        "body": "Gi en utgivelse et navn for å sjekke den mot CI, Vercel og personene som signerer. Å registrere den ruller ikke ut noe."
       },
       "form": {
         "product": "Applikasjon",
         "name": "Navn",
-        "namePlaceholder": "v2.15.0",
+        "namePlaceholder": "f.eks. v2.15",
         "planned": "Planlagt til",
         "sha": "Commit (valgfritt)",
-        "shaPlaceholder": "7 til 40 heksadesimale tegn"
+        "shaPlaceholder": "a91f2c7",
+        "shaHint": "7 til 40 heksadesimale tegn"
       },
       "changelog": {
         "title": "Endringslogg",
-        "from": "Fra {n, plural, =0 {ingen releasenotater} one {# releasenotat} other {# releasenotater}} · rediger før publisering",
-        "published": "Publisert med releasen · {n, plural, one {# linje} other {# linjer}}",
+        "from": "Fra {n, plural, =0 {ingen endringsnotater} one {# endringsnotat} other {# endringsnotater}} · rediger før publisering",
+        "published": "Publisert med utgivelsen · {n, plural, one {# linje} other {# linjer}}",
         "empty": "Ingen linje ennå.",
         "add": "＋ Legg til en linje",
         "fromDrafts": "Legg til fra utkast …",
@@ -200,26 +204,27 @@
         "line": "Linje",
         "linePlaceholder": "Hva som er endret, med kundens ord",
         "save": "Lagre",
-        "remove": "Fjern fra releasen",
+        "remove": "Fjern fra utgivelsen",
         "cancel": "Avbryt",
         "savedToast": "Linjen er lagret",
         "addedToast": "Linjen er lagt til",
         "removedToast": "Linjen er fjernet; den forblir et utkast"
       },
       "recent": {
-        "title": "Nylige releaser",
-        "new": "＋ Ny release",
-        "empty": "Ingen release ennå.",
+        "title": "Nylige utgivelser",
+        "new": "＋ Ny utgivelse",
+        "empty": "Ingen utgivelse ennå.",
         "open": "Åpen",
         "unknown": "—",
         "unknownTitle": "Ingen Vercel-prosjekt er satt til denne applikasjonen, så tilbakerullinger er ukjent",
         "noRollback": "Ingen tilbakerulling",
         "rolledBack": "Rullet tilbake {n}×",
         "notes": "{n, plural, one {# merknad} other {# merknader}}"
-      }
+      },
+      "anonymityOwner": "Bare eieren signerer anonymitetssjekken."
     },
     "gate": {
-      "title": "Releaseport · {release}",
+      "title": "Utgivelsesport · {release}",
       "recorded": "Registrert",
       "ready": "Klar",
       "blocking": "{n, plural, one {# punkt blokkerer} other {# punkter blokkerer}}",
@@ -230,24 +235,25 @@
       "fix": "Be Claude rette",
       "fixReason": "Be Claude rette krever GitHub, som Sentral ikke når: kodejobber er av.",
       "rollbackPlan": "Tilbakerullingsplan",
-      "rollbackHint": "Hvordan produksjon går tilbake hvis denne releasen feiler",
+      "rollbackHint": "Hvordan produksjon går tilbake hvis denne utgivelsen feiler",
       "cancel": "Avbryt",
       "signedToast": "Signert",
       "recordedButton": "✓ Registrert · {day}",
-      "toRecord": "Klar · registrer den under Releaser →",
+      "toRecord": "Klar · registrer den under Utgivelser →",
       "blocked": "Blokkert — løs punktene over",
       "none": {
-        "title": "Ingen release å sjekke ennå",
-        "body": "En port hører til en release. Gi en release navn under Releaser; vurderingen vises her.",
-        "link": "Releaser →"
+        "title": "Ingen utgivelse å sjekke ennå",
+        "body": "En port hører til en utgivelse. Gi en utgivelse navn under Utgivelser; vurderingen vises her.",
+        "link": "Utgivelser →"
       },
       "releases": {
-        "title": "Releaser",
+        "title": "Utgivelser",
         "note": "Velg en for å se porten",
-        "empty": "Ingen release ennå.",
+        "empty": "Ingen utgivelse ennå.",
         "open": "Åpen",
         "recorded": "Registrert · {day}"
-      }
+      },
+      "anonymityOwner": "Bare eieren signerer anonymitetssjekken."
     },
     "register": {
       "title": "Integrasjonsregister",
@@ -328,7 +334,7 @@
         "title": "{name}: eier og kommende endring",
         "owner": "Eier",
         "change": "Kommende endring",
-        "changePlaceholder": "v25 fases ut 27. jan — oppgrader til v26",
+        "changePlaceholder": "Hva endres, og når",
         "due": "Frist",
         "url": "Lenke til varselet",
         "none": "Ingen varslet",
@@ -355,7 +361,7 @@
       "at": "{ref} · {sha} · {ago}",
       "depsHigh": "{n, plural, one {# alvorlig funn} other {# alvorlige funn}} i avhengigheter",
       "depsCounts": "{critical} kritiske · {high} alvorlige · {moderate} moderate",
-      "depsModerate": "{n, plural, one {# moderat avhengighetsoppdatering} other {# moderate avhengighetsoppdateringer}}",
+      "depsModerate": "{n, plural, one {# moderat avhengighetsfunn} other {# moderate avhengighetsfunn}}",
       "depsNoHigh": "Ingen alvorlige eller kritiske funn",
       "depsNone": "Ingen avhengighetsfunn",
       "migrations": "{n, plural, one {# databasemigrering venter} other {# databasemigreringer venter}} på produksjon",
@@ -391,13 +397,19 @@
       },
       "cycleNone": "Disse krever pull request-tider fra GitHub, som Sentral ikke leser.",
       "health": "Helse",
-      "prodDeploys": "Produksjonsutrullinger · {days} dager",
-      "prodBad": "Feilet eller rullet tilbake · {days} dager",
       "flags": "Funksjonsflagg",
       "flagsTitle": "Krever Orgpuls-kommandoen flags.list",
       "coverage": "Testdekning · {app}",
       "coverageNone": "Testdekning",
-      "coverageTitle": "Kommer med CI-resultatet når det sender et dekningstall"
+      "coverageTitle": "Kommer med CI-resultatet når det sender et dekningstall",
+      "frequencySince": "produksjonsutrullinger, alle apper · siden {day}",
+      "escaped": "Feil som slapp ut i produksjon",
+      "escapedTitle": "Feil fra kundenes saker de siste 30 dagene · mål under {goal}",
+      "perMonth": "{n} / måned",
+      "capacity": "Kapasitet mot plan",
+      "capacityTitle": "Poeng ferdig av poeng forpliktet i {name}",
+      "capacityNone": "Ingen sprint med forpliktede poeng pågår",
+      "points": "{done} / {committed} poeng"
     },
     "env": {
       "preview": "Forhåndsvisning",
@@ -410,7 +422,7 @@
         "ci": "CI: tester, RLS og anonymitet",
         "merge": "Flett til main",
         "production": "Vercel-produksjon",
-        "record": "Release registrert i Sentral"
+        "record": "Utgivelse registrert i Sentral"
       },
       "vercel": "Vercel",
       "projects": "{n, plural, one {# prosjekt} other {# prosjekter}} · fra utrullingswebhooker",
@@ -431,7 +443,9 @@
       "rlsFor": "RLS- og anonymitetstester · {app}",
       "failing": "{n} feiler",
       "passing": "{n} består",
-      "pr": "{name} · PR #{n}"
+      "pr": "{name} · PR #{n}",
+      "rlsOnly": "Tester for radnivåsikkerhet",
+      "rlsOnlyFor": "Tester for radnivåsikkerhet · {app}"
     },
     "connect": {
       "state": {
@@ -482,7 +496,24 @@
         "request": "Forespørselen",
         "requestNote": "En sending eldre enn fem minutter avvises; en leveranse-id lagres én gang, så en gjentakelse endrer ingenting.",
         "fields": "Bare disse feltene beholdes: id-er, sha-er, tall og filnavn. Send aldri testutdata eller logger.",
-        "copyExample": "Kopier eksempelet"
+        "copyExample": "Kopier eksempelet",
+        "step5": "Knytt repositoriet til produktet sitt under: en sending fra et repository som ikke er knyttet, eller som oppgir et annet produkt, avvises.",
+        "repos": "Repositorier",
+        "reposNote": "Én hemmelighet signerer sendingene fra alle repositorier, så hvert repository knyttes til det ene produktet det rapporterer for.",
+        "reposOwner": "Bare eieren knytter et repository.",
+        "noRepos": "Ingen repository er knyttet: alle CI-sendinger avvises til ett er det.",
+        "lastPost": "siste sending {ago}",
+        "noPost": "ingen sending ennå",
+        "boundBy": "knyttet av {by}",
+        "repo": "Repository",
+        "repoPlaceholder": "eier/navn",
+        "repoProduct": "Produkt",
+        "repoShape": "eier/navn, som i repositoriets GitHub-adresse",
+        "bind": "Knytt",
+        "unbind": "Fjern",
+        "unbindConfirm": "Fjerne {repo}? CI-sendingene derfra avvises fra nå av.",
+        "boundToast": "Repositoriet er knyttet",
+        "unboundToast": "Repositoriet er fjernet"
       }
     },
     "repo": {
@@ -516,7 +547,7 @@
         "op412": "Et eksempel på en funksjonsfil.",
         "bug_template": "Mal for feilfiler.",
         "start": "/start ‹id› — gren, status in-progress, utkast til PR.",
-        "ship": "/ship — portene, utkast til releasenotat, status review.",
+        "ship": "/ship — portene, utkast til endringsnotat, status review.",
         "triage": "/triage ‹feil-id› — en feilfil fra en feil i Sentral, bare id-er.",
         "plan_feature": "/plan-feature ‹id› — en spesifikasjon og en oppgaveliste.",
         "code_reviewer": "Gjennomgår differ. Bare leseverktøy.",
@@ -544,7 +575,7 @@
         "secrets": "GitHub-hemmeligheter: SENTRAL_WEBHOOK_TOKEN, VERCEL_TOKEN og en «skrivebeskyttet» SUPABASE_ACCESS_TOKEN er borte; SENTRAL_CI_SECRET og SENTRAL_EVENTS_URL er lagt til.",
         "readsRepo": "«Sentral leser filene gjennom GitHub-API-et» blir: Sentral leser ikke repositoriet; utrullinger kommer fra Vercels webhooker, bygg fra CI-ens rapport.",
         "ciReport": "Nytt: CI-ens signerte rapport til Sentral (sentral-report.yml og scripts/sentral-report.mjs).",
-        "changelog": "«CHANGELOG.md under Unreleased» blir endringsloggen i Sentral › Releaser; PR-teksten bærer utkastet.",
+        "changelog": "«CHANGELOG.md under Unreleased» blir endringsloggen i Sentral › Utgivelser; PR-teksten bærer utkastet.",
         "ids": "Lenker og triage bærer bare id-er (saker, avtaler, PR-er), aldri en kundes navn, ord eller beløp: git-historikk kan ikke slettes.",
         "rls": "«Sjekk at RLS-policyer finnes» blir: RLS på i samme migrering; svartabellene får ingen policy og ingen tilgang.",
         "guard": "Anonymitetsvakten er et hjelpemiddel ved gjennomgang; SQL-suitene er kontrollen.",

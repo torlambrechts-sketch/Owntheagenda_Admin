@@ -82,6 +82,9 @@ CI posts (scripts/sentral-report.mjs).
 - SENTRAL_CI_SECRET (secret) — the same value the owner stores in Sentral › Development › Vercel and Supabase › CI results
 - SENTRAL_EVENTS_URL (variable) — Sentral's dev-events address, shown on that card
 
+The owner also binds this repository (owner/name) to its product on that card. One secret signs every repository's
+posts, so Sentral refuses a post from a repository that is not bound, or that names another product than its binding.
+
 ## Status flow
 backlog → spec → in-progress → review → staging → rollout → done
 `
@@ -329,7 +332,10 @@ jobs:
   report:
     runs-on: ubuntu-latest
     steps:
+      # a pull request's own head commit, not GitHub's temporary merge commit: Vercel deploys the head, and Sentral pairs
+      # a run with its deployment by sha
       - uses: actions/checkout@v4
+        with: { ref: "\${{ github.event.pull_request.head.sha || github.sha }}" }
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - run: npm ci && mkdir -p reports
@@ -346,6 +352,7 @@ jobs:
           SENTRAL_EVENTS_URL: \${{ vars.SENTRAL_EVENTS_URL }}
           SENTRAL_CI_SECRET: \${{ secrets.SENTRAL_CI_SECRET }}
           SENTRAL_PR: \${{ github.event.pull_request.number }}
+          SENTRAL_SHA: \${{ github.event.pull_request.head.sha || github.sha }}
 `
 
 const SENTRAL_REPORT_MJS = `#!/usr/bin/env node
@@ -353,7 +360,9 @@ const SENTRAL_REPORT_MJS = `#!/usr/bin/env node
 //   x-sentral-timestamp: <unix seconds>
 //   x-sentral-signature: sha256=<hex HMAC-SHA256 of "<timestamp>.<body>">
 // Sentral refuses a post older than five minutes and keeps a delivery id once. It sends ids, shas, counts and file names:
-// never test output, logs, or a commit message beyond its first line.
+// never test output, logs, or a commit message beyond its first line. GITHUB_REPOSITORY names the repository, which the
+// owner binds to its product in Sentral; a pull request is reported under its head commit (SENTRAL_SHA), not the
+// temporary merge commit GITHUB_SHA names on pull_request events.
 //
 //   node scripts/sentral-report.mjs --product orgpuls \\
 //     --vitest unit=reports/vitest.json          a vitest --reporter=json file, as a suite of kind "test"
@@ -378,7 +387,12 @@ const read = (p) => JSON.parse(readFileSync(p, 'utf8'))
 const git = (...a) => execFileSync('git', a, { encoding: 'utf8' }).trim()
 
 const product = one('--product')
-const sha = process.env.GITHUB_SHA ?? git('rev-parse', 'HEAD')
+const sha = process.env.SENTRAL_SHA || process.env.GITHUB_SHA || git('rev-parse', 'HEAD')
+const repository = process.env.GITHUB_REPOSITORY ?? null
+if (!repository) {
+  console.log('sentral-report: GITHUB_REPOSITORY is not set; nothing sent')
+  process.exit(0)
+}
 const suites = []
 for (const v of all('--vitest')) {
   const [name, path] = v.split('=')
@@ -398,12 +412,13 @@ const body = JSON.stringify({
   v: 1,
   delivery: \`\${run ?? randomUUID()}-\${process.env.GITHUB_RUN_ATTEMPT ?? '1'}-\${product}\`,
   product,
+  repository,
   sha,
   ref: process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || git('rev-parse', '--abbrev-ref', 'HEAD'),
   pr: process.env.SENTRAL_PR ? Number(process.env.SENTRAL_PR) : null,
   commit_at: git('show', '-s', '--format=%cI', sha),
   commit_title: git('show', '-s', '--format=%s', sha).slice(0, 200),
-  run_url: run ? \`\${process.env.GITHUB_SERVER_URL}/\${process.env.GITHUB_REPOSITORY}/actions/runs/\${run}\` : null,
+  run_url: run ? \`\${process.env.GITHUB_SERVER_URL}/\${repository}/actions/runs/\${run}\` : null,
   finished_at: new Date().toISOString(),
   suites,
   migrations_pending: pending,
@@ -412,8 +427,14 @@ const body = JSON.stringify({
 })
 const ts = String(Math.floor(Date.now() / 1000))
 const signature = 'sha256=' + createHmac('sha256', secret).update(\`\${ts}.\${body}\`).digest('hex')
-const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', 'x-sentral-timestamp': ts, 'x-sentral-signature': signature }, body })
-console.log(\`sentral-report: HTTP \${res.status}\`)
+// twenty seconds at most: a Sentral that does not answer must not hold the CI job
+const res = await fetch(url, {
+  method: 'POST', headers: { 'content-type': 'application/json', 'x-sentral-timestamp': ts, 'x-sentral-signature': signature }, body,
+  signal: AbortSignal.timeout(20_000),
+}).catch((e) => ({ ok: false, status: e?.name === 'TimeoutError' ? 'timeout' : 'unreachable', json: async () => ({}) }))
+// the refusal's code only (e.g. repository_unbound), never the body sent
+const answer = res.ok ? {} : await res.json().catch(() => ({}))
+console.log(\`sentral-report: HTTP \${res.status}\${answer.detail ? \` (\${answer.detail})\` : ''}\`)
 process.exit(res.ok ? 0 : 1)
 `
 

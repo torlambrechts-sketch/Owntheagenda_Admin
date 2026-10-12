@@ -19,7 +19,7 @@
     "roadmap": {
       "all": "Alle",
       "filter": "Produkter",
-      "note": "Veikart = resultater · oppgavene ligger i trackeren",
+      "note": "Veikart = resultater · oppgavene ligger på arbeidstavlen",
       "lanes": {
         "now": "Nå",
         "next": "Neste",
@@ -148,7 +148,7 @@
       "noBug": "Ingen feil",
       "pointsRange": "Poeng er et heltall fra 0 til 100.",
       "sprintSaved": "Sprinten er lagret",
-      "sprintHint": "Sprint 41"
+      "sprintHint": "Sprintens navn"
     },
     "bugs": {
       "dash": "—",
@@ -240,7 +240,10 @@
       "fixNeedsRight": "Å løse problemet krever Saker › Rediger andres.",
       "fixMessage": "Melding til kundene på de åpne koblede sakene",
       "fixedToast": "Rettet",
-      "fixedToastProblem": "Rettet · problemet er løst · {n, plural, one {# sak} other {# saker}} har fått beskjed"
+      "fixedToastProblem": "Rettet · problemet er løst{n, plural, =0 {} one { · # sak løst med svaret ditt} other { · # saker løst med svaret ditt}}",
+      "fixedToastNoMail": "Rettet · problemet er løst · {n, plural, one {# sak} other {# saker}} løst med svaret ditt · ikke sendt på e-post: e-post er ikke klar for denne applikasjonen",
+      "ticketsPlaceholder": "Saksnumre, f.eks. T-123",
+      "ticketPlaceholder": "f.eks. T-123"
     },
     "specs": {
       "status": {
@@ -287,7 +290,8 @@
       "newTitle": "Ny spesifikasjon",
       "add": "Legg til spesifikasjonen",
       "added": "Spesifikasjonen er lagt til",
-      "noItem": "Ingen: en egen spesifikasjon"
+      "noItem": "Ingen: en egen spesifikasjon",
+      "signNoRight": "Å signere krever Utvikling › Legge til."
     },
     "md": {
       "generated": "laget {time}",
@@ -323,7 +327,8 @@
         "severity": "alvorlighet",
         "assignee_id": "ansvarlig",
         "problem_id": "problem"
-      }
+      },
+      "readOnlyNote": "Å endre status eller eier krever Utvikling › Legge til."
     },
     "log": {
       "dev_roadmap_added": {
@@ -437,7 +442,7 @@
         "drafts": "Utkast · 30 d",
         "draftsSub": "{calls, plural, one {# kall} other {# kall}} · {failed} feilet",
         "accepted": "Tatt i bruk",
-        "acceptedSub": "brukt av en person, deretter redigert",
+        "acceptedSub": "brukt av en person",
         "median": "Mediantid til utkast",
         "medianSub": "fra forespørselen",
         "spend": "Forbruk",

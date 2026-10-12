@@ -6,7 +6,9 @@
  *            minutes are checked right after the signature; its `id` is the delivery id.
  *   CI       a product's CI run (sentral-report.mjs in the repo starter kit): `x-sentral-timestamp` (unix seconds) and
  *            `x-sentral-signature: sha256=<hex HMAC-SHA256 of "<timestamp>.<body>">` under the CI secret — the same scheme
- *            as Orgpuls' events (signing.ts verifyWebhook); `delivery` in the body is the delivery id.
+ *            as Orgpuls' events (signing.ts verifyWebhook); `delivery` in the body is the delivery id. `repository` (GitHub's
+ *            owner/name) is required: one secret signs every repository's posts, and the database takes a post only
+ *            from a repository the owner bound to the product it names.
  *
  * Both are reduced here to ids, shas, states, counts and file names: a commit message is cut to its first line (200
  * characters); test output, logs, authors and everything else in the payload are dropped. The database checks it all again.
@@ -24,6 +26,7 @@ export const VERCEL_KINDS = ['deployment.created', 'deployment.succeeded', 'depl
 export const TOLERANCE_SEC = 300
 
 const DELIVERY = /^[A-Za-z0-9._:-]{6,120}$/
+const REPOSITORY = /^[a-z0-9][a-z0-9_-]{0,38}\/(?!\.\.?$)[a-z0-9_.-]{1,100}$/
 const SHA = /^[0-9a-f]{7,40}$/
 
 export async function hmacSha1Hex(secret: string, body: string): Promise<string> {
@@ -112,6 +115,7 @@ export type CiSuite = { name: string; kind: (typeof SUITE_KINDS)[number]; passed
 export type CiRun = {
   v: 1
   product: string
+  repository: string
   sha: string
   ref: string | null
   pr: number | null
@@ -135,8 +139,9 @@ export function ciReport(json: unknown): { ok: true; delivery: string; run: CiRu
   if (!delivery) return { ok: false, reason: 'body' }
   if (b.v !== CI_PAYLOAD_VERSION) return { ok: false, reason: 'version' }
   const product = str(b.product, /^[a-z][a-z0-9_]{1,30}$/)
+  const repository = str(typeof b.repository === 'string' ? b.repository.toLowerCase() : null, REPOSITORY)
   const sha = str(typeof b.sha === 'string' ? b.sha.toLowerCase() : null, SHA)
-  if (!product || !sha) return { ok: false, reason: 'body' }
+  if (!product || !repository || !sha) return { ok: false, reason: 'body' }
   const suitesIn = Array.isArray(b.suites) ? b.suites : []
   if (suitesIn.length > 40) return { ok: false, reason: 'body' }
   const suites: CiSuite[] = []
@@ -161,7 +166,7 @@ export function ciReport(json: unknown): { ok: true; delivery: string; run: CiRu
     ok: true, delivery,
     run: {
       v: CI_PAYLOAD_VERSION,
-      product, sha,
+      product, repository, sha,
       ref: firstLine(b.ref, 200),
       pr: pr && pr > 0 ? pr : null,
       commit_at: iso(b.commit_at),

@@ -44,7 +44,8 @@ export function useCheckText(view: 'release' | 'gate', watching: boolean) {
     if (c.state === 'pass') return { label, source, sub, href }
     if (c.state === 'unknown') {
       sub = c.key === 'deploy' ? (watching ? (c.detail ? t('unknown.building') : t('unknown.notDeployed')) : t('unknown.noProject'))
-        : c.key === 'rls' ? t('unknown.rls') : c.key === 'deps' ? t('unknown.deps') : t('unknown.noCi')
+        : c.key === 'rls' ? (det.anonymity === false ? t('unknown.noAnonymity') : t('unknown.rls')) : c.key === 'deps' ? t('unknown.deps')
+        : c.key === 'tests' && c.detail ? t('unknown.noTests') : t('unknown.noCi')
       return { label, source, sub, href }
     }
     if (c.key === 'tests' || c.key === 'rls') sub = t('fail.failing', { failed: n(det.failed), total: n(det.passed) + n(det.failed) })

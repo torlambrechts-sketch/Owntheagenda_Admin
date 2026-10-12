@@ -9,9 +9,13 @@
 -- 2. Build facts come from the products' CI, pushed: a signed POST to dev-events (ci_signing_secret, 0078) with the commit,
 --    suite names and pass and fail counts, dependency findings by severity, migration file names waiting for production and
 --    a coverage figure. Never test output, never a log. Sentral holds no Supabase Management token for a product.
+--    There is one CI secret (X-V3-1: the setup is per account), so each repository is bound to its product by the owner
+--    (dev_ci_repos): a post from a repository nobody bound, or one naming another product than its binding, is refused.
 -- 3. A release is a named record per product (PLAN default: continuous deploys stay; no deploy button, no rollout). Its
 --    checklist is computed from the CI run and the production deployment of its commit, its changelog is release_notes
---    (0078), and the manual items are signed by a named person. Recording it freezes the checklist and publishes its notes.
+--    (0078), and the manual items are signed by a named person (the anonymity check by the owner, D-DEV-08). Recording it
+--    freezes the checklist and publishes its notes; from then on those notes cannot be edited, unpublished or deleted
+--    (0078's release_note_* are re-defined here with that check, and two triggers hold it for any other writer).
 -- 4. The integrations register: Sentral's own integrations, their failure rates from the logs they already write
 --    (growth_sync_log, job_runs, integration_calls, ai_calls), token expiry where a connection records one, an owner and the
 --    upcoming change typed by a person, and «Plan upgrade» as a record with an owner and a due date.
@@ -68,6 +72,7 @@ create table app.dev_ci_runs (
   commit_at          timestamptz,
   commit_title       text check (commit_title is null or (char_length(commit_title) between 1 and 200 and commit_title !~ '[[:cntrl:]]')),
   run_url            text check (run_url is null or run_url ~ '^https://[A-Za-z0-9.-]{3,100}/[A-Za-z0-9._~/-]{1,250}$'),
+  repository         text check (repository is null or repository ~ '^[a-z0-9][a-z0-9_-]{0,38}/(?!\.\.?$)[a-z0-9_.-]{1,100}$'),
   finished_at        timestamptz not null,
   received_at        timestamptz not null default now(),
   suites             jsonb not null default '[]'::jsonb check (jsonb_typeof(suites) = 'array'),
@@ -77,6 +82,15 @@ create table app.dev_ci_runs (
 );
 create index dev_ci_runs_product on app.dev_ci_runs (product, finished_at desc);
 create index dev_ci_runs_sha on app.dev_ci_runs (sha);
+
+-- the repositories whose CI may post, each bound by the owner to the one product its posts are about (one CI secret for
+-- every repository, X-V3-1, so the binding is what keeps one product's CI from posting another product's gate facts)
+create table app.dev_ci_repos (
+  repository text primary key check (repository ~ '^[a-z0-9][a-z0-9_-]{0,38}/(?!\.\.?$)[a-z0-9_.-]{1,100}$'),
+  product    text not null check (product ~ '^[a-z][a-z0-9_]{1,30}$'),
+  bound_by   uuid references app.admins (id) on delete set null,
+  bound_at   timestamptz not null default now()
+);
 
 -- inbound deliveries: the duplicate key, the kind and what came of it; never a payload
 create table app.dev_deliveries (
@@ -171,13 +185,14 @@ create unique index dev_integration_plans_open on app.dev_integration_plans (int
 alter table app.dev_projects enable row level security;
 alter table app.dev_deployments enable row level security;
 alter table app.dev_ci_runs enable row level security;
+alter table app.dev_ci_repos enable row level security;
 alter table app.dev_deliveries enable row level security;
 alter table app.dev_releases enable row level security;
 alter table app.dev_release_notes enable row level security;
 alter table app.dev_release_signoffs enable row level security;
 alter table app.dev_integrations enable row level security;
 alter table app.dev_integration_plans enable row level security;
-revoke all on app.dev_projects, app.dev_deployments, app.dev_ci_runs, app.dev_deliveries, app.dev_releases, app.dev_release_notes,
+revoke all on app.dev_projects, app.dev_deployments, app.dev_ci_runs, app.dev_ci_repos, app.dev_deliveries, app.dev_releases, app.dev_release_notes,
               app.dev_release_signoffs, app.dev_integrations, app.dev_integration_plans from public, anon, authenticated;
 
 -- Sentral's own integrations (PLAN: the register lists what Sentral itself calls; product-side ones wait for an event)
@@ -225,7 +240,7 @@ create function app.delivery_ci_json(r app.dev_ci_runs) returns jsonb
 as $fn$
   select case when r.id is null then null else jsonb_build_object(
     'product', r.product, 'sha', r.sha, 'ref', r.ref, 'pr', r.pr, 'commit_at', r.commit_at, 'commit_title', r.commit_title,
-    'run_url', r.run_url, 'finished_at', r.finished_at, 'suites', r.suites, 'migrations_pending', to_jsonb(r.migrations_pending),
+    'run_url', r.run_url, 'repository', r.repository, 'finished_at', r.finished_at, 'suites', r.suites, 'migrations_pending', to_jsonb(r.migrations_pending),
     'deps', r.deps, 'coverage', r.coverage) end
 $fn$;
 
@@ -349,14 +364,16 @@ begin
   return jsonb_build_object('applied', true, 'rolled_back', v_live);
 end $fn$;
 
--- one CI run: every field checked again by shape and size, unknown fields dropped
+-- one CI run: every field checked again by shape and size, unknown fields dropped. The repository it names must be bound
+-- to the product it names (dev_ci_repos): one secret signs every repository's posts, so the binding decides what a
+-- repository's CI may speak for.
 create function public.worker_dev_ci(p_delivery text, p_at timestamptz, p_run jsonb) returns jsonb
   language plpgsql volatile security definer set search_path = ''
 as $fn$
 declare
   v_product text := p_run ->> 'product'; v_sha text := lower(p_run ->> 'sha'); v_pr text := p_run ->> 'pr';
   v_url text := p_run ->> 'run_url'; v_suites jsonb := '[]'::jsonb; v_pending text[] := '{}'; v_deps jsonb; v_cov numeric;
-  v_finished timestamptz; v_commit timestamptz; s jsonb; f text; k text;
+  v_finished timestamptz; v_commit timestamptz; s jsonb; f text; k text; v_repo text := lower(p_run ->> 'repository'); v_bound text;
 begin
   if p_delivery is null or p_delivery !~ '^[A-Za-z0-9._:-]{6,120}$' then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'delivery'; end if;
   if p_at is null or p_at < now() - interval '5 minutes' or p_at > now() + interval '5 minutes' then
@@ -367,6 +384,12 @@ begin
   if v_product is null or v_product !~ '^[a-z][a-z0-9_]{1,30}$' or not app.dev_product_ok(v_product) then
     raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'product';
   end if;
+  if v_repo is null or v_repo !~ '^[a-z0-9][a-z0-9_-]{0,38}/(?!\.\.?$)[a-z0-9_.-]{1,100}$' then
+    raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'repository';
+  end if;
+  select b.product into v_bound from app.dev_ci_repos b where b.repository = v_repo;
+  if v_bound is null then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'repository_unbound'; end if;
+  if v_bound <> v_product then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'repository_product'; end if;
   if v_sha is null or v_sha !~ '^[0-9a-f]{7,40}$' then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'sha'; end if;
   if v_pr is not null and v_pr !~ '^[1-9][0-9]{0,7}$' then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'pr'; end if;
   if v_url is not null and v_url !~ '^https://[A-Za-z0-9.-]{3,100}/[A-Za-z0-9._~/-]{1,250}$' then v_url := null; end if;
@@ -422,9 +445,9 @@ begin
   delete from app.dev_deliveries d where d.received_at < now() - interval '30 days';
   delete from app.dev_ci_runs r where r.received_at < now() - interval '400 days';
 
-  insert into app.dev_ci_runs (delivery_id, product, sha, ref, pr, commit_at, commit_title, run_url, finished_at, suites, migrations_pending, deps, coverage)
+  insert into app.dev_ci_runs (delivery_id, product, sha, ref, pr, commit_at, commit_title, run_url, repository, finished_at, suites, migrations_pending, deps, coverage)
   values (p_delivery, v_product, v_sha, app.delivery_line(p_run ->> 'ref', 200), v_pr::int, v_commit, app.delivery_line(p_run ->> 'commit_title', 200), v_url,
-          v_finished, v_suites, v_pending, v_deps, round(v_cov, 2));
+          v_repo, v_finished, v_suites, v_pending, v_deps, round(v_cov, 2));
 
   update app.integration_connections set status = 'connected', connected_at = coalesce(connected_at, now()),
     config = config || jsonb_build_object('last_delivery_at', now())
@@ -464,6 +487,10 @@ begin
                          where d.environment = 'preview' and d.seen_at > now() - interval '14 days'
                          order by d.project_id, coalesce(d.ref, d.id), d.seen_at desc) y
                        order by y.seen_at desc limit 30)), '[]'::jsonb),
+    -- the repositories bound to a product, with their newest post
+    'ci_repos', coalesce((select jsonb_agg(jsonb_build_object('repository', b.repository, 'product', b.product, 'bound_by', app.delivery_staff_name(b.bound_by),
+                                                              'bound_at', b.bound_at, 'last_run_at', (select max(r.finished_at) from app.dev_ci_runs r where r.repository = b.repository))
+                                           order by b.repository) from app.dev_ci_repos b), '[]'::jsonb),
     -- the newest CI run per product on its main line
     'ci_runs', coalesce((select jsonb_agg(app.delivery_ci_json(app.delivery_ci_main(p.product)) order by p.product)
                          from (select distinct r.product from app.dev_ci_runs r where r.pr is null) p), '[]'::jsonb));
@@ -482,10 +509,34 @@ begin
   return jsonb_build_object('ok', true);
 end $fn$;
 
+-- the owner binds a repository (GitHub's owner/name) to the product its CI posts are about, or unbinds it (product null);
+-- a fresh second factor, as for the CI secret itself (0078 v3_intake)
+create function public.dev_ci_repo_set(p_repository text, p_product text) returns jsonb
+  language plpgsql volatile security definer set search_path = ''
+as $fn$
+declare v_me uuid := app.require_owner(); v_repo text := lower(btrim(coalesce(p_repository, '')));
+begin
+  perform app.require_fresh_mfa(10);
+  if v_repo !~ '^[a-z0-9][a-z0-9_-]{0,38}/(?!\.\.?$)[a-z0-9_.-]{1,100}$' then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'repository'; end if;
+  if p_product is null then
+    delete from app.dev_ci_repos b where b.repository = v_repo;
+    if not found then raise exception 'not_found' using errcode = 'no_data_found'; end if;
+    perform app.log('dev_ci_repo.unbound', 'dev_ci_repo', v_repo);
+    return jsonb_build_object('ok', true);
+  end if;
+  if not app.dev_product_ok(p_product) then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'product'; end if;
+  insert into app.dev_ci_repos (repository, product, bound_by) values (v_repo, p_product, v_me)
+  on conflict (repository) do update set product = excluded.product, bound_by = excluded.bound_by, bound_at = now();
+  perform app.log('dev_ci_repo.bound', 'dev_ci_repo', v_repo, jsonb_build_object('product', p_product));
+  return jsonb_build_object('ok', true);
+end $fn$;
+
 -- ===========================================================================
 -- 5. delivery metrics
 -- ===========================================================================
--- Deploy frequency: production deployments that became ready, per day. Change failure rate: production deployments that
+-- Deploy frequency: production deployments that became ready, per day of the window Sentral has heard Vercel in: history
+-- starts at connection (X-V3-1), so the days are counted from the first Vercel project's first event when that is later
+-- than the window's start ('covered_days', 'since', 'complete'). Change failure rate: production deployments that
 -- failed or were rolled back ÷ production deployments that finished. Time to restore (90 days): a rollback, from the moment
 -- the deployment went live to the rollback; a failed production build, from the failure to the project's next ready
 -- production deployment. Lead time: from the commit (CI's commit time) to the first ready production deployment of it.
@@ -493,9 +544,13 @@ create function public.dev_metrics(p_days int default 30) returns jsonb
   language plpgsql stable security definer set search_path = ''
 as $fn$
 declare v_me uuid := app.require('dev', 'see'); v_from timestamptz; v_ready int; v_final int; v_failed int; v_rolled int;
+        v_since timestamptz; v_covered int;
 begin
   if p_days is null or p_days not between 7 and 365 then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'days'; end if;
   v_from := now() - make_interval(days => p_days);
+  select min(p.first_seen_at) into v_since from app.dev_projects p;
+  -- whole days heard, at least one, at most the window
+  v_covered := case when v_since is null then 0 else least(p_days, greatest(1, ceil(extract(epoch from now() - v_since) / 86400.0)::int)) end;
   select count(*) filter (where d.state = 'ready' and d.ready_at >= v_from),
          count(*) filter (where d.state in ('ready', 'error') and coalesce(d.created_at, d.seen_at) >= v_from),
          count(*) filter (where d.state = 'error' and coalesce(d.created_at, d.seen_at) >= v_from),
@@ -504,8 +559,11 @@ begin
   from app.dev_deployments d where d.environment = 'production' and d.origin = 'build';
   return jsonb_build_object(
     'days', p_days,
+    'since', v_since,
+    'covered_days', v_covered,
+    'complete', v_since is not null and v_since <= v_from,
     'sources', jsonb_build_object('deploys', exists (select 1 from app.dev_deployments), 'ci', exists (select 1 from app.dev_ci_runs)),
-    'deploys', jsonb_build_object('ready', v_ready, 'per_day', round(v_ready::numeric / p_days, 2),
+    'deploys', jsonb_build_object('ready', v_ready, 'per_day', case when v_covered > 0 then round(v_ready::numeric / v_covered, 2) end,
                                   'finished', v_final, 'failed', v_failed, 'rolled_back', v_rolled,
                                   'failure_rate', case when v_final > 0 then round(100.0 * (v_failed + v_rolled) / v_final, 1) end),
     'lead', (select jsonb_build_object('n', count(*), 'median_hours', round((percentile_cont(0.5) within group (order by h))::numeric, 2))
@@ -572,19 +630,23 @@ begin
     order by (d.state = 'ready') desc, d.seen_at desc limit 1;
   end if;
 
-  -- tests: every test suite of the commit's CI run passed
+  -- tests: every suite of kind «test» in the commit's CI run passed (what the CI names a test suite; Sentral cannot tell
+  -- unit from end-to-end, so the label says «CI test suites»)
   v_tests := app.delivery_suite_sum(ci.suites, array['test']);
   v_items := v_items || jsonb_build_array(jsonb_build_object('key', 'tests', 'kind', 'auto', 'source', 'ci',
-    'state', case when v_tests is null then 'unknown' when (v_tests ->> 'failed')::int = 0 then 'pass' else 'fail' end, 'detail', v_tests));
+    'state', case when v_tests is null then 'unknown' when (v_tests ->> 'failed')::int = 0 then 'pass' else 'fail' end,
+    -- a run without a test suite says so ({n: 0}), apart from no run at all (null)
+    'detail', case when v_tests is null and ci.id is not null then jsonb_build_object('n', 0) else v_tests end));
   -- migrations: none of the product's migrations waits for production
   v_items := v_items || jsonb_build_array(jsonb_build_object('key', 'migrations', 'kind', 'auto', 'source', 'ci',
     'state', case when ci.id is null then 'unknown' when cardinality(ci.migrations_pending) = 0 then 'pass' else 'fail' end,
     'detail', case when ci.id is null then null else jsonb_build_object('pending', to_jsonb(ci.migrations_pending)) end));
-  -- row-level security and anonymity suites
+  -- row-level security and anonymity suites: a pass needs an anonymity suite in the run, and nothing failing; without one
+  -- the item is unknown (detail.anonymity false), whatever the security suites say
   v_rls := app.delivery_suite_sum(ci.suites, array['security', 'anonymity']);
   v_anon := app.delivery_suite_sum(ci.suites, array['anonymity']);
   v_items := v_items || jsonb_build_array(jsonb_build_object('key', 'rls', 'kind', 'auto', 'source', 'ci',
-    'state', case when v_rls is null then 'unknown' when (v_rls ->> 'failed')::int = 0 then 'pass' else 'fail' end,
+    'state', case when v_rls is null then 'unknown' when (v_rls ->> 'failed')::int > 0 then 'fail' when v_anon is null then 'unknown' else 'pass' end,
     'detail', case when v_rls is null then null else v_rls || jsonb_build_object('anonymity', v_anon is not null) end));
   -- dependency findings: no high or critical
   v_items := v_items || jsonb_build_array(jsonb_build_object('key', 'deps', 'kind', 'auto', 'source', 'ci',
@@ -600,9 +662,11 @@ begin
   select count(*) into v_notes from app.dev_release_notes n where n.release_id = r.id;
   v_items := v_items || jsonb_build_array(jsonb_build_object('key', 'notes', 'kind', 'auto', 'source', 'changelog',
     'state', case when v_notes > 0 then 'pass' else 'fail' end, 'detail', jsonb_build_object('n', v_notes)));
-  -- the manual items, each signed by a named person; help articles changed since the product's previous release, as evidence
+  -- the manual items, each signed by a named person; the product's own published help articles changed since its previous
+  -- release, as evidence (sample articles only in the sandbox, as every other reader of them)
   select max(x.recorded_at) into v_prev from app.dev_releases x where x.product = r.product and x.state = 'recorded';
-  select count(*) into v_help from app.help_articles a where a.status = 'published' and a.updated_at > coalesce(v_prev, r.created_at);
+  select count(*) into v_help from app.help_articles a
+  where a.product = r.product and a.status = 'published' and (app.dev_sandbox() or not a.is_sample) and a.updated_at > coalesce(v_prev, r.created_at);
   foreach k in array array['flag', 'anonymity', 'preview', 'rollback', 'help'] loop
     select case when s.release_id is null then 'fail' else 'pass' end into v_state
     from (select 1) one left join app.dev_release_signoffs s on s.release_id = r.id and s.item = k;
@@ -651,6 +715,8 @@ begin
   end if;
   return jsonb_build_object(
     'can_add', app.can('dev', 'add'),
+    -- the anonymity check is the owner's to sign (D-DEV-08)
+    'can_sign_anonymity', app.can('dev', 'add') and exists (select 1 from app.admins a where a.id = v_me and a.role = 'owner'),
     'products', app.delivery_products_json(),
     'releases', coalesce((select jsonb_agg(app.delivery_release_json(x) order by x.state = 'open' desc, coalesce(x.recorded_at, x.created_at) desc)
                           from app.dev_releases x
@@ -757,7 +823,8 @@ begin
   return jsonb_build_object('ok', true);
 end $fn$;
 
--- a manual item signed (or the signature withdrawn) by the person calling; the rollback plan needs its text
+-- a manual item signed (or the signature withdrawn) by the person calling; the rollback plan needs its text, and the
+-- anonymity check is signed or withdrawn by the owner only (D-DEV-08: the firewall's sign-off is not anyone's with dev:add)
 create function public.dev_release_sign(p_release uuid, p_item text, p_on boolean, p_note text default null) returns jsonb
   language plpgsql volatile security definer set search_path = ''
 as $fn$
@@ -767,6 +834,7 @@ begin
   if not found then raise exception 'not_found' using errcode = 'no_data_found'; end if;
   if r.state <> 'open' then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'recorded'; end if;
   if p_item is null or p_item not in ('flag', 'anonymity', 'preview', 'rollback', 'help') then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'item'; end if;
+  if p_item = 'anonymity' then perform app.require_owner(); end if;
   if v_note is not null and char_length(v_note) > 500 then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'note'; end if;
   if coalesce(p_on, false) then
     if p_item = 'rollback' and v_note is null then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'note'; end if;
@@ -806,6 +874,104 @@ begin
   perform app.log('dev_release.recorded', 'dev_release', p_id::text, jsonb_build_object('notes_published', v_published));
   return jsonb_build_object('ok', true, 'published', v_published);
 end $fn$;
+
+-- ---------------------------------------------------------------------------
+-- a recorded release's changelog is frozen: its notes keep the product, kind, line, body and state they were released with
+create function app.release_note_frozen(p_id uuid) returns boolean
+  language sql stable security definer set search_path = ''
+as $fn$
+  select exists (select 1 from app.dev_release_notes l join app.dev_releases r on r.id = l.release_id where l.note_id = p_id and r.state = 'recorded')
+$fn$;
+
+-- 0078's writers, each with the «recorded» refusal; everything else as 0078 has it
+create or replace function public.release_note_save(p_id uuid, p_product text, p_kind text, p_title text, p_body text default null,
+                                                    p_feature_request uuid default null, p_source text default 'manual') returns jsonb
+  language plpgsql volatile security definer set search_path = ''
+as $fn$
+declare v_me uuid := app.require_any('dev:add', 'tickets:edit_others'); v_row app.release_notes;
+begin
+  if p_product is null or not app.dev_product_ok(p_product) then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'product'; end if;
+  if p_kind is null or p_kind not in ('new', 'improved', 'fixed') then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'kind'; end if;
+  if char_length(btrim(coalesce(p_title, ''))) not between 3 and 200 then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'title'; end if;
+  if p_body is not null and char_length(p_body) > 4000 then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'body'; end if;
+  if p_source is null or p_source not in ('manual', 'release', 'ai', 'request') then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'source'; end if;
+  if p_feature_request is not null and not exists (select 1 from app.feature_requests r where r.id = p_feature_request) then
+    raise exception 'not_found' using errcode = 'no_data_found', detail = 'feature_request';
+  end if;
+  if p_id is null then
+    insert into app.release_notes (product, kind, title, body, source, feature_request_id, created_by)
+    values (p_product, p_kind, btrim(p_title), nullif(btrim(p_body), ''), p_source, p_feature_request, v_me) returning * into v_row;
+    perform app.log('release_note.added', 'release_note', v_row.id::text);
+  else
+    if app.release_note_frozen(p_id) then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'recorded'; end if;
+    update app.release_notes n set product = p_product, kind = p_kind, title = btrim(p_title), body = nullif(btrim(p_body), ''),
+      feature_request_id = p_feature_request, updated_at = now()
+    where n.id = p_id returning * into v_row;
+    if not found then raise exception 'not_found' using errcode = 'no_data_found'; end if;
+    perform app.log('release_note.changed', 'release_note', p_id::text);
+  end if;
+  return app.release_note_json(v_row);
+end $fn$;
+
+create or replace function public.release_note_publish(p_id uuid, p_on boolean) returns jsonb
+  language plpgsql volatile security definer set search_path = ''
+as $fn$
+declare v_me uuid := app.require_any('dev:add', 'tickets:edit_others'); v_row app.release_notes;
+begin
+  if not coalesce(p_on, false) and app.release_note_frozen(p_id) then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'recorded'; end if;
+  update app.release_notes n set state = case when p_on then 'published' else 'draft' end,
+    published_at = case when p_on then coalesce(n.published_at, now()) else null end,
+    published_by = case when p_on then coalesce(n.published_by, v_me) else null end, updated_at = now()
+  where n.id = p_id returning * into v_row;
+  if not found then raise exception 'not_found' using errcode = 'no_data_found'; end if;
+  perform app.log(case when p_on then 'release_note.published' else 'release_note.unpublished' end, 'release_note', p_id::text);
+  return app.release_note_json(v_row);
+end $fn$;
+
+create or replace function public.release_note_delete(p_id uuid) returns jsonb
+  language plpgsql volatile security definer set search_path = ''
+as $fn$
+declare v_me uuid := app.require_any('dev:add', 'tickets:edit_others');
+begin
+  if app.release_note_frozen(p_id) then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'recorded'; end if;
+  delete from app.release_notes n where n.id = p_id and n.state = 'draft';
+  if not found then
+    if exists (select 1 from app.release_notes n where n.id = p_id) then raise exception 'conflict' using errcode = 'check_violation', detail = 'published'; end if;
+    raise exception 'not_found' using errcode = 'no_data_found';
+  end if;
+  perform app.log('release_note.deleted', 'release_note', p_id::text);
+  return jsonb_build_object('ok', true);
+end $fn$;
+
+-- the same rule for any other writer, written as «nobody may change this content» (CLAUDE.md): a frozen note's meaning
+-- does not change, and its changelog row is neither moved nor removed while its recorded release exists. Referential
+-- maintenance passes: a person's row going (added_by, published_by, feature_request_id set null) changes no compared
+-- column, and when the release itself is gone its rows go with it.
+create function app.release_note_freeze() returns trigger
+  language plpgsql set search_path = ''
+as $fn$
+begin
+  if (old.product, old.kind, old.title, old.body, old.state, old.published_at) is distinct from
+     (new.product, new.kind, new.title, new.body, new.state, new.published_at) and app.release_note_frozen(old.id) then
+    raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'recorded';
+  end if;
+  return new;
+end $fn$;
+create trigger release_notes_frozen before update on app.release_notes
+  for each row execute function app.release_note_freeze();
+
+create function app.dev_release_notes_freeze() returns trigger
+  language plpgsql set search_path = ''
+as $fn$
+begin
+  if (tg_op = 'DELETE' or (old.release_id, old.note_id, old.ord) is distinct from (new.release_id, new.note_id, new.ord))
+     and exists (select 1 from app.dev_releases r where r.id = old.release_id and r.state = 'recorded') then
+    raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'recorded';
+  end if;
+  return case when tg_op = 'DELETE' then old else new end;
+end $fn$;
+create trigger dev_release_notes_frozen before update or delete on app.dev_release_notes
+  for each row execute function app.dev_release_notes_freeze();
 
 -- ===========================================================================
 -- 7. the integrations register
@@ -915,10 +1081,11 @@ begin
   foreach f in array array['app.delivery_line(text, integer)', 'app.delivery_staff_name(uuid)', 'app.delivery_ci_main(text)', 'app.delivery_ci_json(app.dev_ci_runs)',
                            'app.delivery_deployment_json(app.dev_deployments)', 'app.delivery_suite_sum(jsonb, text[])', 'app.delivery_connection_json(text)',
                            'app.delivery_products_json()', 'app.delivery_release_commit(app.dev_releases)', 'app.delivery_release_checks(uuid)',
-                           'app.delivery_release_json(app.dev_releases)'] loop
+                           'app.delivery_release_json(app.dev_releases)', 'app.release_note_frozen(uuid)', 'app.release_note_freeze()',
+                           'app.dev_release_notes_freeze()'] loop
     execute format('revoke all on function %s from public, anon, authenticated', f);
   end loop;
-  foreach f in array array['public.dev_deploys()', 'public.dev_project_set(text, text)', 'public.dev_metrics(integer)',
+  foreach f in array array['public.dev_deploys()', 'public.dev_project_set(text, text)', 'public.dev_ci_repo_set(text, text)', 'public.dev_metrics(integer)',
                            'public.dev_releases_get(uuid)', 'public.dev_release_add(text, text, date, text)', 'public.dev_release_set(uuid, jsonb, integer)',
                            'public.dev_release_delete(uuid)', 'public.dev_release_note_attach(uuid, uuid, boolean)',
                            'public.dev_release_sign(uuid, text, boolean, text)', 'public.dev_release_record(uuid, integer)',

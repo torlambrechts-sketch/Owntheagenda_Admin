@@ -90,6 +90,8 @@ function Detail({ d, staff, canAdd }: { d: FileDetail; staff: { id: string; name
     URL.revokeObjectURL(url)
   }
   const sel = 'h-[34px] rounded-9 border border-line bg-canvas px-1 text-12.5 font-bold normal-case tracking-normal text-ink disabled:opacity-70'
+  /** a disabled control's reason, visible under it (not only in its title) */
+  const note = 'text-11 font-normal normal-case tracking-normal text-muted'
   const ago = (iso: string) => format.relativeTime(new Date(iso), new Date(d.now))
   return (
     <div className="flex min-w-0 flex-col gap-3">
@@ -110,6 +112,7 @@ function Detail({ d, staff, canAdd }: { d: FileDetail; staff: { id: string; name
               onChange={(e) => run(() => setRoadmapItem({ id: d.id, version: d.version, patch: { status: e.target.value } }), () => t('saved'))} className={sel}>
               {STATUSES.map((s) => <option key={s} value={s}>{fileStatus(s)}</option>)}
             </select>
+            {d.kind === 'bug' ? <span className={note}>{t('bugStatusNote')}</span> : null}
           </label>
           <label className="flex flex-col gap-1 text-11 font-bold uppercase tracking-[.06em] text-muted">{t('owner')}
             <select value={d.owner ?? ''} disabled={!editable || pending}
@@ -122,8 +125,10 @@ function Detail({ d, staff, canAdd }: { d: FileDetail; staff: { id: string; name
           </label>
           <label className="flex flex-col gap-1 text-11 font-bold uppercase tracking-[.06em] text-muted">{t('rollout')}
             <select value="" disabled title={t('rolloutNote')} className={sel}><option value="">—</option></select>
+            <span className={note}>{t('rolloutNote')}</span>
           </label>
         </div>
+        {!canAdd ? <span className="text-11.5 text-muted">{t('readOnlyNote')}</span> : null}
         <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))]">
           <pre className={`m-0 whitespace-pre-wrap rounded-12 bg-ink px-[14px] py-3 ${c.mono} text-11.5 leading-[1.6] text-tile [overflow-wrap:anywhere]`}>{d.md}</pre>
           <div className="flex flex-col gap-2">

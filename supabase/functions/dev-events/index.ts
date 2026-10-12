@@ -5,7 +5,9 @@
  * `x-vercel-signature` (HMAC-SHA1 under vercel_signing_secret), or the CI's `x-sentral-timestamp` and
  * `x-sentral-signature` (HMAC-SHA256 of "<timestamp>.<body>" under ci_signing_secret). Anything older than five minutes is
  * refused (Vercel's signed createdAt, the CI's signed timestamp), and the delivery id (Vercel's event id, the CI's
- * `delivery`) makes a repeat a duplicate. Both secrets live in this project's Vault and are read here only; Sentral holds
+ * `delivery`) makes a repeat a duplicate. The body is read with a byte cap whether or not the sender declares its length
+ * (_shared/body.ts). One CI secret signs every repository's posts (X-V3-1), so the database takes a CI post only from a
+ * repository the owner bound to the product it names (0080 dev_ci_repos). Both secrets live in this project's Vault and are read here only; Sentral holds
  * no Vercel token and no product's Supabase token.
  *
  * What reaches the database is reduced first (_shared/dev-events.ts): ids, shas, states, a branch, a PR number, counts,
@@ -14,6 +16,7 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { verifyWebhook } from '../_shared/signing.ts'
+import { readCapped } from '../_shared/body.ts'
 import { ciReport, vercelEvent, verifyVercel } from '../_shared/dev-events.ts'
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
@@ -25,9 +28,9 @@ const status = (message: string | undefined) => (message === 'stale' ? 401 : mes
 
 Deno.serve(async (req) => {
   if (req.method !== 'POST') return json({ error: 'method' }, 405)
-  if (Number(req.headers.get('content-length') ?? '0') > LIMIT) return json({ error: 'too_large' }, 413)
-  const body = await req.text()
-  if (body.length > LIMIT) return json({ error: 'too_large' }, 413)
+  const read = await readCapped(req, LIMIT)
+  if (!read.ok) return json({ error: 'too_large' }, 413)
+  const body = read.text
 
   const svc = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '', { auth: { persistSession: false } })
   const secret = async (name: string) => {

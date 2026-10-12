@@ -261,3 +261,13 @@ export function bugMarkdown(r: BugRecord, logLine: (e: LogEntry) => string): str
     '',
   ].join('\n')
 }
+
+/**
+ * What «Mark fixed» did, as its toast's message key: the problem's open tickets resolved with the person's reply (a count of
+ * tickets, not customers), and, when the problem's application cannot send mail, that the replies were not emailed (0079
+ * dev_bug_fix mail_ready). Never «told» or «notified» when nobody was emailed.
+ */
+export function fixedToastKey(r: { notified: number; resolved: boolean; mailReady: boolean | null }): 'fixedToast' | 'fixedToastProblem' | 'fixedToastNoMail' {
+  if (!r.resolved) return 'fixedToast'
+  return r.notified > 0 && r.mailReady === false ? 'fixedToastNoMail' : 'fixedToastProblem'
+}

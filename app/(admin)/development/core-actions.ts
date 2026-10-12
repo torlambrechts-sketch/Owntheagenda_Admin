@@ -154,13 +154,13 @@ export async function mergeBug(input: unknown): Promise<Result> {
 }
 
 /** «Mark fixed»: the message goes to the open incidents of a linked problem (problem_resolve); placeholders are refused */
-export async function fixBug(input: unknown): Promise<Result<{ notified: number; resolved: boolean }>> {
+export async function fixBug(input: unknown): Promise<Result<{ notified: number; resolved: boolean; mailReady: boolean | null }>> {
   const p = z.object({ id: uuid, version, body: z.string().trim().max(20000) }).safeParse(input)
   if (!p.success) return bad
   if (placeholders(p.data.body).length) return { ok: false, code: 'invalid', detail: 'placeholder' }
   const r = await call('dev_bug_fix', { p_id: p.data.id, p_version: p.data.version, p_body: p.data.body || null },
-                       z.object({ notified: z.coerce.number(), problem_resolved: z.boolean() }).passthrough())
-  return r.ok ? { ok: true, notified: r.data.notified, resolved: r.data.problem_resolved } : r
+                       z.object({ notified: z.coerce.number(), problem_resolved: z.boolean(), mail_ready: z.boolean().nullable().optional() }).passthrough())
+  return r.ok ? { ok: true, notified: r.data.notified, resolved: r.data.problem_resolved, mailReady: r.data.mail_ready ?? null } : r
 }
 
 // ---------------------------------------------------------------------------

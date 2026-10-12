@@ -1,10 +1,13 @@
+import { execFileSync } from 'node:child_process'
 import { createHmac } from 'node:crypto'
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { mkdtempSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { GOOGLE_API, LINKEDIN_VERSION, META_API } from '../supabase/functions/_shared/ads'
 import { PSI } from '../supabase/functions/_shared/pagespeed'
 import { verifyWebhook } from '../supabase/functions/_shared/signing'
+import { readCapped } from '../supabase/functions/_shared/body'
 import {
   CI_PAYLOAD_VERSION, SUITE_KINDS as EDGE_SUITE_KINDS, TOLERANCE_SEC, ciReport, firstLine, hmacSha1Hex, vercelEvent, verifyVercel,
 } from '../supabase/functions/_shared/dev-events'
@@ -177,14 +180,14 @@ describe('Vercel in', () => {
 describe('CI in', () => {
   // the card's example with its placeholders filled in
   const example = () => JSON.parse(CI_EXAMPLE.replace('<the full commit sha>', 'a'.repeat(40)).replace(/<the commit message[^>]*>/, 'Fix reminders')
-    .replace(/<unique per post[^>]*>/, 'run-123-1-orgpuls').replace('<owner>/<repo>', 'o/r').replace('<id>', '1'))
+    .replace(/<unique per post[^>]*>/, 'run-123-1-orgpuls').replaceAll('<owner>/<repo>', 'o/r').replace('<id>', '1'))
 
   it('accepts the documented example and keeps only its documented fields', () => {
     const body = { ...example(), run_url: 'https://github.com/o/r/actions/runs/1', output: 'test output never kept', log: 'never kept' }
     const r = ciReport(body)
     expect(r.ok).toBe(true)
     if (!r.ok) return
-    expect(Object.keys(r.run).sort()).toEqual(['commit_at', 'commit_title', 'coverage', 'dependencies', 'finished_at', 'migrations_pending', 'pr', 'product', 'ref', 'run_url', 'sha', 'suites', 'v'])
+    expect(Object.keys(r.run).sort()).toEqual(['commit_at', 'commit_title', 'coverage', 'dependencies', 'finished_at', 'migrations_pending', 'pr', 'product', 'ref', 'repository', 'run_url', 'sha', 'suites', 'v'])
     expect(r.run.suites[1]).toEqual({ name: 'respondent_invariants', kind: 'anonymity', passed: 21, failed: 0, skipped: 0 })
     expect(r.run.migrations_pending).toEqual(['0231_retry_queue.sql'])
     expect(JSON.stringify(r)).not.toContain('never kept')
@@ -197,6 +200,37 @@ describe('CI in', () => {
     expect(ciReport({ ...example(), sha: 'main' })).toEqual({ ok: false, reason: 'body' })
     expect(ciReport({ ...example(), delivery: 'x' })).toEqual({ ok: false, reason: 'body' })
     expect(ciReport({ ...example(), dependencies: { high: -1 } })).toEqual({ ok: false, reason: 'body' })
+  })
+
+  it('names the repository it comes from (GitHub matches it in any case); without one the post is refused', () => {
+    const r = ciReport({ ...example(), repository: 'TorLambrechts-Sketch/Orgpuls' })
+    expect(r.ok && r.run.repository).toBe('torlambrechts-sketch/orgpuls')
+    const { repository: _, ...without } = example()
+    void _
+    expect(ciReport(without)).toEqual({ ok: false, reason: 'body' })
+    expect(ciReport({ ...example(), repository: '../etc' })).toEqual({ ok: false, reason: 'body' })
+    expect(ciReport({ ...example(), repository: 'a/b/c' })).toEqual({ ok: false, reason: 'body' })
+    // the database refuses a repository nobody bound, or one bound to another product (0080 worker_dev_ci)
+    expect(migration).toMatch(/detail = 'repository_unbound'/)
+    expect(migration).toMatch(/detail = 'repository_product'/)
+  })
+
+  it('reads a body with a byte cap, declared or not', async () => {
+    const stream = (chunks: string[]) => new ReadableStream<Uint8Array>({
+      start(c) { for (const x of chunks) c.enqueue(new TextEncoder().encode(x)); c.close() },
+    })
+    const post = (chunks: string[], headers: Record<string, string> = {}) =>
+      new Request('https://x.test/', { method: 'POST', body: stream(chunks), headers, duplex: 'half' } as RequestInit)
+    expect(await readCapped(post(['{"a":', '1}']), 10)).toEqual({ ok: true, text: '{"a":1}' })
+    // chunked, no Content-Length: the stream is cut as soon as the count passes the cap
+    let pulled = 0
+    const endless = new ReadableStream<Uint8Array>({ pull(c) { pulled++; c.enqueue(new Uint8Array(4096)) } })
+    expect(await readCapped(new Request('https://x.test/', { method: 'POST', body: endless, duplex: 'half' } as RequestInit), 10_000)).toEqual({ ok: false, reason: 'too_large' })
+    expect(pulled).toBeLessThan(10)
+    expect(await readCapped(post(['x'], { 'content-length': '999999' }), 10)).toEqual({ ok: false, reason: 'too_large' })
+    expect(await readCapped(post(['ø'.repeat(6)]), 10)).toEqual({ ok: false, reason: 'too_large' })
+    expect(read('supabase/functions/dev-events/index.ts')).toContain('readCapped(req, LIMIT)')
+    expect(read('supabase/functions/dev-events/index.ts')).not.toContain('req.text()')
   })
 
   it('is signed the way the starter kit\'s script signs it, and checked like the products\' events', async () => {
@@ -217,6 +251,21 @@ describe('CI in', () => {
 describe('the repo starter kit', () => {
   const files = (dir: string): string[] => readdirSync(dir).flatMap((f) => (statSync(join(dir, f)).isDirectory() ? files(join(dir, f)) : [join(dir, f)]))
   const root = new URL('../design-reference/sentral-simple/repo-starter/', import.meta.url).pathname
+
+  it('reports a pull request under its head commit, names its repository and gives up after twenty seconds', () => {
+    const yml = starterFile('sentral_report_yml').body
+    const mjs = starterFile('sentral_report_mjs').body
+    expect(yml).toContain('ref: "${{ github.event.pull_request.head.sha || github.sha }}"')
+    expect(yml).toContain('SENTRAL_SHA: ${{ github.event.pull_request.head.sha || github.sha }}')
+    expect(mjs).toContain("const sha = process.env.SENTRAL_SHA || process.env.GITHUB_SHA || git('rev-parse', 'HEAD')")
+    expect(mjs).toContain("git('show', '-s', '--format=%s', sha)")
+    expect(mjs).toContain('const repository = process.env.GITHUB_REPOSITORY')
+    expect(mjs).toContain('signal: AbortSignal.timeout(20_000)')
+    // the script as served parses
+    const f = join(mkdtempSync(join(tmpdir(), 'sentral-report-')), 'sentral-report.mjs')
+    writeFileSync(f, mjs)
+    expect(() => execFileSync(process.execPath, ['--check', f])).not.toThrow()
+  })
 
   it('serves every file of the design\'s kit, plus the CI report', () => {
     const design = files(root).map((f) => f.slice(root.length)).sort()

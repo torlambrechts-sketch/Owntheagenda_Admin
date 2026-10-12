@@ -30,6 +30,10 @@ const MatrixZ = z.object({
   roles: z.array(z.object({ id, key: z.string().nullable(), name: z.string() })),
   actions: z.array(ActionZ),
   cells: z.record(z.string(), z.record(z.string(), Cell)),
+  // per role, the actions its rights reach: the only cells the matrix can open (it narrows a role, never widens it)
+  reach: z.record(z.string(), z.array(z.string())),
+  // the actions a setting holds at «needs approval» (Settings › Second admin: account.delete, D-30)
+  forced: z.array(z.string()),
   manage: z.enum(MODES),
 })
 export type AccessMatrix = z.infer<typeof MatrixZ>

@@ -1,10 +1,13 @@
 -- v3_platform_invariants.sql — Platform › the new tabs (0082). F-P1: a subscription counts under its plan by Orgpuls' key
 -- (small/usual), not only by the band label. Roles and approvals: the registry, the policies seeded from today's rights with
 -- nothing needing approval (D-30); a cell changed only by someone allowed to manage roles, on a fresh second factor, never
--- leaving nobody able to; command_authorize, which product-command asks before it signs (R-PL-1): allow, deny, approve; the
--- queue: only someone in approve mode asks, the arguments come from Sentral's records, a second person who may take the action
--- decides on a fresh second factor (never the requester), the approval runs once with exactly the approved arguments, the
--- argument values are cleared after it ran, was refused or expired, and nothing asked can be changed. Customer success,
+-- leaving nobody able to, and never beyond the role's rights (a stale row beyond them lets nobody through); command_authorize,
+-- which product-command asks before it signs (R-PL-1): allow, deny, approve, and Settings › Second admin holding a deletion at
+-- approval (D-30); the queue: only someone in approve mode asks, the arguments come from Sentral's records, a second person
+-- who may take the action decides on a fresh second factor (never the requester), the approval runs once with exactly the
+-- approved arguments, the command audit decides whether it ran when the app could not tell, the argument values are cleared
+-- after it ran, was refused or expired, the sweep runs every five minutes through the job monitor, and nothing asked can be
+-- changed. Customer success,
 -- rollouts, errors and the billing portal: each read under its right, each value from its source or null, each follow-up
 -- created once while it is open.
 \ir _helpers.psql
@@ -31,6 +34,14 @@ begin
   perform set_config('request.jwt.claim.sub', v::text, true);
 end $$;
 create or replace function pg_temp.set_of(p_key text) returns uuid language sql as $$ select id from app.permission_sets where key = p_key $$;
+-- the approver approves, takes and sends an approved trial extension (product-command consuming the approval)
+create or replace function pg_temp.send(p_id uuid) returns void language plpgsql as $$
+declare j jsonb;
+begin
+  perform public.approval_decide(p_id, true);
+  j := public.approval_take(p_id);
+  perform public.command_authorize('orgpuls', 'billing.extend_trial', p_id, j -> 'args');
+end $$;
 
 -- ---------------------------------------------------------------------------
 -- closed
@@ -43,7 +54,8 @@ select pg_temp.check((select count(*) from pg_class c where c.relnamespace = 'ap
                       and c.relname in ('staff_actions', 'command_actions', 'action_policies', 'approval_requests', 'plus_followups')) = 5, 'all five exist');
 select pg_temp.check(not has_function_privilege('authenticated', f::regprocedure, 'execute'), 'nobody signed in calls ' || f)
 from unnest(array['app.action_mode(uuid, text)', 'app.approval_create(uuid, text, jsonb, text)', 'app.policy_apply(uuid, text, text, uuid)',
-                  'app.approval_sweep()', 'app.mail_errors(text, int)', 'app.plan_band(text, text)', 'app.request_mrr(uuid, text)']) f;
+                  'app.approval_sweep()', 'app.approval_outcome(app.approval_requests)', 'app.approval_close(app.approval_requests, text, text, boolean)',
+                  'app.mail_errors(text, int)', 'app.plan_band(text, text)', 'app.request_mrr(uuid, text)']) f;
 select pg_temp.check(not has_function_privilege('anon', f::regprocedure, 'execute') and has_function_privilege('authenticated', f::regprocedure, 'execute'),
                      'only signed-in callers reach ' || f)
 from unnest(array['public.command_authorize(text, text, uuid, jsonb)', 'public.access_matrix()', 'public.approvals_list()',
@@ -106,6 +118,30 @@ select pg_temp.check(exists (select 1 from app.audit a where a.action = 'action_
                              and a.detail ->> 'to' = 'approve' and a.detail ->> 'from' = 'allow'), 'the change is audited with before and after');
 select pg_temp.expect_detail(format($$select public.action_policy_set(%L, 'roles.manage', 'approve')$$, pg_temp.set_of('admin')),
                              'invalid', 'last_manager', 'the matrix can never be left without someone able to change it');
+
+-- the matrix narrows a role, never widens it: the role's rights are the ceiling, and a right is given in Settings
+select pg_temp.expect_detail(format($$select public.action_policy_set(%L, 'account.delete', 'allow')$$, pg_temp.set_of('analyst')),
+                             'invalid', 'beyond_role', 'Read-only cannot be allowed to delete an account (Admin only)');
+select pg_temp.expect_detail(format($$select public.action_policy_set(%L, 'flags.change', 'allow')$$, pg_temp.set_of('analyst')),
+                             'invalid', 'beyond_role', 'nor to change flags without Global › Configure');
+select pg_temp.expect_detail(format($$select public.action_policy_set(%L, 'trial.extend', 'approve')$$, pg_temp.set_of('sales')),
+                             'invalid', 'beyond_role', 'nor to ask for approval of what its rights do not reach');
+select pg_temp.check(not (public.action_policy_set(pg_temp.set_of('analyst'), 'account.delete', 'deny') ->> 'applied')::boolean,
+                     'denying is always possible (and here already so)');
+select pg_temp.check(public.access_matrix() -> 'reach' -> pg_temp.set_of('analyst')::text = '[]'::jsonb
+                     and public.access_matrix() -> 'reach' -> pg_temp.set_of('support')::text = '["trial.extend"]'::jsonb
+                     and jsonb_array_length(public.access_matrix() -> 'reach' -> pg_temp.set_of('admin')::text) = 5,
+                     'the matrix names the cells each role''s rights reach');
+-- a policy row beyond the role (written by hand, or before a right was taken away in Settings) lets nobody through
+insert into app.action_policies (permission_set_id, action, mode)
+values (pg_temp.set_of('analyst'), 'account.delete', 'allow'), (pg_temp.set_of('analyst'), 'flags.change', 'allow')
+on conflict (permission_set_id, action) do update set mode = excluded.mode;
+select pg_temp.as_staff('sara@orgpuls.no');
+select pg_temp.expect_detail($$select public.command_authorize('orgpuls', 'orgs.delete_now')$$, 'forbidden', 'action:account.delete',
+                             'a stale row does not let Read-only delete an organisation through product-command');
+select pg_temp.expect_detail($$select public.command_authorize('orgpuls', 'modules.set_status')$$, 'forbidden', 'action:flags.change',
+                             'nor change a module');
+select pg_temp.check(public.access_matrix() -> 'cells' -> pg_temp.set_of('analyst')::text ->> 'account.delete' = 'deny', 'the matrix shows it denied');
 
 -- ---------------------------------------------------------------------------
 -- command_authorize: what product-command asks before it signs
@@ -201,6 +237,47 @@ select pg_temp.check(exists (select 1 from app.notifications n join app.admins a
                              where a.email = 'hanna@orgpuls.no' and n.key = 'approval.decided' and n.params ->> 'state' = 'executed'),
                      'the requester is told the outcome');
 
+-- an outcome the app could not see (no answer in time): the command audit decides, not the app's guess
+select pg_temp.as_staff('hanna@orgpuls.no');
+create temp table t_u on commit drop as
+  select v.d, (public.approval_request('trial.extend', jsonb_build_object('organization', (select id from t_org), 'days', v.d), 'Asked again') ->> 'id')::uuid id
+  from (values (5), (6), (7), (8)) v(d);
+grant all on t_u to authenticated;
+create or replace function pg_temp.u(p_days int) returns uuid language sql as $$ select id from t_u where d = p_days $$;
+select pg_temp.as_mfa('magnus@orgpuls.no');
+select pg_temp.send(pg_temp.u(5));
+select public.record_command('magnus@orgpuls.no', 'orgpuls', 'billing.extend_trial', array['p_days', 'p_org', 'p_reason'], true, null);
+select pg_temp.check(public.approval_done(pg_temp.u(5), null, 'unreachable') ->> 'state' = 'executed',
+                     'no answer in time, but the audit holds the call: executed, not «failed»');
+select pg_temp.check(public.approval_decide(pg_temp.u(7), true) ->> 'state' = 'approved', 'approved');
+create temp table t_u7 on commit drop as select public.approval_take(pg_temp.u(7)) j;
+grant all on t_u7 to authenticated;
+select pg_temp.check(public.approval_done(pg_temp.u(7), null, 'unreachable') ->> 'state' = 'failed', 'nothing went out under the approval: failed at once');
+select pg_temp.check((select result_code = 'unreachable' and args is null from app.approval_requests where id = pg_temp.u(7)), 'with the app''s code, its arguments gone');
+select pg_temp.expect_detail(format($$select public.command_authorize('orgpuls', 'billing.extend_trial', %L, %L)$$, pg_temp.u(7), (select j -> 'args' from t_u7)),
+                             'forbidden', 'approval', 'and a late call under it is refused');
+select pg_temp.send(pg_temp.u(6));
+select pg_temp.check(public.approval_done(pg_temp.u(6), null, 'timeout') ->> 'state' = 'executing', 'sent, and no answer in the audit yet: it stays open');
+select pg_temp.check((select state = 'executing' and args is null from app.approval_requests where id = pg_temp.u(6)), 'without its arguments');
+update app.approval_requests set taken_at = taken_at - interval '11 minutes' where id = pg_temp.u(6);
+select pg_temp.check((app.approval_sweep() ->> 'failed')::int = 1, 'the sweep settles it after ten minutes');
+select pg_temp.check((select state = 'failed' and result_code = 'unconfirmed' from app.approval_requests where id = pg_temp.u(6)),
+                     'no call in the audit: failed');
+select pg_temp.send(pg_temp.u(8));
+select pg_temp.check(public.approval_done(pg_temp.u(8), null, 'timeout') ->> 'state' = 'executing', 'the answer comes after the app gave up');
+select public.record_command('magnus@orgpuls.no', 'orgpuls', 'billing.extend_trial', array['p_days', 'p_org', 'p_reason'], true, null);
+update app.approval_requests set taken_at = taken_at - interval '11 minutes' where id = pg_temp.u(8);
+select pg_temp.check((app.approval_sweep() ->> 'executed')::int = 1, 'the sweep settles it');
+select pg_temp.check((select state = 'executed' and result_code is null and args is null from app.approval_requests where id = pg_temp.u(8)),
+                     'the call is in the audit: executed');
+select pg_temp.check(exists (select 1 from app.notifications n join app.admins a on a.id = n.staff_id
+                             where a.email = 'hanna@orgpuls.no' and n.key = 'approval.decided' and n.params ->> 'state' = 'executed'
+                               and n.params ->> 'ref' = (select 'A-' || r.ref from app.approval_requests r where r.id = pg_temp.u(8))),
+                     'and the requester is told');
+select pg_temp.check((select a.detail ->> 'settled_by' from app.audit a where a.action = 'approval.executed' and a.target_id = pg_temp.u(8)::text) = 'sweep'
+                     and (select a.detail ->> 'settled_by' from app.audit a where a.action = 'approval.executed' and a.target_id = pg_temp.u(5)::text) = 'approver',
+                     'the audit says who settled each outcome');
+
 -- nothing asked can be changed; the state only moves forward; nothing is deleted
 select pg_temp.expect_error(format($$update app.approval_requests set reason = 'Something else' where id = %L$$, (select id from t_req)),
                             'an approval request cannot be changed', 'the reason cannot be changed');
@@ -220,45 +297,70 @@ select pg_temp.check((select args is null and decided_by = (select id from app.a
 insert into app.approval_requests (action, product, command, params, args, reason, requested_by, requested_at, expires_at)
 values ('trial.extend', 'orgpuls', 'billing.extend_trial', '{"days": 3}', '{"p_org": "t", "p_days": 3, "p_reason": "r"}', 'Old request',
         (select id from app.admins where email = 'hanna@orgpuls.no'), now() - interval '8 days', now() - interval '1 day');
-select app.approval_sweep();
+select pg_temp.check(exists (select 1 from app.job_defs where key = 'approval_sweep' and fn = 'app.approval_sweep' and source = 'cron' and schedule = '*/5 * * * *')
+                     and exists (select 1 from cron.job where jobname = 'platform-approval-sweep' and schedule = '*/5 * * * *'
+                                 and command = 'select app.run_job(''approval_sweep'')'),
+                     'the sweep runs every five minutes through the job monitor, whether or not anyone opens the queue');
+create temp table t_sweep on commit drop as select app.run_job('approval_sweep') id;
 select pg_temp.check((select state = 'expired' and args is null from app.approval_requests where reason = 'Old request'), 'after seven days a request expires and its arguments go');
+select pg_temp.check((select r.state = 'succeeded' and (r.info ->> 'expired')::int >= 1 from app.job_runs r where r.id = (select id from t_sweep)),
+                     'the job monitor records the run with its counts');
 
--- a deletion: the org.nr typed by the requester and again by the approver (D-30)
+-- a deletion while Settings › Second admin is on (D-30): the gate product-command asks holds it at approval too; an Admin asks
+-- with the org.nr typed, and a second admin approves, typing it again
+insert into app.setting_values (key, scope_id, value) values ('second_admin', '', 'on')
+on conflict (key, scope_id) do update set value = excluded.value;
+update app.admins set permission_set_id = pg_temp.set_of('admin') where email = 'eirik@orgpuls.no';
+select pg_temp.as_staff('tor@orgpuls.no');
+select pg_temp.expect_detail($$select public.command_authorize('orgpuls', 'orgs.delete_now')$$, 'approval_required', 'account.delete',
+                             'with Second admin on, an Admin cannot delete an organisation alone, not even straight through product-command');
+select pg_temp.check(public.access_matrix() -> 'cells' -> pg_temp.set_of('admin')::text ->> 'account.delete' = 'approve'
+                     and public.access_matrix() -> 'forced' = '["account.delete"]'::jsonb, 'the matrix shows the deletion needing approval, and why');
 select pg_temp.as_mfa('tor@orgpuls.no');
-select public.action_policy_set(pg_temp.set_of('support'), 'account.delete', 'approve');
-select pg_temp.as_staff('hanna@orgpuls.no');
+select pg_temp.expect_detail(format($$select public.action_policy_set(%L, 'account.delete', 'allow')$$, pg_temp.set_of('admin')),
+                             'invalid', 'second_admin', 'the matrix cannot allow it alone while the setting is on');
+select pg_temp.check(public.approvals_list() -> 'requestable' ? 'account.delete', 'the Admin may ask for it');
 select pg_temp.expect_detail(format($$select public.approval_request('account.delete', '{"organization": "%s", "confirm": "000000000"}', 'Cancelled, retention ended')$$, (select id from t_org)),
                              'invalid', 'confirm_mismatch', 'the requester types the org.nr');
 create temp table t_del on commit drop as
   select (public.approval_request('account.delete', jsonb_build_object('organization', (select id from t_org), 'confirm', (select org_number from t_org)), 'Cancelled, retention ended') ->> 'id')::uuid id;
 grant all on t_del to authenticated;
-select pg_temp.as_mfa('tor@orgpuls.no');
-select pg_temp.expect_detail(format($$select public.approval_decide(%L, true)$$, (select id from t_del)), 'invalid', 'confirm_mismatch', 'the approver types it again');
+select pg_temp.as_mfa('magnus@orgpuls.no');
+select pg_temp.expect_error(format($$select public.approval_decide(%L, true, null, %L)$$, (select id from t_del), (select org_number from t_org)), 'not_found',
+                            'someone who may not delete cannot approve a deletion');
+select pg_temp.as_mfa('eirik@orgpuls.no');
+select pg_temp.expect_detail(format($$select public.approval_decide(%L, true)$$, (select id from t_del)), 'invalid', 'confirm_mismatch', 'the second admin types it again');
 select pg_temp.check(public.approval_decide((select id from t_del), true, null, (select org_number from t_org)) ->> 'state' = 'approved', 'typed again, it is approved');
 
 -- the matrix through the queue: with two able to manage roles, the Admin's own changes need a second person
+select pg_temp.as_mfa('tor@orgpuls.no');
+select pg_temp.expect_detail(format($$select public.action_policy_set(%L, 'roles.manage', 'allow')$$, pg_temp.set_of('support')),
+                             'invalid', 'beyond_role', 'managing roles needs Global › Security first');
+update app.permission_sets set rights = rights || array['global:security'] where key = 'support';   -- given in Settings
 select public.action_policy_set(pg_temp.set_of('support'), 'roles.manage', 'allow');
 select pg_temp.check((public.action_policy_set(pg_temp.set_of('admin'), 'roles.manage', 'approve') ->> 'applied')::boolean,
                      'with Support able to manage roles, the Admin may switch approval on for itself');
+select pg_temp.expect_detail(format($$select public.action_policy_set(%L, 'trial.extend', 'allow', 'Sales handles renewals now')$$, pg_temp.set_of('sales')),
+                             'invalid', 'beyond_role', 'a request beyond the role''s rights is refused before anyone is asked');
 create temp table t_pol on commit drop as
-  select (public.action_policy_set(pg_temp.set_of('sales'), 'trial.extend', 'allow', 'Sales handles renewals now') ->> 'approval')::uuid id;
+  select (public.action_policy_set(pg_temp.set_of('support'), 'trial.extend', 'allow', 'Support extends trials alone again') ->> 'approval')::uuid id;
 grant all on t_pol to authenticated;
-select pg_temp.check((select id from t_pol) is not null and app.set_mode(pg_temp.set_of('sales'), 'trial.extend') = 'deny',
+select pg_temp.check((select id from t_pol) is not null and app.set_mode(pg_temp.set_of('support'), 'trial.extend') = 'approve',
                      'in approve mode a change becomes a request and changes nothing yet');
 select pg_temp.expect_detail(format($$select public.approval_decide(%L, true)$$, (select id from t_pol)), 'forbidden', 'own_request', 'the Admin cannot approve its own change');
 select pg_temp.as_mfa('magnus@orgpuls.no');
 select pg_temp.check(public.approval_decide((select id from t_pol), true) ->> 'state' = 'executed', 'a second person approves and the change is made');
-select pg_temp.check(app.set_mode(pg_temp.set_of('sales'), 'trial.extend') = 'allow', 'the approved change is in force');
+select pg_temp.check(app.set_mode(pg_temp.set_of('support'), 'trial.extend') = 'allow', 'the approved change is in force');
 select pg_temp.as_mfa('tor@orgpuls.no');
 create temp table t_pol2 on commit drop as
-  select (public.action_policy_set(pg_temp.set_of('marketing'), 'trial.extend', 'allow', 'Try it') ->> 'approval')::uuid id;
+  select (public.action_policy_set(pg_temp.set_of('admin'), 'trial.extend', 'deny', 'Try it') ->> 'approval')::uuid id;
 grant all on t_pol2 to authenticated;
 -- meanwhile someone else changes the same cell
-update app.action_policies set mode = 'approve' where permission_set_id = pg_temp.set_of('marketing') and action = 'trial.extend';
+update app.action_policies set mode = 'approve' where permission_set_id = pg_temp.set_of('admin') and action = 'trial.extend';
 select pg_temp.as_mfa('hanna@orgpuls.no');
 select pg_temp.check(public.approval_decide((select id from t_pol2), true) ->> 'state' = 'failed', 'a request for a cell changed since fails');
 select pg_temp.check((select result_code = 'changed_since' from app.approval_requests where id = (select id from t_pol2))
-                     and app.set_mode(pg_temp.set_of('marketing'), 'trial.extend') = 'approve', 'the newer change is not overwritten');
+                     and app.set_mode(pg_temp.set_of('admin'), 'trial.extend') = 'approve', 'the newer change is not overwritten');
 
 -- ---------------------------------------------------------------------------
 -- Customer success

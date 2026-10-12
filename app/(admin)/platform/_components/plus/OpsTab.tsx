@@ -127,19 +127,19 @@ function Errors({ product, name, errors, canTicket, nf }: {
       <Head title={t('title')} sub={t('sub')} />
       {errors.rows.length === 0 ? <div className={p.empty}>{t('empty', { name })}</div> : null}
       {errors.rows.map((e) => (
-        <div key={e.organization.id} className={`${p.row} grid items-center gap-[10px] py-[10px] text-12.5 [grid-template-columns:minmax(0,1.1fr)_minmax(0,1.6fr)_70px_110px]`}>
-          <b className="min-w-0">{e.organization.name}</b>
-          <span className="min-w-0 text-muted">{what(e)}</span>
-          <b className={errorTone(e.total)}>{formatNumber(e.total, nf)}</b>
+        <div key={e.organization.id} className={`${p.row} ${p.stackRow} md:[grid-template-columns:minmax(0,1.1fr)_minmax(0,1.6fr)_70px_110px]`}>
+          <b className="min-w-0 [overflow-wrap:anywhere]">{e.organization.name}</b>
+          <span className="order-2 min-w-0 text-muted md:order-none">{what(e)}</span>
+          <b className={`order-1 text-right md:order-none md:text-left ${errorTone(e.total)}`}>{formatNumber(e.total, nf)}</b>
           {e.ticket ? (
-            <Link href={`/tickets?ticket=${e.ticket.id}`} className={`${p.btnRowSoft} flex items-center justify-center text-ink hover:text-ink hover:no-underline`}>{t('open')}</Link>
+            <Link href={`/tickets?ticket=${e.ticket.id}`} className={`${p.btnRowSoft} order-3 flex items-center justify-center text-ink hover:text-ink hover:no-underline md:order-none`}>{t('open')}</Link>
           ) : (
             <button
               type="button"
               disabled={!canTicket || pending}
               title={canTicket ? undefined : t('noRight')}
               onClick={() => run(() => createErrorTicket({ org: e.organization.id, product }), (r) => flash(r.existing ? t('existing', { ref: r.ref }) : t('created', { ref: r.ref })))}
-              className={p.btnRowSoft}
+              className={`${p.btnRowSoft} order-3 md:order-none`}
             >
               {t('create')}
             </button>

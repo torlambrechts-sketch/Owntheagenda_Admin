@@ -60,8 +60,18 @@ export async function requestApproval(input: unknown): Promise<Res<{ ref: number
 const Reply = z.object({ ok: z.boolean(), error: z.string().optional(), result: z.unknown().optional() })
 const Inner = z.object({ ok: z.boolean(), error: z.string().optional() }).passthrough()
 
+/**
+ * What product-command answered: the command ran (true), it did not (false: nothing was sent, a refusal, or the product's own
+ * error), or nothing the app could read in time (null: no answer, a timeout, a page that is not product-command's reply). For
+ * null the database decides from the command audit (approval_done, approval_sweep), never the app's guess.
+ */
+type Sent = { ok: true } | { ok: false | null; code: string }
+
+/** product-command's own worst case is a product call of up to 20 s plus its checks and a cold start: wait well beyond it. */
+const SEND_TIMEOUT_MS = 40_000
+
 /** product-command with the approver's own session and the approval's id (runCommand without an approval cannot carry it). */
-async function sendApproved(command: string, args: Record<string, unknown>, approval: string): Promise<{ ok: true } | { ok: false; code: string }> {
+async function sendApproved(command: string, args: Record<string, unknown>, approval: string): Promise<Sent> {
   if (!isOrgpulsCommand(command)) return { ok: false, code: 'invalid' }
   const env = supabaseEnv()
   if ('problem' in env) return { ok: false, code: 'not_configured' }
@@ -75,17 +85,17 @@ async function sendApproved(command: string, args: Record<string, unknown>, appr
       headers: { authorization: `Bearer ${token}`, apikey: env.key, 'content-type': 'application/json' },
       body: JSON.stringify({ product: 'orgpuls', command, args, approval }),
       cache: 'no-store',
-      signal: AbortSignal.timeout(25_000),
+      signal: AbortSignal.timeout(SEND_TIMEOUT_MS),
     })
     const reply = Reply.safeParse(await res.json().catch(() => null))
-    if (!reply.success) return { ok: false, code: `http_${res.status}` }
+    if (!reply.success) return { ok: null, code: `http_${res.status}` }
     if (!reply.data.ok) return { ok: false, code: code(reply.data.error) }
     // the product function's own answer inside the envelope
     const inner = Inner.safeParse(reply.data.result)
     if (inner.success && !inner.data.ok) return { ok: false, code: code(inner.data.error) }
     return { ok: true }
-  } catch {
-    return { ok: false, code: 'unreachable' }
+  } catch (e) {
+    return { ok: null, code: (e as { name?: unknown } | null)?.name === 'TimeoutError' ? 'timeout' : 'unreachable' }
   }
 }
 
@@ -101,10 +111,14 @@ const TakeZ = z.object({
   reason: z.string(),
 })
 
+const DoneZ = z.object({ id: uuid, state: z.enum(['executed', 'failed', 'executing']), code: z.string().nullable().optional() })
+
 /**
  * Approve or reject. A policy change is made by the database on approval; a product command is run here, now, by the approver
  * (a fresh second factor was asked by approval_decide) and its outcome recorded. The answer says what happened, with the
- * product's own code when it refused.
+ * product's own code when it refused. When the app could not tell whether the command ran, the database decides from the
+ * command audit; until the audit answers the request stays «executing» and the customer's history gets its line from the
+ * approval's own audit entry when it is settled.
  */
 export async function decideApproval(input: unknown): Promise<Res<{ state: string; code: string | null }>> {
   const p = z.object({ id: uuid, yes: z.boolean(), note: z.string().trim().max(300).optional(), confirm: z.string().max(40).optional() }).safeParse(input)
@@ -121,15 +135,21 @@ export async function decideApproval(input: unknown): Promise<Res<{ state: strin
     return { ok: true, state: 'approved', code: take.code }
   }
   const sent = await sendApproved(take.data.command, take.data.args, take.data.id)
-  const recorded = await rpc('approval_done', { p_id: take.data.id, p_ok: sent.ok, p_code: sent.ok ? null : sent.code }, z.object({ id: uuid, state: z.string() }))
+  const recorded = await rpc('approval_done', { p_id: take.data.id, p_ok: sent.ok, p_code: sent.ok ? null : sent.code }, DoneZ)
+  const state = recorded.ok ? recorded.data.state : null
   const log = ACTION_LOG[take.data.action]
-  if (take.data.organization_id && log) {
-    await rpc('customer_action_log', { p_org: take.data.organization_id, p_action: log, p_reason: take.data.reason, p_ok: sent.ok }, z.object({ ok: z.boolean() }), { quiet: true })
+  if (take.data.organization_id && log && (state === 'executed' || state === 'failed')) {
+    await rpc('customer_action_log', { p_org: take.data.organization_id, p_action: log, p_reason: take.data.reason, p_ok: state === 'executed' }, z.object({ ok: z.boolean() }), { quiet: true })
   }
   done()
-  if (!sent.ok) return { ok: true, state: 'failed', code: sent.code }
-  if (!recorded.ok) return { ok: true, state: 'failed', code: recorded.detail && /^[a-z_]{1,40}$/.test(recorded.detail) ? recorded.detail : 'not_recorded' }
-  return { ok: true, state: recorded.data.state, code: null }
+  if (!recorded.ok) {
+    if (sent.ok === false) return { ok: true, state: 'failed', code: sent.code }
+    const detail = recorded.detail && /^[a-z_]{1,40}$/.test(recorded.detail) ? recorded.detail : 'not_recorded'
+    // an unknown outcome the database could not take yet stays open; approval_sweep settles it from the audit
+    return { ok: true, state: sent.ok === null ? 'executing' : 'failed', code: detail }
+  }
+  if (recorded.data.state === 'executed') return { ok: true, state: 'executed', code: null }
+  return { ok: true, state: recorded.data.state, code: recorded.data.code ?? (sent.ok ? null : sent.code) }
 }
 
 // ---------------------------------------------------------------------------

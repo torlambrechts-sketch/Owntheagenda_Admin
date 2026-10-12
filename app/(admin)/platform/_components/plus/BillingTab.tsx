@@ -5,6 +5,7 @@ import { useFormatter, useTranslations } from 'next-intl'
 import { formatNumber, money, type NumberFormat } from '@/lib/format'
 import type { Billing } from '@/lib/data/platform-plus'
 import { p } from './kit'
+import { trendTone } from './logic'
 
 const STATUSES = ['trial', 'active', 'past_due', 'suspended', 'cancelled', 'expired', 'free']
 
@@ -100,8 +101,11 @@ export function BillingTab({ billing, product, nf }: { billing: Billing; product
         {billing.tickets && billing.tickets_30d !== null ? (
           <>
             <div className="flex items-baseline gap-[10px] px-[18px] py-[14px]">
-              <span className="font-serif text-30 font-semibold text-link">{formatNumber(billing.tickets_30d, nf)}</span>
-              <span className="text-12.5 text-muted">{t('summary.prev', { count: formatNumber(billing.tickets_prev_30d ?? 0, nf) })}</span>
+              {/* a count is not a result: ink, with only the comparison coloured by its direction */}
+              <span className="font-serif text-30 font-semibold text-ink">{formatNumber(billing.tickets_30d, nf)}</span>
+              <span className={`text-12.5 ${trendTone(billing.tickets_30d, billing.tickets_prev_30d ?? 0)}`}>
+                {t('summary.prev', { count: formatNumber(billing.tickets_prev_30d ?? 0, nf) })}
+              </span>
             </div>
             {openAccounts.length === 0 ? <div className={`${p.empty} border-t`}>{t('summary.empty')}</div> : null}
             {openAccounts.map((x) => (

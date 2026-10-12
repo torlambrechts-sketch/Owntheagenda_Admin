@@ -4,8 +4,12 @@
  */
 export type Mode = 'allow' | 'approve' | 'deny'
 
-/** A matrix cell's next mode when clicked: ✓ → A → – → ✓ where the queue can execute the action, else ✓ ↔ –. */
-export function nextMode(cur: Mode, approvable: boolean): Mode {
+/**
+ * A matrix cell's next mode when clicked: ✓ → A → – → ✓ where the queue can execute the action, else ✓ ↔ –. While a setting
+ * holds the action at approval (Settings › Second admin for a deletion, D-30) it cannot be allowed alone: A ↔ –.
+ */
+export function nextMode(cur: Mode, approvable: boolean, forced = false): Mode {
+  if (forced) return cur === 'approve' ? 'deny' : 'approve'
   if (cur === 'allow') return approvable ? 'approve' : 'deny'
   if (cur === 'approve') return 'deny'
   return 'allow'
@@ -36,6 +40,12 @@ export function pctOf(done: number | null, cohort: number): number | null {
 
 /** The design's limit bar: red at 95 % and over, amber below (p >= 95). */
 export const limitTone = (pct: number) => (pct >= 95 ? 'bg-alert' : 'bg-warn')
+
+/**
+ * A count of things going wrong set against the period before (billing tickets): more is worse (rust), fewer is better (the
+ * design's «good result» green), the same is plain. The count itself stays ink: green is kept for good results.
+ */
+export const trendTone = (now: number, before: number) => (now > before ? 'text-danger' : now < before ? 'text-link' : 'text-muted')
 
 /** The design's error count colour: over 10 rust, over 0 amber, 0 green. */
 export const errorTone = (n: number) => (n > 10 ? 'text-danger' : n > 0 ? 'text-warn-ink' : 'text-link')

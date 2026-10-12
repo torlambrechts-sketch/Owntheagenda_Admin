@@ -46,8 +46,9 @@ function Matrix({ matrix, productName }: { matrix: AccessMatrix; productName: st
   const canManage = matrix.manage !== 'deny'
   const label = (a: StaffAction) => t(`actions.${actionKey(a.key)}`)
 
+  const forced = (a: StaffAction) => matrix.forced.includes(a.key)
   const click = (roleId: string, role: string, a: StaffAction, cur: Mode) => {
-    const mode = nextMode(cur, a.approvable)
+    const mode = nextMode(cur, a.approvable, forced(a))
     if (matrix.manage === 'approve') {
       setReason('')
       setAsk({ set: roleId, action: a.key, mode, role, label: label(a) })
@@ -55,10 +56,16 @@ function Matrix({ matrix, productName }: { matrix: AccessMatrix; productName: st
     }
     run(() => setPolicy({ set: roleId, action: a.key, mode }), () => flash(t('changed', { action: label(a), role, mode: t(`mode.${mode}`) })))
   }
+  const rightName = (right: string | null) =>
+    right && t.has(`rights.${right.replace(':', '_')}`) ? t(`rights.${right.replace(':', '_')}`) : right ?? ''
   const why = (a: StaffAction) =>
     a.enforced === 'none' ? t('why.none', { product: productName })
-    : a.enforced === 'right' ? t('why.right', { right: a.basis_right && t.has(`rights.${a.basis_right.replace(':', '_')}`) ? t(`rights.${a.basis_right.replace(':', '_')}`) : a.basis_right ?? '' })
+    : a.enforced === 'right' ? t('why.right', { right: rightName(a.basis_right) })
     : !canManage ? t('why.readOnly') : null
+  // a cell the role's rights do not reach stays «–» (the database refuses more); one a setting holds at approval says so
+  const cellWhy = (a: StaffAction, reached: boolean) =>
+    !reached ? (a.basis_right ? t('why.beyond', { right: rightName(a.basis_right) }) : t('why.adminOnly'))
+    : forced(a) ? t('why.secondAdmin') : null
 
   return (
     <div className={p.card}>
@@ -71,7 +78,7 @@ function Matrix({ matrix, productName }: { matrix: AccessMatrix; productName: st
             {matrix.roles.map((r) => <span key={r.id} className="text-center">{roleName(r)}</span>)}
           </div>
           {matrix.actions.map((a) => {
-            const editable = canManage && (a.enforced === 'command' || a.enforced === 'database')
+            const enforced = a.enforced === 'command' || a.enforced === 'database'
             const title = why(a)
             return (
               <div key={a.key} className={`grid items-center gap-[6px] border-b border-tile px-[18px] py-[7px] text-12.5 ${COLS}`}>
@@ -82,12 +89,15 @@ function Matrix({ matrix, productName }: { matrix: AccessMatrix; productName: st
                 {matrix.roles.map((r) => {
                   const cur = matrix.cells[r.id]?.[a.key] ?? 'none'
                   const mode: Mode = cur === 'none' ? 'deny' : cur
+                  const reached = enforced && (matrix.reach[r.id] ?? []).includes(a.key)
+                  const editable = canManage && reached
+                  const cellTitle = title ?? (enforced ? cellWhy(a, reached) : null)
                   return (
                     <button
                       key={r.id}
                       type="button"
                       disabled={!editable || pending}
-                      title={title ?? undefined}
+                      title={cellTitle ?? undefined}
                       aria-label={t('cellLabel', { action: label(a), role: roleName(r), mode: cur === 'none' ? t('notYet') : t(`mode.${cur}`) })}
                       onClick={() => click(r.id, roleName(r), a, mode)}
                       className={`h-[26px] cursor-pointer rounded-7 border text-12 font-bold disabled:cursor-default ${CELL_CLASS[cur]}`}
@@ -101,7 +111,8 @@ function Matrix({ matrix, productName }: { matrix: AccessMatrix; productName: st
           })}
         </div>
       </div>
-      <div className={p.foot}>{canManage ? t('footer') : t('footerRead')}</div>
+      {matrix.forced.length ? <div className={`${p.foot} border-b border-line text-amber-ink`}>{t('forcedNote')}</div> : null}
+      <div className={p.foot}>{canManage ? `${t('footer')} · ${t('ceilingNote')}` : t('footerRead')}</div>
       {ask ? (
         <Dialog title={t('reasonTitle')} onClose={() => setAsk(null)}>
           <span className="text-13 text-muted">{t('reasonBody', { action: ask.label, role: ask.role, mode: t(`mode.${ask.mode}`) })}</span>
@@ -159,12 +170,14 @@ function Queue({ approvals, accounts }: { approvals: Approvals; accounts: Accoun
     () => decideApproval({ id: a.id, yes, confirm: confirmText }),
     (r) => {
       setConfirm(null)
-      flash(!yes ? t('rejectedToast') : r.state === 'executed' ? t('approvedToast') : t('failedToast', { code: r.code ?? r.state }))
+      flash(!yes ? t('rejectedToast') : r.state === 'executed' ? t('approvedToast') : r.state === 'executing' ? t('pendingToast') : t('failedToast', { code: r.code ?? r.state }))
     },
   )
   const done = (a: Approval): { text: string; tone: string } => {
     if (a.state === 'executed') return { text: t('state.executed', { name: a.decided_by ?? '—' }), tone: 'text-link' }
-    if (a.state === 'approved' || a.state === 'executing') return { text: t('state.approved', { name: a.decided_by ?? '—' }), tone: 'text-link' }
+    if (a.state === 'approved') return { text: t('state.approved', { name: a.decided_by ?? '—' }), tone: 'text-link' }
+    // sent, and the command audit has not answered yet: approval_sweep settles it within ten minutes
+    if (a.state === 'executing') return { text: t('state.executing', { name: a.decided_by ?? '—' }), tone: 'text-muted' }
     if (a.state === 'rejected') return { text: t('state.rejected'), tone: 'text-danger' }
     if (a.state === 'failed') return { text: t('state.failed', { code: a.result_code ?? 'failed' }), tone: 'text-danger' }
     return { text: t('state.expired'), tone: 'text-muted' }

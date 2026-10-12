@@ -71,7 +71,8 @@ function Nps({ name }: { name: string }) {
     <div className={`${p.cardPad} gap-[10px]`}>
       <b className={p.title}>{t('title')}</b>
       <div className="flex items-baseline gap-[10px]">
-        <span className="font-serif text-40 font-semibold text-link">—</span>
+        {/* no score exists: the dash is muted, never the design's «good result» green */}
+        <span className="font-serif text-40 font-semibold text-muted">—</span>
         <span className="text-12.5 text-muted">{t('noSource', { name })}</span>
       </div>
     </div>
@@ -224,7 +225,7 @@ function Renewals({ product, name, signals, canDeal, nf }: { product: string; na
   const signal = (s: Signal) => {
     if (s.kind === 'expansion') {
       const n = formatNumber(s.employees, nf)
-      return s.next ? t('next', { employees: n, next: s.next }) : t('employees', { employees: n, max: formatNumber(s.max, nf) })
+      return s.next ? t('next', { employees: n, max: formatNumber(s.max, nf), next: s.next }) : t('employees', { employees: n, max: formatNumber(s.max, nf) })
     }
     return [
       s.health_from !== null && s.health_to !== null ? t('health', { from: s.health_from, to: s.health_to }) : null,
@@ -239,10 +240,10 @@ function Renewals({ product, name, signals, canDeal, nf }: { product: string; na
         const created = !!s.open
         const risk = s.kind === 'at_risk'
         return (
-          <div key={`${s.kind}:${s.organization.id}`} className={`${p.row} grid items-center gap-[10px] py-[10px] text-12.5 [grid-template-columns:minmax(0,1.2fr)_minmax(0,1.6fr)_90px_110px]`}>
-            <b className="min-w-0">{s.organization.name}</b>
-            <span className="min-w-0 text-muted">{signal(s)}</span>
-            <b className={risk ? 'text-danger' : 'text-link'}>{t(`kind.${s.kind}`)}</b>
+          <div key={`${s.kind}:${s.organization.id}`} className={`${p.row} ${p.stackRow} md:[grid-template-columns:minmax(0,1.2fr)_minmax(0,1.6fr)_90px_110px]`}>
+            <b className="min-w-0 [overflow-wrap:anywhere]">{s.organization.name}</b>
+            <span className="order-2 min-w-0 text-muted md:order-none">{signal(s)}</span>
+            <b className={`order-1 text-right md:order-none md:text-left ${risk ? 'text-danger' : 'text-link'}`}>{t(`kind.${s.kind}`)}</b>
             <button
               type="button"
               disabled={created || !canDeal || pending}
@@ -251,7 +252,7 @@ function Renewals({ product, name, signals, canDeal, nf }: { product: string; na
                 () => (risk ? createSuccessTask : createSuccessDeal)({ org: s.organization.id, product, name: s.organization.name }),
                 (r) => flash(r.existing ? t('exists') : risk ? t('taskDone') : t('dealDone')),
               )}
-              className={`${p.btnRow} ${created ? 'bg-ok-bg' : 'bg-primary'}`}
+              className={`${p.btnRow} order-3 md:order-none ${created ? 'bg-ok-bg' : 'bg-primary'}`}
             >
               {created ? t('created') : risk ? t('task') : t('deal')}
             </button>

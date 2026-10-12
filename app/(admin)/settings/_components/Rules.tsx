@@ -9,7 +9,7 @@ import { k, useRun } from './kit'
 import { numberBounds, numberOk } from './numbers'
 
 // the design's groups in its order, then the register's later ones (AI, Analytics, Documents) before the constants (V-SETTINGS-03, -35)
-const GROUPS = ['contacts_consent', 'tracking', 'approvals_audit', 'limits', 'safeguards', 'meetings', 'ai', 'analytics', 'documents', 'platform_constant']
+const GROUPS = ['contacts_consent', 'tracking', 'approvals_audit', 'limits', 'safeguards', 'meetings', 'ai', 'analytics', 'documents', 'development', 'platform_constant']
 
 // a platform setting's stored row, and its value or the default
 const cur = (s: Setting) => s.values.find((v) => v.scope_id === '') ?? null

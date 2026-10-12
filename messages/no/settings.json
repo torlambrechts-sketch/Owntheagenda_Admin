@@ -64,7 +64,8 @@
         "analytics": "Analyse",
         "documents": "Dokumenter",
         "platform_constant": "Plattformkonstant",
-        "pipelines": "Regler for salgsløp"
+        "pipelines": "Regler for salgsløp",
+        "development": "Utvikling"
       },
       "items": {
         "contact_rule": {
@@ -325,6 +326,42 @@
             "group": "Eierens gruppe",
             "group_sub": "Eierens gruppe og undergrupper",
             "all": "Alle"
+          }
+        },
+        "dev_target_sev_one": {
+          "name": "Feilsortering: mål for S1",
+          "applies": "Utvikling › Feilsortering (samme virkedag kl. 16.00, eller et antall arbeidstimer)",
+          "unit": "{count, plural, one {{n} arbeidstime} other {{n} arbeidstimer}}",
+          "options": {
+            "same_day": "Samme virkedag kl. 16.00",
+            "custom": "Egendefinert"
+          }
+        },
+        "dev_target_sev_two": {
+          "name": "Feilsortering: mål for S2",
+          "applies": "Utvikling › Feilsortering (virkedager; 3 som standard)",
+          "unit": "{count, plural, one {{n} virkedag} other {{n} virkedager}}",
+          "options": {
+            "source_value": "Kildeverdi (3 virkedager)",
+            "custom": "Egendefinert"
+          }
+        },
+        "dev_target_sev_three": {
+          "name": "Feilsortering: mål for S3",
+          "applies": "Utvikling › Feilsortering (dager; 14 som standard)",
+          "unit": "{count, plural, one {{n} dag} other {{n} dager}}",
+          "options": {
+            "source_value": "Kildeverdi (14 dager)",
+            "custom": "Egendefinert"
+          }
+        },
+        "dev_escaped_goal": {
+          "name": "Feil som slapp ut i produksjon: månedlig mål",
+          "applies": "Utvikling › Feilsortering (færre enn dette per måned; 3 som standard)",
+          "unit": "{count, plural, one {{n} feil} other {{n} feil}}",
+          "options": {
+            "source_value": "Kildeverdi (3 i måneden)",
+            "custom": "Egendefinert"
           }
         }
       }

@@ -15,7 +15,7 @@ export type Section = (typeof SECTIONS)[number]
  * Documents) before the constants. The others live where their controls are: pipelines under «Pipelines and
  * stages», visibility under «Visibility groups», duplicates in Contacts › Duplicates, security on Security.
  */
-export const RULE_GROUPS = ['contacts_consent', 'tracking', 'approvals_audit', 'limits', 'safeguards', 'meetings', 'ai', 'analytics', 'documents', 'platform_constant'] as const
+export const RULE_GROUPS = ['contacts_consent', 'tracking', 'approvals_audit', 'limits', 'safeguards', 'meetings', 'ai', 'analytics', 'documents', 'development', 'platform_constant'] as const
 
 /** The record types in the design's order (Deals, Leads, People, Organizations, Products, Activities), then the rest. */
 const ENTITY_ORDER = ['deal', 'lead', 'person', 'organization', 'catalog_item', 'project', 'activity', 'ticket']

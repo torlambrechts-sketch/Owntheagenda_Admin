@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
       : e instanceof Anthropic.RateLimitError ? 'provider_rate_limited'
       : e instanceof Anthropic.BadRequestError ? 'provider_invalid'
       : e instanceof Anthropic.APIConnectionError ? 'network'
-      : status >= 500 ? `provider_${status}` : 'error'
+      : status >= 500 ? 'provider_unavailable' : 'error'
     await record(code === 'bad_key' ? 'not_connected' : 'error', code, null, 0, 0, latency)
     log(`${p.feature} failed ${code}`)
     return json({ ok: false, code }, code === 'bad_key' ? 409 : 502)

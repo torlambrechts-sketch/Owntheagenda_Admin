@@ -465,6 +465,16 @@
             "title": "{path} feiler Core Web Vitals på mobil",
             "body": "PageSpeed Insights · Vekst › SEO › Varsler"
           }
+        },
+        "approval": {
+          "requested": {
+            "title": "{ref} venter på din godkjenning",
+            "body": "Forespurt av {who} · Plattform › Roller og godkjenninger"
+          },
+          "decided": {
+            "title": "{ref}: {state, select, executed {godkjent og utført} failed {godkjent, men ikke utført} rejected {avvist} other {avgjort}}",
+            "body": "Plattform › Roller og godkjenninger"
+          }
         }
       }
     },

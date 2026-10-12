@@ -465,6 +465,16 @@
             "title": "{path} fails Core Web Vitals on mobile",
             "body": "PageSpeed Insights · Growth › SEO › Alerts"
           }
+        },
+        "approval": {
+          "requested": {
+            "title": "{ref} is waiting for your approval",
+            "body": "Requested by {who} · Platform › Roles and approvals"
+          },
+          "decided": {
+            "title": "{ref}: {state, select, executed {approved and carried out} failed {approved, but not carried out} rejected {rejected} other {decided}}",
+            "body": "Platform › Roles and approvals"
+          }
         }
       }
     },

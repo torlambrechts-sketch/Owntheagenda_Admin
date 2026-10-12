@@ -64,7 +64,8 @@
         "analytics": "Analytics",
         "documents": "Documents",
         "platform_constant": "Platform constant",
-        "pipelines": "Pipeline rules"
+        "pipelines": "Pipeline rules",
+        "development": "Development"
       },
       "items": {
         "contact_rule": {
@@ -325,6 +326,42 @@
             "group": "Owner’s group",
             "group_sub": "Owner’s group and sub-groups",
             "all": "Everyone"
+          }
+        },
+        "dev_target_sev_one": {
+          "name": "Bug triage: S1 target",
+          "applies": "Development › Bug triage (same business day 16:00, or a number of business hours)",
+          "unit": "{count, plural, one {{n} business hour} other {{n} business hours}}",
+          "options": {
+            "same_day": "Same business day 16:00",
+            "custom": "Custom"
+          }
+        },
+        "dev_target_sev_two": {
+          "name": "Bug triage: S2 target",
+          "applies": "Development › Bug triage (business days; 3 by default)",
+          "unit": "{count, plural, one {{n} business day} other {{n} business days}}",
+          "options": {
+            "source_value": "Source value (3 business days)",
+            "custom": "Custom"
+          }
+        },
+        "dev_target_sev_three": {
+          "name": "Bug triage: S3 target",
+          "applies": "Development › Bug triage (days; 14 by default)",
+          "unit": "{count, plural, one {{n} day} other {{n} days}}",
+          "options": {
+            "source_value": "Source value (14 days)",
+            "custom": "Custom"
+          }
+        },
+        "dev_escaped_goal": {
+          "name": "Bugs escaped to production: monthly goal",
+          "applies": "Development › Bug triage (fewer than this per month; 3 by default)",
+          "unit": "{count, plural, one {{n} bug} other {{n} bugs}}",
+          "options": {
+            "source_value": "Source value (3 a month)",
+            "custom": "Custom"
           }
         }
       }

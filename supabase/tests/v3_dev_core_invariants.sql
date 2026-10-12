@@ -134,6 +134,9 @@ select pg_temp.check((select (j -> 'evidence' ->> 'requests')::int = 1 from t_pr
 select pg_temp.expect_detail(format($$select public.dev_roadmap_promote('feature_request', %L)$$, (select id from t_fr2)), 'invalid', 'promoted', 'a source is promoted once');
 select pg_temp.check(coalesce(public.dev_roadmap_get('orgpuls') -> 'candidates' -> 'feature_request' ->> 'id', '') <> (select id::text from t_fr2),
                      'a promoted request is no longer a candidate');
+-- a winning experiment of its own, so the suite does not lean on the visual sample
+insert into app.growth_experiments (product, hypothesis, area, impact, confidence, ease, stage, outcome, ended_at)
+values ('orgpuls', 'A price calculator on /pris lifts trials', 'pricing', 7, 6, 5, 'done', 'win', now());
 select pg_temp.expect_detail(format($$select public.dev_roadmap_promote('experiment', %L)$$, (select id from app.growth_experiments limit 1)), 'forbidden', 'campaigns:see',
                              'promoting an experiment needs the right to see experiments');
 select pg_temp.as_staff('tor@orgpuls.no');

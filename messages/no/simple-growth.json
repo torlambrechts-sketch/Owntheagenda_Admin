@@ -1518,6 +1518,112 @@
           "4": "Hvis appen krever appsecret_proof, lim inn apphemmeligheten også."
         }
       }
+    },
+    "v3": {
+      "dow": {
+        "1": "Man",
+        "2": "Tir",
+        "3": "Ons",
+        "4": "Tor",
+        "5": "Fre",
+        "6": "Lør",
+        "7": "Søn"
+      },
+      "daily": {
+        "title": "Forbruk og registreringer per dag · klikk på en dag",
+        "group": "Forbruk og registreringer per dag, {from} til {to}",
+        "tip": "{date} · {spend} · {n, plural, one {# registrering} other {# registreringer}}",
+        "beforeStart": "{date} · før kampanjen startet",
+        "line": "{date}: brukt {spend}, {n, plural, one {# registrering} other {# registreringer}}",
+        "lineCps": "{date}: brukt {spend}, {n, plural, one {# registrering} other {# registreringer}}, {cps} per registrering",
+        "typed": "Forbruk legges inn per måned; forbruk per dag kommer fra en tilkoblet annonseplattform.",
+        "mixed": "Annonsekontoene bruker ulike valutaer, så forbruket per dag legges ikke sammen.",
+        "timeZone": "Forbruksdagene er annonsekontoens ({zones}); registreringsdagene er Oslos.",
+        "signupsSource": "Registreringer: besøk via denne kampanjens lenke som fullførte registreringen, slik nettstedssporingen så dem.",
+        "noTracker": "Ingen besøk spores på denne applikasjonens nettsted ennå, så det finnes ingen registreringer per dag.",
+        "loading": "Henter dagene …",
+        "failed": "Dagene kunne ikke leses."
+      },
+      "ads": {
+        "title": "Annonser og søkeord i denne kampanjen",
+        "cols": {
+          "name": "Annonse eller søkeord",
+          "clicks": "Klikk",
+          "signups": "Registreringer",
+          "cps": "Kostnad per registrering"
+        },
+        "keyword": "«{text}»",
+        "none": "Ingen annonser eller søkeord med klikk de siste {days} dagene.",
+        "note": "Klikk og kostnad: de siste {days} dagene, slik {platforms} teller dem.",
+        "convention": "Registreringer per søkeord og per annonse («—») krever at plattformens sporingsmal legger søkeordet i utm_term og annonsens id i utm_content."
+      },
+      "tips": {
+        "dearKeyword": "«{name}» koster {ratio}× mer per registrering enn resten ({cps} mot {rest}) — sett det på pause og legg det til som negativt søkeord.",
+        "dearKeywordNone": "«{name}» har {clicks} klikk og ingen registreringer på {days} dager, mens en registrering koster {rest} på resten — sett det på pause og legg det til som negativt søkeord.",
+        "bestKeyword": "«{name}» konverterer best: {cps} per registrering mot {rest} for resten — øk budet.",
+        "dearAd": "«{name}» koster {cps} per registrering, {ratio}× kampanjens andre annonser ({rest}) — flytt budsjettet til annonsene som konverterer.",
+        "dearAdNone": "«{name}» har {clicks} klikk og ingen registreringer på {days} dager, mens en registrering koster {rest} på de andre annonsene — flytt budsjettet til annonsene som konverterer.",
+        "pause": "Sett på pause i {platform} ↗",
+        "raise": "Øk budet i {platform} ↗",
+        "open": "Åpne i {platform} ↗",
+        "linkTitle": "Åpner {platform}, der endringen gjøres. Sentral leser {platform} og endrer ingenting der."
+      },
+      "results": {
+        "title": "Resultater per steg · {name}",
+        "window": "Siste {days} dager",
+        "cols": {
+          "email": "E-post",
+          "sent": "Sendt",
+          "open": "Åpnet",
+          "click": "Klikk",
+          "unsub": "Avm.",
+          "signups": "Registr."
+        },
+        "noReports": "En annen persons e-post: tallene krever Kampanjer › Se andres rapporter.",
+        "loading": "Henter resultatene …",
+        "empty": "Denne kampanjen har ingen e-post ennå.",
+        "failed": "Resultatene kunne ikke leses.",
+        "note": "Andelene er av leverte e-poster. Åpninger teller personer, ikke de automatiske åpningene i Apple Mail, så de er lavere enn leverandørens. Registreringer: besøk via e-postens lenker som fullførte registreringen."
+      },
+      "emailTips": {
+        "ab": "E-post {n} har en klikkrate på {rate} de siste 30 dagene — test en kortere emnelinje.",
+        "abCta": "Lag A/B-test",
+        "abOff": "Ikke tilgjengelig ennå: en automatisk e-post kan ikke ha en A/B-emnelinje.",
+        "cond": "{share} av mottakerne av e-post {n} de siste 30 dagene hadde allerede lastet opp ansattlisten — legg til en betingelse før den.",
+        "condCta": "Legg til betingelse",
+        "time": "E-poster går når hver venting er over; bytt til «send til beste tid» ({days} {hour}).",
+        "timeCta": "Bruk beste tid"
+      },
+      "best": {
+        "title": "Beste tid å sende",
+        "subtitle": "Åpningsrate etter ukedag og time",
+        "cell": "{day} {hour} · {rate} åpnet · {n} levert",
+        "cellThin": "{day} {hour} · for få utsendelser ({n} av {min} som trengs)",
+        "low": "lav",
+        "medium": "middels",
+        "high": "høy",
+        "best": "Best: <b>{slot}</b> ({rate})",
+        "none": "Best: <b>—</b>",
+        "note": "Applikasjonens e-post de siste {days} dagene, etter når den ble sendt (norsk tid). Et tidspunkt trenger {min} leverte e-poster.",
+        "outside": "{n, plural, one {# levert e-post ble} other {# leverte e-poster ble}} sendt på timer utenfor dette rutenettet.",
+        "failed": "Sendetidene kunne ikke leses.",
+        "button": "Send alle steg til beste tid",
+        "on": "✓ Sender {days} {hour}",
+        "offTitle": "Trykk for å sende hver e-post når steget nås igjen.",
+        "onNote": "Hver e-post venter til neste av disse tidene, også den første.",
+        "noEmail": "Denne kampanjen har ingen e-post å tidsstyre.",
+        "notYet": "Ikke ennå: ingen tid har {min} leverte e-poster de siste {days} dagene.",
+        "toastOn": "Stegene sendes nå {days} kl. {hour}",
+        "toastOff": "Stegene sendes når hver venting er over"
+      },
+      "insert": {
+        "label": "Legg til en betingelse før e-post {n}",
+        "text": "Legg til en betingelse før e-post {n}: «{condition}». En kjøring stopper der for alle som har lastet den opp.",
+        "add": "＋ Betingelse her",
+        "cancel": "Avbryt",
+        "added": "Betingelse lagt til før e-post {n}"
+      },
+      "readOnly": "Du kan lese dette; å endre det krever rettighetene som står over redigeringen."
     }
   }
 }

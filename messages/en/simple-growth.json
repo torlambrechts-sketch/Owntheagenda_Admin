@@ -1518,6 +1518,112 @@
           "4": "If the app requires appsecret_proof, paste the app secret too."
         }
       }
+    },
+    "v3": {
+      "dow": {
+        "1": "Mon",
+        "2": "Tue",
+        "3": "Wed",
+        "4": "Thu",
+        "5": "Fri",
+        "6": "Sat",
+        "7": "Sun"
+      },
+      "daily": {
+        "title": "Daily spend and signups · click a day",
+        "group": "Daily spend and signups, {from} to {to}",
+        "tip": "{date} · {spend} · {n, plural, one {# signup} other {# signups}}",
+        "beforeStart": "{date} · before the campaign started",
+        "line": "{date}: spent {spend}, {n, plural, one {# signup} other {# signups}}",
+        "lineCps": "{date}: spent {spend}, {n, plural, one {# signup} other {# signups}}, {cps} per signup",
+        "typed": "Spend is entered per month; daily spend comes from a connected ad platform.",
+        "mixed": "The ad accounts use different currencies, so their daily spend is not added up.",
+        "timeZone": "Spend days are the ad account’s ({zones}); signup days are Oslo’s.",
+        "signupsSource": "Signups: visits with this campaign’s link that finished signing up, as the website tracker saw them.",
+        "noTracker": "No visits are tracked on this application’s website yet, so there are no signups per day.",
+        "loading": "Loading the days…",
+        "failed": "The days could not be read."
+      },
+      "ads": {
+        "title": "Ads and keywords in this campaign",
+        "cols": {
+          "name": "Ad or keyword",
+          "clicks": "Clicks",
+          "signups": "Signups",
+          "cps": "Cost per signup"
+        },
+        "keyword": "«{text}»",
+        "none": "No ads or keywords with clicks in these {days} days.",
+        "note": "Clicks and cost: the last {days} days, as {platforms} counts them.",
+        "convention": "Signups per keyword and per ad («—») need the platform’s tracking template to put the keyword in utm_term and the ad’s id in utm_content."
+      },
+      "tips": {
+        "dearKeyword": "«{name}» costs {ratio}× more per signup than the rest ({cps} against {rest}) — pause it and add it as a negative keyword.",
+        "dearKeywordNone": "«{name}» has {clicks} clicks and no signups in {days} days, while a signup costs {rest} on the rest — pause it and add it as a negative keyword.",
+        "bestKeyword": "«{name}» converts best: {cps} per signup against {rest} for the rest — raise its bid.",
+        "dearAd": "«{name}» costs {cps} per signup, {ratio}× the campaign’s other ads ({rest}) — move its budget to the ads that convert.",
+        "dearAdNone": "«{name}» has {clicks} clicks and no signups in {days} days, while a signup costs {rest} on the other ads — move its budget to the ads that convert.",
+        "pause": "Pause in {platform} ↗",
+        "raise": "Raise bid in {platform} ↗",
+        "open": "Open in {platform} ↗",
+        "linkTitle": "Opens {platform}, where the change is made. Sentral reads {platform} and changes nothing there."
+      },
+      "results": {
+        "title": "Results per step · {name}",
+        "window": "Last {days} days",
+        "cols": {
+          "email": "Email",
+          "sent": "Sent",
+          "open": "Open",
+          "click": "Click",
+          "unsub": "Unsub.",
+          "signups": "Signups"
+        },
+        "noReports": "Another person’s email: its figures need Campaigns › See reports of others.",
+        "loading": "Loading the results…",
+        "empty": "This campaign has no email yet.",
+        "failed": "The results could not be read.",
+        "note": "Rates are over delivered emails. Opens count people, not the automatic opens of Apple Mail, so they are lower than the provider’s. Signups: visits from the email’s links that finished signing up."
+      },
+      "emailTips": {
+        "ab": "Email {n} has a {rate} click rate in the last 30 days — test a shorter subject.",
+        "abCta": "Create A/B test",
+        "abOff": "Not available yet: an automated email cannot have an A/B subject.",
+        "cond": "{share} of email {n}’s recipients in the last 30 days had already uploaded their employee list — add a condition before it.",
+        "condCta": "Add condition",
+        "time": "Emails go when each wait ends; switch to «send at best time» ({days} {hour}).",
+        "timeCta": "Use best time"
+      },
+      "best": {
+        "title": "Best time to send",
+        "subtitle": "Open rate by weekday and hour",
+        "cell": "{day} {hour} · {rate} open · {n} delivered",
+        "cellThin": "{day} {hour} · too few sends ({n} of the {min} needed)",
+        "low": "low",
+        "medium": "medium",
+        "high": "high",
+        "best": "Best: <b>{slot}</b> ({rate})",
+        "none": "Best: <b>—</b>",
+        "note": "The application’s email over the last {days} days, by when it was sent (Oslo time). A time needs {min} delivered emails.",
+        "outside": "{n, plural, one {# delivered email was} other {# delivered emails were}} sent at hours outside this grid.",
+        "failed": "The send times could not be read.",
+        "button": "Send all steps at the best time",
+        "on": "✓ Sending {days} {hour}",
+        "offTitle": "Press to send each email when its step is reached again.",
+        "onNote": "Each email waits for the next of these times, the first one included.",
+        "noEmail": "This campaign has no email to time.",
+        "notYet": "Not yet: no time has {min} delivered emails in the last {days} days.",
+        "toastOn": "Steps now send {days} at {hour}",
+        "toastOff": "Steps send when each wait ends"
+      },
+      "insert": {
+        "label": "Add a condition before email {n}",
+        "text": "Add a condition before email {n}: «{condition}». A run stops there for anyone who has uploaded it.",
+        "add": "＋ Condition here",
+        "cancel": "Cancel",
+        "added": "Condition added before email {n}"
+      },
+      "readOnly": "You can read this; changing it needs the rights named above the editor."
     }
   }
 }

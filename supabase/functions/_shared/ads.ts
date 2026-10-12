@@ -5,7 +5,9 @@
  * tests (Node) run the same code; fetch is passed in. Nothing from a response body is logged or passed on beyond the
  * figures and names below: a refusal comes back as a code (the HTTP status, or a short word).
  *
- *   Google Ads    REST v25, a service account's access token, the developer token, an optional manager (login) account
+ *   Google Ads    REST v25, a service account's access token, the developer token, an optional manager (login) account;
+ *                 also each keyword (ad_group_criterion) with its days from keyword_view, and each campaign's bidding
+ *                 strategy (0083). Never search_term_view: what people typed can carry a name
  *   LinkedIn Ads  the versioned REST API (Linkedin-Version 202609), a member's access token with r_ads and r_ads_reporting;
  *                 reach is not asked for by day (LinkedIn reports it for whole periods)
  *   Meta Ads      Graph API v26.0, a system user's token, appsecret_proof when the app secret is known
@@ -19,7 +21,13 @@ export type Account = { id: string; name: string; currency: string | null; time_
 export type Campaign = { id: string; name: string; status: Status; kind: string | null; starts_on: string | null; ends_on: string | null; utm_campaign: string | null }
 export type Ad = { id: string; campaign: string; name: string | null; headline: string | null; status: Status }
 export type Daily = { level: 'campaign' | 'ad'; id: string; day: string; impressions: number; clicks: number; spend: number; conversions: number | null; reach: number | null }
-export type Import = { campaigns: Campaign[]; ads: Ad[]; daily: Daily[] }
+/** a Google Ads keyword (the advertiser's own text, at most 80 characters) and its day; a criterion id is unique within its ad group */
+export type Keyword = { id: string; ad_group: string; campaign: string; text: string; match_type: 'exact' | 'phrase' | 'broad' | null; status: Status }
+export type KeywordDaily = { id: string; ad_group: string; day: string; impressions: number; clicks: number; spend: number; conversions: number | null }
+/** a Google campaign's bidding strategy, lower case (manual_cpc, maximize_conversions …) */
+export type Bidding = { id: string; bidding: string }
+/** keywords and their days are null when Google refused them (the import goes on without them) */
+export type Import = { campaigns: Campaign[]; ads: Ad[]; daily: Daily[]; keywords?: Keyword[] | null; keywordDaily?: KeywordDaily[] | null; bidding?: Bidding[] }
 
 export const GOOGLE_API = 'https://googleads.googleapis.com/v25'
 export const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/adwords'
@@ -142,11 +150,13 @@ export async function googleAccounts(a: GoogleAuth, f: Fetch = fetch): Promise<{
 /** an account's campaigns, ads and days in the window */
 export async function googleImport(a: GoogleAuth, customer: string, from: string, to: string, f: Fetch = fetch): Promise<{ ok: true } & Import | Fail> {
   const between = `segments.date BETWEEN '${from}' AND '${to}'`
-  const [cs, cd, as, ad] = await Promise.all([
-    googleSearch(a, customer, 'SELECT campaign.id, campaign.name, campaign.status, campaign.serving_status, campaign.advertising_channel_type, campaign.start_date_time, campaign.end_date_time, campaign.final_url_suffix, campaign.tracking_url_template FROM campaign', f),
+  const [cs, cd, as, ad, ks, kd] = await Promise.all([
+    googleSearch(a, customer, 'SELECT campaign.id, campaign.name, campaign.status, campaign.serving_status, campaign.advertising_channel_type, campaign.start_date_time, campaign.end_date_time, campaign.final_url_suffix, campaign.tracking_url_template, campaign.bidding_strategy_type FROM campaign', f),
     googleSearch(a, customer, `SELECT campaign.id, segments.date, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions FROM campaign WHERE ${between}`, f),
     googleSearch(a, customer, "SELECT campaign.id, ad_group_ad.status, ad_group_ad.ad.id, ad_group_ad.ad.name, ad_group_ad.ad.responsive_search_ad.headlines FROM ad_group_ad WHERE ad_group_ad.status != 'REMOVED'", f),
     googleSearch(a, customer, `SELECT campaign.id, ad_group_ad.ad.id, segments.date, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions FROM ad_group_ad WHERE ${between}`, f),
+    googleSearch(a, customer, GOOGLE_KEYWORDS, f),
+    googleSearch(a, customer, `${GOOGLE_KEYWORD_DAYS} WHERE ${between}`, f),
   ])
   if (!cs.ok) return cs
   if (!cd.ok) return cd
@@ -181,7 +191,46 @@ export async function googleImport(a: GoogleAuth, customer: string, from: string
     }
   }
   if (ad.ok) for (const r of ad.rows) pushDay('ad', idOf(obj(obj(r.adGroupAd).ad).id), r)
-  return { ok: true, campaigns, ads, daily }
+  const bidding: Bidding[] = []
+  for (const r of cs.rows) {
+    const c = obj(r.campaign)
+    const id = idOf(c.id)
+    const b = typeof c.biddingStrategyType === 'string' ? c.biddingStrategyType.toLowerCase() : ''
+    if (id && /^[a-z0-9_]{1,40}$/.test(b) && b !== 'unspecified' && b !== 'unknown') bidding.push({ id, bidding: b })
+  }
+  // keywords, like ads, are worth having and not worth failing the import for: both lists or neither
+  const kw = ks.ok && kd.ok ? googleKeywords(ks.rows, kd.rows) : null
+  return { ok: true, campaigns, ads, daily, keywords: kw?.keywords ?? null, keywordDaily: kw?.daily ?? null, bidding }
+}
+
+/** the keywords (not negatives, not removed) of every ad group; read only */
+export const GOOGLE_KEYWORDS = "SELECT campaign.id, ad_group.id, ad_group_criterion.criterion_id, ad_group_criterion.keyword.text, ad_group_criterion.keyword.match_type, ad_group_criterion.status FROM ad_group_criterion WHERE ad_group_criterion.type = 'KEYWORD' AND ad_group_criterion.negative = FALSE AND ad_group_criterion.status != 'REMOVED'"
+/** each keyword's days (keyword_view); never search_term_view */
+export const GOOGLE_KEYWORD_DAYS = 'SELECT campaign.id, ad_group.id, ad_group_criterion.criterion_id, segments.date, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions FROM keyword_view'
+
+/** Google's keyword rows and keyword_view's days, reduced to what Sentral keeps */
+export function googleKeywords(rows: Record<string, unknown>[], dayRows: Record<string, unknown>[]): { keywords: Keyword[]; daily: KeywordDaily[] } {
+  const keywords: Keyword[] = []
+  for (const r of rows) {
+    const k = obj(r.adGroupCriterion)
+    const id = idOf(k.criterionId)
+    const group = idOf(obj(r.adGroup).id)
+    const campaign = idOf(obj(r.campaign).id)
+    const text = typeof obj(k.keyword).text === 'string' ? (obj(k.keyword).text as string).trim().slice(0, 80) : ''
+    if (!id || !group || !campaign || !text) continue
+    const m = obj(k.keyword).matchType
+    keywords.push({ id, ad_group: group, campaign, text, match_type: m === 'EXACT' ? 'exact' : m === 'PHRASE' ? 'phrase' : m === 'BROAD' ? 'broad' : null, status: googleStatus(k.status) })
+  }
+  const daily: KeywordDaily[] = []
+  for (const r of dayRows) {
+    const id = idOf(obj(r.adGroupCriterion).criterionId)
+    const group = idOf(obj(r.adGroup).id)
+    const day = obj(r.segments).date
+    if (!id || !group || typeof day !== 'string' || !DAY.test(day)) continue
+    const m = obj(r.metrics)
+    daily.push({ id, ad_group: group, day, impressions: num(m.impressions), clicks: num(m.clicks), spend: Math.round(num(m.costMicros) / 10_000) / 100, conversions: numOrNull(m.conversions) })
+  }
+  return { keywords, daily }
 }
 
 // ---------------------------------------------------------------------------

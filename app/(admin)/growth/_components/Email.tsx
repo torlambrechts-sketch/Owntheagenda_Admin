@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { Fragment, useEffect, useRef, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/Toast'
@@ -10,7 +10,11 @@ import {
   type CondKey, type ExitKey, type Sequence, type SimpleModel, type SimpleStep, type TriggerKey,
 } from '@/lib/data/simple-growth-shared'
 import type { RpcCode } from '@/lib/rpc'
+import { windowDays, hourText, type SendTimes, type SequenceResults } from '@/lib/growth/v3'
 import { saveSequence, setSequenceState } from '../actions'
+import { sequenceResults, setSendWindow } from '../v3-actions'
+import { EmailInsights } from './v3/EmailInsights'
+import { InsertCondition } from './v3/InsertCondition'
 
 type Draft = { id: string | null; version: number | null; name: string; model: SimpleModel }
 const fromSeq = (s: Sequence): Draft => ({ id: s.id, version: s.version, name: s.name, model: s.simple })
@@ -32,15 +36,21 @@ const stateTone = { active: 'text-link', paused: 'text-warn-ink', draft: 'text-m
  * when it is left). What the engine cannot express is offered disabled with the reason; Activate stays off while
  * something blocks it — first of all, no email provider is connected. Figures are the runs and the emails' recipients.
  */
-export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights }: {
+export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights, product, initialResults = null, sendTimes = null }: {
   sequences: Sequence[]
   stage: { id: string; name: string } | null
   lists: { id: string; name: string }[]
   emailConnected: boolean
   nf: NumberFormat
   rights: { edit: boolean; configure: boolean }
+  /** the application the best send time is computed for (0083) */
+  product: string
+  /** the first sequence's last 30 days per step, read with the page */
+  initialResults?: SequenceResults | null
+  sendTimes?: SendTimes | null
 }) {
   const t = useTranslations('simpleGrowth.email')
+  const t3 = useTranslations('simpleGrowth.v3')
   const te = useTranslations('common.errors')
   const flash = useToast()
   const router = useRouter()
@@ -61,6 +71,35 @@ export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights }
   }, [seq])
 
   const editable = !!seq && rights.edit && (!!seq.mine || rights.configure)
+
+  // each sequence's last 30 days per step (simple_sequence_results), read when it is first chosen; a refresh reads again
+  const [results, setResults] = useState<Record<string, SequenceResults | 'failed'>>(initialResults ? { [initialResults.id]: initialResults } : {})
+  const wantResults = seq && !results[seq.id] ? seq.id : null
+  useEffect(() => {
+    if (!wantResults) return
+    let live = true
+    sequenceResults({ id: wantResults }).then((r) => { if (live) setResults((m) => ({ ...m, [wantResults]: r.ok ? r.data : 'failed' })) },
+      () => { if (live) setResults((m) => ({ ...m, [wantResults]: 'failed' })) })
+    return () => { live = false }
+  }, [wantResults])
+  useEffect(() => { setResults(initialResults ? { [initialResults.id]: initialResults } : {}) }, [sequences, initialResults])
+  const res = seq ? results[seq.id] ?? null : null
+  // «Add condition»: the step (by index) the editor offers the condition above
+  const [insertAt, setInsertAt] = useState<{ step: number; email: number } | null>(null)
+  const dow = (d: number) => t3(`dow.${d}`)
+
+  /** «Send all steps at the best time» / «Use best time»: the window the database derives, or none */
+  const setWindow = (on: boolean) => {
+    if (!seq) return
+    const id = seq.id
+    start(async () => {
+      const r = await setSendWindow({ id, product, on })
+      if (!r.ok) { flash(r.detail === 'no_best_time' ? t3('best.notYet', { min: sendTimes?.min ?? 20, days: sendTimes?.days ?? 90 }) : te(r.code)); return }
+      setResults((m) => { const x = m[id]; return x && x !== 'failed' ? { ...m, [id]: { ...x, send_window: r.window } } : m })
+      flash(r.window ? t3('best.toastOn', { days: windowDays(r.window.days, dow), hour: hourText(r.window.hour) }) : t3('best.toastOff'))
+      router.refresh()
+    })
+  }
   const errorText = (r: { code: RpcCode; detail?: string | null }) =>
     r.detail === 'trigger.not_available' ? t('errors.trigger') : te(r.code)
 
@@ -127,6 +166,7 @@ export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights }
   const listName = (id: string | null | undefined) => (id ? lists.find((l) => l.id === id)?.name ?? t('lists.unknown') : null)
 
   return (
+    <>
     <div className="grid items-start gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))]">
       <div className="flex flex-col gap-[10px]">
         <button
@@ -146,7 +186,7 @@ export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights }
               <button
                 key={s.id}
                 type="button"
-                onClick={() => { setSelId(s.id); changes.current = 0; setDraft(fromSeq(s)) }}
+                onClick={() => { setSelId(s.id); changes.current = 0; setDraft(fromSeq(s)); setInsertAt(null) }}
                 aria-pressed={seq?.id === s.id}
                 className={`flex w-full cursor-pointer flex-col gap-[3px] border-0 border-b border-line px-[14px] py-3 text-left ${seq?.id === s.id ? 'bg-highlight' : 'bg-transparent'}`}
               >
@@ -226,8 +266,21 @@ export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights }
 
             <div className="flex flex-col items-stretch">
               {draft.model.steps.map((s, i) => (
+                <Fragment key={`${i}-${s.kind}-${s.kind === 'email' ? s.campaign_id ?? '' : ''}`}>
+                {insertAt && insertAt.step === i && s.kind === 'email' && editable ? (
+                  <InsertCondition
+                    email={insertAt.email}
+                    condition={t('conditions.employees_missing')}
+                    onCancel={() => setInsertAt(null)}
+                    onAdd={() => {
+                      setInsertAt(null)
+                      if (draft.model.steps.length >= 30) { flash(te('invalid')); return }
+                      setSteps([...draft.model.steps.slice(0, i), { kind: 'cond', cond: 'employees_missing' }, ...draft.model.steps.slice(i)])
+                      flash(t3('insert.added', { n: insertAt.email }))
+                    }}
+                  />
+                ) : null}
                 <StepCard
-                  key={`${i}-${s.kind}-${s.kind === 'email' ? s.campaign_id ?? '' : ''}`}
                   step={s}
                   i={i}
                   count={draft.model.steps.length}
@@ -239,9 +292,10 @@ export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights }
                   onMove={(by) => setSteps(moveStep(draft.model.steps, i, by))}
                   onDelete={() => { if (draft.model.steps.length > 1) setSteps(draft.model.steps.filter((_, j) => j !== i)); else flash(t('lastStep')) }}
                 />
+                </Fragment>
               ))}
               {editable ? (
-                <div className="flex flex-wrap justify-center gap-[6px] py-1">
+                <div className="flex flex-wrap justify-center gap-[6px] pb-[14px] pt-1">
                   {(['email', 'wait', 'cond', 'task'] as const).map((k) => (
                     <button
                       key={k}
@@ -269,6 +323,21 @@ export function EmailTab({ sequences, stage, lists, emailConnected, nf, rights }
         )}
       </div>
     </div>
+    {seq && draft ? (
+      <EmailInsights
+        name={draft.name}
+        results={res && res !== 'failed' ? res : null}
+        loading={!res}
+        steps={draft.model.steps}
+        times={sendTimes}
+        nf={nf}
+        editable={editable}
+        pending={pending}
+        onAddCondition={(step, email) => setInsertAt({ step, email })}
+        onWindow={setWindow}
+      />
+    ) : null}
+    </>
   )
 }
 

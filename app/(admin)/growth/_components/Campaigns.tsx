@@ -8,8 +8,11 @@ import { formatNumber, money, percent, type NumberFormat } from '@/lib/format'
 import {
   AD_CHANNELS, AD_TONE, AD_UTM, parseAmount, slug, trackingUrl, type AdCampaign, type AdCampaigns, type AdChannel,
 } from '@/lib/data/simple-growth-shared'
+import type { CampaignDetail } from '@/lib/growth/v3'
 import { createCampaign, setCampaignSpend, setCampaignState } from '../actions'
+import { campaignDetail } from '../v3-actions'
 import { colHead } from './kit'
+import { CampaignInsights } from './v3/CampaignInsights'
 
 const COLS = '[grid-template-columns:minmax(0,1.5fr)_80px_80px_60px_80px]'
 const field = 'h-10 rounded-10 border border-line bg-canvas px-3 text-13 text-ink'
@@ -21,8 +24,10 @@ const label = 'flex flex-col gap-[5px] text-12 font-semibold text-muted'
  * website tracker («—»). Launch, pause and resume change the record only — no ad platform is connected, and the card
  * says so (V-SGR-13).
  */
-export function CampaignsTab({ d, nf, product, app, canAdd, editOthers, canSpend }: {
+export function CampaignsTab({ d, nf, product, app, canAdd, editOthers, canSpend, initialDetail = null }: {
   d: AdCampaigns; nf: NumberFormat; product: string; app: string; canAdd: boolean; editOthers: boolean; canSpend: boolean
+  /** the first campaign's days, ads and keywords (0083), read with the page */
+  initialDetail?: CampaignDetail | null
 }) {
   const t = useTranslations('simpleGrowth.campaigns')
   const te = useTranslations('common.errors')
@@ -38,6 +43,18 @@ export function CampaignsTab({ d, nf, product, app, canAdd, editOthers, canSpend
 
   const rows = d.rows
   const cur = rows.find((c) => c.id === selId) ?? rows[0] ?? null
+  // each campaign's days, ads and keywords (ad_campaign_detail), read when it is first chosen and kept for this visit
+  const [details, setDetails] = useState<Record<string, CampaignDetail | 'failed'>>(initialDetail ? { [initialDetail.id]: initialDetail } : {})
+  const want = cur && cur.figures && !details[cur.id] ? cur.id : null
+  useEffect(() => {
+    if (!want) return
+    let live = true
+    campaignDetail({ id: want }).then((r) => { if (live) setDetails((m) => ({ ...m, [want]: r.ok ? r.data : 'failed' })) },
+      () => { if (live) setDetails((m) => ({ ...m, [want]: 'failed' })) })
+    return () => { live = false }
+  }, [want])
+  // a refresh (after a save) reads the days again
+  useEffect(() => { setDetails(initialDetail ? { [initialDetail.id]: initialDetail } : {}) }, [d, initialDetail])
   const fig = (c: AdCampaign) => c.figures
   const cps = (c: AdCampaign) => (c.figures && c.figures.spent !== null && c.figures.signups > 0 ? c.figures.spent / c.figures.signups : null)
 
@@ -130,6 +147,7 @@ export function CampaignsTab({ d, nf, product, app, canAdd, editOthers, canSpend
             dates={dates(cur)}
             mayEdit={mayEdit(cur)}
             canSpend={canSpend}
+            detail={details[cur.id] ?? null}
             pending={pending}
             onToggle={() => toggle(cur)}
             onSpend={(month, amount) => start(async () => {
@@ -163,8 +181,9 @@ export function CampaignsTab({ d, nf, product, app, canAdd, editOthers, canSpend
   )
 }
 
-function Detail({ c, host, app, nf, dates, mayEdit, canSpend, pending, onToggle, onSpend }: {
-  c: AdCampaign; host: string | null; app: string; nf: NumberFormat; dates: string; mayEdit: boolean; canSpend: boolean; pending: boolean
+function Detail({ c, host, app, nf, dates, mayEdit, canSpend, detail, pending, onToggle, onSpend }: {
+  c: AdCampaign; host: string | null; app: string; nf: NumberFormat; dates: string; mayEdit: boolean; canSpend: boolean
+  detail: CampaignDetail | 'failed' | null; pending: boolean
   onToggle: () => void; onSpend: (month: string, amount: number | null) => void
 }) {
   const t = useTranslations('simpleGrowth.campaigns')
@@ -225,6 +244,7 @@ function Detail({ c, host, app, nf, dates, mayEdit, canSpend, pending, onToggle,
         <div className="flex justify-between text-12 text-muted"><span>{t('budgetUsed')}</span><b className="text-ink">{used === null ? dash : `${used} %`}</b></div>
         <div className="h-2 overflow-hidden rounded-999 bg-tile"><div className="h-full bg-warn" style={{ width: `${Math.min(100, used ?? 0)}%` }} /></div>
       </div>
+      {f ? <CampaignInsights d={detail && detail !== 'failed' ? detail : null} state={detail === 'failed' ? 'failed' : detail ? 'ready' : 'loading'} nf={nf} /> : null}
       {canSpend && f ? (
         <div className="flex flex-col gap-[6px]">
           <div className="text-11 font-bold uppercase tracking-[.1em] text-muted">{t('spend.title')}</div>

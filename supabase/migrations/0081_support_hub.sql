@@ -5,11 +5,13 @@
 --          sends the customer's words as «body», not «message». The intake ignored both: every contact landed in Sales,
 --          a privacy request too, with no 30-day clock, and an in-app request arrived without its text. Topics now route
 --          through app.contact_topic_routes; a ticket in the personvern category gets its privacy_requests row (the clock);
---          a privacy contact makes no CRM lead.
+--          only a contact routed to the Sales queue makes a CRM lead, titled by its subject or its category and never by
+--          the customer's message (rule 6: a lead is read by roles that may not see the ticket).
 --    F-S2  An out-of-office answer from the requester reopened a resolved ticket. Inbound mail now matches the hidden
---          reference header (In-Reply-To, References) before the [T-n] subject, and an auto-reply (Auto-Submitted,
---          Precedence, X-Autoreply, X-Autorespond, X-Auto-Response-Suppress, or an auto-reply subject) neither threads
---          nor reopens.
+--          reference header (In-Reply-To, References) before the [T-n] subject. An auto-reply by its headers (Auto-Submitted,
+--          Precedence, X-Autoreply, X-Autorespond, X-Auto-Response-Suppress) neither threads nor reopens; a subject in the
+--          auto-reply shape («Automatisk svar:», «Out of office:» …, colon required) is kept in the thread without reopening,
+--          so a customer whose subject merely starts with «Fravær» is never lost.
 -- 2. Help centre: help_articles gains a product, a translation group, a per-product slug, an SEO title, app pages,
 --    a review stamp, a source and a generated Norwegian/English full-text vector; readers, an editor, review, publish
 --    (publishing stays tickets:configure, as before) and search.
@@ -51,6 +53,8 @@ create table app.contact_topic_routes (
   topic        text not null check (topic ~ '^[a-z][a-z_]{1,30}$'),
   category_key text not null references app.ticket_categories (key),
   ord          int not null default 0,
+  -- since when the topic is recorded: a count over a period that began earlier would be a false number (support_channels)
+  created_at   timestamptz not null default now(),
   primary key (product, topic)
 );
 alter table app.contact_topic_routes enable row level security;
@@ -109,14 +113,17 @@ begin
       update app.tickets set type = 'service_request', request = v_req where id = v_id;
     end if;
   end if;
-  -- a contact becomes a CRM lead, except a privacy request: that is not a sale, and Sales must not see it
-  if e.kind = 'contact.submitted' and v_cat <> 'personvern' then
+  -- a contact routed to the Sales queue becomes a CRM lead. A support topic or a privacy request is not a sale. The lead's
+  -- title is the form's subject or the category, never the message: a lead is read under deals:see, by roles that may not
+  -- see the ticket's queue, and the message is the customer's own words (rule 6).
+  if e.kind = 'contact.submitted' and (select c.queue_key from app.ticket_categories c where c.key = v_cat) = 'sales' then
     begin
       v_email := lower(nullif(btrim(e.payload ->> 'email'), ''));
       if v_email !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' or char_length(v_email) > 254 then v_email := null; end if;
       v_person := app.capture_person(v_email, case when v_email is not null then e.payload ->> 'name' end, null, v_org, 'Contact form', null);
       if v_person is not null or v_org is not null then
-        v_lead := app.capture_lead(v_subject, v_person, v_org, 'Contact form', null, null);
+        v_lead := app.capture_lead(coalesce(nullif(btrim(e.payload ->> 'subject'), ''), (select c.name from app.ticket_categories c where c.key = v_cat), e.kind),
+                                   v_person, v_org, 'Contact form', null, null);
         insert into app.ticket_links (ticket_id, kind, ref) values (v_id, 'lead', v_lead::text) on conflict do nothing;
         update app.tickets set person_id = coalesce(person_id, v_person) where id = v_id;
       end if;
@@ -131,7 +138,10 @@ end $fn$;
 -- ===========================================================================
 -- 2. F-S2: the reference header first; an auto-reply never threads and never reopens
 -- ===========================================================================
--- p_headers: the lower-cased header names mail-events passes (a whitelist), each a string
+-- p_headers: the lower-cased header names mail-events passes (a whitelist), each a string. p_subject: an auto-reply's subject
+-- shape, a known prefix followed by a colon («Automatisk svar: …», «Out of office: …», «Fravær: …»); a subject that only
+-- begins with such a word («Fravær i rapporten [T-12]») is a customer's. Either argument may be empty: the caller asks about
+-- the headers and the subject separately, because they are trusted differently.
 create function app.mail_auto_reply(p_headers jsonb, p_subject text) returns boolean
   language sql immutable set search_path = ''
 as $fn$
@@ -140,7 +150,7 @@ as $fn$
       or btrim(coalesce(p_headers ->> 'x-autoreply', '')) <> ''
       or btrim(coalesce(p_headers ->> 'x-autorespond', '')) <> ''
       or lower(coalesce(p_headers ->> 'x-auto-response-suppress', '')) ~ '(^|[,\s])(all|oof|autoreply)([,\s]|$)'
-      or lower(coalesce(p_subject, '')) ~ '^\s*(auto(matic|matisk|matiskt)?[ -]?(reply|response|svar|antwort)|automatisk svar|automatiskt svar|autosvar|out of (the )?office|fravær|fraværsmelding|frånvaro|fravær:|abwesenheit|ikke til stede|ikkje til stades)'
+      or lower(coalesce(p_subject, '')) ~ '^\s*(auto(matic|matisk|matiskt|matische)?[ -]?(reply|response|svar|antwort)|automatisk svar|automatiskt svar|automatische antwort|out of (the )?office( reply)?|fraværsmelding|fravær|frånvaro(meddelande)?|abwesenheit(snotiz)?|ikke til stede|ikkje til stades)\s*:'
 $fn$;
 
 create function public.worker_ticket_inbound(p_inbound_id text, p_from text, p_subject text, p_body text, p_headers jsonb)
@@ -168,13 +178,19 @@ begin
   if v_tid is null then return jsonb_build_object('matched', false); end if;
   select * into t from app.tickets where id = v_tid and deleted_at is null for update;
   if not found or app.ticket_recipient(t) is distinct from lower(btrim(coalesce(p_from, ''))) then return jsonb_build_object('matched', false); end if;
-  -- an out-of-office or any other auto-reply is not the customer's answer (F-S2)
-  if app.mail_auto_reply(h, p_subject) then
+  -- an auto-reply by its headers is a machine's, not the customer's answer: it is not kept (F-S2)
+  if app.mail_auto_reply(h, null) then
     insert into app.audit (actor, action, target_type, target_id, ok, detail) values ('system', 'ticket.auto_reply_ignored', 'ticket', t.id::text, true, null);
     return jsonb_build_object('matched', true, 'auto_reply', true);
   end if;
   insert into app.ticket_messages (ticket_id, kind, author_person_id, body, inbound_id)
   values (t.id, 'customer', t.person_id, left(v_body, 20000), p_inbound_id) returning id into v_msg;
+  -- a subject in the auto-reply shape alone is a guess: the words are kept in the thread, but the ticket is not reopened
+  -- and nobody is called to it
+  if app.mail_auto_reply('{}'::jsonb, p_subject) then
+    insert into app.audit (actor, action, target_type, target_id, ok, detail) values ('system', 'ticket.auto_reply_kept', 'ticket', t.id::text, true, null);
+    return jsonb_build_object('matched', true, 'auto_reply', true, 'kept', true);
+  end if;
   update app.tickets set status = case when status in ('waiting_customer', 'resolved') then 'waiting_us' when status = 'closed' then 'open' else status end,
     reopened_count = reopened_count + case when status in ('resolved', 'closed') then 1 else 0 end, version = version + 1, updated_at = now()
   where id = t.id;
@@ -509,6 +525,22 @@ create index help_test_questions_by on app.help_test_questions (created_by, crea
 alter table app.help_test_questions enable row level security;
 revoke all on app.help_test_questions from public, anon, authenticated;
 
+-- a test question is kept 90 days, whoever asked it and whether or not they ask again (staff may paste a customer's words
+-- into one); the nightly job and every new question remove the older ones
+create function app.help_questions_prune() returns int
+  language plpgsql volatile security definer set search_path = ''
+as $fn$
+declare n int;
+begin
+  delete from app.help_test_questions q where q.created_at < now() - interval '90 days';
+  get diagnostics n = row_count;
+  return n;
+end $fn$;
+insert into app.job_defs (key, label_key, schedule, source, fn, quiet)
+values ('help_questions_prune', 'jobs.help_questions_prune', '33 3 * * *', 'cron', 'app.help_questions_prune', true)
+on conflict (key) do nothing;
+select cron.schedule('platform-help-questions-prune', '33 3 * * *', 'select app.run_job(''help_questions_prune'')');
+
 create function public.help_question_ask(p_product text, p_locale text, p_question text) returns jsonb
   language plpgsql volatile security definer set search_path = ''
 as $fn$
@@ -518,8 +550,8 @@ begin
   if p_locale is null or p_locale not in ('nb', 'nn', 'en') then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'locale'; end if;
   if char_length(btrim(coalesce(p_question, ''))) not between 3 and 500 then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'question'; end if;
   if not app.support_ai_on(p_product) then raise exception 'module_off' using errcode = 'object_not_in_prerequisite_state', detail = 'ai_enabled'; end if;
-  -- a test question is kept 90 days, then it goes
-  delete from app.help_test_questions q where q.created_by = v_me and q.created_at < now() - interval '90 days';
+  -- a test question is kept 90 days, then it goes: everyone's, here and every night (app.help_questions_prune)
+  perform app.help_questions_prune();
   insert into app.help_test_questions (product, locale, question, created_by) values (p_product, p_locale, btrim(p_question), v_me) returning id into v_id;
   perform app.log('help_question.asked', 'help_test_question', v_id::text, jsonb_build_object('product', p_product, 'locale', p_locale));
   return jsonb_build_object('id', v_id);
@@ -633,7 +665,14 @@ begin
       'ref', 'T-' || t.number,
       'person', (select p.name from app.people p where p.id = t.person_id),
       'role', t.context ->> 'role', 'page', t.context ->> 'page', 'browser', t.context ->> 'browser', 'app_version', t.context ->> 'app_version',
-      'organization', (select jsonb_build_object('name', o.name, 'org_number', o.org_number) from app.organizations o where o.id = t.organization_id),
+      -- the organisation, with its size band: the plan of its subscription to this product, when that plan is one of the
+      -- product's bands (Customers › Accounts shows the same)
+      'organization', (select jsonb_build_object('name', o.name, 'org_number', o.org_number,
+                                                 'band', (select s.plan from app.account_products ap join app.subscriptions s on s.product = ap.product and s.tenant_id = ap.tenant_id
+                                                          where ap.account_id = o.account_id and ap.product = p_product and ap.status = 'active'
+                                                            and exists (select 1 from app.plan_versions pv where pv.product = p_product and pv.band_label = s.plan)
+                                                          limit 1))
+                       from app.organizations o where o.id = t.organization_id),
       'subscriptions', coalesce((select jsonb_agg(jsonb_build_object('product', p.name, 'status', app.sub_status(s), 'plan', s.plan) order by p.ord, p.name)
                                  from app.organizations o join app.account_products ap on ap.account_id = o.account_id and ap.status = 'active'
                                  join app.subscriptions s on s.product = ap.product and s.tenant_id = ap.tenant_id
@@ -661,9 +700,14 @@ begin
                                                        'queues', coalesce((select jsonb_agg(distinct q.name) from t join app.ticket_queues q on q.key = t.queue_key where t.channel = ch.k), '[]'::jsonb))
                                     order by ch.o)
                    from (values ('in_app', 1), ('contact_form', 2), ('email', 3), ('staff', 4)) ch(k, o)),
+      -- a topic's count only when it is true: the reader sees its queue (else every ticket of it would be missing, a false 0),
+      -- and the topic has been recorded for the whole period (it is new in 0081: older tickets carry none)
       'topics', coalesce((select jsonb_agg(jsonb_build_object('topic', r.topic, 'category_key', r.category_key, 'category', c.name, 'queue', q.name,
                                                               'privacy', r.category_key = 'personvern',
-                                                              'tickets', (select count(*) from t where t.channel = 'contact_form' and t.topic = r.topic)) order by r.ord)
+                                                              'visible', app.queue_ok(c.queue_key), 'since', r.created_at,
+                                                              'tickets', case when app.queue_ok(c.queue_key) and r.created_at <= v_from
+                                                                              then (select count(*) from t where t.channel = 'contact_form' and t.topic = r.topic) end)
+                                            order by r.ord)
                           from app.contact_topic_routes r join app.ticket_categories c on c.key = r.category_key join app.ticket_queues q on q.key = c.queue_key
                           where r.product = p_product), '[]'::jsonb),
       'mail', (select jsonb_build_object('ready', app.mail_ready_for(p_product), 'inbound_ok', s.inbound_ok and s.inbound_domain is not null,
@@ -819,6 +863,32 @@ alter table app.status_incident_components enable row level security;
 alter table app.status_incident_updates enable row level security;
 revoke all on app.status_components, app.status_incidents, app.status_incident_components, app.status_incident_updates from public, anon, authenticated;
 
+-- what the product's public site shows of the notice tied to a problem: null (no notice), or {state, error} with state
+-- shown | not_delivered (an open notice: delivered or only saved in Sentral) or removed | removal_not_delivered (after the
+-- incident was resolved: the clearing push delivered, or not yet). A later delivered push replaces the site's banner.
+create function app.status_incident_notice(p_product text, p_problem uuid, p_resolved_at timestamptz) returns jsonb
+  language plpgsql stable security definer set search_path = ''
+as $fn$
+declare n app.status_notices; c app.status_notices;
+begin
+  if p_problem is null then return null; end if;
+  select * into n from app.status_notices x where x.product = p_product and x.problem_ticket_id = p_problem and x.cleared_at is null and x.text is not null
+  order by x.set_at desc limit 1;
+  if found then
+    return jsonb_build_object('state', case when n.pushed_at is not null then 'shown' else 'not_delivered' end, 'error', n.push_error);
+  end if;
+  if p_resolved_at is null then return null; end if;
+  select * into n from app.status_notices x where x.product = p_product and x.problem_ticket_id = p_problem and x.text is not null and x.cleared_at >= p_resolved_at
+  order by x.cleared_at desc limit 1;
+  if not found then return null; end if;
+  if exists (select 1 from app.status_notices y where y.product = p_product and y.set_at >= n.cleared_at and y.pushed_at is not null) then
+    return jsonb_build_object('state', 'removed', 'error', null);
+  end if;
+  -- the row that replaced it (written in the same transaction as the clearing)
+  select * into c from app.status_notices y where y.product = p_product and y.set_at >= n.cleared_at order by y.set_at limit 1;
+  return jsonb_build_object('state', 'removal_not_delivered', 'error', c.push_error);
+end $fn$;
+
 create function public.status_get(p_product text) returns jsonb
   language plpgsql stable security definer set search_path = ''
 as $fn$
@@ -835,11 +905,9 @@ begin
         'problem', (select jsonb_build_object('id', p.id, 'ref', 'T-' || p.number, 'resolved', p.problem_status = 'resolved') from app.tickets p where p.id = i.problem_ticket_id),
         'linked', (select count(*) from app.tickets x where x.problem_id = i.problem_ticket_id and x.deleted_at is null and (v_sandbox or not x.is_sample)),
         'customers', (select count(distinct x.organization_id) from app.tickets x where x.problem_id = i.problem_ticket_id and x.deleted_at is null and (v_sandbox or not x.is_sample)),
-        -- the notice on the product's public site, when one points at this incident's problem
-        'notice_open', exists (select 1 from app.status_notices n where n.product = p_product and n.problem_ticket_id = i.problem_ticket_id
-                               and n.cleared_at is null and n.text is not null),
-        'notice_cleared', i.resolved_at is not null and exists (select 1 from app.status_notices n where n.product = p_product and n.problem_ticket_id = i.problem_ticket_id
-                                                                and n.cleared_at >= i.resolved_at),
+        -- the notice tied to this incident's problem, as the product's site really has it: «shown» only once Orgpuls took it
+        -- (pushed_at), «removed» only once a later push replaced it; otherwise saved in Sentral and not delivered (push_error)
+        'notice', app.status_incident_notice(p_product, i.problem_ticket_id, i.resolved_at),
         -- the resolution replies that really went out by email
         'emailed', case when i.resolved_at is not null then (select count(*) from app.ticket_messages m join app.tickets x on x.id = m.ticket_id
                         where x.problem_id = i.problem_ticket_id and m.kind = 'reply' and m.created_at = i.resolved_at and m.delivery_status in ('sent', 'delivered')) end,
@@ -968,7 +1036,8 @@ begin
   where c.id in (select ic.component_id from app.status_incident_components ic where ic.incident_id = p_id) and c.state <> 'operational';
   if i.problem_ticket_id is not null then v_cleared := app.status_notices_due(); end if;
   perform app.log('status_incident.resolved', 'status_incident', p_id::text, jsonb_build_object('notified', v_notified, 'notices_cleared', v_cleared));
-  return jsonb_build_object('notified', v_notified, 'notices_cleared', v_cleared);
+  -- «notified» is the number of tickets resolved with the reply; whether a reply can be emailed at all is said beside it
+  return jsonb_build_object('notified', v_notified, 'notices_cleared', v_cleared, 'mail_ready', app.mail_ready_for(i.product));
 end $fn$;
 
 -- ===========================================================================
@@ -978,11 +1047,13 @@ alter table app.ticket_messages add column csat_request boolean not null default
 create index tickets_csat_token on app.tickets (csat_token_hash) where csat_token_hash is not null;
 
 -- 0061's claim, plus the CSAT token on the reply that resolves the ticket. The token's plaintext exists only in this
--- answer and in the email; the ticket keeps its hash. A retried send gets a fresh token (the unsent one is void).
+-- answer and in the email; the ticket keeps its hash. A retried send gets a fresh token (the unsent one is void). The five
+-- links open the public page /u/csat/<token> on the ticket's application's link address (0063), else on Sentral's public
+-- address: without either there is no page to answer on, so nothing is asked.
 create or replace function public.worker_ticket_mail_claim(p_limit integer default 20) returns jsonb
   language plpgsql security definer set search_path = ''
 as $fn$
-declare m record; t app.tickets; d app.sender_domains; out jsonb := '[]'::jsonb; v_to text; v_csat text;
+declare m record; t app.tickets; d app.sender_domains; out jsonb := '[]'::jsonb; v_to text; v_csat text; v_base text;
         v_inbound text := (select s.inbound_domain from app.mail_settings s where s.inbound_ok and s.inbound_domain is not null);
 begin
   if not app.connected('email') then return out; end if;
@@ -999,7 +1070,8 @@ begin
     end if;
     update app.ticket_messages set mail_claimed_at = now(), mail_attempts = mail_attempts + 1 where id = m.id;
     v_csat := null;
-    if t.status = 'resolved' and t.csat_at is null and (t.csat_requested_at is null or m.csat_request)
+    v_base := (select coalesce(s.app_bases ->> t.product, s.public_base) from app.mail_settings s);
+    if v_base is not null and t.status = 'resolved' and t.csat_at is null and (t.csat_requested_at is null or m.csat_request)
        and not exists (select 1 from app.ticket_messages y where y.ticket_id = t.id and y.kind = 'reply' and y.created_at > m.created_at) then
       v_csat := translate(encode(extensions.gen_random_bytes(24), 'base64'), '+/=', '-_');
       update app.tickets set csat_token_hash = extensions.digest(v_csat, 'sha256'), csat_requested_at = now() where id = t.id;
@@ -1011,7 +1083,7 @@ begin
       'agent', (select coalesce(a.name, a.email) from app.admins a where a.id = m.author_staff_id),
       'from', d.from_local || '@' || d.domain, 'from_name', d.from_name,
       'reply_to', coalesce(case when v_inbound is not null then 'support@' || v_inbound end, d.reply_to, d.from_local || '@' || d.domain),
-      'locale', 'no', 'csat_token', v_csat));
+      'locale', 'no', 'csat_token', v_csat, 'csat_base', case when v_csat is not null then v_base end));
   end loop;
   return out;
 end $fn$;
@@ -1043,6 +1115,21 @@ begin
   return jsonb_build_object('ok', true);
 end $fn$;
 
+-- the csat edge function's question for the public page: may this token still answer? It changes nothing (mail scanners
+-- open links), and it says no more than that and the application's sender name the email already carried.
+create function public.worker_csat_peek(p_token text) returns jsonb
+  language plpgsql stable security definer set search_path = ''
+as $fn$
+declare t app.tickets;
+begin
+  if p_token is null or p_token !~ '^[A-Za-z0-9_-]{32}$' then return jsonb_build_object('open', false); end if;
+  select x.* into t from app.tickets x
+  where x.csat_token_hash = extensions.digest(p_token, 'sha256') and x.csat_at is null and x.deleted_at is null
+    and x.csat_requested_at > now() - interval '30 days';
+  if not found then return jsonb_build_object('open', false); end if;
+  return jsonb_build_object('open', true, 'from_name', (app.mail_sender_for(t.product)).from_name);
+end $fn$;
+
 -- the csat edge function's one door: a token from the email and a score 1–5; the token works once, for 30 days
 create function public.worker_csat_submit(p_token text, p_score int) returns jsonb
   language plpgsql volatile security definer set search_path = ''
@@ -1072,8 +1159,10 @@ revoke all on function app.help_pages_ok(text[]) from public, anon, authenticate
 revoke all on function app.help_slug(text, text, text, uuid) from public, anon, authenticated;
 revoke all on function app.help_article_json(uuid) from public, anon, authenticated;
 revoke all on function app.support_ai_on(text) from public, anon, authenticated;
+revoke all on function app.help_questions_prune() from public, anon, authenticated;
 revoke all on function app.ai_ctx_help_answer_preview(uuid) from public, anon, authenticated;
 revoke all on function app.status_update_fixed() from public, anon, authenticated;
+revoke all on function app.status_incident_notice(text, uuid, timestamptz) from public, anon, authenticated;
 do $$
 declare f text;
 begin
@@ -1090,7 +1179,7 @@ begin
   end loop;
   foreach f in array array['public.worker_ticket_inbound(text, text, text, text, jsonb)', 'public.worker_ticket_inbound(text, text, text, text)',
                            'public.worker_ticket_mail_claim(integer)', 'public.worker_ticket_mail_done(uuid, text, text, boolean)',
-                           'public.worker_csat_submit(text, int)'] loop
+                           'public.worker_csat_submit(text, int)', 'public.worker_csat_peek(text)'] loop
     execute format('revoke all on function %s from public, anon, authenticated', f);
     execute format('grant execute on function %s to service_role', f);
   end loop;

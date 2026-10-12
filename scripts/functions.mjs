@@ -20,9 +20,9 @@
  * calls Claude.
  * dev-events takes Vercel's deployment webhooks (HMAC-SHA1 under vercel_signing_secret) and the products' CI results
  * (HMAC-SHA256 of timestamp.body under ci_signing_secret), checked before the body is parsed. csat is public on purpose
- * (0081): a customer answering «How satisfied are you?» from a resolution email has no account here; the single-use token
- * in the link (only its hash is stored, 30 days) is the authority, it accepts a score 1–5 and nothing else, and only a
- * person's click (Sec-Fetch-User) spends it.
+ * (0081): a customer answering «How satisfied are you?» from a resolution email has no account here; the public page
+ * /u/csat/<token> asks it by POST, the single-use token (only its hash is stored, 30 days) is the authority, and it accepts
+ * a score 1–5 and nothing else.
  */
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'

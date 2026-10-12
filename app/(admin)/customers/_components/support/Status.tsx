@@ -155,15 +155,26 @@ function IncidentCard({ i, canEdit, times }: { i: Incident; canEdit: boolean; ti
   const [state, setState] = useState<'investigating' | 'identified' | 'monitoring'>(i.state === 'resolved' ? 'monitoring' : i.state)
   const [pending, start] = useTransition()
   const open = i.state !== 'resolved'
-  const chips = open
-    ? [i.notice_open ? t('chips.notice') : null, i.linked > 0 ? t('chips.linked', { n: i.linked }) : null]
-    : [i.notice_cleared ? t('chips.noticeCleared') : null, (i.notified ?? 0) > 0 ? t('chips.resolved', { n: i.notified ?? 0 }) : null,
-       (i.emailed ?? 0) > 0 ? t('chips.emailed', { n: i.emailed ?? 0 }) : null]
+  // a ✓ only for what is true; a notice Orgpuls has not taken (or not yet removed) says so instead
+  const notice = i.notice
+  const noticeChip = (): { text: string; ok: boolean } | null => {
+    if (!notice) return null
+    if (notice.state === 'shown') return open ? { text: t('chips.notice'), ok: true } : null
+    if (notice.state === 'removed') return open ? null : { text: t('chips.noticeCleared'), ok: true }
+    const key = notice.state === 'not_delivered' ? 'noticeNotDelivered' : 'removalNotDelivered'
+    return { text: notice.error ? t(`chips.${key}Why`, { error: notice.error }) : t(`chips.${key}`), ok: false }
+  }
+  const chips = (open
+    ? [noticeChip(), i.linked > 0 ? { text: t('chips.linked', { n: i.linked }), ok: true } : null]
+    : [noticeChip(), (i.notified ?? 0) > 0 ? { text: t('chips.resolved', { n: i.notified ?? 0 }), ok: true } : null,
+       (i.emailed ?? 0) > 0 ? { text: t('chips.emailed', { n: i.emailed ?? 0 }), ok: true } : null]
+  ).filter((c): c is { text: string; ok: boolean } => c !== null)
   const submit = () => start(async () => {
     if (form === 'resolve') {
       const r = await resolveIncident({ id: i.id, message: text })
       if (!r.ok) { flash(errorText(r.code)); return }
-      flash(t('resolvedToast', { n: r.notified }))
+      // what happened: tickets resolved with the reply, and whether any of it can be emailed
+      flash(r.notified > 0 && !r.mailReady ? t('resolvedToastNoMail', { n: r.notified }) : t('resolvedToast', { n: r.notified }))
     } else {
       const r = await postIncidentUpdate({ id: i.id, state, body: text })
       if (!r.ok) { flash(errorText(r.code)); return }
@@ -181,9 +192,9 @@ function IncidentCard({ i, canEdit, times }: { i: Incident; canEdit: boolean; ti
       </div>
       {i.body ? <span className="text-12.5 text-ink-2">{i.body}</span> : null}
       {i.problem ? <span className="text-12 text-muted">{t('affected', { n: i.customers, ref: i.problem.ref })}</span> : null}
-      {chips.some(Boolean) ? (
+      {chips.length > 0 ? (
         <div className="flex flex-wrap gap-[6px]">
-          {chips.filter(Boolean).map((c) => <span key={c} className="rounded-999 bg-ok-bg px-[9px] py-[3px] text-11 font-bold">✓ {c}</span>)}
+          {chips.map((c) => <span key={c.text} className={`rounded-999 px-[9px] py-[3px] text-11 font-bold ${c.ok ? 'bg-ok-bg' : 'bg-amber-bg'}`}>{c.ok ? `✓ ${c.text}` : c.text}</span>)}
         </div>
       ) : null}
       {/* the opening update repeats the description: it is shown once */}

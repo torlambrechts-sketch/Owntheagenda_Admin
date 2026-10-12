@@ -41,7 +41,7 @@ export const Widget = z.object({
     page: z.string().nullable(),
     browser: z.string().nullable(),
     app_version: z.string().nullable(),
-    organization: z.object({ name: z.string(), org_number: z.string().nullable() }).nullable(),
+    organization: z.object({ name: z.string(), org_number: z.string().nullable(), band: z.string().nullable() }).nullable(),
     subscriptions: z.array(Subscription),
   }).nullable(),
 })
@@ -111,7 +111,10 @@ export const Channels = z.object({
   days: num,
   total: num,
   channels: z.array(z.object({ channel: z.enum(CHANNELS), tickets: num, queues: z.array(z.string()) })),
-  topics: z.array(z.object({ topic: z.string(), category_key: z.string(), category: z.string(), queue: z.string(), privacy: z.boolean(), tickets: num })),
+  // a topic's count is null when the reader does not see its queue, or the topic was not yet recorded for the whole period
+  topics: z.array(z.object({
+    topic: z.string(), category_key: z.string(), category: z.string(), queue: z.string(), privacy: z.boolean(), visible: z.boolean(), since: ts, tickets: num.nullable(),
+  })),
   mail: z.object({ ready: z.boolean(), inbound_ok: z.boolean(), inbound_domain: z.string().nullable(), webhook_ok: z.boolean() }).nullable(),
 })
 export type Channels = z.infer<typeof Channels>
@@ -159,8 +162,8 @@ export const Status = z.object({
     problem: z.object({ id: uuid, ref: z.string(), resolved: z.boolean() }).nullable(),
     linked: num,
     customers: num,
-    notice_open: z.boolean(),
-    notice_cleared: z.boolean(),
+    // the notice tied to the problem, as the product's site really has it (pushed or not)
+    notice: z.object({ state: z.enum(['shown', 'not_delivered', 'removed', 'removal_not_delivered']), error: z.string().nullable() }).nullable(),
     emailed: num.nullable(),
     components: z.array(uuid),
     updates: z.array(z.object({ state: z.enum(INCIDENT_STATES), body: z.string(), at: ts, by: z.string().nullable() })),

@@ -7,7 +7,8 @@
  *                                              worker_ticket_mail_event.
  *   POST ?key=<mail_events_secret>&inbound=1   Brevo's inbound parsing: a customer's answer to a ticket reply, threaded by its reference
  *                                              header or its [T-n] subject; an auto-reply never reopens a ticket (0081)
- *                                              (worker_ticket_inbound threads it only from the ticket's requester).
+ *                                              (worker_ticket_inbound threads it only from the ticket's requester). When the
+ *                                              database refuses one, the delivery is answered 500 so Brevo sends it again.
  *   POST ?u=<token>                            RFC 8058 one-click unsubscribe (List-Unsubscribe-Post).
  *   POST {"action": "peek" | "unsubscribe", "token": "..."}   the app's public /u/<token> page.
  *
@@ -15,7 +16,7 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { sameText } from '../_shared/signing.ts'
-import { inboundMail, sortEvents } from '../_shared/brevo-events.ts'
+import { inboundMail, inboundTally, sortEvents, type InboundResult } from '../_shared/brevo-events.ts'
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
 const log = (s: string) => console.log(`[mail-events] ${s}`)
@@ -56,19 +57,18 @@ Deno.serve(async (req) => {
       return json({ error: 'body' }, 400)
     }
     if (params.get('inbound') === '1') {
-      let matched = 0, dropped = 0, auto = 0
+      const results: InboundResult[] = []
       for (const item of inboundMail(payload)) {
         // the reference headers thread an answer; an auto-reply is recognised and never reopens a ticket (0081, F-S2)
-        const { data: r, error } = await svc.rpc('worker_ticket_inbound', {
+        const { data, error } = await svc.rpc('worker_ticket_inbound', {
           p_inbound_id: item.id, p_from: item.from, p_subject: item.subject, p_body: item.body, p_headers: item.headers,
         })
-        const res = (r ?? {}) as { matched?: boolean; auto_reply?: boolean }
-        if (!error && res.auto_reply) auto++
-        else if (!error && res.matched) matched++
-        else dropped++
+        results.push({ data, error })
       }
-      log(`inbound matched=${matched} auto_reply=${auto} dropped=${dropped}`)
-      return json({ ok: true })
+      const t = inboundTally(results)
+      log(`inbound matched=${t.matched} auto_reply=${t.auto_reply} dropped=${t.dropped} failed=${t.failed}${t.codes.length ? ` codes=${t.codes.join(',')}` : ''}`)
+      // a refused answer is not lost: a 5xx makes Brevo deliver it again, and what was already threaded is a duplicate
+      return t.retry ? json({ ok: false }, 500) : json({ ok: true })
     }
     const sorted = sortEvents(payload)
     let tickets = 0

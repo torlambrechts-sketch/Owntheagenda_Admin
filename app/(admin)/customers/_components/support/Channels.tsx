@@ -14,7 +14,7 @@ const input = 'rounded-10 border-[1.5px] border-ink bg-surface px-[11px] text-13
  * Contact form and email (SupportHub.dc.html, v.channels). The form is Orgpuls' own: its four topics and where each now goes
  * (0081, F-S1). The channel shares come from tickets.channel over 30 days; the email facts are the ones that hold.
  */
-export function ChannelsView({ data, productName, nf }: { data: Channels; productName: string; nf: NumberFormat }) {
+export function ChannelsView({ data, productName, nf, since }: { data: Channels; productName: string; nf: NumberFormat; since: Record<string, string> }) {
   const t = useTranslations('supportHub.channels')
   const dash = useTranslations('common')('dash')
   const [topic, setTopic] = useState(data.topics[0]?.topic ?? null)
@@ -39,7 +39,11 @@ export function ChannelsView({ data, productName, nf }: { data: Channels; produc
         {route ? (
           <span className="text-12 leading-[1.5] text-muted">
             {route.privacy ? t('form.routePrivacy', { queue: route.queue }) : t('form.route', { queue: route.queue, category: route.category })}
-            {' '}{t('form.count', { n: route.tickets, days: data.days })}
+            {' '}
+            {/* a count only when it is true: the reader sees the queue, and the topic was recorded for the whole period */}
+            {route.tickets !== null ? t('form.count', { n: route.tickets, days: data.days })
+              : !route.visible ? t('form.countHidden', { days: data.days, queue: route.queue })
+                : t('form.countSince', { days: data.days, date: since[route.topic] ?? '' })}
           </span>
         ) : <Why>{t('form.noTopics', { product: productName })}</Why>}
         <Why>{t('form.note')}</Why>

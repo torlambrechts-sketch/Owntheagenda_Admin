@@ -80,7 +80,9 @@ async function SubView({ product, productName, sub, article, org, ticket, nf }: 
     }
     case 'channels': {
       const r = await loadChannels(product)
-      return r.ok ? <ChannelsView data={r.data} productName={productName} nf={nf} /> : <Refused code={r.code} />
+      if (!r.ok) return <Refused code={r.code} />
+      const since = Object.fromEntries(r.data.topics.map((x) => [x.topic, format.dateTime(new Date(x.since), { day: 'numeric', month: 'short', year: 'numeric' })]))
+      return <ChannelsView data={r.data} productName={productName} nf={nf} since={since} />
     }
     case 'portal': {
       const r = await loadPortal(product, org)

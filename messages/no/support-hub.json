@@ -12,13 +12,13 @@
     },
     "errors": {
       "module_off": "AI-svar er slått av for denne applikasjonen (Hjelpewidget › Innstillinger for widgeten).",
-      "not_connected": "Claude er ikke koblet til: eieren legger inn nøkkelen under Plattform.",
+      "not_connected": "Claude er ikke koblet til: eieren kobler til under Utvikling › Claude-jobber.",
       "rate_limited": "Du har nådd timesgrensen for Claude. Prøv igjen senere.",
       "not_deployed": "AI-porten er ikke satt i drift ennå.",
       "refused": "Claude ville ikke svare på dette spørsmålet.",
       "empty": "Claude ga ikke noe svar.",
       "record": "Svaret kunne ikke lagres. Prøv igjen.",
-      "bad_key": "Claude-nøkkelen ble avvist: eieren bytter den under Plattform.",
+      "bad_key": "Claude-nøkkelen ble avvist: eieren bytter den under Utvikling › Claude-jobber.",
       "provider_rate_limited": "Claude er opptatt. Prøv igjen om et minutt.",
       "provider_invalid": "Claude kunne ikke lese forespørselen.",
       "network": "Fikk ikke kontakt med Claude. Prøv igjen.",
@@ -112,7 +112,8 @@
         "book": "Book en samtale",
         "demo": "Book en demo",
         "sales": "Kontakt salg",
-        "why": "Knappene i widgeten virker når applikasjonen har bygget inn widgeten; «Book en samtale» trenger også en bookinglenke."
+        "whyApp": "Knappene i widgeten virker når applikasjonen har bygget inn widgeten; «Book en samtale» trenger også en bookinglenke.",
+        "whyWeb": "Knappene i widgeten virker når widgeten er bygget inn på nettstedet; «Book en demo» trenger også en bookinglenke."
       },
       "captured": {
         "title": "Sendes med hver sak fra widgeten",
@@ -146,7 +147,7 @@
         },
         "chat": {
           "name": "Livechat i åpningstiden",
-          "sub": "Man–fre 08–16, ellers sak"
+          "sub": "I åpningstiden, ellers en sak"
         },
         "consent": {
           "name": "Last bare etter samtykke til informasjonskapsler",
@@ -222,6 +223,8 @@
         "route": "Oppretter en sak i {queue} ({category}).",
         "routePrivacy": "Oppretter en personvernforespørsel i {queue} med 30 dagers frist; bare køens rettighetssett ser den. Det lages ikke noe CRM-emne.",
         "count": "{n} på {days} dager.",
+        "countHidden": "— på {days} dager: bare de som ser køen {queue}, får dette tallet.",
+        "countSince": "— på {days} dager: emnene registreres fra {date}, så et tall ville vært ufullstendig.",
         "noTopics": "Ingen kontaktskjema sender emner for {product} ennå.",
         "note": "Skjemaet er applikasjonens eget; dette viser emnene og hvor hvert emne havner. Organisasjonsfeltet er fritekst, og ingen besøkende får vite om et selskap er kunde."
       },
@@ -273,24 +276,15 @@
         "done": "Løst"
       },
       "waiting": "Venter på deg",
-      "approvals": {
-        "access": "Støttetilgang i 24 timer",
-        "accessSub": "Krever applikasjonen: støttetilgang finnes ikke ennå",
-        "deletion": "Sletting av tidligere ansatt",
-        "deletionSub": "Håndteres i applikasjonen; Sentral har bare forespørselen og fristen",
-        "deletionOpen": "{n, plural, one {# åpen personvernforespørsel} other {# åpne personvernforespørsler}} · håndteres i applikasjonen, aldri med navn",
-        "band": "Nytt prisbånd",
-        "bandSub": "Krever at applikasjonen kan endre en plan",
-        "decline": "Avslå",
-        "approve": "Godkjenn",
-        "why": "Kundene godkjenner i portalen, som venter på applikasjonen."
-      },
+      "waitingNone": "Ingen forespørsler venter",
+      "privacyOpen": "Åpne personvernforespørsler",
+      "privacyOpenSub": "{n, plural, one {# åpen personvernforespørsel} other {# åpne personvernforespørsler}} · organisasjonen bestemmer over de ansattes data; håndteres i applikasjonen, aldri med navn",
       "rules": {
         "title": "Tilgang til portalen",
         "preview": "Denne forhåndsvisningen viser organisasjonens saker slik Sentral har dem, med ordene brukerne ville sett.",
         "roles": "Hvilke roller i {product} som ser alle organisasjonens saker og kan godkjenne, er ikke bestemt ennå.",
         "signin": "Kundene logger inn der portalen plasseres; ingenting her gir en kunde tilgang.",
-        "access": "Støttetilgang og godkjenninger krever kommandoer i {product} som ikke finnes ennå."
+        "approvals": "Godkjenningene portalen skal bære (støttetilgang i 24 timer, sletting av tidligere ansatt, nytt prisbånd), krever kommandoer i {product} som ikke finnes ennå."
       }
     },
     "assist": {
@@ -323,7 +317,7 @@
         "ask": "Spør",
         "asking": "Spør …",
         "noRight": "Å spørre krever AI-retten for saker.",
-        "notConnected": "Claude er ikke koblet til: eieren legger inn nøkkelen under Plattform.",
+        "notConnected": "Claude er ikke koblet til: eieren kobler til under Utvikling › Claude-jobber.",
         "off": "AI-svar er slått av for {product} (Hjelpewidget › Innstillinger for widgeten).",
         "label": "AI-svar fra artiklene våre",
         "source": "Kilde: {title}",
@@ -362,7 +356,11 @@
         "linked": "Lenket til {n, plural, one {# sak} other {# saker}}",
         "noticeCleared": "Varsel fjernet",
         "resolved": "{n, plural, one {# sak løst} other {# saker løst}}",
-        "emailed": "{n, plural, one {# svar sendt på e-post} other {# svar sendt på e-post}}"
+        "emailed": "{n, plural, one {# svar sendt på e-post} other {# svar sendt på e-post}}",
+        "noticeNotDelivered": "Varsel lagret i Sentral — ikke levert",
+        "noticeNotDeliveredWhy": "Varsel lagret i Sentral — ikke levert ({error})",
+        "removalNotDelivered": "Fjerning av varsel lagret i Sentral — ikke levert",
+        "removalNotDeliveredWhy": "Fjerning av varsel lagret i Sentral — ikke levert ({error})"
       },
       "resolve": "Løs og varsle berørte kunder",
       "resolveOnly": "Løs",
@@ -375,7 +373,8 @@
       "cancel": "Avbryt",
       "send": "Send og løs",
       "post": "Legg ut",
-      "resolvedToast": "Løst · {n, plural, =0 {ingen åpne saker å varsle} one {# kunde varslet} other {# kunder varslet}}",
+      "resolvedToast": "Løst · {n, plural, =0 {ingen åpne saker å svare} one {# sak løst og besvart} other {# saker løst og besvart}}",
+      "resolvedToastNoMail": "Løst · {n, plural, one {# sak løst og besvart} other {# saker løst og besvart}} · svarene sendes ikke på e-post: e-post er ikke klar",
       "updatedToast": "Oppdatering lagt ut",
       "new": {
         "open": "＋ Hendelse",
@@ -403,13 +402,18 @@
         "scale": "Klikk på et tall: 1 er ikke fornøyd i det hele tatt, 5 er svært fornøyd.",
         "low": "Ikke fornøyd",
         "high": "Svært fornøyd"
-      },
-      "page": {
-        "thanks": "Takk. Svaret ditt, {score} av 5, er registrert.",
-        "used": "Denne lenken er allerede brukt eller gjelder ikke lenger.",
-        "browser": "Svaret ble ikke registrert. Åpne lenken i nettleseren din for å svare.",
-        "invalid": "Lenken er ikke komplett. Bruk lenken i e-posten."
       }
+    },
+    "csatPage": {
+      "title": "Hvor fornøyd er du med hjelpen du fikk?",
+      "chosen": "Du valgte {score} av 5.",
+      "send": "Send {score} av 5",
+      "retry": "Svaret kunne ikke registreres akkurat nå. Prøv igjen.",
+      "thanksTitle": "Takk",
+      "thanks": "Svaret ditt, {score} av 5, er registrert.",
+      "used": "Denne lenken er allerede brukt eller gjelder ikke lenger.",
+      "invalid": "Lenken er ikke komplett. Bruk lenken i e-posten.",
+      "unavailable": "Lenken kan ikke sjekkes akkurat nå. Åpne den igjen om litt."
     }
   }
 }

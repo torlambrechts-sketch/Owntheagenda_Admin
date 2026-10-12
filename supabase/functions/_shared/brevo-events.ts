@@ -113,3 +113,28 @@ export function inboundMail(payload: unknown): InboundMail[] {
   }
   return out
 }
+
+/**
+ * What one inbound delivery came to, from worker_ticket_inbound's answers (0081). A database refusal is not «dropped»: the
+ * customer's answer would be lost for good, so the delivery is answered 500 and Brevo sends it again (a repeat is a
+ * duplicate by its inbound id). Only the error codes are kept, never a body.
+ */
+export type InboundResult = { data: unknown; error: { code?: string | null } | null }
+export type InboundTally = { matched: number; auto_reply: number; dropped: number; failed: number; codes: string[]; retry: boolean }
+export function inboundTally(results: InboundResult[]): InboundTally {
+  const t: InboundTally = { matched: 0, auto_reply: 0, dropped: 0, failed: 0, codes: [], retry: false }
+  for (const r of results) {
+    if (r.error) {
+      t.failed++
+      const code = String(r.error.code ?? 'unknown').replace(/[^A-Za-z0-9_.-]/g, '').slice(0, 20) || 'unknown'
+      if (!t.codes.includes(code)) t.codes.push(code)
+      continue
+    }
+    const d = (r.data ?? {}) as { matched?: unknown; auto_reply?: unknown }
+    if (d.auto_reply === true) t.auto_reply++
+    else if (d.matched === true) t.matched++
+    else t.dropped++
+  }
+  t.retry = t.failed > 0
+  return t
+}

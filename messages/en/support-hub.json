@@ -12,13 +12,13 @@
     },
     "errors": {
       "module_off": "AI answers are switched off for this application (Help widget › Widget settings).",
-      "not_connected": "Claude is not connected: the owner adds the key under Platform.",
+      "not_connected": "Claude is not connected: the owner connects it under Development › Claude jobs.",
       "rate_limited": "You have reached the hourly limit for Claude. Try again later.",
       "not_deployed": "The AI gateway is not deployed yet.",
       "refused": "Claude declined to answer this question.",
       "empty": "Claude returned no answer.",
       "record": "The answer could not be saved. Try again.",
-      "bad_key": "The Claude key was refused: the owner replaces it under Platform.",
+      "bad_key": "The Claude key was refused: the owner replaces it under Development › Claude jobs.",
       "provider_rate_limited": "Claude is busy. Try again in a minute.",
       "provider_invalid": "Claude could not read the request.",
       "network": "Claude could not be reached. Try again.",
@@ -83,7 +83,7 @@
       "greetApp": "Hei [fornavn]",
       "greetWeb": "Hei! Hvordan kan vi hjelpe?",
       "ctxApp": "[Organisasjon] · [Rolle] · {page}",
-      "ctxWeb": "{product} · besøkende",
+      "ctxWeb": "{product} · visitor",
       "search": "Hva lurer du på?",
       "matches": "Matching articles",
       "sugApp": "Suggested for this page",
@@ -112,7 +112,8 @@
         "book": "Book a call",
         "demo": "Book a demo",
         "sales": "Contact sales",
-        "why": "The widget's buttons work once the application embeds the widget; «Book a call» also needs a booking link."
+        "whyApp": "The widget's buttons work once the application embeds the widget; «Book a call» also needs a booking link.",
+        "whyWeb": "The widget's buttons work once the widget is embedded on the website; «Book a demo» also needs a booking link."
       },
       "captured": {
         "title": "Sent with every ticket from the widget",
@@ -146,7 +147,7 @@
         },
         "chat": {
           "name": "Live chat in business hours",
-          "sub": "Mon–Fri 08–16, otherwise ticket"
+          "sub": "In business hours, otherwise a ticket"
         },
         "consent": {
           "name": "Load only after cookie consent",
@@ -222,6 +223,8 @@
         "route": "Creates a ticket in {queue} ({category}).",
         "routePrivacy": "Creates a privacy request in {queue} with a 30-day deadline; only the queue's permission sets see it. No CRM lead is made.",
         "count": "{n} in {days} days.",
+        "countHidden": "— in {days} days: only those who see the {queue} queue get this count.",
+        "countSince": "— in {days} days: topics are recorded from {date}, so a count would be incomplete.",
         "noTopics": "No contact form sends topics for {product} yet.",
         "note": "The form is the application's own; this shows its topics and where each goes. The organisation field is free text, and no visitor is told whether a company is a customer."
       },
@@ -273,24 +276,15 @@
         "done": "Løst"
       },
       "waiting": "Venter på deg",
-      "approvals": {
-        "access": "Støttetilgang i 24 timer",
-        "accessSub": "Needs the application: support access does not exist yet",
-        "deletion": "Sletting av tidligere ansatt",
-        "deletionSub": "Handled in the application; Sentral keeps only the request and its clock",
-        "deletionOpen": "{n, plural, one {# open privacy request} other {# open privacy requests}} · handled in the application, never by name",
-        "band": "Nytt prisbånd",
-        "bandSub": "Needs the application to change a plan",
-        "decline": "Avslå",
-        "approve": "Godkjenn",
-        "why": "Customers approve in the portal, which waits for the application."
-      },
+      "waitingNone": "Ingen forespørsler venter",
+      "privacyOpen": "Åpne personvernforespørsler",
+      "privacyOpenSub": "{n, plural, one {# open privacy request} other {# open privacy requests}} · the organisation decides on its employees' data; handled in the application, never by name",
       "rules": {
         "title": "Portal access",
         "preview": "This preview shows the organisation's tickets as Sentral holds them, in the words its users would see.",
         "roles": "Which {product} roles see all of the organisation's tickets and may approve is not decided yet.",
         "signin": "Customers will sign in where the portal is placed; nothing here gives a customer access.",
-        "access": "Support access and approvals need commands in {product} that do not exist yet."
+        "approvals": "Approvals the portal will carry (support access for 24 hours, deletion of a former employee, a new price band) need commands in {product} that do not exist yet."
       }
     },
     "assist": {
@@ -323,7 +317,7 @@
         "ask": "Ask",
         "asking": "Asking…",
         "noRight": "Asking needs the AI right for tickets.",
-        "notConnected": "Claude is not connected: the owner adds the key under Platform.",
+        "notConnected": "Claude is not connected: the owner connects it under Development › Claude jobs.",
         "off": "AI answers are switched off for {product} (Help widget › Widget settings).",
         "label": "AI answer from our articles",
         "source": "Source: {title}",
@@ -362,7 +356,11 @@
         "linked": "Linked to {n, plural, one {# ticket} other {# tickets}}",
         "noticeCleared": "Notice removed",
         "resolved": "{n, plural, one {# ticket resolved} other {# tickets resolved}}",
-        "emailed": "{n, plural, one {# reply emailed} other {# replies emailed}}"
+        "emailed": "{n, plural, one {# reply emailed} other {# replies emailed}}",
+        "noticeNotDelivered": "Notice saved in Sentral — not delivered",
+        "noticeNotDeliveredWhy": "Notice saved in Sentral — not delivered ({error})",
+        "removalNotDelivered": "Notice removal saved in Sentral — not delivered",
+        "removalNotDeliveredWhy": "Notice removal saved in Sentral — not delivered ({error})"
       },
       "resolve": "Resolve and notify affected customers",
       "resolveOnly": "Resolve",
@@ -375,7 +373,8 @@
       "cancel": "Cancel",
       "send": "Send and resolve",
       "post": "Post",
-      "resolvedToast": "Resolved · {n, plural, =0 {no open tickets to notify} one {# customer notified} other {# customers notified}}",
+      "resolvedToast": "Resolved · {n, plural, =0 {no open tickets to answer} one {# ticket resolved and replied to} other {# tickets resolved and replied to}}",
+      "resolvedToastNoMail": "Resolved · {n, plural, one {# ticket resolved and replied to} other {# tickets resolved and replied to}} · the replies are not emailed: mail is not ready",
       "updatedToast": "Update posted",
       "new": {
         "open": "＋ Incident",
@@ -403,13 +402,18 @@
         "scale": "Click a number: 1 is not satisfied at all, 5 is very satisfied.",
         "low": "Not satisfied",
         "high": "Very satisfied"
-      },
-      "page": {
-        "thanks": "Thank you. Your answer, {score} of 5, is recorded.",
-        "used": "This link has already been used or is no longer valid.",
-        "browser": "Your answer was not recorded. Open the link in your web browser to answer.",
-        "invalid": "This link is not complete. Use the link in the email."
       }
+    },
+    "csatPage": {
+      "title": "How satisfied are you with the help you got?",
+      "chosen": "You chose {score} of 5.",
+      "send": "Send {score} of 5",
+      "retry": "Your answer could not be recorded just now. Try again.",
+      "thanksTitle": "Thank you",
+      "thanks": "Your answer, {score} of 5, is recorded.",
+      "used": "This link has already been used or is no longer valid.",
+      "invalid": "This link is not complete. Use the link in the email.",
+      "unavailable": "The link cannot be checked right now. Open it again in a little while."
     }
   }
 }

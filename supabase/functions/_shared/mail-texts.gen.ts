@@ -77,12 +77,6 @@ export const MAIL_TEXTS = {
         "scale": "Click a number: 1 is not satisfied at all, 5 is very satisfied.",
         "low": "Not satisfied",
         "high": "Very satisfied"
-      },
-      "page": {
-        "thanks": "Thank you. Your answer, {score} of 5, is recorded.",
-        "used": "This link has already been used or is no longer valid.",
-        "browser": "Your answer was not recorded. Open the link in your web browser to answer.",
-        "invalid": "This link is not complete. Use the link in the email."
       }
     }
   },
@@ -163,12 +157,6 @@ export const MAIL_TEXTS = {
         "scale": "Klikk på et tall: 1 er ikke fornøyd i det hele tatt, 5 er svært fornøyd.",
         "low": "Ikke fornøyd",
         "high": "Svært fornøyd"
-      },
-      "page": {
-        "thanks": "Takk. Svaret ditt, {score} av 5, er registrert.",
-        "used": "Denne lenken er allerede brukt eller gjelder ikke lenger.",
-        "browser": "Svaret ble ikke registrert. Åpne lenken i nettleseren din for å svare.",
-        "invalid": "Lenken er ikke komplett. Bruk lenken i e-posten."
       }
     }
   }

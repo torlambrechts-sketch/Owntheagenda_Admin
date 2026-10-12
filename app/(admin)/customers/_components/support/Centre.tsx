@@ -146,15 +146,19 @@ function Editor({ data, article, productName, reviewed }: { data: HelpCentre; ar
   })
 
   const canEdit = data.can_edit
+  // a language the group does not have yet: only the offer to create it. The fields and actions belong to the article in
+  // view (another language), so they are not shown while that language is highlighted.
   return (
     <div className={`${cardInk} flex flex-col gap-[10px] px-5 py-4`}>
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        readOnly={!canEdit}
-        aria-label={t('titleLabel')}
-        className="h-10 rounded-10 border border-line bg-canvas px-[11px] font-serif text-18 font-semibold"
-      />
+      {missing ? null : (
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          readOnly={!canEdit}
+          aria-label={t('titleLabel')}
+          className="h-10 rounded-10 border border-line bg-canvas px-[11px] font-serif text-18 font-semibold"
+        />
+      )}
       <div className="flex flex-wrap items-center gap-[6px]">
         <div className="flex rounded-9 bg-tile p-[3px]" role="group" aria-label={t('langsLabel')}>
           {LOCALES.map((l) => {
@@ -167,7 +171,7 @@ function Editor({ data, article, productName, reviewed }: { data: HelpCentre; ar
             )
           })}
         </div>
-        <span className="text-11.5 text-muted">{t('slug', { slug: article.slug })}</span>
+        {missing ? null : <span className="text-11.5 text-muted">{t('slug', { slug: article.slug })}</span>}
       </div>
       {missing ? (
         <div className="flex flex-wrap items-center gap-2 rounded-12 border border-line bg-canvas px-3 py-[10px] text-12.5">
@@ -177,64 +181,67 @@ function Editor({ data, article, productName, reviewed }: { data: HelpCentre; ar
             {t('createLang', { lang: t(`langs.${missing}`) })}
           </button>
         </div>
-      ) : null}
-      <textarea
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        readOnly={!canEdit}
-        aria-label={t('bodyLabel')}
-        className="min-h-[160px] rounded-12 border border-line bg-canvas px-3 py-[11px] text-13 leading-[1.6]"
-      />
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        <label className="flex flex-col gap-1 text-11.5 text-muted">
-          {t('seo')}
-          <input value={seo} onChange={(e) => setSeo(e.target.value)} readOnly={!canEdit} placeholder={t('seoPlaceholder', { title: title.trim(), product: productName })}
-            className={`h-8 px-[9px] ${field}`} />
-        </label>
-        <label className="flex flex-col gap-1 text-11.5 text-muted">
-          {t('page')}
-          <select value={page} onChange={(e) => setPage(e.target.value)} disabled={!canEdit} className={`h-8 ${field}`}>
-            <option value="">{t('pageNone')}</option>
-            {pages.map((p) => <option key={p} value={p}>{p}</option>)}
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-11.5 text-muted">
-          {t('category')}
-          <select value={category} onChange={(e) => setCategory(e.target.value)} disabled={!canEdit} className={`h-8 ${field}`}>
-            <option value="">{t('noCategory')}</option>
-            {data.categories.map((c) => <option key={c.key} value={c.key}>{c.name}</option>)}
-          </select>
-        </label>
-      </div>
-      <div className="flex flex-wrap items-center gap-[6px] text-11.5 text-muted">
-        <span>{t('linked', { n: article.linked_tickets })}</span>
-        {article.problem_number ? <span>· {t('problem', { ref: `T-${article.problem_number}` })}</span> : null}
-        <span>· {reviewed ? t('reviewed', { when: reviewed, by: article.reviewed_by ?? '' }) : t('notReviewed')}</span>
-        {canEdit ? (
-          <button type="button" onClick={onReview} disabled={pending} className="cursor-pointer border-none bg-transparent p-0 text-11.5 font-semibold text-link underline-offset-2 hover:underline">
-            {t('markReviewed')}
-          </button>
-        ) : null}
-      </div>
-      <div className="flex flex-wrap justify-end gap-2">
-        <button type="button" disabled title={t('aiWhy')} className="h-[34px] cursor-not-allowed rounded-10 border border-ink bg-ink px-[13px] text-12.5 font-bold text-canvas opacity-60">{t('ai')}</button>
-        {canEdit ? (
-          <button type="button" onClick={onSave} disabled={!dirty || pending || !values.title}
-            className="h-[34px] cursor-pointer rounded-10 border border-line bg-transparent px-[13px] text-12.5 font-semibold text-ink disabled:cursor-default disabled:opacity-60">
-            {t('save')}
-          </button>
-        ) : null}
-        <button type="button" onClick={onPublish} disabled={!data.can_publish || pending || !values.title}
-          title={data.can_publish ? undefined : t('publishWhy')}
-          className="h-[34px] cursor-pointer rounded-10 border border-ink bg-primary px-[14px] text-12.5 font-bold text-ink disabled:cursor-not-allowed disabled:opacity-60">
-          {published ? t('unpublish') : t('publish')}
-        </button>
-      </div>
-      <div className="flex flex-col items-end gap-[2px] text-right">
-        <Why>{t('aiWhy')}</Why>
-        {!data.can_publish ? <Why>{t('publishWhy')}</Why> : null}
-        {!canEdit ? <Why>{t('editWhy')}</Why> : null}
-      </div>
+      ) : (
+        <>
+          <textarea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            readOnly={!canEdit}
+            aria-label={t('bodyLabel')}
+            className="min-h-[160px] rounded-12 border border-line bg-canvas px-3 py-[11px] text-13 leading-[1.6]"
+          />
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <label className="flex flex-col gap-1 text-11.5 text-muted">
+              {t('seo')}
+              <input value={seo} onChange={(e) => setSeo(e.target.value)} readOnly={!canEdit} placeholder={t('seoPlaceholder', { title: title.trim(), product: productName })}
+                className={`h-8 px-[9px] ${field}`} />
+            </label>
+            <label className="flex flex-col gap-1 text-11.5 text-muted">
+              {t('page')}
+              <select value={page} onChange={(e) => setPage(e.target.value)} disabled={!canEdit} className={`h-8 ${field}`}>
+                <option value="">{t('pageNone')}</option>
+                {pages.map((p) => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </label>
+            <label className="flex flex-col gap-1 text-11.5 text-muted">
+              {t('category')}
+              <select value={category} onChange={(e) => setCategory(e.target.value)} disabled={!canEdit} className={`h-8 ${field}`}>
+                <option value="">{t('noCategory')}</option>
+                {data.categories.map((c) => <option key={c.key} value={c.key}>{c.name}</option>)}
+              </select>
+            </label>
+          </div>
+          <div className="flex flex-wrap items-center gap-[6px] text-11.5 text-muted">
+            <span>{t('linked', { n: article.linked_tickets })}</span>
+            {article.problem_number ? <span>· {t('problem', { ref: `T-${article.problem_number}` })}</span> : null}
+            <span>· {reviewed ? t('reviewed', { when: reviewed, by: article.reviewed_by ?? '' }) : t('notReviewed')}</span>
+            {canEdit ? (
+              <button type="button" onClick={onReview} disabled={pending} className="cursor-pointer border-none bg-transparent p-0 text-11.5 font-semibold text-link underline-offset-2 hover:underline">
+                {t('markReviewed')}
+              </button>
+            ) : null}
+          </div>
+          <div className="flex flex-wrap justify-end gap-2">
+            <button type="button" disabled title={t('aiWhy')} className="h-[34px] cursor-not-allowed rounded-10 border border-ink bg-ink px-[13px] text-12.5 font-bold text-canvas opacity-60">{t('ai')}</button>
+            {canEdit ? (
+              <button type="button" onClick={onSave} disabled={!dirty || pending || !values.title}
+                className="h-[34px] cursor-pointer rounded-10 border border-line bg-transparent px-[13px] text-12.5 font-semibold text-ink disabled:cursor-default disabled:opacity-60">
+                {t('save')}
+              </button>
+            ) : null}
+            <button type="button" onClick={onPublish} disabled={!data.can_publish || pending || !values.title}
+              title={data.can_publish ? undefined : t('publishWhy')}
+              className="h-[34px] cursor-pointer rounded-10 border border-ink bg-primary px-[14px] text-12.5 font-bold text-ink disabled:cursor-not-allowed disabled:opacity-60">
+              {published ? t('unpublish') : t('publish')}
+            </button>
+          </div>
+          <div className="flex flex-col items-end gap-[2px] text-right">
+            <Why>{t('aiWhy')}</Why>
+            {!data.can_publish ? <Why>{t('publishWhy')}</Why> : null}
+            {!canEdit ? <Why>{t('editWhy')}</Why> : null}
+          </div>
+        </>
+      )}
     </div>
   )
 }

@@ -1328,7 +1328,7 @@ begin
     'kpi', jsonb_build_object(
       'calls', (select count(*) from app.ai_calls x where x.feature in ('spec_draft', 'task_plan', 'release_note_draft') and x.at > now() - interval '30 days'),
       'failed', (select count(*) from app.ai_calls x where x.feature in ('spec_draft', 'task_plan', 'release_note_draft') and x.at > now() - interval '30 days'
-                 and x.state not in ('ok', 'retried_ok')),
+                 and x.state not in ('ok', 'retried_ok', 'pending')),
       'drafts', (select count(*) from app.ai_outputs o where o.feature in ('spec_draft', 'task_plan', 'release_note_draft') and o.created_at > now() - interval '30 days'),
       'used', (select count(*) from app.ai_outputs o where o.feature in ('spec_draft', 'task_plan', 'release_note_draft') and o.created_at > now() - interval '30 days' and o.state = 'used'),
       'discarded', (select count(*) from app.ai_outputs o where o.feature in ('spec_draft', 'task_plan', 'release_note_draft') and o.created_at > now() - interval '30 days' and o.state = 'discarded'),

@@ -580,7 +580,10 @@
       "seo_crawl": "Site health check (crawler)",
       "pagespeed": "PageSpeed Insights measurement",
       "seo_alerts": "SEO alerts check",
-      "ads": "Ad platform import"
+      "ads": "Ad platform import",
+      "help_questions_prune": "Help test questions prune",
+      "approval_sweep": "Approval request sweep",
+      "ai_sweep": "Timeout of Claude calls that never finished"
     },
     "flags": {
       "title": "Feature flags — global and per organization",

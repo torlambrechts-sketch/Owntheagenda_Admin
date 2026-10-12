@@ -781,7 +781,7 @@ begin
       'used', (select count(*) from app.ai_outputs o join app.help_test_questions q on q.id = o.subject_id
                where o.feature = 'help_answer_preview' and q.product = p_product and o.created_at > now() - interval '30 days' and o.state = 'used'),
       'calls', (select count(*) from app.ai_calls c where c.provider = 'anthropic' and c.at > now() - interval '30 days'),
-      'failed', (select count(*) from app.ai_calls c where c.provider = 'anthropic' and c.at > now() - interval '30 days' and c.state not in ('ok', 'retried_ok'))),
+      'failed', (select count(*) from app.ai_calls c where c.provider = 'anthropic' and c.at > now() - interval '30 days' and c.state not in ('ok', 'retried_ok', 'pending'))),
     -- the published titles an answer may name as its source
     'titles', coalesce((select jsonb_agg(distinct a.title) from app.help_articles a
                         where a.product = p_product and a.status = 'published' and (v_sandbox or not a.is_sample)), '[]'::jsonb),

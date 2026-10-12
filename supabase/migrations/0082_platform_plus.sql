@@ -785,10 +785,11 @@ create function app.request_mrr(p_request uuid, p_product text) returns jsonb
 as $fn$
   with orgs as (
     select v.organization_id id from app.feature_request_votes v where v.request_id = p_request
+    -- only tickets and deals the reader may see (their queue, their visibility; 0079's helpers)
     union select t.organization_id from app.feature_request_links l join app.tickets t on t.id = l.ref
-          where l.request_id = p_request and l.kind = 'ticket' and t.organization_id is not null and t.deleted_at is null
+          where l.request_id = p_request and l.kind = 'ticket' and t.organization_id is not null and app.dev_ticket_ok(t)
     union select d.organization_id from app.feature_request_links l join app.deals d on d.id = l.ref
-          where l.request_id = p_request and l.kind = 'deal' and d.organization_id is not null and d.deleted_at is null
+          where l.request_id = p_request and l.kind = 'deal' and d.organization_id is not null and app.dev_deal_ok(d)
   ), subs as (
     select distinct on (s.product, s.tenant_id) s.price, s.currency, app.sub_mrr(s) mrr from orgs
     join app.organizations o on o.id = orgs.id
@@ -814,9 +815,9 @@ begin
   perform app.plus_product_ok(p_product);
   return jsonb_build_object('money', v_money, 'rows', coalesce((select jsonb_agg(app.feature_request_json(r.id) || jsonb_build_object(
       'ticket_count', (select count(*) from app.feature_request_links l join app.tickets t on t.id = l.ref
-                       where l.request_id = r.id and l.kind = 'ticket' and t.deleted_at is null),
+                       where l.request_id = r.id and l.kind = 'ticket' and app.dev_ticket_ok(t)),
       'deal_count', (select count(*) from app.feature_request_links l join app.deals d on d.id = l.ref
-                     where l.request_id = r.id and l.kind = 'deal' and d.deleted_at is null),
+                     where l.request_id = r.id and l.kind = 'deal' and app.dev_deal_ok(d)),
       'asking', case when v_money then app.request_mrr(r.id, p_product) end)
     order by r.status in ('shipped', 'declined'), (select count(*) from app.feature_request_votes v where v.request_id = r.id) desc, r.updated_at desc)
     from app.feature_requests r where r.product = p_product), '[]'::jsonb));

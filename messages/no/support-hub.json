@@ -23,7 +23,8 @@
       "provider_invalid": "Claude kunne ikke lese forespørselen.",
       "network": "Fikk ikke kontakt med Claude. Prøv igjen.",
       "unexpected_reply": "AI-porten svarte på en uventet måte.",
-      "error": "Claude kunne ikke svare. Prøv igjen."
+      "error": "Claude kunne ikke svare. Prøv igjen.",
+      "timeout": "Claude svarte ikke i tide. Prøv igjen."
     },
     "results": {
       "kpi": {

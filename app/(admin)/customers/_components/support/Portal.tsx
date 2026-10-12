@@ -6,7 +6,7 @@ import type { Portal } from '@/lib/data/support-hub'
 import { card, cardInk } from './bits'
 
 const label = 'px-[18px] py-3 text-11 font-bold uppercase tracking-[.1em] text-muted'
-const tone = { us: 'text-warn-ink', you: 'text-danger', done: 'text-link' } as const
+const tone = { us: 'text-warn-ink', you: 'text-warn-ink', done: 'text-link' } as const
 
 /**
  * Customer portal (SupportHub.dc.html, v.portal): a read-only admin preview of one organisation's real tickets in the words

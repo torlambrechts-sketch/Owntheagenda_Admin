@@ -457,7 +457,8 @@
         "ready": "Utkast klart",
         "used": "Brukt",
         "discarded": "Forkastet",
-        "failed": "Feilet"
+        "failed": "Feilet",
+        "running": "Kjører"
       },
       "empty": "Ingen Claude-jobber de siste 30 dagene.",
       "emptyNotConnected": "Ingen Claude-jobber: Claude er ikke koblet til.",
@@ -490,7 +491,8 @@
         "disconnect": "Koble fra",
         "keyNote": "Nøkkelen går rett til hvelvet med et engangsnummer etter koden fra autentiseringsappen; den vises aldri igjen.",
         "ownerOnly": "Bare eieren kobler til Claude."
-      }
+      },
+      "runningOut": "Venter på Claude"
     },
     "errors": {
       "generic": "Noe gikk galt ({code}).",
@@ -519,7 +521,8 @@
       "provider_rate_limited": "Claude er opptatt. Prøv igjen om et minutt.",
       "empty": "Claude ga et tomt svar. Prøv igjen.",
       "expired": "Engangsnummeret er utløpt. Prøv igjen.",
-      "unexpected_reply": "Claude-porten ga et svar Sentral ikke forstår."
+      "unexpected_reply": "Claude-porten ga et svar Sentral ikke forstår.",
+      "timeout": "Claude svarte ikke i tide. Prøv igjen."
     }
   }
 }

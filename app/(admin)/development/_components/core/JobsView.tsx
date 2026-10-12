@@ -15,8 +15,8 @@ import { c, Kpi, useRun } from './kit'
 /** the models the gateway's request shape (refusal fallback, effort) serves; the stored one is always offered */
 const MODELS = ['claude-opus-5-5', 'claude-sonnet-5-5', 'claude-fable-5-1'] as const
 const KIND: Record<Jobs['rows'][number]['feature'], string> = { spec_draft: '/spec', task_plan: '/plan', release_note_draft: '/notes' }
-const STATE_PILL: Record<'ready' | 'used' | 'discarded' | 'failed', string> = {
-  ready: 'bg-highlight text-amber-ink', used: 'bg-ok-bg text-ok-ink', discarded: 'bg-tile text-muted', failed: 'bg-salmon text-rust-ink',
+const STATE_PILL: Record<'running' | 'ready' | 'used' | 'discarded' | 'failed', string> = {
+  running: 'bg-highlight text-amber-ink', ready: 'bg-highlight text-amber-ink', used: 'bg-ok-bg text-ok-ink', discarded: 'bg-tile text-muted', failed: 'bg-salmon text-rust-ink',
 }
 
 export function JobsView({ data, ai, nf, now }: { data: Jobs; ai: AiStatus | null; nf: NumberFormat; now: string }) {
@@ -49,10 +49,12 @@ export function JobsView({ data, ai, nf, now }: { data: Jobs; ai: AiStatus | nul
         <div className="overflow-x-auto">
           <div className="min-w-[640px]">
             {data.rows.map((r) => {
-              const failed = r.state !== 'ok' && r.state !== 'retried_ok'
-              const state = failed ? 'failed' : r.output?.state ?? 'ready'
+              // a call ai-run has reserved and not yet finished (0078) is running, not failed
+              const running = r.state === 'pending'
+              const failed = !running && r.state !== 'ok' && r.state !== 'retried_ok'
+              const state = running ? 'running' : failed ? 'failed' : r.output?.state ?? 'ready'
               const tokens = (r.input_tokens ?? 0) + (r.output_tokens ?? 0)
-              const out = failed ? ta.has(`codes.${r.error ?? 'error'}`) ? ta(`codes.${r.error ?? 'error'}`) : t('failedCode', { code: r.error ?? 'error' })
+              const out = running ? t('runningOut') : failed ? ta.has(`codes.${r.error ?? 'error'}`) ? ta(`codes.${r.error ?? 'error'}`) : t('failedCode', { code: r.error ?? 'error' })
                 : t('out', { tokens: formatNumber(tokens, nf), s: formatNumber(Math.round((r.latency_ms ?? 0) / 1000), nf) })
               return (
                 <div key={r.id} className="grid items-center gap-[10px] border-b border-line px-[18px] py-[10px] text-12.5 [grid-template-columns:minmax(0,2fr)_90px_100px_minmax(0,1.2fr)_80px]">

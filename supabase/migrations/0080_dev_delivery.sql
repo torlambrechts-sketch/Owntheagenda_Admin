@@ -1000,7 +1000,7 @@ begin
              select count(*), count(*) filter (where not c.ok) from app.integration_calls c
              where i.call_product is not null and c.product = i.call_product and c.direction = 'out' and c.at >= v_from
              union all
-             select count(*), count(*) filter (where a.state not in ('ok', 'retried_ok')) from app.ai_calls a
+             select count(*), count(*) filter (where a.state not in ('ok', 'retried_ok', 'pending')) from app.ai_calls a
              where i.ai_provider is not null and a.provider = i.ai_provider and a.at >= v_from) u) end,
         'deliveries_30d', case when i.direction = 'in' then (select count(*) from app.dev_deliveries d where d.source = i.key and d.received_at >= v_from) end,
         'token_expires_at', (select coalesce(c.config ->> 'refresh_expires_at', c.config ->> 'token_expires_at') from app.integration_connections c where c.provider = i.provider),

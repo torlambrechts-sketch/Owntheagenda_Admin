@@ -457,7 +457,8 @@
         "ready": "Draft ready",
         "used": "Used",
         "discarded": "Discarded",
-        "failed": "Failed"
+        "failed": "Failed",
+        "running": "Running"
       },
       "empty": "No Claude jobs in the last 30 days.",
       "emptyNotConnected": "No Claude jobs: Claude is not connected.",
@@ -490,7 +491,8 @@
         "disconnect": "Disconnect",
         "keyNote": "The key goes straight to the vault with a one-time number after your authenticator code; it is never shown again.",
         "ownerOnly": "Only the owner connects Claude."
-      }
+      },
+      "runningOut": "Waiting for Claude"
     },
     "errors": {
       "generic": "Something went wrong ({code}).",
@@ -519,7 +521,8 @@
       "provider_rate_limited": "Claude is busy. Try again in a minute.",
       "empty": "Claude gave an empty answer. Try again.",
       "expired": "The one-time number expired. Try again.",
-      "unexpected_reply": "The Claude gateway gave an answer Sentral does not understand."
+      "unexpected_reply": "The Claude gateway gave an answer Sentral does not understand.",
+      "timeout": "Claude did not answer in time. Try again."
     }
   }
 }

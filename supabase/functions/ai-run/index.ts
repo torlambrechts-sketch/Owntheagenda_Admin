@@ -16,6 +16,7 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import Anthropic from 'npm:@anthropic-ai/sdk@0.133.0'
+import { readCapped } from '../_shared/body.ts'
 import { CLAUDE_BUDGET_MS, CLAUDE_RETRIES, CLAUDE_TIMEOUT_MS, FEATURE, UUID, parsePrepared, preparedCall } from '../_shared/ai.ts'
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
@@ -39,9 +40,9 @@ Deno.serve(async (req) => {
 
   let body: { feature?: unknown; subject?: unknown }
   try {
-    const raw = await req.text()
-    if (raw.length > 500) return json({ ok: false, code: 'too_large' }, 413)
-    body = JSON.parse(raw)
+    const raw = await readCapped(req, 500)
+    if (!raw.ok) return json({ ok: false, code: 'too_large' }, 413)
+    body = JSON.parse(raw.text)
   } catch {
     return json({ ok: false, code: 'invalid' }, 400)
   }

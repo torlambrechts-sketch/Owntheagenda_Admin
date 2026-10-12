@@ -580,7 +580,10 @@
       "seo_crawl": "Sjekk av nettstedshelse (crawler)",
       "pagespeed": "Måling med PageSpeed Insights",
       "seo_alerts": "Sjekk av SEO-varsler",
-      "ads": "Import fra annonseplattformer"
+      "ads": "Import fra annonseplattformer",
+      "help_questions_prune": "Rydding av testspørsmål i hjelpen",
+      "approval_sweep": "Opprydding i godkjenningskøen",
+      "ai_sweep": "Tidsavbrudd for Claude-kall som aldri ble ferdige"
     },
     "flags": {
       "title": "Funksjonsflagg — globalt og per organisasjon",

@@ -23,7 +23,8 @@
       "provider_invalid": "Claude could not read the request.",
       "network": "Claude could not be reached. Try again.",
       "unexpected_reply": "The AI gateway answered in an unexpected way.",
-      "error": "Claude could not answer. Try again."
+      "error": "Claude could not answer. Try again.",
+      "timeout": "Claude did not answer in time. Try again."
     },
     "results": {
       "kpi": {

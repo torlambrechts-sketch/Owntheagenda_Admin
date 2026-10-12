@@ -17,6 +17,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 import { commandClaims, isOrgpulsCommand } from '../_shared/orgpuls.ts'
 import { productSecret } from '../_shared/secrets.ts'
 import { sameText, signJwt } from '../_shared/signing.ts'
+import { readCapped } from '../_shared/body.ts'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 /** command_authorize's refusals, passed on as they are; anything else is «not_allowed» */
@@ -35,9 +36,9 @@ Deno.serve(async (req) => {
 
   let input: { product?: unknown; command?: unknown; args?: unknown; approval?: unknown }
   try {
-    const raw = await req.text()
-    if (raw.length > 200_000) return json({ error: 'too_large' }, 413)
-    input = JSON.parse(raw)
+    const raw = await readCapped(req, 200_000)
+    if (!raw.ok) return json({ error: 'too_large' }, 413)
+    input = JSON.parse(raw.text)
   } catch {
     return json({ error: 'body' }, 400)
   }

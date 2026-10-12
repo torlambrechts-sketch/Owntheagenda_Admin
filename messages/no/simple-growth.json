@@ -596,11 +596,12 @@
         "strikingCtr": "Innen rekkevidde · lav CTR",
         "low": "Lavt — trenger en bedre side",
         "new": "Ingen visninger ennå",
-        "notConnected": "Posisjoner når Search Console er koblet til"
+        "notConnected": "Posisjoner når Search Console er koblet til",
+        "inSearches": "I {n, plural, one {# lengre søk} other {# lengre søk}} · {impressions} visninger"
       },
       "empty": "Ingen søkeord spores ennå.",
       "noSite": "Ingen offentlig nettside er registrert for denne applikasjonen.",
-      "noneInTab": "Ingen sporede søkeord i denne gruppen.",
+      "noneInTab": "Ingen søk i denne gruppen.",
       "intent": {
         "brand": "Merkevare",
         "transactional": "Kjøp",
@@ -631,7 +632,12 @@
       "tracked": "Søkeordet spores · første posisjon i morgen",
       "trackedNotConnected": "Søkeordet spores · posisjoner vises når Search Console er koblet til",
       "removed": "Søkeordet spores ikke lenger",
-      "remove": "Slutt å spore «{q}»"
+      "remove": "Slutt å spore «{q}»",
+      "trackedMark": "sporet",
+      "trackThis": "Spor «{q}»",
+      "trackedThis": "«{q}» spores: det blir stående i listen også en uke uten visninger",
+      "capped": "De {n} søkene med flest visninger av {total} i perioden.",
+      "emptyConnected": "Google har ikke vist nettstedet i søk i perioden, og ingen søkeord spores."
     },
     "integrations": {
       "connected": "<b>{n}</b> av {total} tilkoblet",

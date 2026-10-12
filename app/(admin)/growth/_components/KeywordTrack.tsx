@@ -54,3 +54,22 @@ export function StopTracking({ id, query }: { id: string; query: string }) {
     </button>
   )
 }
+
+/** Track a search Google already shows the site for (0084): it then stays in the list when it has no impressions */
+export function TrackThis({ product, query }: { product: string; query: string }) {
+  const t = useTranslations('simpleGrowth.keywords')
+  const te = useTranslations('common.errors')
+  const flash = useToast()
+  const router = useRouter()
+  const [pending, start] = useTransition()
+  return (
+    <button type="button" disabled={pending} onClick={() => start(async () => {
+      const r = await addKeyword({ product, query })
+      if (!r.ok) { flash(r.detail === 'duplicate' ? t('duplicate') : r.detail === 'limit' ? t('limit') : te(r.code)); return }
+      flash(t('trackedThis', { q: query }))
+      router.refresh()
+    })} className="self-start cursor-pointer rounded-8 border border-ink bg-transparent px-[9px] py-1 text-11.5 font-semibold text-ink">
+      {t('trackThis', { q: query })}
+    </button>
+  )
+}

@@ -90,11 +90,16 @@ export const Seo = z.object({
     // pages Google showed in search (0072), null before pages are imported for the period
     pages: nn.optional(), pages_prev: nn.optional(),
   }).nullable(),
+  // every search Google showed the site for (the 200 with most impressions) and the keywords tracked by hand (0084); a
+  // search nobody tracks has no id
+  keywords_total: nn.optional(),
   keywords: z.array(z.object({
-    id: uuid, query: z.string(), created_at: z.string(), mine: z.boolean().nullable(),
+    id: uuid.nullable(), query: z.string(), tracked: z.boolean().default(true), created_at: z.string().nullable(), mine: z.boolean().nullable(),
     impressions: nn, clicks: nn, position: nn, position_prev: nn,
     // the page Google showed most for it (0072)
     page: z.string().nullable().optional(),
+    // a tracked keyword: the longer searches that contain it (0084)
+    variants: z.object({ queries: n, impressions: n }).nullable().optional(),
   })),
   // Site health (0072): the last crawl and its open issues
   health: z.object({

@@ -126,6 +126,21 @@ select pg_temp.check((select (x ->> 'impressions')::int = 150 and (x ->> 'positi
 select pg_temp.check((select s -> 'search_console' ->> 'property' = 'sc-domain:orgpuls.com' and (s -> 'search_console' ->> 'can_manage')::boolean
                              and s -> 'search_console' ->> 'client_email' = 'sentral-seo@test-project.iam.gserviceaccount.com' from t_s),
                      'the owner sees the property and the account to give access to');
+-- every search Google shows the site for is listed, tracked or not; a tracked head term counts the longer searches (0084)
+select public.worker_search_console_import((select id from t_site),
+  jsonb_build_array(jsonb_build_object('day', current_date - 2, 'impressions', 40, 'clicks', 0, 'position', 9)),
+  jsonb_build_array(jsonb_build_object('day', current_date - 2, 'query', 'kartlegging arbeidsmiljøundersøkelse mal', 'impressions', 30, 'clicks', 0, 'position', 9),
+                    jsonb_build_object('day', current_date - 2, 'query', 'verneombud plikter', 'impressions', 10, 'clicks', 0, 'position', 14)));
+create temp table t_s2 as select public.seo_get('orgpuls', 30) s;
+select pg_temp.check((select count(*) = 1 from t_s2, jsonb_array_elements(s -> 'keywords') x
+                      where x ->> 'query' = 'verneombud plikter' and not (x ->> 'tracked')::boolean and x ->> 'id' is null and (x ->> 'impressions')::int = 10
+                        and (x ->> 'position')::numeric = 14.0),
+                     'a search nobody tracks is listed with its figures');
+select pg_temp.check((select (x ->> 'tracked')::boolean and (x -> 'variants' ->> 'queries')::int = 1 and (x -> 'variants' ->> 'impressions')::int = 30
+                      from t_s2, jsonb_array_elements(s -> 'keywords') x where (x ->> 'id')::uuid = (select id from t_k)),
+                     'a tracked keyword counts the longer searches that contain it');
+select pg_temp.check((select count(*) from t_s2, jsonb_array_elements(s -> 'keywords') x where x ->> 'query' = 'arbeidsmiljøundersøkelse') = 1
+                     and (select (s ->> 'keywords_total')::int = 3 from t_s2), 'a tracked search is listed once; keywords_total counts every search in the period');
 select pg_temp.as_staff('jonas@orgpuls.no');
 select pg_temp.check(not (public.seo_get('orgpuls', 30) -> 'search_console' ->> 'can_manage')::boolean, 'others see the state, not the controls');
 select pg_temp.as_staff('hanna@orgpuls.no');

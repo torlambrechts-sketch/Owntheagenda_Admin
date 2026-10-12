@@ -7,7 +7,7 @@ import { KW_TABS, growthHref, type KwTab, type Scope } from '@/lib/growth/scope'
 import type { Seo } from '@/lib/data/simple-growth-shared'
 import type { KeywordHistory } from '@/lib/growth/types'
 import { Delta, Tile, cardTable, colHead, label11, mono } from './v2kit'
-import { KeywordTrack, StopTracking } from './KeywordTrack'
+import { KeywordTrack, StopTracking, TrackThis } from './KeywordTrack'
 import { SiteHealth } from './SiteHealth'
 import { ContentIdeas } from './ContentIdeas'
 
@@ -15,8 +15,8 @@ const COLS = '[grid-template-columns:minmax(0,1.7fr)_60px_46px_50px_54px_56px_66
 const TAG_TONE: Record<KwRow['segment'], string> = { top3: 'text-link', striking: 'text-warn-ink', low: 'text-danger', new: 'text-warn-ink' }
 
 /**
- * Growth › SEO › Keywords (SimpleGrowth.dc.html, seoKeywords) on seo_get and seo_keyword_history: the tracked keywords by
- * segment, their click rate against what the position usually gets (expectedCtr) and the clicks reaching the top three
+ * Growth › SEO › Keywords (SimpleGrowth.dc.html, seoKeywords) on seo_get and seo_keyword_history: every search Google showed
+ * the site for, with the page it showed, and the keywords tracked by hand (0084), by segment, their click rate against what the position usually gets (expectedCtr) and the clicks reaching the top three
  * would add; the picked keyword's position day by day and what to do. Search Console has no search volume: the column
  * shows impressions (V-SGR-08), and «Who ranks above us» needs result-page data the platform does not have (V-GR2-15).
  */
@@ -27,7 +27,7 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
   const t = await getTranslations('simpleGrowth.keywords')
   const dash = '—'
   const num = (v: number | null) => (v === null ? dash : formatNumber(v, nf))
-  const rows = d.keywords.map((k) => ({ ...keywordRow(k), id: k.id, page: k.page ?? null, mine: k.mine }))
+  const rows = d.keywords.map((k) => ({ ...keywordRow(k), id: k.id, tracked: k.tracked, page: k.page ?? null, mine: k.mine, variants: k.variants ?? null }))
   const shown = rows.filter((r) => kwFilter(kt, r)).sort((a, b) => b.potential - a.potential || (b.impressions ?? 0) - (a.impressions ?? 0))
   const sel = rows.find((r) => r.query === kw) ?? shown[0] ?? rows[0] ?? null
   const s = d.totals
@@ -78,13 +78,21 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
             </div>
             {shown.map((k) => {
               const on = sel?.query === k.query
-              const tag = k.segment === 'top3' ? t('tags.top3') : k.segment === 'striking' ? (k.ctrGap ? t('tags.strikingCtr') : t('tags.striking')) : k.segment === 'low' ? t('tags.low') : d.connected ? t('tags.new') : t('tags.notConnected')
+              // a tracked head term Google never reports on its own still shows in the longer searches that contain it
+              const inLonger = k.segment === 'new' && k.variants && k.variants.queries > 0
+              const tag = k.segment === 'top3' ? t('tags.top3') : k.segment === 'striking' ? (k.ctrGap ? t('tags.strikingCtr') : t('tags.striking')) : k.segment === 'low' ? t('tags.low')
+                : !d.connected ? t('tags.notConnected') : inLonger ? t('tags.inSearches', { n: k.variants!.queries, impressions: formatNumber(k.variants!.impressions, nf) }) : t('tags.new')
               return (
-                <Link key={k.id} href={hrefKw({ kw: k.query }) as Route} aria-current={on ? 'true' : undefined}
+                <Link key={k.query} href={hrefKw({ kw: k.query }) as Route} aria-current={on ? 'true' : undefined}
                   className={`grid w-full cursor-pointer items-center gap-2 border-b border-line px-[18px] py-[9px] text-left text-12.5 tabular-nums text-ink hover:text-ink hover:no-underline ${COLS} ${on ? 'bg-highlight' : 'bg-transparent'}`}>
                   <span className="flex min-w-0 flex-col">
                     <b className="overflow-hidden text-ellipsis whitespace-nowrap">{k.query}</b>
-                    <span className={`text-11 font-bold ${TAG_TONE[k.segment]}`}>{tag}</span>
+                    <span className={`overflow-hidden text-ellipsis whitespace-nowrap text-11 font-bold ${inLonger ? 'text-muted' : TAG_TONE[k.segment]}`}>{tag}</span>
+                    {k.page || k.tracked ? (
+                      <span className="overflow-hidden text-ellipsis whitespace-nowrap text-11 text-muted" title={k.page ?? undefined}>
+                        {k.page ? <span className={mono}>{k.page}</span> : null}{k.page && k.tracked ? ' · ' : null}{k.tracked ? t('trackedMark') : null}
+                      </span>
+                    ) : null}
                   </span>
                   <span>{num(k.impressions)}</span>
                   <b className={k.position === null ? 'text-faint' : k.position <= 3 ? 'text-link' : k.position <= 10 ? 'text-warn-ink' : 'text-danger'}>{k.position === null ? dash : formatNumber(k.position, nf, 1)}</b>
@@ -97,7 +105,10 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
                 </Link>
               )
             })}
-            {rows.length === 0 ? <div className="px-[18px] py-4 text-12.5 text-muted">{d.site ? t('empty') : t('noSite')}</div> : null}
+            {rows.length === 0 ? <div className="px-[18px] py-4 text-12.5 text-muted">{d.site ? (d.connected ? t('emptyConnected') : t('empty')) : t('noSite')}</div> : null}
+            {d.keywords_total && d.keywords_total > rows.filter((r) => (r.impressions ?? 0) > 0).length ? (
+              <div className="px-[18px] py-[10px] text-12 text-muted">{t('capped', { n: rows.filter((r) => (r.impressions ?? 0) > 0).length, total: d.keywords_total })}</div>
+            ) : null}
             {rows.length > 0 && shown.length === 0 ? <div className="px-[18px] py-4 text-12.5 text-muted">{t('noneInTab')}</div> : null}
           </div></div>
         </div>
@@ -136,7 +147,8 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
               </>
             ) : null}
             {advice ? <div className="rounded-13 bg-highlight px-3 py-[10px] text-12.5 leading-[1.5]"><b>{t('detail.doThis')}</b> {t(`advice.${advice}`, { q: sel.query })}</div> : null}
-            {canAdd && (sel.mine || editOthers) ? <StopTracking id={sel.id} query={sel.query} /> : null}
+            {sel.tracked && sel.id && canAdd && (sel.mine || editOthers) ? <StopTracking id={sel.id} query={sel.query} /> : null}
+            {!sel.tracked && canAdd ? <TrackThis product={product} query={sel.query} /> : null}
           </div>
         ) : null}
       </div>

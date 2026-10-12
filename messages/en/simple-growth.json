@@ -596,11 +596,12 @@
         "strikingCtr": "Striking distance · low CTR",
         "low": "Low — needs a better page",
         "new": "No impressions yet",
-        "notConnected": "Positions once Search Console is connected"
+        "notConnected": "Positions once Search Console is connected",
+        "inSearches": "In {n, plural, one {# longer search} other {# longer searches}} · {impressions} impressions"
       },
       "empty": "No keywords tracked yet.",
       "noSite": "No public website is registered for this application.",
-      "noneInTab": "No tracked keyword in this group.",
+      "noneInTab": "No search in this group.",
       "intent": {
         "brand": "Brand",
         "transactional": "Transactional",
@@ -631,7 +632,12 @@
       "tracked": "Keyword tracked · first position tomorrow",
       "trackedNotConnected": "Keyword tracked · positions appear once Search Console is connected",
       "removed": "Keyword no longer tracked",
-      "remove": "Stop tracking «{q}»"
+      "remove": "Stop tracking «{q}»",
+      "trackedMark": "tracked",
+      "trackThis": "Track «{q}»",
+      "trackedThis": "«{q}» is tracked: it stays in the list even in a week without impressions",
+      "capped": "The {n} searches with most impressions of {total} in this period.",
+      "emptyConnected": "Google has not shown the site in search in this period, and no keyword is tracked."
     },
     "integrations": {
       "connected": "<b>{n}</b> of {total} connected",

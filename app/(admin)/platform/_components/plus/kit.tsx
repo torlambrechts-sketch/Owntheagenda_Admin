@@ -16,6 +16,9 @@ export const p = {
   title: 'text-15 font-bold',
   sub: 'text-12 text-muted',
   row: 'border-b border-line px-[18px]',
+  // a four-column list row (name · detail · figure · button) with the design's columns from md; below it stacks so the name
+  // keeps its width: name and figure, then detail and button (the cells carry order-1/2/3 md:order-none)
+  stackRow: 'grid items-center gap-[10px] py-[10px] text-12.5 [grid-template-columns:minmax(0,1fr)_110px]',
   empty: 'border-b border-line px-[18px] py-[14px] text-12.5 text-muted',
   foot: 'px-[18px] py-[10px] text-11.5 text-muted',
   // the 28 px row buttons: strong (ink border) and soft (line border)

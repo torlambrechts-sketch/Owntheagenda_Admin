@@ -14,7 +14,9 @@
       "reason": "Skriv en begrunnelse på minst tre tegn.",
       "state": "Denne forespørselen er allerede avgjort.",
       "days": "Velg 1 til 60 dager.",
-      "approval": "Godkjenningen passet ikke til denne kommandoen."
+      "approval": "Godkjenningen passet ikke til denne kommandoen.",
+      "beyond_role": "Rollens rettigheter dekker ikke denne handlingen: gi den rettigheten i Innstillinger › Roller først.",
+      "second_admin": "Andre administrator er slått på i Innstillinger: sletting kan ikke tillates uten godkjenning fra en andre administrator."
     },
     "access": {
       "roles": {
@@ -52,16 +54,24 @@
         "why": {
           "right": "Følger rollens rettighet {right}: endre den i Innstillinger › Roller",
           "none": "Verken Sentral eller {product} kan gjøre dette ennå",
-          "readOnly": "Å endre matrisen krever Administrere administratorroller"
+          "readOnly": "Å endre matrisen krever Administrere administratorroller",
+          "beyond": "Rollen har ikke {right}: gi den rettigheten i Innstillinger › Roller først",
+          "adminOnly": "Bare Admin-rollen kan gjøre dette",
+          "secondAdmin": "Andre administrator er slått på i Innstillinger: sletting krever godkjenning fra en andre administrator"
         },
         "rights": {
           "global_see": "Globalt › Se",
           "tickets_add": "Saker › Legge til",
           "global_add": "Globalt › Legge til",
-          "deals_export": "Avtaler › Eksportere"
+          "deals_export": "Avtaler › Eksportere",
+          "global_edit_others": "Globalt › Redigere andres",
+          "global_configure": "Globalt › Konfigurere",
+          "global_security": "Globalt › Sikkerhet"
         },
         "footer": "Hver innlogging krever en andre faktor · alle endringer logges · klikk på en celle for å endre den",
         "footerRead": "Hver innlogging krever en andre faktor · alle endringer logges",
+        "forcedNote": "Andre administrator er slått på i Innstillinger: sletting av en konto krever alltid godkjenning fra en andre administrator.",
+        "ceilingNote": "En rolle får aldri mer her enn rettighetene i Innstillinger › Roller tillater.",
         "changed": "{action} for {role}: {mode}",
         "requested": "Sendt til godkjenning: {action} for {role}",
         "reasonTitle": "Hvorfor endre dette?",
@@ -85,6 +95,7 @@
         "waiting": "Venter på en annen person",
         "state": {
           "approved": "Godkjent av {name} · ikke utført",
+          "executing": "Godkjent av {name} · utfallet er ikke bekreftet ennå",
           "executed": "✓ Godkjent av {name}",
           "rejected": "Avvist",
           "failed": "Feilet ({code})",
@@ -92,6 +103,7 @@
         },
         "approvedToast": "Godkjent · handlingen er utført og logget",
         "failedToast": "Godkjent, men handlingen ble ikke utført ({code})",
+        "pendingToast": "Godkjent og sendt · utfallet er ikke bekreftet ennå; køen viser det innen ti minutter",
         "rejectedToast": "Avvist",
         "requestedToast": "Sendt til godkjenning som A-{ref}",
         "confirmTitle": "Godkjenne sletting av {org}?",
@@ -219,7 +231,7 @@
         "title": "Fornyelse og utvidelse",
         "sub": "Fra bruk, helse og innlogginger",
         "empty": "Ingen signaler om fornyelse eller utvidelse for {name} nå.",
-        "next": "{employees} ansatte · går over til {next}",
+        "next": "{employees} ansatte · {max} er planens grense (neste trinn {next})",
         "employees": "{employees} ansatte · plangrense {max}",
         "health": "Helse {from} → {to}",
         "signIn": "Ingen innlogging på {days} dager",

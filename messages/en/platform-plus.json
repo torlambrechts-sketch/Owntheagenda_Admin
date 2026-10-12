@@ -14,7 +14,9 @@
       "reason": "Write a reason of at least three characters.",
       "state": "This request has already been decided.",
       "days": "Choose 1 to 60 days.",
-      "approval": "The approval did not match this command."
+      "approval": "The approval did not match this command.",
+      "beyond_role": "This role's rights do not reach this action: give it the right in Settings › Roles first.",
+      "second_admin": "Second admin is on in Settings: deleting cannot be allowed without a second admin's approval."
     },
     "access": {
       "roles": {
@@ -52,16 +54,24 @@
         "why": {
           "right": "Follows the role's right {right}: change it in Settings › Roles",
           "none": "Neither Sentral nor {product} can do this yet",
-          "readOnly": "Changing the matrix needs Manage admin roles"
+          "readOnly": "Changing the matrix needs Manage admin roles",
+          "beyond": "This role does not have {right}: give it the right in Settings › Roles first",
+          "adminOnly": "Only the Admin role can do this",
+          "secondAdmin": "Second admin is on in Settings: deleting needs a second admin's approval"
         },
         "rights": {
           "global_see": "Global › See",
           "tickets_add": "Tickets › Add",
           "global_add": "Global › Add",
-          "deals_export": "Deals › Export"
+          "deals_export": "Deals › Export",
+          "global_edit_others": "Global › Edit others",
+          "global_configure": "Global › Configure",
+          "global_security": "Global › Security"
         },
         "footer": "Every sign-in needs a second factor · all changes are logged · click a cell to change it",
         "footerRead": "Every sign-in needs a second factor · all changes are logged",
+        "forcedNote": "Second admin is on in Settings: deleting an account always needs a second admin's approval.",
+        "ceilingNote": "A role is never given more here than its rights in Settings › Roles allow.",
         "changed": "{action} for {role}: {mode}",
         "requested": "Sent for approval: {action} for {role}",
         "reasonTitle": "Why change this?",
@@ -85,6 +95,7 @@
         "waiting": "Waiting for a second person",
         "state": {
           "approved": "Approved by {name} · not carried out",
+          "executing": "Approved by {name} · outcome not confirmed yet",
           "executed": "✓ Approved by {name}",
           "rejected": "Rejected",
           "failed": "Failed ({code})",
@@ -92,6 +103,7 @@
         },
         "approvedToast": "Approved · action executed and logged",
         "failedToast": "Approved, but the action was not carried out ({code})",
+        "pendingToast": "Approved and sent · the outcome is not confirmed yet; the queue shows it within ten minutes",
         "rejectedToast": "Rejected",
         "requestedToast": "Sent for approval as A-{ref}",
         "confirmTitle": "Approve deleting {org}?",
@@ -219,7 +231,7 @@
         "title": "Renewal and expansion",
         "sub": "From usage, health and sign-ins",
         "empty": "No renewal or expansion signals for {name} right now.",
-        "next": "{employees} employees · will cross into {next}",
+        "next": "{employees} employees · {max} is the plan's limit (next band {next})",
         "employees": "{employees} employees · plan limit {max}",
         "health": "Health {from} → {to}",
         "signIn": "No sign-in for {days} days",

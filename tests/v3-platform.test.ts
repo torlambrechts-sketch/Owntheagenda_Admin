@@ -36,6 +36,12 @@ describe('the matrix and the views', () => {
     expect(logic.nextMode('deny', false)).toBe('allow')
   })
 
+  it('never offers «allowed» while Settings › Second admin holds the action at approval (D-30)', () => {
+    expect(logic.nextMode('approve', true, true)).toBe('deny')
+    expect(logic.nextMode('deny', true, true)).toBe('approve')
+    expect(logic.nextMode('allow', true, true)).toBe('approve')
+  })
+
   it('keeps message keys free of dots', () => {
     expect(logic.actionKey('trial.extend')).toBe('trial_extend')
     const en = json('messages/en/platform-plus.json').platformPlus.access.roles.actions
@@ -65,6 +71,24 @@ describe('the matrix and the views', () => {
     expect(logic.errorTone(14)).toBe('text-danger')
     expect(logic.errorTone(2)).toBe('text-warn-ink')
     expect(logic.errorTone(0)).toBe('text-link')
+  })
+
+  it('colours a rise in billing tickets as bad and a fall as good, never the count itself', () => {
+    expect(logic.trendTone(3, 0)).toBe('text-danger')
+    expect(logic.trendTone(1, 4)).toBe('text-link')
+    expect(logic.trendTone(2, 2)).toBe('text-muted')
+    const billing = read('app/(admin)/platform/_components/plus/BillingTab.tsx')
+    expect(billing).not.toMatch(/text-30 font-semibold text-link/)
+    // an absent NPS is a muted dash, not a green figure
+    expect(read('app/(admin)/platform/_components/plus/SuccessTab.tsx')).toMatch(/text-40 font-semibold text-muted">—/)
+  })
+
+  it('says how near a plan\'s limit an account is, not that it will cross it', () => {
+    for (const l of ['en', 'no']) {
+      const next = json(`messages/${l}/platform-plus.json`).platformPlus.success.renewal.next as string
+      expect(next).toContain('{max}')
+      expect(next).not.toMatch(/will cross|går over til/)
+    }
   })
 
   it('offers the same request statuses on the screen as the reader accepts', () => {
@@ -173,6 +197,42 @@ describe('the approval run', () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ ok: false, error: 'Some <html> page' }), { status: 502 })))
     expect(await actions.decideApproval({ id, yes: true, confirm: '123 456 789' })).toEqual({ ok: true, state: 'failed', code: 'failed' })
     expect(rpc).toHaveBeenCalledWith('approval_decide', { p_id: id, p_yes: true, p_note: null, p_confirm: '123456789' }, expect.anything())
+  })
+
+  const approvedTrial = (done: unknown) => async (fn: string) => {
+    if (fn === 'approval_decide') return ok({ id, state: 'approved', executor: 'command' })
+    if (fn === 'approval_take') return ok({ id, action: 'trial.extend', product: 'orgpuls', command: 'billing.extend_trial', args, organization_id: org, reason: 'r' })
+    if (fn === 'approval_done') return ok(done)
+    return ok({ ok: true })
+  }
+
+  it('leaves an outcome it could not see to the database: no answer in time is not «failed»', async () => {
+    rpc.mockImplementation(approvedTrial({ id, state: 'executed', code: null }))
+    vi.stubGlobal('fetch', vi.fn(async () => { throw new DOMException('The operation timed out.', 'TimeoutError') }))
+    expect(await actions.decideApproval({ id, yes: true })).toEqual({ ok: true, state: 'executed', code: null })
+    expect(rpc).toHaveBeenCalledWith('approval_done', { p_id: id, p_ok: null, p_code: 'timeout' }, expect.anything())
+    expect(rpc).toHaveBeenCalledWith('customer_action_log', expect.objectContaining({ p_ok: true }), expect.anything(), { quiet: true })
+  })
+
+  it('keeps a request open while the audit has not answered, and writes no outcome to the customer yet', async () => {
+    rpc.mockImplementation(approvedTrial({ id, state: 'executing', code: 'unreachable' }))
+    vi.stubGlobal('fetch', vi.fn(async () => { throw new TypeError('fetch failed') }))
+    expect(await actions.decideApproval({ id, yes: true })).toEqual({ ok: true, state: 'executing', code: 'unreachable' })
+    expect(rpc).toHaveBeenCalledWith('approval_done', { p_id: id, p_ok: null, p_code: 'unreachable' }, expect.anything())
+    expect(rpc).not.toHaveBeenCalledWith('customer_action_log', expect.anything(), expect.anything(), expect.anything())
+  })
+
+  it('treats a reply that is not product-command\'s own as unknown, not as a refusal', async () => {
+    rpc.mockImplementation(approvedTrial({ id, state: 'failed', code: 'http_504' }))
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('<html>Gateway Timeout</html>', { status: 504 })))
+    expect(await actions.decideApproval({ id, yes: true })).toEqual({ ok: true, state: 'failed', code: 'http_504' })
+    expect(rpc).toHaveBeenCalledWith('approval_done', { p_id: id, p_ok: null, p_code: 'http_504' }, expect.anything())
+  })
+
+  it('waits longer than product-command\'s own call to the product', () => {
+    const app = Number(/SEND_TIMEOUT_MS = ([\d_]+)/.exec(read('app/(admin)/platform/plus-actions.ts'))![1]!.replace(/_/g, ''))
+    const fn = Number(/AbortSignal\.timeout\(([\d_]+)\)/.exec(read('supabase/functions/product-command/index.ts'))![1]!.replace(/_/g, ''))
+    expect(app).toBeGreaterThanOrEqual(fn + 15_000)
   })
 
   it('a rejection or a policy change runs nothing', async () => {

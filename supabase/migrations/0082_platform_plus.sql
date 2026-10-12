@@ -7,10 +7,13 @@
 --    product command (asked by product-command through command_authorize before it signs), this database (the matrix itself),
 --    an existing right (shown as that right; changed in Settings), or nothing yet (shown as not available). A policy per
 --    (permission set, action) — allow, approve or deny — seeded from today's rights, so nobody gains or loses anything by the
---    migration, and no action needs approval until someone switches it on (D-30). A request is approved by a second person
---    who may take the action too, never the requester, on a fresh second factor; it expires after seven days; the approval
---    executes the action (a product command run once by the approver, bound to the approved arguments, or the policy change
---    itself). The command's argument values are kept only until it has run, been refused or expired (R-PL-6); the audit holds
+--    migration, and no action needs approval until someone switches it on (D-30). The role's rights are the ceiling: the matrix
+--    narrows what a role may do (allow → approve → deny), never widens it; a right is given in Settings. Settings › Second
+--    admin on makes deleting an account need a second admin's approval here too, where product-command asks (D-30). A request
+--    is approved by a second person who may take the action too, never the requester, on a fresh second factor; it expires
+--    after seven days; the approval executes the action (a product command run once by the approver, bound to the approved
+--    arguments, or the policy change itself), and the command audit decides whether it ran. The command's argument values are
+--    kept only until it has run, been refused or expired (R-PL-6), swept every five minutes by the job monitor; the audit holds
 --    ids, kinds and codes.
 -- 3. Customer success on Sentral's own data: onboarding completion from usage, members and the milestones Orgpuls reports;
 --    feature requests (0078) with the MRR of the accounts asking, computed only for people who may see deals; renewal signals
@@ -115,7 +118,7 @@ end $fn$;
 -- ===========================================================================
 -- the sensitive actions, in the matrix's order. enforced: command (product-command asks command_authorize), database (this
 -- migration's own functions), right (the cell is the role's right, changed in Settings), none (nothing can do it yet).
--- basis_right: the right a role held on the day of this migration to be allowed the action (null: Admin sets only).
+-- basis_right: the right a role must hold to be allowed the action at all (null: Admin sets only); the matrix can only narrow it.
 create table app.staff_actions (
   key         text primary key check (key ~ '^[a-z_]+\.[a-z_]+$'),
   ord         int not null unique,
@@ -178,15 +181,19 @@ insert into app.action_policies (permission_set_id, action, mode)
 select ps.id, a.key, case when app.set_holds(ps.id, a.basis_right) then 'allow' else 'deny' end
 from app.permission_sets ps cross join app.staff_actions a where a.enforced in ('command', 'database');
 
--- a permission set's mode for an action: its policy, or (a set made after this migration) the same rule the seed used
+-- a permission set's mode for an action. The set's rights are the ceiling: without the action's basis right it is denied,
+-- whatever a policy row says (a row written before its right was taken away in Settings, or by hand). Within them: its policy,
+-- or (no row: a set made after this migration) allowed, the same rule the seed used. Settings › Second admin on (D-30) turns
+-- an allowed deletion into one that needs a second admin's approval — here, so product-command's gate enforces it too.
 create function app.set_mode(p_set uuid, p_action text) returns text
   language sql stable security definer set search_path = ''
 as $fn$
   select case
     when a.key is null or a.enforced = 'none' or p_set is null then 'deny'
-    when a.enforced = 'right' then case when app.set_holds(p_set, a.basis_right) then 'allow' else 'deny' end
-    else coalesce((select p.mode from app.action_policies p where p.permission_set_id = p_set and p.action = a.key),
-                  case when app.set_holds(p_set, a.basis_right) then 'allow' else 'deny' end) end
+    when not app.set_holds(p_set, a.basis_right) then 'deny'
+    when a.enforced = 'right' then 'allow'
+    else (select case when m.mode = 'allow' and a.key = 'account.delete' and app.setting('second_admin') = 'on' then 'approve' else m.mode end
+          from (select coalesce((select p.mode from app.action_policies p where p.permission_set_id = p_set and p.action = a.key), 'allow') mode) m) end
   from (select 1) one left join app.staff_actions a on a.key = p_action
 $fn$;
 
@@ -221,6 +228,9 @@ create table app.approval_requests (
   decision_note   text check (decision_note is null or char_length(decision_note) <= 300),
   taken_at        timestamptz,
   consumed_at     timestamptz,
+  -- the command audit's newest id when product-command consumed the approval: the call it then made is the approver's next
+  -- row for this command (the audit's own order, not the clock)
+  audit_mark      bigint,
   executed_at     timestamptz,
   result_code     text check (result_code is null or result_code ~ '^[a-z0-9_]{1,40}$'),
   check (decided_by is null or requested_by is null or decided_by <> requested_by),
@@ -244,6 +254,7 @@ begin
      or (new.requested_by is distinct from old.requested_by and new.requested_by is not null)
      or (new.organization_id is distinct from old.organization_id and new.organization_id is not null)
      or (old.decided_by is not null and new.decided_by is distinct from old.decided_by and new.decided_by is not null)
+     or (old.audit_mark is not null and new.audit_mark is distinct from old.audit_mark)
      or (old.args is null and new.args is not null) then
     raise exception 'an approval request cannot be changed' using errcode = 'insufficient_privilege';
   end if;
@@ -262,21 +273,65 @@ alter table app.action_policies enable row level security;
 alter table app.approval_requests enable row level security;
 revoke all on app.staff_actions, app.command_actions, app.action_policies, app.approval_requests from public, anon, authenticated;
 
--- requests past their time: expired after seven days; an approval not taken within ten minutes, or taken and never reported
--- back, ends as failed. The argument values go with them.
-create function app.approval_sweep() returns void
+-- what the command audit says of an approved command: «ran» (product-command's call by the approver after it consumed the
+-- approval reached the product), «not_ran» (that call was refused or failed), «not_sent» (the approval was never consumed, so
+-- nothing went out under it), or null (consumed, and no answer in the audit yet)
+create function app.approval_outcome(r app.approval_requests) returns text
+  language sql stable security definer set search_path = ''
+as $fn$
+  select case when r.consumed_at is null or r.audit_mark is null then 'not_sent'
+    else (select case when au.ok then 'ran' else 'not_ran' end from app.audit au
+          where au.id > r.audit_mark and au.command = r.command and au.product = r.product
+            and au.actor = (select x.email from app.admins x where x.id = r.decided_by)
+          order by au.id limit 1) end
+$fn$;
+
+-- a command's request comes to its end: its state and code, the argument values gone, a line in the audit (saying whether the
+-- approver reported it or the sweep settled it from the command audit, whoever's session the sweep ran in), the requester told
+create function app.approval_close(r app.approval_requests, p_state text, p_code text, p_swept boolean) returns void
   language plpgsql volatile security definer set search_path = ''
 as $fn$
 begin
-  update app.approval_requests set state = 'expired', args = null where state = 'pending' and expires_at <= now();
-  update app.approval_requests set state = 'failed', result_code = 'not_taken', args = null, executed_at = now()
-  where state = 'approved' and decided_at < now() - interval '10 minutes';
-  update app.approval_requests set state = 'failed', result_code = case when consumed_at is null then 'timeout' else 'unconfirmed' end,
-    args = null, executed_at = now()
-  where state = 'executing' and taken_at < now() - interval '10 minutes';
+  update app.approval_requests set state = p_state, args = null, executed_at = now(), result_code = p_code where id = r.id;
+  perform app.log(case when p_state = 'executed' then 'approval.executed' else 'approval.failed' end, 'approval', r.id::text,
+                  jsonb_build_object('action', r.action, 'ref', r.ref, 'code', p_code,
+                                     'settled_by', case when p_swept then 'sweep' else 'approver' end),
+                  (select o.account_id from app.organizations o where o.id = r.organization_id));
+  if r.requested_by is not null then
+    perform app.notify(r.requested_by, 'system', 'approval.decided', jsonb_build_object('ref', 'A-' || r.ref, 'state', p_state), '/platform?tab=access');
+  end if;
 end $fn$;
 
--- a change to the matrix: the set, an action Sentral enforces, a mode it can enforce; returns the mode it has now
+-- requests past their time: expired after seven days; an approval not taken within ten minutes ends as failed; one taken and
+-- not reported back within ten minutes (product-command answers long before) ends as the command audit says: executed when
+-- the call ran, else failed. The argument values go with them. Run every five minutes by the job monitor (section 7) and
+-- before each change to the queue; returns its counts.
+create function app.approval_sweep() returns jsonb
+  language plpgsql volatile security definer set search_path = ''
+as $fn$
+declare r app.approval_requests; v_out text; v_expired int; v_not_taken int; v_executed int := 0; v_failed int := 0;
+begin
+  update app.approval_requests set state = 'expired', args = null where state = 'pending' and expires_at <= now();
+  get diagnostics v_expired = row_count;
+  update app.approval_requests set state = 'failed', result_code = 'not_taken', args = null, executed_at = now()
+  where state = 'approved' and decided_at < now() - interval '10 minutes';
+  get diagnostics v_not_taken = row_count;
+  for r in select * from app.approval_requests x where x.state = 'executing' and x.taken_at < now() - interval '10 minutes' for update loop
+    v_out := app.approval_outcome(r);
+    if v_out = 'ran' then
+      perform app.approval_close(r, 'executed', null, true);
+      v_executed := v_executed + 1;
+    else
+      perform app.approval_close(r, 'failed', case v_out when 'not_sent' then 'timeout' when 'not_ran' then 'failed' else 'unconfirmed' end, true);
+      v_failed := v_failed + 1;
+    end if;
+  end loop;
+  return jsonb_build_object('expired', v_expired, 'not_taken', v_not_taken, 'executed', v_executed, 'failed', v_failed);
+end $fn$;
+
+-- a change to the matrix: the set, an action Sentral enforces, a mode it can enforce within the set's rights (the matrix
+-- narrows a role, never widens it: a set without the action's basis right can only be denied, and a right is given in
+-- Settings), and no deletion allowed alone while Settings › Second admin is on (D-30); returns the mode it has now
 create function app.policy_check(p_set uuid, p_action text, p_mode text) returns text
   language plpgsql stable security definer set search_path = ''
 as $fn$
@@ -289,6 +344,12 @@ begin
   if not found or a.enforced not in ('command', 'database') then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'action'; end if;
   if p_mode is null or p_mode not in ('allow', 'approve', 'deny') or (p_mode = 'approve' and not a.approvable) then
     raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'mode';
+  end if;
+  if p_mode in ('allow', 'approve') and not app.set_holds(p_set, a.basis_right) then
+    raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'beyond_role';
+  end if;
+  if p_mode = 'allow' and a.key = 'account.delete' and app.setting('second_admin') = 'on' then
+    raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'second_admin';
   end if;
   return app.set_mode(p_set, p_action);
 end $fn$;
@@ -406,7 +467,8 @@ as $fn$
 $fn$;
 
 -- ---------------------------------------------------------------------------
--- the matrix: the five roles (X-V3-4), the actions, each cell's mode and where it comes from
+-- the matrix: the five roles (X-V3-4), the actions, each cell's mode and where it comes from; per role, the actions its rights
+-- reach (the only cells the matrix can open); and the actions a setting holds at «needs approval» (Second admin, D-30)
 create function public.access_matrix() returns jsonb
   language plpgsql stable security definer set search_path = ''
 as $fn$
@@ -422,6 +484,10 @@ begin
     'cells', coalesce((select jsonb_object_agg(ps.id::text, (select jsonb_object_agg(a.key, case when a.enforced = 'none' then 'none' else app.set_mode(ps.id, a.key) end)
                                                              from app.staff_actions a))
                        from app.permission_sets ps where ps.key in ('admin', 'sales', 'support', 'marketing', 'analyst')), '{}'::jsonb),
+    'reach', coalesce((select jsonb_object_agg(ps.id::text, (select coalesce(jsonb_agg(a.key order by a.ord), '[]'::jsonb) from app.staff_actions a
+                                                             where a.enforced in ('command', 'database') and app.set_holds(ps.id, a.basis_right)))
+                       from app.permission_sets ps where ps.key in ('admin', 'sales', 'support', 'marketing', 'analyst')), '{}'::jsonb),
+    'forced', case when app.setting('second_admin') = 'on' then '["account.delete"]'::jsonb else '[]'::jsonb end,
     'manage', app.action_mode(v_me, 'roles.manage'));
 end $fn$;
 
@@ -556,37 +622,37 @@ begin
                             'organization_id', r.organization_id, 'reason', r.reason);
 end $fn$;
 
--- the outcome, reported by the approver: «executed» only when product-command ran the command under this approval and its
--- audit holds the successful call; the argument values are cleared either way
+-- the outcome, reported by the approver. p_ok true: product-command answered that the command ran — «executed», accepted only
+-- when the command audit holds that call; false: it answered that it did not (a refusal, the product's own error) — «failed»;
+-- null: the app could not tell (no answer in time). Then the command audit decides: the call ran → executed; refused, or nothing
+-- was sent under the approval → failed; no answer in the audit yet → it stays «executing» and approval_sweep decides from the
+-- audit after ten minutes. The argument values are cleared either way.
 create function public.approval_done(p_id uuid, p_ok boolean, p_code text default null) returns jsonb
   language plpgsql volatile security definer set search_path = ''
 as $fn$
-declare v_me uuid := app.require_staff(); r app.approval_requests; v_ok boolean := coalesce(p_ok, false);
+declare v_me uuid := app.require_staff(); r app.approval_requests; v_out text; v_state text;
         v_code text := case when coalesce(p_code, '') ~ '^[a-z0-9_]{1,40}$' then p_code else 'failed' end;
 begin
   select * into r from app.approval_requests x where x.id = p_id for update;
   if not found or r.decided_by is distinct from v_me then raise exception 'not_found' using errcode = 'no_data_found'; end if;
   if r.state <> 'executing' then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'state'; end if;
-  if v_ok and (r.consumed_at is null or not exists (
-       select 1 from app.audit au where au.command = r.command and au.product = r.product and au.ok and au.actor = app.admin_email() and au.at >= r.taken_at)) then
-    raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'not_sent';
+  v_out := app.approval_outcome(r);
+  if p_ok and v_out is distinct from 'ran' then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'not_sent'; end if;
+  v_state := case when p_ok then 'executed' when not p_ok then 'failed'
+                  when v_out = 'ran' then 'executed' when v_out is null then 'executing' else 'failed' end;
+  if v_state = 'executing' then
+    update app.approval_requests set args = null where id = p_id;
+    return jsonb_build_object('id', p_id, 'state', v_state, 'code', v_code);
   end if;
-  update app.approval_requests set state = case when v_ok then 'executed' else 'failed' end, args = null, executed_at = now(),
-    result_code = case when v_ok then null else v_code end
-  where id = p_id;
-  perform app.log(case when v_ok then 'approval.executed' else 'approval.failed' end, 'approval', p_id::text,
-                  jsonb_build_object('action', r.action, 'ref', r.ref, 'code', case when v_ok then null else v_code end),
-                  (select o.account_id from app.organizations o where o.id = r.organization_id));
-  if r.requested_by is not null then
-    perform app.notify(r.requested_by, 'system', 'approval.decided',
-                       jsonb_build_object('ref', 'A-' || r.ref, 'state', case when v_ok then 'executed' else 'failed' end), '/platform?tab=access');
-  end if;
-  return jsonb_build_object('id', p_id, 'state', case when v_ok then 'executed' else 'failed' end);
+  perform app.approval_close(r, v_state, case when v_state = 'executed' then null else v_code end, false);
+  return jsonb_build_object('id', p_id, 'state', v_state, 'code', case when v_state = 'executed' then null else v_code end);
 end $fn$;
 
 -- product-command asks this with the caller's own token before it signs (R-PL-1). A command tied to an action follows the
 -- caller's mode for it: allow; deny → forbidden; approve → only under an approval the caller decided and took, with exactly the
--- approved arguments, used once. A command tied to no action is a read (Global › See) or another write (Global › Configure).
+-- approved arguments, used once. The mode is app.set_mode's: denied beyond the role's rights whatever a policy row says, and
+-- a deletion needs approval while Settings › Second admin is on (D-30). A command tied to no action is a read (Global › See)
+-- or another write (Global › Configure).
 create function public.command_authorize(p_product text, p_command text, p_approval uuid default null, p_args jsonb default null) returns jsonb
   language plpgsql volatile security definer set search_path = ''
 as $fn$
@@ -609,7 +675,7 @@ begin
        or r.taken_at < now() - interval '5 minutes' or r.args is distinct from p_args then
       raise exception 'forbidden' using errcode = 'insufficient_privilege', detail = 'approval';
     end if;
-    update app.approval_requests set consumed_at = now() where id = p_approval;
+    update app.approval_requests set consumed_at = now(), audit_mark = (select coalesce(max(au.id), 0) from app.audit au) where id = p_approval;
     return jsonb_build_object('ok', true, 'action', v_action, 'mode', 'approved');
   end if;
   if v_mode = 'approve' then raise exception 'approval_required' using errcode = 'insufficient_privilege', detail = v_action; end if;
@@ -1007,7 +1073,8 @@ begin
   foreach f in array array[
     'app.usage_int(jsonb, text)', 'app.usage_time(jsonb, text)', 'app.usage_latest(text, text)', 'app.plus_accounts_of(text)',
     'app.plus_product_ok(text)', 'app.plan_band(text, text)', 'app.set_holds(uuid, text)', 'app.set_mode(uuid, text)',
-    'app.action_mode(uuid, text)', 'app.approval_guard()', 'app.approval_sweep()', 'app.policy_check(uuid, text, text)',
+    'app.action_mode(uuid, text)', 'app.approval_guard()', 'app.approval_outcome(app.approval_requests)',
+    'app.approval_close(app.approval_requests, text, text, boolean)', 'app.approval_sweep()', 'app.policy_check(uuid, text, text)',
     'app.roles_manage_guard()', 'app.policy_apply(uuid, text, text, uuid)', 'app.approval_create(uuid, text, jsonb, text)',
     'app.approval_json(app.approval_requests, uuid)', 'app.followup_open(text, uuid, text)', 'app.request_mrr(uuid, text)',
     'app.mail_errors(text, int)'] loop
@@ -1025,3 +1092,13 @@ begin
     execute format('grant execute on function %s to authenticated', f);
   end loop;
 end $$;
+
+-- ===========================================================================
+-- 7. the schedule
+-- ===========================================================================
+-- the approval sweep runs every five minutes through the job monitor (0044), so a request past its time lets go of its argument
+-- values, and a command nobody reported back is settled from the audit, without anyone opening the queue (R-PL-6)
+insert into app.job_defs (key, label_key, schedule, source, fn, quiet)
+values ('approval_sweep', 'jobs.approval_sweep', '*/5 * * * *', 'cron', 'app.approval_sweep', true)
+on conflict (key) do nothing;
+select cron.schedule('platform-approval-sweep', '*/5 * * * *', 'select app.run_job(''approval_sweep'')');

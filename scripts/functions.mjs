@@ -18,14 +18,16 @@
  * worker key or the owner's own token (ads_check_ready); ads-oauth is LinkedIn's redirect and needs the owner's one-time state.
  * ai-run takes the person's own token and asks ai_prepare (their right for the feature, the key, the hourly cap) before it
  * calls Claude.
+ * dev-events takes Vercel's deployment webhooks (HMAC-SHA1 under vercel_signing_secret) and the products' CI results
+ * (HMAC-SHA256 of timestamp.body under ci_signing_secret), checked before the body is parsed.
  */
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 
 const REF = process.env.PLATFORM_PROJECT_REF ?? 'zuvqbaejoktpekfsiyyr'
 const TOKEN = process.env.SB_MCP_PAT ?? process.env.SUPABASE_ACCESS_TOKEN
-const FUNCTIONS = ['orgpuls-events', 'product-command', 'secret-intake', 'session-report', 'storage-sign', 'jobs-run', 'mail-run', 'mail-events', 'search-console-run', 'web-collect', 'seo-crawl', 'pagespeed-run', 'ads-run', 'ads-oauth', 'ai-run']
-const SHARED = ['_shared/signing.ts', '_shared/orgpuls.ts', '_shared/secrets.ts', '_shared/zip.ts', '_shared/transcript.ts', '_shared/privacy-package.ts', '_shared/brevo.ts', '_shared/brevo-events.ts', '_shared/mail-render.ts', '_shared/mail-texts.gen.ts', '_shared/google.ts', '_shared/web-collect.ts', '_shared/seo-crawl.ts', '_shared/pagespeed.ts', '_shared/ads.ts']
+const FUNCTIONS = ['orgpuls-events', 'product-command', 'secret-intake', 'session-report', 'storage-sign', 'jobs-run', 'mail-run', 'mail-events', 'search-console-run', 'web-collect', 'seo-crawl', 'pagespeed-run', 'ads-run', 'ads-oauth', 'ai-run', 'dev-events']
+const SHARED = ['_shared/signing.ts', '_shared/orgpuls.ts', '_shared/secrets.ts', '_shared/zip.ts', '_shared/transcript.ts', '_shared/privacy-package.ts', '_shared/brevo.ts', '_shared/brevo-events.ts', '_shared/mail-render.ts', '_shared/mail-texts.gen.ts', '_shared/google.ts', '_shared/web-collect.ts', '_shared/seo-crawl.ts', '_shared/pagespeed.ts', '_shared/ads.ts', '_shared/dev-events.ts']
 const ROOT = 'supabase/functions'
 
 execFileSync('npx', ['-y', 'deno', 'check', '--config', `${ROOT}/deno.json`, ...FUNCTIONS.map((f) => `${ROOT}/${f}/index.ts`)], { stdio: 'inherit' })

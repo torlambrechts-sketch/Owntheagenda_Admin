@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { routeOf } from '@/lib/nav'
-import { signOut } from '@/app/login/actions'
+import { sessionCheck, signOut } from '@/app/login/actions'
 import { Sidebar } from './Sidebar'
 import { Header, type AppStatus } from './Header'
 import { SearchDialog } from './SearchDialog'
@@ -11,6 +11,8 @@ import { ToastProvider } from '@/components/ui/Toast'
 import type { ShellData } from './types'
 
 const IDLE_MS = 30 * 60 * 1000
+// input is use: the register hears of it at most this often, so a long read in one page is not idle on the server
+const PING_MS = 5 * 60 * 1000
 
 /** The frame around every screen (Sentral Simple): rail, top bar, ⌘K search, and the idle sign-out (D-29). */
 export function Shell({ shell, product, status, children }: { shell: ShellData; product: string; status: AppStatus; children: React.ReactNode }) {
@@ -33,11 +35,26 @@ export function Shell({ shell, product, status, children }: { shell: ShellData; 
 
   useEffect(() => { setMenu(false) }, [route])
 
-  // the session ends after 30 minutes without input, when the register says so
+  // after 30 minutes without input the register decides (sessionCheck): an idle session ends unless its device is
+  // remembered (0071), and a session in use in another tab is not idle; an unanswered check is asked once more a minute later
   useEffect(() => {
     if (shell.settings.session_idle !== 'on_30') return
-    let timer = setTimeout(() => void signOut(), IDLE_MS)
-    const reset = () => { clearTimeout(timer); timer = setTimeout(() => void signOut(), IDLE_MS) }
+    let timer: ReturnType<typeof setTimeout>
+    let pinged = Date.now()
+    const check = async (retry: boolean) => {
+      const state = await sessionCheck().catch(() => 'unknown' as const)
+      if (state === 'ok') arm(IDLE_MS)
+      else if (state === 'unknown' && retry) arm(60_000, false)
+      else void signOut()
+    }
+    const arm = (ms: number, retry = true) => { clearTimeout(timer); timer = setTimeout(() => void check(retry), ms) }
+    const reset = () => {
+      arm(IDLE_MS)
+      if (Date.now() - pinged < PING_MS) return
+      pinged = Date.now()
+      void sessionCheck().then((state) => { if (state === 'ended') void signOut() }).catch(() => undefined)
+    }
+    arm(IDLE_MS)
     const events = ['mousemove', 'keydown', 'pointerdown', 'scroll'] as const
     events.forEach((ev) => window.addEventListener(ev, reset, { passive: true }))
     return () => { clearTimeout(timer); events.forEach((ev) => window.removeEventListener(ev, reset)) }

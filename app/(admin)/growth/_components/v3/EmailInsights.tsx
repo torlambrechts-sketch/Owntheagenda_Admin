@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { formatNumber, percent, type NumberFormat } from '@/lib/format'
 import {
-  emailRows, emailTips, heatGrid, hourText, windowDays, type EmailTip, type HeatBand, type SendTimes, type SendWindow, type SequenceResults,
+  emailRows, emailTips, heatGrid, hourText, windowDays, windowOff, type EmailTip, type HeatBand, type SendTimes, type SendWindow, type SequenceResults,
 } from '@/lib/growth/v3'
 import { TipBox } from './TipBox'
 
@@ -41,8 +41,9 @@ export function EmailInsights({ name, results, loading, steps, times, nf, editab
   const win: SendWindow | null = results?.send_window ?? null
   const grid = times ? heatGrid(times) : null
   const rate = (v: number | null) => (v === null ? dash : percent(v, nf))
-  const noEmail = !steps.some((s) => s.kind === 'email')
-  const off = !editable ? t('readOnly') : noEmail ? t('best.noEmail') : !best && !win ? t('best.notYet', { min: times?.min ?? 20, days: times?.days ?? 90 }) : null
+  const why = windowOff({ editable, hasEmail: steps.some((s) => s.kind === 'email'), on: !!win, times })
+  const off = why === 'readOnly' ? t('readOnly') : why === 'noEmail' ? t('best.noEmail') : why === 'unread' ? t('best.unread')
+    : why === 'notYet' && times ? t('best.notYet', { min: times.min, days: times.days }) : null
 
   const tipBox = (x: EmailTip) => {
     if (x.kind === 'ab') {

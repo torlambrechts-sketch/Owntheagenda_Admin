@@ -1534,6 +1534,8 @@
         "group": "Daily spend and signups, {from} to {to}",
         "tip": "{date} · {spend} · {n, plural, one {# signup} other {# signups}}",
         "beforeStart": "{date} · before the campaign started",
+        "afterEnd": "{date} · after the campaign ended",
+        "ended": "The campaign ended {date}; none of the last {days} days falls within it.",
         "line": "{date}: spent {spend}, {n, plural, one {# signup} other {# signups}}",
         "lineCps": "{date}: spent {spend}, {n, plural, one {# signup} other {# signups}}, {cps} per signup",
         "typed": "Spend is entered per month; daily spend comes from a connected ad platform.",
@@ -1613,6 +1615,7 @@
         "onNote": "Each email waits for the next of these times, the first one included.",
         "noEmail": "This campaign has no email to time.",
         "notYet": "Not yet: no time has {min} delivered emails in the last {days} days.",
+        "unread": "Needs the send times, which could not be read.",
         "toastOn": "Steps now send {days} at {hour}",
         "toastOff": "Steps send when each wait ends"
       },

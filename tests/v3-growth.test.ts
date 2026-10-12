@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { GOOGLE_KEYWORDS, GOOGLE_KEYWORD_DAYS, googleImport, googleKeywords } from '../supabase/functions/_shared/ads'
 import {
-  CampaignDetail, SendTimes, SequenceResults, adRows, barMode, campaignTips, dailyBars, emailRows, emailTips, heatGrid, hourText, platformUrl, rowCps,
-  windowDays, windowText, type CampaignDetail as Detail, type SequenceResults as Results, type SendTimes as Times,
+  CampaignDetail, SHOWN_ROWS, SendTimes, SequenceResults, adRows, barMode, campaignTips, dailyBars, emailRows, emailTips, endedBeforeWindow, heatGrid,
+  hourText, platformUrl, rowCps, windowDays, windowOff, windowText, type CampaignDetail as Detail, type SequenceResults as Results, type SendTimes as Times,
 } from '../lib/growth/v3'
 
 const day = (i: number) => `2026-10-${String(i).padStart(2, '0')}`
@@ -39,6 +39,25 @@ describe('Growth v3: the campaign card (0083)', () => {
     const b = dailyBars(detail({ starts_on: day(2) }))
     expect(b[0]!.empty).toBe(true)
     expect(b[1]).toMatchObject({ h: 98, sh: 100 })
+  })
+  it('draws nothing after the campaign ended, unless something was recorded that day', () => {
+    // typed spend and no signups: the days after the end are empty slots, not 2 % stubs (Årsplan, ended before the window)
+    const typed = (ends: string) => detail({ spend_source: 'typed', starts_on: '2026-01-03', ends_on: ends,
+      days: [1, 2, 3, 4].map((i) => ({ day: day(i), spend: null, signups: 0 })) })
+    const gone = dailyBars(typed('2026-02-20'))
+    expect(gone.every((b) => b.empty)).toBe(true)
+    expect(endedBeforeWindow(typed('2026-02-20'), gone)).toBe(true)
+    // ended inside the window: the days it ran are stubs, the days after are empty
+    const half = dailyBars(typed(day(2)))
+    expect(half.map((b) => b.empty)).toEqual([false, false, true, true])
+    expect(half[0]).toMatchObject({ h: 2, sh: 0 })
+    expect(endedBeforeWindow(typed(day(2)), half)).toBe(false)
+    // a platform day with spend after the end date still shows (the platform campaign ran on), and so do signups
+    const ran = dailyBars(detail({ ends_on: day(1) }))
+    expect(ran.map((b) => b.empty)).toEqual([false, false, true, false])
+    const late = detail({ spend_source: 'typed', ends_on: day(1), days: [{ day: day(1), spend: null, signups: 0 }, { day: day(2), spend: null, signups: 3 }] })
+    expect(dailyBars(late).map((b) => [b.empty, b.sh])).toEqual([[false, 0], [false, 100]])
+    expect(endedBeforeWindow(detail({ ends_on: '2026-09-30' }), dailyBars(detail({ ends_on: '2026-09-30' })))).toBe(false)
   })
   it('never spreads typed spend over days: the signups stand alone, and with none every day is the design\'s stub', () => {
     const typed = detail({ spend_source: 'typed', days: [{ day: day(1), spend: null, signups: 1 }, { day: day(2), spend: null, signups: 2 }] })
@@ -85,6 +104,17 @@ describe('Growth v3: the campaign card (0083)', () => {
     const tips = campaignTips(detail({ keywords: [], ads: [ad('1', 'Daglig leder, construction', 520, 1300, 0), ad('2', 'Video', 310, 400, 4)] }))
     expect(tips).toEqual([expect.objectContaining({ kind: 'dear', level: 'ad', name: 'Daglig leder, construction', ratio: null, restCps: 100 })])
     expect(tips[0]!.url).toContain('linkedin.com/campaignmanager')
+  })
+  it('a tip rests on the rows the card shows: never a seventh keyword, and «the rest» is the rest of the list', () => {
+    const shown = Array.from({ length: SHOWN_ROWS }, (_, i) => kw(String(i), `k${i}`, 300, 1000, 10))  // 100 kr per signup each
+    const hidden = kw('7', 'skjult', 200, 5000, 1)                                                      // 5 000 kr per signup, not shown
+    const d = detail({ keywords: [...shown, hidden] })
+    expect(adRows(d).some((r) => r.name === 'skjult')).toBe(false)
+    expect(campaignTips(d).some((t) => t.name === 'skjult')).toBe(false)
+    // a shown dear keyword is compared with the other five shown, not with the hidden one
+    const dear = kw('0', 'dyr', 300, 3000, 5)
+    const tips = campaignTips(detail({ keywords: [dear, ...shown.slice(1), hidden] }))
+    expect(tips[0]).toMatchObject({ kind: 'dear', name: 'dyr', restCps: 100, ratio: 6 })
   })
   it('without signups per row (no utm_term / utm_content), or in another currency, there is no tip', () => {
     expect(campaignTips(detail({ keywords: [kw('1', 'a', 900, 9000, null), kw('2', 'b', 900, 100, null)] }))).toEqual([])
@@ -168,6 +198,15 @@ describe('Growth v3: Email and automation (0083)', () => {
   })
   it('without a best time no cell is marked best', () => {
     expect(heatGrid(times({ best: null })).rows.flatMap((r) => r.cells).some((c) => c.best)).toBe(false)
+  })
+  it('the best-time button says why it is off, and only what is known: unread send times are not «no time has 20»', () => {
+    const base = { editable: true, hasEmail: true, on: false, times: times() }
+    expect(windowOff(base)).toBeNull()
+    expect(windowOff({ ...base, times: null })).toBe('unread')
+    expect(windowOff({ ...base, times: times({ best: null }) })).toBe('notYet')
+    expect(windowOff({ ...base, editable: false, times: null })).toBe('readOnly')
+    expect(windowOff({ ...base, hasEmail: false })).toBe('noEmail')
+    expect(windowOff({ ...base, on: true, times: null })).toBeNull()   // a window that is on can always be switched off
   })
   it('writes the window as the design does', () => {
     const name = (d: number) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][d - 1]!

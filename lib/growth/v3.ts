@@ -59,7 +59,7 @@ export const MANUAL_BIDDING = ['manual_cpc', 'enhanced_cpc']
 
 export type Bar = {
   day: string
-  /** an empty slot: before the campaign started, or a platform day with no row and no signups */
+  /** an empty slot: before the campaign started, after it ended with nothing recorded, or a platform day with no row and no signups */
   empty: boolean
   /** the outer bar's height, % of the chart; null in signups-only mode (no spend bar is drawn) */
   h: number | null
@@ -75,19 +75,23 @@ export const barMode = (d: Pick<CampaignDetail, 'spend_source' | 'currency'>): '
 
 /**
  * The 21 bars (the design: height = spend ÷ max × 96 % + 2 %, the signups bar inside it as a share of the day's most). A
- * day before the campaign's start is an empty slot; in platform mode so is a day the platform has no row for (and no
- * signups). Without platform days no spend bar is drawn (spend is typed per month and never spread over days): the signups
- * bars stand alone, and with no signups either every day is the design's 2 % stub.
+ * day before the campaign's start is an empty slot. So is a day after its end, unless something was recorded on it (the
+ * platform's spend, or signups: a platform campaign can run past the date Sentral holds, and its link keeps bringing
+ * people). In platform mode so is a day the platform has no row for (and no signups). Without platform days no spend bar
+ * is drawn (spend is typed per month and never spread over days): the signups bars stand alone, and with no signups
+ * either every day the campaign ran is the design's 2 % stub.
  */
-export function dailyBars(d: Pick<CampaignDetail, 'days' | 'starts_on' | 'spend_source' | 'currency'>): Bar[] {
+export function dailyBars(d: Pick<CampaignDetail, 'days' | 'starts_on' | 'ends_on' | 'spend_source' | 'currency'>): Bar[] {
   const mode = barMode(d)
-  const started = (day: string) => !d.starts_on || day >= d.starts_on
-  const maxSpend = Math.max(0, ...d.days.filter((x) => started(x.day)).map((x) => x.spend ?? 0))
-  const maxSg = Math.max(1, ...d.days.filter((x) => started(x.day)).map((x) => x.signups))
-  const anySg = d.days.some((x) => started(x.day) && x.signups > 0)
+  const held = (x: CampaignDetail['days'][number]) => (mode === 'platform' && x.spend !== null) || x.signups > 0
+  const live = (x: CampaignDetail['days'][number]) => (!d.starts_on || x.day >= d.starts_on) && (!d.ends_on || x.day <= d.ends_on || held(x))
+  const shown = d.days.filter(live)
+  const maxSpend = Math.max(0, ...shown.map((x) => x.spend ?? 0))
+  const maxSg = Math.max(1, ...shown.map((x) => x.signups))
+  const anySg = shown.some((x) => x.signups > 0)
   return d.days.map((x) => {
     const spend = mode === 'platform' ? x.spend : null
-    if (!started(x.day)) return { day: x.day, empty: true, h: null, sh: 0, spend: null, signups: x.signups }
+    if (!live(x)) return { day: x.day, empty: true, h: null, sh: 0, spend: null, signups: x.signups }
     if (mode === 'platform') {
       if (x.spend === null && x.signups === 0) return { day: x.day, empty: true, h: null, sh: 0, spend: null, signups: 0 }
       return { day: x.day, empty: false, h: (maxSpend > 0 ? (x.spend ?? 0) / maxSpend : 0) * 96 + 2, sh: (x.signups / maxSg) * 100, spend, signups: x.signups }
@@ -99,12 +103,19 @@ export function dailyBars(d: Pick<CampaignDetail, 'days' | 'starts_on' | 'spend_
   })
 }
 
+/** The campaign ended before the 21 days began and nothing was recorded in them: one line says so instead of 21 empty slots. */
+export const endedBeforeWindow = (d: Pick<CampaignDetail, 'ends_on' | 'from'>, bars: Bar[]): boolean =>
+  !!d.ends_on && d.ends_on < d.from && bars.every((b) => b.empty)
+
 /** A row's own cost per signup: its spend over its signups; null without signups, without spend or without tracking. */
 export const rowCps = (r: Pick<AdRow, 'spend' | 'signups'>): number | null =>
   r.signups !== null && r.signups > 0 && r.spend > 0 ? r.spend / r.signups : null
 
+/** The card shows at most this many keywords and this many ads (ad_campaign_detail returns up to 20 of each, by clicks). */
+export const SHOWN_ROWS = 6
+
 /** The ads and keywords block: keywords first (Google), then ads, each by clicks; at most `limit` of each. */
-export function adRows(d: Pick<CampaignDetail, 'ads' | 'keywords'>, limit = 6): AdRow[] {
+export function adRows(d: Pick<CampaignDetail, 'ads' | 'keywords'>, limit = SHOWN_ROWS): AdRow[] {
   return [
     ...d.keywords.slice(0, limit).map((k) => ({ ...k, kind: 'keyword' as const })),
     ...d.ads.slice(0, limit).map((a) => ({ ...a, kind: 'ad' as const })),
@@ -181,14 +192,15 @@ function bestKeyword(rows: AdRow[], bidding: Map<string, string | null>): Campai
 
 /**
  * The card's tips, by stated rules on the rows' own figures (never the design's literals), at most two: the dearest
- * keyword, the keyword that converts best (only under manual bidding), the dearest ad. Rows in another currency than
- * the campaign's are left out; without signups per row (no utm_term / utm_content on the links) there is no tip.
+ * keyword, the keyword that converts best (only under manual bidding), the dearest ad. Only the rows the card shows count
+ * (adRows: a tip never names a row that is not in the list, and «the rest» is the rest of the list). Rows in another
+ * currency than the campaign's are left out; without signups per row (no utm_term / utm_content on the links) there is no tip.
  */
 export function campaignTips(d: Pick<CampaignDetail, 'ads' | 'keywords' | 'currency' | 'platforms'>): CampaignTip[] {
   if (!d.currency) return []
-  const same = (r: { currency: string | null }) => r.currency === d.currency
-  const kws: AdRow[] = d.keywords.filter(same).map((k) => ({ ...k, kind: 'keyword' as const }))
-  const ads: AdRow[] = d.ads.filter(same).map((a) => ({ ...a, kind: 'ad' as const }))
+  const shown = adRows(d).filter((r) => r.currency === d.currency)
+  const kws = shown.filter((r) => r.kind === 'keyword')
+  const ads = shown.filter((r) => r.kind === 'ad')
   const bidding = new Map(d.platforms.map((p) => [`${p.account}:${p.campaign}`, p.bidding]))
   return [dearest(kws), bestKeyword(kws, bidding), dearest(ads)].filter((t): t is CampaignTip => !!t).slice(0, 2)
 }
@@ -321,6 +333,19 @@ export function heatGrid(t: SendTimes): { rows: { dow: number; cells: HeatCell[]
   }))
   const outside = t.cells.filter((c) => !(HEAT_HOURS as readonly number[]).includes(c.hour)).reduce((a, c) => a + c.delivered, 0)
   return { rows, outside }
+}
+
+/**
+ * Why «Send all steps at the best time» cannot be pressed, or null when it can (with a window on, pressing switches it
+ * off). Each reason states only what is known: send times that could not be read are «unread», never «no time has 20».
+ */
+export type WindowOff = 'readOnly' | 'noEmail' | 'unread' | 'notYet'
+export function windowOff(o: { editable: boolean; hasEmail: boolean; on: boolean; times: Pick<SendTimes, 'best'> | null }): WindowOff | null {
+  if (!o.editable) return 'readOnly'
+  if (!o.hasEmail) return 'noEmail'
+  if (o.on) return null
+  if (!o.times) return 'unread'
+  return o.times.best ? null : 'notYet'
 }
 
 /** «08:00» */

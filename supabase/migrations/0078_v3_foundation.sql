@@ -3,13 +3,16 @@
 -- 1. A «dev» right scope for the Development section: Admin has every right; Support may see and add (Bug triage);
 --    Read-only may see.
 -- 2. Feature requests, recorded by staff on behalf of an organisation (one vote per organisation), linked to the tickets
---    and deals that asked for them. Development › Roadmap and Platform › Customer success read the same rows.
+--    and deals that asked for them (only ones the linker may see; a reader is shown only the ones they may see).
+--    Development › Roadmap and Platform › Customer success read the same rows.
 -- 3. Release notes (the changelog): Development › Releases, Customers › Status and changelog and Customer success
 --    write and read the same rows. Nothing is published outside Sentral yet (no public host, PLAN.md).
 -- 4. One gateway to Claude (X-V3-2): the key arrives through secret-intake into Vault; a feature registers a context
 --    function that assembles its input from Sentral's own records — never ticket text, never survey data (rule 6);
 --    ai-run calls Claude and records the call in ai_calls (0042) and the draft in ai_outputs. Nothing a person types
---    reaches Claude except through a feature's context function.
+--    reaches Claude except through a feature's context function. The hourly cap reserves each call before Claude is
+--    asked (a pending row, completed by id, swept to a timeout when its run died); a person's own subject's drafts
+--    (a test question) are theirs alone.
 -- 5. The signing secrets Vercel's deployment webhooks (X-V3-1) and the products' CI post with, by intake number into
 --    Vault. dev-events (the Development builder's) reads them; nothing else does.
 -- Every table: app schema, RLS on, no policy, no grant. Every reader and writer: SECURITY DEFINER with search_path ''.
@@ -91,21 +94,25 @@ alter table app.feature_request_votes enable row level security;
 alter table app.feature_request_links enable row level security;
 revoke all on app.feature_requests, app.feature_request_votes, app.feature_request_links from public, anon, authenticated;
 
--- one request with its votes and links (organisation names; ids of tickets and deals — each section reads those under
--- its own rights)
+-- one request with its votes and links (organisation names; ids of the tickets and deals the reader may see, by the
+-- same reading as Development's roadmap links: app.dev_ticket_ok and app.dev_deal_ok, 0079 — a queue the reader is not
+-- in, a private deal, a deleted one is not listed). plpgsql, so the two helpers resolve when it runs.
 create function app.feature_request_json(p_id uuid) returns jsonb
-  language sql stable security definer set search_path = ''
+  language plpgsql stable security definer set search_path = ''
 as $fn$
-  select jsonb_build_object(
+begin
+  return (select jsonb_build_object(
     'id', r.id, 'ref', r.ref, 'product', r.product, 'title', r.title, 'problem', r.problem, 'status', r.status,
     'created_at', r.created_at, 'updated_at', r.updated_at, 'shipped_at', r.shipped_at,
     'votes', (select count(*) from app.feature_request_votes v where v.request_id = r.id),
     'organizations', coalesce((select jsonb_agg(jsonb_build_object('id', o.id, 'name', o.name) order by o.name)
                                from app.feature_request_votes v join app.organizations o on o.id = v.organization_id where v.request_id = r.id), '[]'::jsonb),
-    'tickets', coalesce((select jsonb_agg(l.ref order by l.created_at) from app.feature_request_links l where l.request_id = r.id and l.kind = 'ticket'), '[]'::jsonb),
-    'deals', coalesce((select jsonb_agg(l.ref order by l.created_at) from app.feature_request_links l where l.request_id = r.id and l.kind = 'deal'), '[]'::jsonb))
-  from app.feature_requests r where r.id = p_id
-$fn$;
+    'tickets', coalesce((select jsonb_agg(l.ref order by l.created_at) from app.feature_request_links l join app.tickets t on t.id = l.ref
+                         where l.request_id = r.id and l.kind = 'ticket' and app.dev_ticket_ok(t)), '[]'::jsonb),
+    'deals', coalesce((select jsonb_agg(l.ref order by l.created_at) from app.feature_request_links l join app.deals d on d.id = l.ref
+                       where l.request_id = r.id and l.kind = 'deal' and app.dev_deal_ok(d)), '[]'::jsonb))
+  from app.feature_requests r where r.id = p_id);
+end $fn$;
 
 create function public.feature_requests_list(p_product text, p_status text default null) returns jsonb
   language plpgsql stable security definer set search_path = ''
@@ -185,6 +192,8 @@ begin
   return app.feature_request_json(p_id);
 end $fn$;
 
+-- a link (or its removal) names only a ticket or deal the caller may see: one outside their queues or visibility is
+-- «not found», as Development's roadmap links answer (app.dev_ticket_ok, app.dev_deal_ok, 0079)
 create function public.feature_request_link(p_id uuid, p_kind text, p_ref uuid, p_on boolean) returns jsonb
   language plpgsql volatile security definer set search_path = ''
 as $fn$
@@ -192,9 +201,13 @@ declare v_me uuid := app.require_any('dev:add', 'global:add');
 begin
   if not exists (select 1 from app.feature_requests r where r.id = p_id) then raise exception 'not_found' using errcode = 'no_data_found'; end if;
   if p_kind = 'ticket' then
-    if not exists (select 1 from app.tickets t where t.id = p_ref) then raise exception 'not_found' using errcode = 'no_data_found', detail = 'ticket'; end if;
+    if not exists (select 1 from app.tickets t where t.id = p_ref and app.dev_ticket_ok(t)) then
+      raise exception 'not_found' using errcode = 'no_data_found', detail = 'ticket';
+    end if;
   elsif p_kind = 'deal' then
-    if not exists (select 1 from app.deals d where d.id = p_ref) then raise exception 'not_found' using errcode = 'no_data_found', detail = 'deal'; end if;
+    if not exists (select 1 from app.deals d where d.id = p_ref and app.dev_deal_ok(d)) then
+      raise exception 'not_found' using errcode = 'no_data_found', detail = 'deal';
+    end if;
   else
     raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'kind';
   end if;
@@ -442,6 +455,44 @@ alter table app.ai_features enable row level security;
 alter table app.ai_outputs enable row level security;
 revoke all on app.ai_settings, app.ai_features, app.ai_outputs from public, anon, authenticated;
 
+-- The hourly cap is the only spend control on the key, so it holds before Claude is asked: ai_prepare reserves the call as
+-- a «pending» row in ai_calls (0042), counted from that moment; ai-run completes that row by its id; a row nobody completed
+-- (the run was killed) becomes error/timeout after ten minutes and still counts.
+alter table app.ai_calls drop constraint ai_calls_state_check,
+  add constraint ai_calls_state_check check (state in ('ok', 'retried_ok', 'invalid', 'error', 'not_connected', 'pending'));
+create index ai_calls_pending on app.ai_calls (at) where state = 'pending';
+
+-- the log stays append-only (0042): besides the FK's own maintenance, a reserved call is completed once — its outcome
+-- (model, tokens, latency, state, code) only; who, what, which subject and when never change
+create or replace function app.ai_call_fixed() returns trigger
+  language plpgsql set search_path = ''
+as $fn$
+begin
+  if tg_op = 'DELETE' then
+    if coalesce(current_setting('app.purging', true), '') = 'on' then return old; end if;
+  elsif (to_jsonb(new) - 'staff_id') = (to_jsonb(old) - 'staff_id') and new.staff_id is null
+        and not exists (select 1 from app.admins a where a.id = old.staff_id) then
+    return new;
+  elsif old.state = 'pending' and new.state <> 'pending'
+        and (to_jsonb(new) - array['model', 'input_tokens', 'output_tokens', 'latency_ms', 'state', 'error_code'])
+          = (to_jsonb(old) - array['model', 'input_tokens', 'output_tokens', 'latency_ms', 'state', 'error_code']) then
+    return new;
+  end if;
+  raise exception 'the AI call log is append-only' using errcode = 'insufficient_privilege';
+end $fn$;
+
+-- a subject that belongs to one person: a staff member's own test question (0081). Its drafts are read and decided by
+-- that person alone, whoever else holds the feature's right; every other subject's drafts are shared under the right.
+create function app.ai_subject_ok(p_type text, p_subject uuid) returns boolean
+  language plpgsql stable security definer set search_path = ''
+as $fn$
+begin
+  if p_type = 'help_test_question' then
+    return exists (select 1 from app.help_test_questions q where q.id = p_subject and q.created_by = app.me());
+  end if;
+  return true;
+end $fn$;
+
 -- the connection, the model and the features, for anyone who may use at least one feature (never the key)
 create function public.ai_status() returns jsonb
   language plpgsql stable security definer set search_path = ''
@@ -457,7 +508,8 @@ begin
     'features', coalesce((select jsonb_agg(jsonb_build_object('key', f.key, 'enabled', f.enabled, 'allowed', app.can(f.scope, f.action)) order by f.key)
                           from app.ai_features f), '[]'::jsonb),
     'calls_30d', (select count(*) from app.ai_calls c where c.provider = 'anthropic' and c.at > now() - interval '30 days'),
-    'failed_30d', (select count(*) from app.ai_calls c where c.provider = 'anthropic' and c.at > now() - interval '30 days' and c.state not in ('ok', 'retried_ok')),
+    'failed_30d', (select count(*) from app.ai_calls c where c.provider = 'anthropic' and c.at > now() - interval '30 days'
+                   and c.state not in ('ok', 'retried_ok', 'pending')),
     'tokens_30d', (select coalesce(sum(coalesce(c.input_tokens, 0) + coalesce(c.output_tokens, 0)), 0) from app.ai_calls c
                    where c.provider = 'anthropic' and c.at > now() - interval '30 days'));
 end $fn$;
@@ -475,11 +527,14 @@ begin
 end $fn$;
 
 -- ai-run asks this with the person's own token: may they, is it connected, within the hourly cap; then the feature's
--- context function assembles the input from Sentral's records. Returns the request to send; the key never leaves Vault.
+-- context function assembles the input from Sentral's records, and the call is reserved (a pending ai_calls row) so it
+-- counts against the cap before Claude is asked. Under a per-person advisory lock, so parallel requests are counted one
+-- after another. Returns the request to send and the reserved call's id; the key never leaves Vault. A refusal or a
+-- subject that builds no request rolls the reservation back with everything else.
 create function public.ai_prepare(p_feature text, p_subject uuid) returns jsonb
-  language plpgsql stable security definer set search_path = ''
+  language plpgsql volatile security definer set search_path = ''
 as $fn$
-declare v_me uuid := app.me(); f app.ai_features; s app.ai_settings; v_ctx jsonb;
+declare v_me uuid := app.me(); f app.ai_features; s app.ai_settings; v_ctx jsonb; v_call bigint;
 begin
   if v_me is null then raise exception 'not_signed_in' using errcode = 'insufficient_privilege'; end if;
   select * into f from app.ai_features x where x.key = p_feature;
@@ -489,6 +544,7 @@ begin
     raise exception 'not_connected' using errcode = 'object_not_in_prerequisite_state';
   end if;
   select * into s from app.ai_settings;
+  perform pg_advisory_xact_lock(hashtext('app.ai_cap'), hashtext(v_me::text));
   if (select count(*) from app.ai_calls c where c.staff_id = v_me and c.at > now() - interval '1 hour') >= s.hourly_cap then
     raise exception 'rate_limited' using errcode = 'program_limit_exceeded';
   end if;
@@ -496,33 +552,73 @@ begin
   if v_ctx is null or jsonb_typeof(v_ctx -> 'system') <> 'string' or jsonb_typeof(v_ctx -> 'prompt') <> 'string' then
     raise exception 'not_found' using errcode = 'no_data_found', detail = 'subject';
   end if;
-  return jsonb_build_object('feature', f.key, 'subject_type', f.subject_type, 'subject', p_subject, 'staff', v_me,
+  insert into app.ai_calls (feature, staff_id, subject_type, subject_id, provider, model, state)
+  values (f.key, v_me, f.subject_type, p_subject, 'anthropic', s.model, 'pending') returning id into v_call;
+  return jsonb_build_object('call', v_call, 'feature', f.key, 'subject_type', f.subject_type, 'subject', p_subject, 'staff', v_me,
                             'model', s.model, 'effort', s.effort, 'max_tokens', f.max_tokens,
                             'system', v_ctx ->> 'system', 'prompt', v_ctx ->> 'prompt');
 end $fn$;
 
--- ai-run records each call (kinds, counts and codes only) and, when there is one, the draft
+-- ai-run completes the call ai_prepare reserved (p_call): kinds, counts and codes only, and the draft when there is one.
+-- The reserved row decides the feature, subject and person; the ones passed must match it (a person not passed is the
+-- one who reserved it; a model not passed is the one reserved). Without p_call (a call made outside ai-run, as the
+-- suites record one) the call is a new row.
 create function public.worker_ai_record(p_feature text, p_subject uuid, p_staff uuid, p_body text, p_model text, p_input int, p_output int,
-                                        p_latency int, p_state text, p_error text) returns jsonb
+                                        p_latency int, p_state text, p_error text, p_call bigint default null) returns jsonb
   language plpgsql volatile security definer set search_path = ''
 as $fn$
-declare f app.ai_features; v_call bigint; v_out uuid;
+declare f app.ai_features; c app.ai_calls; v_call bigint; v_out uuid; v_staff uuid := p_staff;
 begin
   select * into f from app.ai_features x where x.key = p_feature;
   if not found then raise exception 'not_found' using errcode = 'no_data_found', detail = 'feature'; end if;
-  if p_state not in ('ok', 'retried_ok', 'invalid', 'error', 'not_connected') then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'state'; end if;
-  insert into app.ai_calls (feature, staff_id, subject_type, subject_id, provider, model, input_tokens, output_tokens, latency_ms, state, error_code)
-  values (p_feature, p_staff, f.subject_type, p_subject, 'anthropic', left(p_model, 80), greatest(p_input, 0), greatest(p_output, 0), greatest(p_latency, 0),
-          p_state, case when p_state in ('ok', 'retried_ok') then null else left(coalesce(p_error, 'error'), 80) end)
-  returning id into v_call;
+  if p_state is null or p_state not in ('ok', 'retried_ok', 'invalid', 'error', 'not_connected') then
+    raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'state';
+  end if;
+  if p_call is not null then
+    select * into c from app.ai_calls x where x.id = p_call for update;
+    if not found then raise exception 'not_found' using errcode = 'no_data_found', detail = 'call'; end if;
+    if c.feature <> p_feature or c.subject_id is distinct from p_subject or (p_staff is not null and c.staff_id is not null and c.staff_id <> p_staff) then
+      raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'call';
+    end if;
+    if c.state <> 'pending' then raise exception 'conflict' using errcode = 'object_not_in_prerequisite_state', detail = 'call'; end if;
+    update app.ai_calls x set model = coalesce(left(p_model, 80), x.model), input_tokens = greatest(p_input, 0), output_tokens = greatest(p_output, 0),
+      latency_ms = greatest(p_latency, 0), state = p_state,
+      error_code = case when p_state in ('ok', 'retried_ok') then null else left(coalesce(p_error, 'error'), 80) end
+    where x.id = p_call;
+    v_call := p_call;
+    v_staff := c.staff_id;
+  else
+    insert into app.ai_calls (feature, staff_id, subject_type, subject_id, provider, model, input_tokens, output_tokens, latency_ms, state, error_code)
+    values (p_feature, p_staff, f.subject_type, p_subject, 'anthropic', left(p_model, 80), greatest(p_input, 0), greatest(p_output, 0), greatest(p_latency, 0),
+            p_state, case when p_state in ('ok', 'retried_ok') then null else left(coalesce(p_error, 'error'), 80) end)
+    returning id into v_call;
+  end if;
   if p_state in ('ok', 'retried_ok') and char_length(coalesce(p_body, '')) between 1 and 60000 then
     insert into app.ai_outputs (feature, subject_type, subject_id, staff_id, body, ai_call_id)
-    values (p_feature, f.subject_type, p_subject, p_staff, p_body, v_call) returning id into v_out;
+    values (p_feature, f.subject_type, p_subject, v_staff, p_body, v_call) returning id into v_out;
   end if;
   return jsonb_build_object('call', v_call, 'output', v_out);
 end $fn$;
 
--- the drafts made for one subject, newest first, under the feature's right
+-- a reserved call nobody completed in ten minutes (ai-run gives up well before: its own budget is under the app's
+-- 150 s) was killed with its run: it becomes error/timeout and keeps counting against the cap. Every five minutes,
+-- through the job monitor.
+create function app.ai_calls_sweep() returns jsonb
+  language plpgsql volatile security definer set search_path = ''
+as $fn$
+declare n int;
+begin
+  update app.ai_calls c set state = 'error', error_code = 'timeout'
+  where c.state = 'pending' and c.at < now() - interval '10 minutes';
+  get diagnostics n = row_count;
+  return jsonb_build_object('timed_out', n);
+end $fn$;
+insert into app.job_defs (key, label_key, schedule, source, fn, quiet)
+values ('ai_sweep', 'jobs.ai_sweep', '*/5 * * * *', 'cron', 'app.ai_calls_sweep', true)
+on conflict (key) do nothing;
+select cron.schedule('platform-ai-sweep', '*/5 * * * *', 'select app.run_job(''ai_sweep'')');
+
+-- the drafts made for one subject, newest first, under the feature's right; a person's own subject's drafts to them only
 create function public.ai_outputs_get(p_feature text, p_subject uuid) returns jsonb
   language plpgsql stable security definer set search_path = ''
 as $fn$
@@ -531,21 +627,25 @@ begin
   select * into f from app.ai_features x where x.key = p_feature;
   if not found then raise exception 'not_found' using errcode = 'no_data_found', detail = 'feature'; end if;
   perform app.require(f.scope, f.action);
+  if not app.ai_subject_ok(f.subject_type, p_subject) then return '[]'::jsonb; end if;
   return coalesce((select jsonb_agg(jsonb_build_object('id', o.id, 'body', o.body, 'state', o.state, 'created_at', o.created_at,
                                                        'by', (select a.name from app.admins a where a.id = o.staff_id)) order by o.created_at desc)
                    from (select * from app.ai_outputs o where o.feature = p_feature and o.subject_id = p_subject order by o.created_at desc limit 5) o), '[]'::jsonb);
 end $fn$;
 
+-- a person accepts or discards a draft under the feature's right; another person's own subject's draft is not found
 create function public.ai_output_set(p_id uuid, p_state text) returns jsonb
   language plpgsql volatile security definer set search_path = ''
 as $fn$
-declare f app.ai_features;
+declare f app.ai_features; o app.ai_outputs;
 begin
-  select x.* into f from app.ai_outputs o join app.ai_features x on x.key = o.feature where o.id = p_id;
+  select * into o from app.ai_outputs x where x.id = p_id;
   if not found then raise exception 'not_found' using errcode = 'no_data_found'; end if;
+  select * into f from app.ai_features x where x.key = o.feature;
   perform app.require(f.scope, f.action);
+  if not app.ai_subject_ok(o.subject_type, o.subject_id) then raise exception 'not_found' using errcode = 'no_data_found'; end if;
   if p_state not in ('used', 'discarded') then raise exception 'invalid' using errcode = 'invalid_parameter_value', detail = 'state'; end if;
-  update app.ai_outputs set state = p_state, decided_at = now() where id = p_id;
+  update app.ai_outputs x set state = p_state, decided_at = now() where x.id = p_id;
   return jsonb_build_object('ok', true);
 end $fn$;
 
@@ -669,6 +769,8 @@ revoke all on function app.dev_product_ok(text) from public, anon, authenticated
 revoke all on function app.require_any(text, text) from public, anon, authenticated;
 revoke all on function app.feature_request_json(uuid) from public, anon, authenticated;
 revoke all on function app.release_note_json(app.release_notes) from public, anon, authenticated;
+revoke all on function app.ai_subject_ok(text, uuid) from public, anon, authenticated;
+revoke all on function app.ai_calls_sweep() from public, anon, authenticated;
 do $$
 declare f text;
 begin
@@ -682,8 +784,8 @@ begin
     execute format('revoke all on function %s from public, anon', f);
     execute format('grant execute on function %s to authenticated', f);
   end loop;
-  revoke all on function public.worker_ai_record(text, uuid, uuid, text, text, int, int, int, text, text) from public, anon, authenticated;
-  grant execute on function public.worker_ai_record(text, uuid, uuid, text, text, int, int, int, text, text) to service_role;
+  revoke all on function public.worker_ai_record(text, uuid, uuid, text, text, int, int, int, text, text, bigint) from public, anon, authenticated;
+  grant execute on function public.worker_ai_record(text, uuid, uuid, text, text, int, int, int, text, text, bigint) to service_role;
 end $$;
 revoke all on function public.store_product_secrets(text, jsonb) from public, anon, authenticated;
 grant execute on function public.store_product_secrets(text, jsonb) to service_role;

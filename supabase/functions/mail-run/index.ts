@@ -151,11 +151,13 @@ async function run(svc: SupabaseClient, key: string, config: Config, url: string
   const base = config.public_base
   const link = (path: string) => (base ? R.safeLink(base, path) : null)
 
-  // 1. ticket replies
-  for (const t of arr<{ id: string; ref: string; subject: string; body: string; to: string; to_name: string | null; agent: string | null; from: string; from_name: string; reply_to: string; locale: string }>(
+  // 1. ticket replies; the one that resolves a ticket carries the CSAT question with its single-use token (0081)
+  for (const t of arr<{ id: string; ref: string; subject: string; body: string; to: string; to_name: string | null; agent: string | null; from: string; from_name: string; reply_to: string; locale: string; csat_token?: string | null }>(
     await rpc(svc, 'worker_ticket_mail_claim', { p_limit: 20 }))) {
     if (!left() || authDown) break
-    const m = R.ticketReply({ lang: R.langOf(t.locale), ref: t.ref, subject: t.subject, body: t.body, agent: t.agent, fromName: t.from_name })
+    const lang = R.langOf(t.locale)
+    const csat = t.csat_token ? R.csatLinks(config.functions_url || url, t.csat_token, lang) : null
+    const m = R.ticketReply({ lang, ref: t.ref, subject: t.subject, body: t.body, agent: t.agent, fromName: t.from_name, csat })
     const r = await send({ sender: { email: t.from, name: t.from_name }, to: { email: t.to, name: t.to_name }, replyTo: { email: t.reply_to },
                            subject: m.subject, html: m.html, text: m.text, tag: 'sentral-ticket' })
     await rpc(svc, 'worker_ticket_mail_done', r.ok ? { p_message: t.id, p_provider_message_id: r.id } : { p_message: t.id, p_provider_message_id: null, p_code: r.code, p_retry: r.retryable })

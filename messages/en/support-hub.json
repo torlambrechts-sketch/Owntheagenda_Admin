@@ -1,3 +1,415 @@
 {
-  "supportHub": {}
+  "supportHub": {
+    "subsLabel": "Help centre and support",
+    "subs": {
+      "metrics": "Support results",
+      "widget": "Help widget",
+      "center": "Help centre",
+      "channels": "Contact form and email",
+      "portal": "Customer portal",
+      "assist": "AI assist",
+      "proactive": "Status and changelog"
+    },
+    "errors": {
+      "module_off": "AI answers are switched off for this application (Help widget › Widget settings).",
+      "not_connected": "Claude is not connected: the owner adds the key under Platform.",
+      "rate_limited": "You have reached the hourly limit for Claude. Try again later.",
+      "not_deployed": "The AI gateway is not deployed yet.",
+      "refused": "Claude declined to answer this question.",
+      "empty": "Claude returned no answer.",
+      "record": "The answer could not be saved. Try again.",
+      "bad_key": "The Claude key was refused: the owner replaces it under Platform.",
+      "provider_rate_limited": "Claude is busy. Try again in a minute.",
+      "provider_invalid": "Claude could not read the request.",
+      "network": "Claude could not be reached. Try again.",
+      "unexpected_reply": "The AI gateway answered in an unexpected way.",
+      "error": "Claude could not answer. Try again."
+    },
+    "results": {
+      "kpi": {
+        "sessions": "Help sessions",
+        "sessionsSub": "widget + help centre",
+        "selfService": "Self-service rate",
+        "selfServiceSub": "solved without a ticket",
+        "tickets": "Tickets created",
+        "tickets_fewer": "fewer than the previous {days} days",
+        "tickets_more": "more than the previous {days} days",
+        "tickets_same": "as many as the previous {days} days",
+        "ticketsNoDelta": "no earlier period yet",
+        "aiAccepted": "AI answers accepted",
+        "aiAcceptedSub": "«Yes, solved»",
+        "csat": "CSAT",
+        "csatValue": "{avg} / 5",
+        "csatSub": "after resolution · {n} answered",
+        "csatNone": "No surveys answered",
+        "effort": "Customer effort",
+        "effortSub": "not asked"
+      },
+      "ends": {
+        "title": "Where help sessions end",
+        "solvedArticle": "Solved by article",
+        "solvedAi": "Solved by AI answer",
+        "ticket": "Ticket created",
+        "left": "Left without answer",
+        "empty": "No help sessions recorded yet: the widget is not embedded in the application."
+      },
+      "gaps": {
+        "title": "Top questions without a good article",
+        "period": "{days} days",
+        "sub": "{n, plural, one {# ticket} other {# tickets}} · no published article",
+        "write": "Write article",
+        "done": "✓ Draft created",
+        "toast": "Draft created · open it in Help centre",
+        "empty": "Every category with tickets has a published article.",
+        "note": "From tickets by category. What customers type in a search is not stored, so there are no search counts.",
+        "why": "Writing an article needs the right to edit others' tickets."
+      },
+      "articles": {
+        "title": "Articles by results",
+        "definition": "Solved = no ticket within 24 h",
+        "notMeasured": "No views recorded yet: views, «solved» and «helpful» are counted once the help widget is embedded.",
+        "empty": "No published articles yet.",
+        "solvedWhy": "Needs the widget's session on each ticket: not sent by the application yet",
+        "helpfulWhy": "Nobody can vote «helpful» until the widget is embedded"
+      }
+    },
+    "widget": {
+      "modesLabel": "Where the widget is shown",
+      "modes": {
+        "app": "In the app",
+        "web": "On the website"
+      },
+      "page": "Page",
+      "greetApp": "Hei [fornavn]",
+      "greetWeb": "Hei! Hvordan kan vi hjelpe?",
+      "ctxApp": "[Organisasjon] · [Rolle] · {page}",
+      "ctxWeb": "{product} · besøkende",
+      "search": "Hva lurer du på?",
+      "matches": "Matching articles",
+      "sugApp": "Suggested for this page",
+      "sugWeb": "Newest articles",
+      "sugEmpty": "No published article is shown on {page}: choose the page in Help centre.",
+      "noMatch": "No published article matches.",
+      "noArticles": "No published articles yet.",
+      "ai": {
+        "hint": "Search as you type · Enter asks for an answer from the published articles",
+        "asking": "Asking Claude…",
+        "noRight": "AI answers need the AI right for tickets: search only.",
+        "notConnected": "Claude is not connected: search only.",
+        "off": "AI answers are switched off for {product}: search only."
+      },
+      "answer": {
+        "label": "AI answer from our articles",
+        "source": "Source: {title}",
+        "noSource": "—",
+        "none": "No published article answers this.",
+        "yes": "Yes, solved",
+        "talk": "Talk to us",
+        "why": "A preview: nothing here is counted or sent."
+      },
+      "actions": {
+        "talk": "Talk to us",
+        "book": "Book a call",
+        "demo": "Book a demo",
+        "sales": "Contact sales",
+        "why": "The widget's buttons work once the application embeds the widget; «Book a call» also needs a booking link."
+      },
+      "captured": {
+        "title": "Sent with every ticket from the widget",
+        "from": "From {ref}, the newest request from the app",
+        "none": "No request from the app yet",
+        "web": "A website visitor is anonymous: the tracker sets no cookie.",
+        "user": "User",
+        "organization": "Organization",
+        "plan": "Plan and status",
+        "page": "Page",
+        "lastError": "Last error",
+        "browser": "Browser",
+        "version": "App version",
+        "notSent": "not sent by {product} yet",
+        "visitor": "Visitor",
+        "anonymous": "anonymous · no visitor id",
+        "source": "Source",
+        "company": "Company (IP lookup)",
+        "notConnected": "— · not connected",
+        "never": "Never sent: survey answers, comments or respondent identities."
+      },
+      "settings": {
+        "title": "Widget settings",
+        "ai": {
+          "name": "AI answers",
+          "sub": "Answer from published articles only"
+        },
+        "tickets": {
+          "name": "Show open requests",
+          "sub": "Logged-in users see their organization’s tickets"
+        },
+        "chat": {
+          "name": "Live chat in business hours",
+          "sub": "Mon–Fri 08–16, otherwise ticket"
+        },
+        "consent": {
+          "name": "Load only after cookie consent",
+          "sub": "On the website; always on in the app"
+        },
+        "why": {
+          "configure": "Changing it needs the right to configure tickets.",
+          "tickets": "Needs the application to show its users their tickets.",
+          "chat": "Live chat is not staffed: a decision still to be made.",
+          "consent": "Waits for the embed and a decision on consent."
+        },
+        "aiOn": "AI answers switched on for {product}",
+        "aiOff": "AI answers switched off for {product}",
+        "embed": "No embed script yet: the widget waits for a host decision and for the application to embed it."
+      }
+    },
+    "center": {
+      "all": "All",
+      "known": "Known problems",
+      "add": "＋ Article",
+      "noCategory": "No category",
+      "newTitle": "Ny artikkel {n}",
+      "created": "Draft created",
+      "editWhy": "Writing articles needs the right to edit others' tickets.",
+      "notMeasured": "No views recorded yet: they are counted once the help widget is embedded.",
+      "empty": "No articles in this category.",
+      "langs": {
+        "nb": "Bokmål",
+        "nn": "Nynorsk",
+        "en": "English"
+      },
+      "views": "{n} views",
+      "helpfulWhy": "Nobody can vote «helpful» until the widget is embedded",
+      "state": {
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "none": "Choose an article, or add one.",
+      "titleLabel": "Title",
+      "langsLabel": "Language",
+      "slug": "Address /{slug} · no public host yet",
+      "missing": "No {lang} version yet.",
+      "createLang": "Create {lang} version",
+      "bodyLabel": "Article text",
+      "seo": "SEO title",
+      "seoPlaceholder": "{title} | {product} hjelp",
+      "page": "Show in app on page",
+      "pageNone": "Not in the app",
+      "category": "Category",
+      "linked": "linked from {n, plural, one {# ticket} other {# tickets}}",
+      "problem": "known problem {ref}",
+      "reviewed": "last reviewed {when} by {by}",
+      "notReviewed": "never reviewed",
+      "markReviewed": "Mark reviewed",
+      "ai": "AI: improve from tickets",
+      "aiWhy": "Ticket text is not sent to AI",
+      "save": "Save",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "publishWhy": "Publishing needs the right to configure tickets.",
+      "saved": "Saved",
+      "published": "Published · shown in Sentral's previews; nothing is public yet",
+      "unpublished": "Back to draft",
+      "reviewedToast": "Marked reviewed"
+    },
+    "channels": {
+      "form": {
+        "title": "Contact form · {product}",
+        "topicsLabel": "Topics",
+        "org": "Organisasjon",
+        "email": "E-post",
+        "message": "Hva gjelder det?",
+        "route": "Creates a ticket in {queue} ({category}).",
+        "routePrivacy": "Creates a privacy request in {queue} with a 30-day deadline; only the queue's permission sets see it. No CRM lead is made.",
+        "count": "{n} in {days} days.",
+        "noTopics": "No contact form sends topics for {product} yet.",
+        "note": "The form is the application's own; this shows its topics and where each goes. The organisation field is free text, and no visitor is told whether a company is a customer."
+      },
+      "topics": {
+        "product": "Product",
+        "pricing": "Pricing",
+        "first_send": "First send",
+        "privacy": "Privacy"
+      },
+      "list": {
+        "title": "Channels into tickets",
+        "in_app": {
+          "name": "Help request in the app",
+          "sub": "context captured automatically"
+        },
+        "contact_form": {
+          "name": "Contact form",
+          "sub": "routed by topic"
+        },
+        "email": {
+          "name": "Email",
+          "sub": "threaded replies"
+        },
+        "staff": {
+          "name": "Created by staff",
+          "sub": "entered in Sentral"
+        },
+        "note": "{n, plural, one {# ticket} other {# tickets}} in {days} days. A website widget and a customer portal are not channels yet."
+      },
+      "threading": {
+        "title": "Email threading",
+        "body": "Replies keep the ticket ID in the subject and a hidden reference header, so customer answers land in the same ticket. Auto-replies and bounces are detected and never reopen a ticket.",
+        "mailOff": "Replies are not emailed yet: mail is not ready for {product}.",
+        "inboundOk": "Customer answers arrive at support@{domain}.",
+        "inboundOff": "Answers by email do not reach Sentral yet: no reply domain is set up."
+      }
+    },
+    "portal": {
+      "org": "Organisation",
+      "title": "Kundeportal · {org}",
+      "sub": "What the organisation's users would see · from Sentral's tickets",
+      "badge": "Preview",
+      "cases": "Saker for organisasjonen",
+      "noTickets": "Ingen saker",
+      "empty": "No organisation has tickets for {product} yet.",
+      "state": {
+        "us": "Venter på oss",
+        "you": "Venter på deg",
+        "done": "Løst"
+      },
+      "waiting": "Venter på deg",
+      "approvals": {
+        "access": "Støttetilgang i 24 timer",
+        "accessSub": "Needs the application: support access does not exist yet",
+        "deletion": "Sletting av tidligere ansatt",
+        "deletionSub": "Handled in the application; Sentral keeps only the request and its clock",
+        "deletionOpen": "{n, plural, one {# open privacy request} other {# open privacy requests}} · handled in the application, never by name",
+        "band": "Nytt prisbånd",
+        "bandSub": "Needs the application to change a plan",
+        "decline": "Avslå",
+        "approve": "Godkjenn",
+        "why": "Customers approve in the portal, which waits for the application."
+      },
+      "rules": {
+        "title": "Portal access",
+        "preview": "This preview shows the organisation's tickets as Sentral holds them, in the words its users would see.",
+        "roles": "Which {product} roles see all of the organisation's tickets and may approve is not decided yet.",
+        "signin": "Customers will sign in where the portal is placed; nothing here gives a customer access.",
+        "access": "Support access and approvals need commands in {product} that do not exist yet."
+      }
+    },
+    "assist": {
+      "off": "Ticket text is not sent to AI",
+      "noTicket": "No open ticket",
+      "pick": "Ticket",
+      "summary": "Summary:",
+      "summaryOff": "Ticket text is not sent to AI. Summaries, triage and draft replies wait until that is allowed.",
+      "category": "Suggested category:",
+      "priority": "Priority:",
+      "link": "Link:",
+      "draftLabel": "Draft reply",
+      "shorter": "Shorter",
+      "toArticle": "Make article from answer",
+      "approve": "Approve and send",
+      "footer": "AI never sends on its own · uses published help articles only · no ticket text, no survey data",
+      "usage": {
+        "title": "AI usage · 30 days",
+        "drafts": "Ticket drafts",
+        "draftsWhy": "ticket text is not sent to AI",
+        "previews": "Answers from published articles",
+        "calls": "Claude calls, all of Sentral",
+        "failed": "Failed calls"
+      },
+      "preview": {
+        "title": "Answer from published articles",
+        "sub": "Type a question a customer might ask. Claude reads only {product}'s published articles in the language you choose, never a ticket.",
+        "placeholder": "Hva lurer du på?",
+        "lang": "Language",
+        "ask": "Ask",
+        "asking": "Asking…",
+        "noRight": "Asking needs the AI right for tickets.",
+        "notConnected": "Claude is not connected: the owner adds the key under Platform.",
+        "off": "AI answers are switched off for {product} (Help widget › Widget settings).",
+        "label": "AI answer from our articles",
+        "source": "Source: {title}",
+        "noSource": "—",
+        "none": "No published article answers this."
+      }
+    },
+    "status": {
+      "pageTitle": "Status page",
+      "notPublic": "Not public",
+      "notPublicWhy": "A public status page waits for a host decision; these are Sentral's own records.",
+      "editWhy": "Changing the status needs the right to edit others' tickets.",
+      "componentsEmpty": "No components yet.",
+      "componentName": "Component name",
+      "addComponent": "＋ Component",
+      "componentAdded": "{name} added",
+      "remove": "Remove {name}",
+      "stateOf": "State of {name}",
+      "stateSet": "{name}: {state}",
+      "states": {
+        "operational": "Operational",
+        "degraded": "Degraded",
+        "partial_outage": "Partial outage",
+        "maintenance": "Maintenance"
+      },
+      "noIncidents": "No open incidents.",
+      "incidentStates": {
+        "investigating": "Investigating",
+        "identified": "Identified",
+        "monitoring": "Monitoring",
+        "resolved": "Resolved"
+      },
+      "affected": "{n, plural, one {# customer} other {# customers}} · problem {ref}",
+      "chips": {
+        "notice": "Notice on the public website",
+        "linked": "Linked to {n, plural, one {# ticket} other {# tickets}}",
+        "noticeCleared": "Notice removed",
+        "resolved": "{n, plural, one {# ticket resolved} other {# tickets resolved}}",
+        "emailed": "{n, plural, one {# reply emailed} other {# replies emailed}}"
+      },
+      "resolve": "Resolve and notify affected customers",
+      "resolveOnly": "Resolve",
+      "update": "Post update",
+      "updateState": "State",
+      "updatePlaceholder": "What has changed",
+      "resolveMessage": "The message every affected customer gets",
+      "resolveNote": "What was done",
+      "resolveWhat": "Every open ticket of {ref} gets this reply and is resolved; a notice tied to the problem is removed.",
+      "cancel": "Cancel",
+      "send": "Send and resolve",
+      "post": "Post",
+      "resolvedToast": "Resolved · {n, plural, =0 {no open tickets to notify} one {# customer notified} other {# customers notified}}",
+      "updatedToast": "Update posted",
+      "new": {
+        "open": "＋ Incident",
+        "opened": "Incident opened",
+        "title": "Public title",
+        "body": "What customers should know",
+        "problem": "Problem",
+        "problemNone": "No problem ticket",
+        "components": "Components affected",
+        "note": "Linking a problem lets «Resolve and notify» answer every ticket that waits on it.",
+        "cancel": "Cancel",
+        "submit": "Open incident"
+      },
+      "changelog": "Changelog",
+      "changelogEmpty": "No release notes published yet.",
+      "kinds": {
+        "new": "New",
+        "improved": "Improved",
+        "fixed": "Fixed"
+      }
+    },
+    "csat": {
+      "mail": {
+        "question": "How satisfied are you with the help you got?",
+        "scale": "Click a number: 1 is not satisfied at all, 5 is very satisfied.",
+        "low": "Not satisfied",
+        "high": "Very satisfied"
+      },
+      "page": {
+        "thanks": "Thank you. Your answer, {score} of 5, is recorded.",
+        "used": "This link has already been used or is no longer valid.",
+        "browser": "Your answer was not recorded. Open the link in your web browser to answer.",
+        "invalid": "This link is not complete. Use the link in the email."
+      }
+    }
+  }
 }

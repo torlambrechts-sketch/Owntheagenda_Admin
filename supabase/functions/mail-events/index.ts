@@ -5,7 +5,8 @@
  *                                              everything else (Orgpuls's survey mail shares the account) is dropped
  *                                              unread. Campaign events go to worker_email_events, ticket replies' to
  *                                              worker_ticket_mail_event.
- *   POST ?key=<mail_events_secret>&inbound=1   Brevo's inbound parsing: a customer's answer to a ticket reply
+ *   POST ?key=<mail_events_secret>&inbound=1   Brevo's inbound parsing: a customer's answer to a ticket reply, threaded by its reference
+ *                                              header or its [T-n] subject; an auto-reply never reopens a ticket (0081)
  *                                              (worker_ticket_inbound threads it only from the ticket's requester).
  *   POST ?u=<token>                            RFC 8058 one-click unsubscribe (List-Unsubscribe-Post).
  *   POST {"action": "peek" | "unsubscribe", "token": "..."}   the app's public /u/<token> page.
@@ -14,7 +15,7 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { sameText } from '../_shared/signing.ts'
-import { inboundItems, sortEvents } from '../_shared/brevo-events.ts'
+import { inboundMail, sortEvents } from '../_shared/brevo-events.ts'
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
 const log = (s: string) => console.log(`[mail-events] ${s}`)
@@ -55,13 +56,18 @@ Deno.serve(async (req) => {
       return json({ error: 'body' }, 400)
     }
     if (params.get('inbound') === '1') {
-      let matched = 0, dropped = 0
-      for (const item of inboundItems(payload)) {
-        const { data: r, error } = await svc.rpc('worker_ticket_inbound', { p_inbound_id: item.id, p_from: item.from, p_subject: item.subject, p_body: item.body })
-        if (!error && (r as { matched?: boolean })?.matched) matched++
+      let matched = 0, dropped = 0, auto = 0
+      for (const item of inboundMail(payload)) {
+        // the reference headers thread an answer; an auto-reply is recognised and never reopens a ticket (0081, F-S2)
+        const { data: r, error } = await svc.rpc('worker_ticket_inbound', {
+          p_inbound_id: item.id, p_from: item.from, p_subject: item.subject, p_body: item.body, p_headers: item.headers,
+        })
+        const res = (r ?? {}) as { matched?: boolean; auto_reply?: boolean }
+        if (!error && res.auto_reply) auto++
+        else if (!error && res.matched) matched++
         else dropped++
       }
-      log(`inbound matched=${matched} dropped=${dropped}`)
+      log(`inbound matched=${matched} auto_reply=${auto} dropped=${dropped}`)
       return json({ ok: true })
     }
     const sorted = sortEvents(payload)

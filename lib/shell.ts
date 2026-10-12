@@ -42,5 +42,5 @@ export const getShell = cache(async (): Promise<Shell> => {
 export const getShellIfSignedIn = cache(async (): Promise<Shell | null> => rpcOrThrow('shell', {}, Shell, { quiet: true }).catch(() => null))
 
 /** May the staff member do this action in this scope? (Mirrors app.can; the database decides.) */
-export const can = (shell: Shell, scope: 'deals' | 'projects' | 'campaigns' | 'tickets' | 'global', action: string) =>
+export const can = (shell: Shell, scope: 'deals' | 'projects' | 'campaigns' | 'tickets' | 'global' | 'dev', action: string) =>
   shell.me.permission_kind === 'admin' || shell.me.rights.includes(`${scope}:${action}`)

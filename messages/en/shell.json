@@ -16,7 +16,8 @@
       "customers": "Customers",
       "crm": "CRM",
       "growth": "Growth",
-      "platform": "Platform"
+      "platform": "Platform",
+      "dev": "Development"
     },
     "nav": {
       "home": "Overview",
@@ -529,6 +530,10 @@
       "platform": {
         "label": "Platform",
         "sub": "Apps, plans, team"
+      },
+      "dev": {
+        "label": "Development",
+        "sub": "Roadmap, bugs, releases"
       }
     },
     "apiStatus": {

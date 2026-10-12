@@ -1,0 +1,25 @@
+{
+  "simpleDev": {
+    "tabs": {
+      "roadmap": "Roadmap",
+      "board": "Work board",
+      "bugs": "Bug triage",
+      "releases": "Releases",
+      "integrations": "Integrations register",
+      "code": "Code and environments",
+      "metrics": "Delivery metrics",
+      "specs": "Spec documents",
+      "md": "Markdown roadmap",
+      "jobs": "Claude jobs",
+      "env": "Vercel and Supabase",
+      "gate": "Release gate",
+      "repo": "Repo rules"
+    },
+    "tabsLabel": "Development views",
+    "openBugs": "{n} open bugs",
+    "noAccess": {
+      "title": "Development is not open to you",
+      "body": "Ask an administrator for the Development › See right."
+    }
+  }
+}

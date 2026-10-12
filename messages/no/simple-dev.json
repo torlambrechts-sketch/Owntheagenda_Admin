@@ -1,0 +1,25 @@
+{
+  "simpleDev": {
+    "tabs": {
+      "roadmap": "Veikart",
+      "board": "Arbeidstavle",
+      "bugs": "Feilsortering",
+      "releases": "Utgivelser",
+      "integrations": "Integrasjonsregister",
+      "code": "Kode og miljøer",
+      "metrics": "Leveransetall",
+      "specs": "Spesifikasjoner",
+      "md": "Markdown-veikart",
+      "jobs": "Claude-jobber",
+      "env": "Vercel og Supabase",
+      "gate": "Utgivelsesport",
+      "repo": "Repo-regler"
+    },
+    "tabsLabel": "Visninger i Utvikling",
+    "openBugs": "{n} åpne feil",
+    "noAccess": {
+      "title": "Utvikling er ikke åpent for deg",
+      "body": "Be en administrator om rettigheten Utvikling › Se."
+    }
+  }
+}

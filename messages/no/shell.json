@@ -16,7 +16,8 @@
       "customers": "Kunder",
       "crm": "CRM",
       "growth": "Vekst",
-      "platform": "Plattform"
+      "platform": "Plattform",
+      "dev": "Utvikling"
     },
     "nav": {
       "home": "Oversikt",
@@ -529,6 +530,10 @@
       "platform": {
         "label": "Plattform",
         "sub": "Apper, planer, team"
+      },
+      "dev": {
+        "label": "Utvikling",
+        "sub": "Veikart, feil, utgivelser"
       }
     },
     "apiStatus": {

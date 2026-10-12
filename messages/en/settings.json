@@ -570,7 +570,8 @@
         "projects": "Projects",
         "campaigns": "Campaigns",
         "tickets": "Tickets",
-        "global": "Global"
+        "global": "Global",
+        "dev": "Development"
       },
       "actions": {
         "see": "See records",

@@ -31,6 +31,11 @@ import enSimpleCrm from '@/messages/en/simple-crm.json'
 import enSimpleGrowth from '@/messages/en/simple-growth.json'
 import enSimplePlatform from '@/messages/en/simple-platform.json'
 import enMail from '@/messages/en/mail.json'
+import enSimpleDev from '@/messages/en/simple-dev.json'
+import enDevCore from '@/messages/en/dev-core.json'
+import enDevDelivery from '@/messages/en/dev-delivery.json'
+import enSupportHub from '@/messages/en/support-hub.json'
+import enPlatformPlus from '@/messages/en/platform-plus.json'
 import noAuth from '@/messages/no/auth.json'
 import noShell from '@/messages/no/shell.json'
 import noCommon from '@/messages/no/common.json'
@@ -60,13 +65,18 @@ import noSimpleCrm from '@/messages/no/simple-crm.json'
 import noSimpleGrowth from '@/messages/no/simple-growth.json'
 import noSimplePlatform from '@/messages/no/simple-platform.json'
 import noMail from '@/messages/no/mail.json'
+import noSimpleDev from '@/messages/no/simple-dev.json'
+import noDevCore from '@/messages/no/dev-core.json'
+import noDevDelivery from '@/messages/no/dev-delivery.json'
+import noSupportHub from '@/messages/no/support-hub.json'
+import noPlatformPlus from '@/messages/no/platform-plus.json'
 
 export const locales = ['en', 'no'] as const
 export type Locale = (typeof locales)[number]
 
 const catalogue = {
-  en: { ...enAuth, ...enShell, ...enCommon, ...enOverview, ...enCustomers, ...enContacts, ...enDeals, ...enActivities, ...enTickets, ...enSettings, ...enCoverage, ...enInbox, ...enFeed, ...enAutomation, ...enInsights, ...enAnalytics, ...enCapture, ...enDocuments, ...enCampaigns, ...enProjects, ...enMeetings, ...enPlatform, ...enSecurity, ...enMobile, ...enSimpleCustomers, ...enSimpleCrm, ...enSimpleGrowth, ...enSimplePlatform, ...enMail },
-  no: { ...noAuth, ...noShell, ...noCommon, ...noOverview, ...noCustomers, ...noContacts, ...noDeals, ...noActivities, ...noTickets, ...noSettings, ...noCoverage, ...noInbox, ...noFeed, ...noAutomation, ...noInsights, ...noAnalytics, ...noCapture, ...noDocuments, ...noCampaigns, ...noProjects, ...noMeetings, ...noPlatform, ...noSecurity, ...noMobile, ...noSimpleCustomers, ...noSimpleCrm, ...noSimpleGrowth, ...noSimplePlatform, ...noMail },
+  en: { ...enAuth, ...enShell, ...enCommon, ...enOverview, ...enCustomers, ...enContacts, ...enDeals, ...enActivities, ...enTickets, ...enSettings, ...enCoverage, ...enInbox, ...enFeed, ...enAutomation, ...enInsights, ...enAnalytics, ...enCapture, ...enDocuments, ...enCampaigns, ...enProjects, ...enMeetings, ...enPlatform, ...enSecurity, ...enMobile, ...enSimpleCustomers, ...enSimpleCrm, ...enSimpleGrowth, ...enSimplePlatform, ...enMail, ...enSimpleDev, ...enDevCore, ...enDevDelivery, ...enSupportHub, ...enPlatformPlus },
+  no: { ...noAuth, ...noShell, ...noCommon, ...noOverview, ...noCustomers, ...noContacts, ...noDeals, ...noActivities, ...noTickets, ...noSettings, ...noCoverage, ...noInbox, ...noFeed, ...noAutomation, ...noInsights, ...noAnalytics, ...noCapture, ...noDocuments, ...noCampaigns, ...noProjects, ...noMeetings, ...noPlatform, ...noSecurity, ...noMobile, ...noSimpleCustomers, ...noSimpleCrm, ...noSimpleGrowth, ...noSimplePlatform, ...noMail, ...noSimpleDev, ...noDevCore, ...noDevDelivery, ...noSupportHub, ...noPlatformPlus },
 }
 
 export const messagesFor = (locale: Locale) => catalogue[locale]

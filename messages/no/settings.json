@@ -570,7 +570,8 @@
         "projects": "Prosjekter",
         "campaigns": "Kampanjer",
         "tickets": "Saker",
-        "global": "Globalt"
+        "global": "Globalt",
+        "dev": "Utvikling"
       },
       "actions": {
         "see": "Se poster",

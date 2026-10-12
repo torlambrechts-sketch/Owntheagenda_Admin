@@ -16,13 +16,15 @@
  * belongs to a registered site and answers 204 to everything. seo-crawl takes the nightly job's worker key or the
  * person's own token (seo_crawl_check_ready); pagespeed-run likewise (pagespeed_check_ready). ads-run takes the nightly job's
  * worker key or the owner's own token (ads_check_ready); ads-oauth is LinkedIn's redirect and needs the owner's one-time state.
+ * ai-run takes the person's own token and asks ai_prepare (their right for the feature, the key, the hourly cap) before it
+ * calls Claude.
  */
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 
 const REF = process.env.PLATFORM_PROJECT_REF ?? 'zuvqbaejoktpekfsiyyr'
 const TOKEN = process.env.SB_MCP_PAT ?? process.env.SUPABASE_ACCESS_TOKEN
-const FUNCTIONS = ['orgpuls-events', 'product-command', 'secret-intake', 'session-report', 'storage-sign', 'jobs-run', 'mail-run', 'mail-events', 'search-console-run', 'web-collect', 'seo-crawl', 'pagespeed-run', 'ads-run', 'ads-oauth']
+const FUNCTIONS = ['orgpuls-events', 'product-command', 'secret-intake', 'session-report', 'storage-sign', 'jobs-run', 'mail-run', 'mail-events', 'search-console-run', 'web-collect', 'seo-crawl', 'pagespeed-run', 'ads-run', 'ads-oauth', 'ai-run']
 const SHARED = ['_shared/signing.ts', '_shared/orgpuls.ts', '_shared/secrets.ts', '_shared/zip.ts', '_shared/transcript.ts', '_shared/privacy-package.ts', '_shared/brevo.ts', '_shared/brevo-events.ts', '_shared/mail-render.ts', '_shared/mail-texts.gen.ts', '_shared/google.ts', '_shared/web-collect.ts', '_shared/seo-crawl.ts', '_shared/pagespeed.ts', '_shared/ads.ts']
 const ROOT = 'supabase/functions'
 

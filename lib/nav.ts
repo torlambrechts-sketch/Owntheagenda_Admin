@@ -40,18 +40,20 @@ export const ICON = {
 } as const
 
 export type RouteKey =
-  | 'crm' | 'growth' | 'platform'
+  | 'crm' | 'growth' | 'platform' | 'dev'
   | 'home' | 'customers' | 'analytics' | 'tickets' | 'feed' | 'leads' | 'deals' | 'contacts' | 'activities' | 'inbox' | 'meetings'
   | 'projects' | 'documents' | 'campaigns' | 'leadgen' | 'visitors' | 'automation' | 'insights' | 'apps' | 'settings'
   | 'security' | 'mobile' | 'coverage' | 'api'
 
-export type Group = 'all' | 'customers' | 'crm' | 'growth' | 'platform'
+export type Group = 'all' | 'customers' | 'crm' | 'growth' | 'platform' | 'dev'
 
 export const ROUTES: Record<RouteKey, { path: string; group: Group; icon: keyof typeof ICON }> = {
   // the four sections of Sentral Simple (design-reference/sentral-simple); customers below is the first of them
   crm: { path: '/crm', group: 'crm', icon: 'kanban' },
   growth: { path: '/growth', group: 'growth', icon: 'chart' },
   platform: { path: '/platform', group: 'platform', icon: 'puzzle' },
+  // the fifth section (v3): Development · Roadmap, bugs, releases
+  dev: { path: '/development', group: 'dev', icon: 'flag' },
   home: { path: '/overview', group: 'all', icon: 'dashboard' },
   customers: { path: '/customers', group: 'customers', icon: 'building' },
   analytics: { path: '/analytics', group: 'customers', icon: 'chart' },
@@ -79,15 +81,16 @@ export const ROUTES: Record<RouteKey, { path: string; group: Group; icon: keyof 
 }
 
 /**
- * Sentral Simple's rail («Sentral Simple.dc.html»): four sections, each a label and a sub-label (shell.section.<key>) and
+ * Sentral Simple's rail («Sentral Simple.dc.html»): five sections, each a label and a sub-label (shell.section.<key>) and
  * the design's own icon. Every other route stays reachable by address (and from the account menu) but is not in the rail.
  */
-export type SectionKey = 'customers' | 'crm' | 'growth' | 'platform'
+export type SectionKey = 'customers' | 'crm' | 'growth' | 'platform' | 'dev'
 export const SECTIONS: { key: SectionKey; icon: string }[] = [
   { key: 'customers', icon: 'M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M20 20v-1.5a3.5 3.5 0 0 0-2.5-3.35M15.5 4.2a3.5 3.5 0 0 1 0 6.6' },
   { key: 'crm', icon: 'M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v6h-4z' },
   { key: 'growth', icon: 'M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6' },
   { key: 'platform', icon: 'M9 4h4v2a1.5 1.5 0 0 0 3 0V4h4v4h-2a1.5 1.5 0 0 0 0 3h2v4h-4v-2a1.5 1.5 0 0 0-3 0v2H9v-4H7a1.5 1.5 0 0 1 0-3h2z' },
+  { key: 'dev', icon: 'M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14' },
 ]
 
 /** The full interface's navigation, kept for the routes the rail no longer lists (titles, access). */
@@ -111,7 +114,7 @@ export const MODULE_OF: Partial<Record<RouteKey, string>> = {
  * Platform, Automation, Insights, API, Settings, Security and Coverage have a view for everyone (team list, one's own workflows, dashboards,
  * tokens, settings and sessions).
  */
-export const ACCESS: Partial<Record<RouteKey, readonly `${'deals' | 'projects' | 'campaigns' | 'tickets' | 'global'}:${string}`[]>> = {
+export const ACCESS: Partial<Record<RouteKey, readonly `${'deals' | 'projects' | 'campaigns' | 'tickets' | 'global' | 'dev'}:${string}`[]>> = {
   // Simple: Customers holds accounts and tickets; Growth is the marketing view (design: «Sales: CRM»), opened by a reports
   // right — Marketing and Read-only hold one, Sales has campaigns:see for CRM › Lists only (0057)
   customers: ['deals:see', 'tickets:see'],
@@ -126,6 +129,8 @@ export const ACCESS: Partial<Record<RouteKey, readonly `${'deals' | 'projects' |
   leadgen: ['campaigns:see', 'deals:see'],
   visitors: ['campaigns:see', 'deals:see'],
   apps: ['global:see'],
+  // Development (v3, 0078): its own scope; Admin, Support (see, add) and Read-only (see) hold it
+  dev: ['dev:see'],
 }
 
 /** Is this route in the menu for this person: their rights, the module switch, and the meeting workspace. */

@@ -228,6 +228,9 @@ create temp table t_fix on commit drop as select public.dev_bug_fix((select id f
 grant all on t_fix to authenticated;
 select pg_temp.check((select j ->> 'state' = 'fixed' and (j ->> 'notified')::int = 2 and (j ->> 'problem_resolved')::boolean from t_fix),
                      'Mark fixed closes the bug and resolves the problem, replying to its open incidents');
+select pg_temp.check((select (j ->> 'mail_ready')::boolean is not distinct from app.mail_ready_for(t.product) from t_fix, app.tickets t where t.number = 2316)
+                     and (select j ? 'mail_ready' and jsonb_typeof(j -> 'mail_ready') = 'boolean' from t_fix),
+                     'it says whether those replies can be emailed at all (the problem''s application mail is ready), so the toast does not claim a notification');
 select pg_temp.check((select problem_status from app.tickets where number = 2316) = 'resolved', 'the problem is resolved');
 select pg_temp.expect_detail(format($$select public.dev_bug_fix(%L, 5)$$, (select id from t_bug)), 'invalid', 'state', 'a fixed bug is not fixed again');
 select pg_temp.check((select (public.dev_bugs_get('orgpuls') -> 'kpi' ->> 'fixed_30')::int = (k ->> 'fixed_30')::int + 1

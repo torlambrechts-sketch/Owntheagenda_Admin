@@ -5,7 +5,7 @@ import { useFormatter, useTranslations } from 'next-intl'
 import type { Bug, Bugs } from '@/lib/data/dev-core'
 import { formatNumber, type NumberFormat } from '@/lib/format'
 import { createBug, fixBug, linkBugTicket, mergeBug, saveWorkItem, setBug } from '../../core-actions'
-import { SEVERITIES, SEVERITY_CHIP, dueState, durationParts, share, type Severity } from './logic'
+import { SEVERITIES, SEVERITY_CHIP, dueState, durationParts, fixedToastKey, share, type Severity } from './logic'
 import { c, Kpi, Modal, useRun, type ProductInfo } from './kit'
 
 /** the KPIs, the triage card and its dialogs (DevHub.dc.html, v.bugs) */
@@ -26,7 +26,7 @@ export function BugList({ data, products, filter, nf, timeZone }: { data: Bugs; 
     <div className="flex flex-col gap-3">
       <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
         <Kpi label={t('kpi.open')} value={String(k.open)} tone={k.open > 3 ? 'text-danger' : 'text-ink'} sub={t('kpi.openSub', { s1: k.s1, s2: k.s2, s3: k.s3 })} />
-        <Kpi label={t('kpi.within')} value={within === null ? t('dash') : `${within} %`} tone="text-link" sub={t('kpi.withinSub')}
+        <Kpi label={t('kpi.within')} value={within === null ? t('dash') : `${within} %`} tone={within === null ? 'text-ink' : 'text-link'} sub={t('kpi.withinSub')}
           title={within === null ? t('kpi.withinNone') : t('kpi.withinTitle', { within: k.within_30, fixed: k.fixed_30 })} />
         <Kpi label={t('kpi.escaped')} value={String(k.escaped_30)} tone={k.escaped_30 >= target.escaped_goal ? 'text-warn-ink' : 'text-ink'}
           sub={t('kpi.escapedSub', { goal: target.escaped_goal })} title={t('kpi.escapedTitle')} />
@@ -156,7 +156,7 @@ function NewBug({ data, products, preset, onClose }: { data: Bugs; products: Pro
         </label>
       ) : null}
       <label className={c.field}>{t('fields.tickets')}
-        <input value={tickets} onChange={(e) => setTickets(e.target.value)} placeholder="T-2316, T-2317" className={c.input} />
+        <input value={tickets} onChange={(e) => setTickets(e.target.value)} placeholder={t('ticketsPlaceholder')} className={c.input} />
       </label>
       <span className="text-11.5 text-muted">{t('dueNote')}</span>
     </Modal>
@@ -215,7 +215,7 @@ function EditBug({ b, data, onClose }: { b: Bug; data: Bugs; onClose: () => void
           <span className={c.label}>{t('linkedTickets')}</span>
           <span className="text-12.5">{b.ticket_numbers.length ? b.ticket_numbers.map((x) => `T-${x}`).join(', ') : t('noTickets')}</span>
           <div className="flex flex-wrap gap-2">
-            <input value={ticket} onChange={(e) => setTicket(e.target.value)} placeholder="T-2316" aria-label={t('ticketNumber')} className={`${c.input} h-[34px] flex-[1_1_160px] text-12.5`} />
+            <input value={ticket} onChange={(e) => setTicket(e.target.value)} placeholder={t('ticketPlaceholder')} aria-label={t('ticketNumber')} className={`${c.input} h-[34px] flex-[1_1_160px] text-12.5`} />
             <button type="button" disabled={pending || !Number.isInteger(n) || n <= 0} className={c.small}
               onClick={() => run(() => linkBugTicket({ id: b.id, number: n, on: true }), () => t('ticketLinked'), () => setTicket(''))}>{t('link')}</button>
             <button type="button" disabled={pending || !Number.isInteger(n) || n <= 0} className={c.small}
@@ -260,7 +260,7 @@ function FixBug({ b, canResolve, onClose }: { b: Bug; canResolve: boolean; onClo
   return (
     <Modal title={t('fixTitle', { n: b.number })} cta={t('markFixed')} busy={pending || blocked || (needsBody && !body.trim())} onClose={onClose}
       onSubmit={() => run(() => fixBug({ id: b.id, version: b.version, body }),
-                          (r) => ('notified' in r ? (r.resolved ? t('fixedToastProblem', { n: r.notified }) : t('fixedToast')) : null), onClose)}>
+                          (r) => ('notified' in r ? t(fixedToastKey(r), { n: r.notified }) : null), onClose)}>
       <span className="text-13 leading-[1.55]">
         {!p ? t('fixPlain') : needsBody ? t('fixTells', { n: p.open_incidents, ref: p.number ? `T-${p.number}` : '' }) : t('fixProblem', { ref: p.number ? `T-${p.number}` : '' })}
       </span>

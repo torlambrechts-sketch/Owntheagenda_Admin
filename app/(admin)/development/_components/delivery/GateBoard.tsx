@@ -95,7 +95,7 @@ function GateCard({ data, cur }: { data: Releases; cur: CurrentRelease }) {
                 </span>
               </span>
               <span className="flex justify-end">
-                {c.kind === 'manual' && !ok && canSign ? (
+                {c.kind === 'manual' && !ok && canSign && (c.key !== 'anonymity' || data.can_sign_anonymity) ? (
                   <button type="button" disabled={pending} onClick={() => (c.key === 'rollback' ? setRollback(rollback === null ? '' : null) : sign(c.key))}
                     className={d.rowBtn}>{t('signOff')}</button>
                 ) : FIXABLE.includes(c.key) && !ok && !recorded ? (
@@ -103,6 +103,7 @@ function GateCard({ data, cur }: { data: Releases; cur: CurrentRelease }) {
                 ) : null}
               </span>
             </div>
+            {c.key === 'anonymity' && !ok && canSign && !data.can_sign_anonymity ? <span className="pl-8 text-11 text-muted">{t('anonymityOwner')}</span> : null}
             {c.key === 'rollback' && rollback !== null ? (
               <div className="flex flex-col gap-2 rounded-12 bg-canvas p-3">
                 <label className={d.field}>

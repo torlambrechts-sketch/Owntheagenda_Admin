@@ -11,7 +11,8 @@ import { API_VERSIONS, RENEW_HREF, daysUntil, errorRate } from './logic'
 import { useRun } from './kit'
 import { d } from './styles'
 
-const GRID = '[grid-template-columns:minmax(0,1.3fr)_90px_90px_70px_100px_minmax(0,1.5fr)_100px]'
+/** the action column fits the longest action in either language (no: «Planlegg oppgradering») */
+const GRID = '[grid-template-columns:minmax(0,1.3fr)_90px_90px_70px_100px_minmax(0,1.5fr)_150px]'
 const firstName = (s: string | null | undefined) => (s ? s.split(/\s+/)[0] ?? s : null)
 
 /** Integrations register (DevHub.dc.html v.integrations): one row per integration Sentral itself depends on. */
@@ -67,16 +68,16 @@ export function RegisterTable({ data, nf, now }: { data: Register; nf: NumberFor
                     : r.change.none ? t('noneAnnounced') : '—', hasChange ? 'text-warn-ink' : 'text-faint')}
                   <span className="flex justify-end">
                     {renew ? (
-                      <Link href={renew as Route} className="flex h-7 w-full items-center justify-center whitespace-nowrap rounded-8 border border-ink bg-primary text-11.5 font-bold text-ink hover:text-ink hover:no-underline">
+                      <Link href={renew as Route} className="flex h-7 min-w-[100px] items-center justify-center whitespace-nowrap rounded-8 border border-ink bg-primary px-[10px] text-11.5 font-bold text-ink hover:text-ink hover:no-underline">
                         {t('renew')}
                       </Link>
                     ) : planned ? (
                       <button type="button" onClick={() => setPlan(plan === r.key ? null : r.key)} aria-expanded={plan === r.key}
-                        className="h-7 w-full cursor-pointer whitespace-nowrap rounded-8 border border-ink bg-ok-bg text-11.5 font-bold text-ink">{t('planned')}</button>
+                        className="h-7 min-w-[100px] cursor-pointer whitespace-nowrap rounded-8 border border-ink bg-ok-bg px-[10px] text-11.5 font-bold text-ink">{t('planned')}</button>
                     ) : hasChange ? (
                       <button type="button" disabled={!data.can_add || pending} title={!data.can_add ? t('noRight') : undefined}
                         onClick={() => run(() => planUpgrade(r.key), () => t('plannedToast', { owner: r.owner?.name ?? t('noOwner') }))}
-                        className="h-7 w-full cursor-pointer whitespace-nowrap rounded-8 border border-ink bg-primary text-11.5 font-bold text-ink disabled:cursor-default disabled:opacity-50">
+                        className="h-7 min-w-[100px] cursor-pointer whitespace-nowrap rounded-8 border border-ink bg-primary px-[10px] text-11.5 font-bold text-ink disabled:cursor-default disabled:opacity-50">
                         {t('plan')}
                       </button>
                     ) : null}
@@ -90,6 +91,7 @@ export function RegisterTable({ data, nf, now }: { data: Register; nf: NumberFor
           })}
         </div>
       </div>
+      {!data.can_add && data.rows.some((r) => !!r.change.text && !r.plan) ? <div className="px-[18px] py-[10px] text-11.5 text-muted">{t('noRight')}</div> : null}
     </div>
   )
 }

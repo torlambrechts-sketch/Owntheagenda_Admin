@@ -47,6 +47,7 @@ export const CiRun = z.object({
   commit_at: iso.nullable(),
   commit_title: z.string().nullable(),
   run_url: z.string().nullable(),
+  repository: z.string().nullable().optional(),
   finished_at: iso,
   suites: z.array(Suite),
   migrations_pending: z.array(z.string()),
@@ -72,6 +73,8 @@ export const Deploys = z.object({
   ci: Connection,
   products: z.array(Product),
   projects: z.array(z.object({ id: z.string(), name: z.string(), product: z.string().nullable(), last_event_at: iso, deployments: num })),
+  /** the repositories the owner bound to a product: a CI post from any other is refused (one CI secret, X-V3-1) */
+  ci_repos: z.array(z.object({ repository: z.string(), product: z.string(), bound_by: z.string().nullable(), bound_at: iso, last_run_at: iso.nullable() })),
   latest: z.array(Deployment),
   live: z.array(Deployment),
   previews: z.array(Deployment),
@@ -90,8 +93,13 @@ export function eventsUrl(): string | null {
 // metrics
 export const Metrics = z.object({
   days: num,
+  /** history starts at connection (X-V3-1): the first Vercel event, the whole days heard within the window, and whether
+   * the window is fully covered; the frequency is per day heard */
+  since: iso.nullable(),
+  covered_days: num,
+  complete: z.boolean(),
   sources: z.object({ deploys: z.boolean(), ci: z.boolean() }),
-  deploys: z.object({ ready: num, per_day: num, finished: num, failed: num, rolled_back: num, failure_rate: num.nullable() }),
+  deploys: z.object({ ready: num, per_day: num.nullable(), finished: num, failed: num, rolled_back: num, failure_rate: num.nullable() }),
   lead: z.object({ n: num, median_hours: num.nullable() }),
   restore: z.object({ n: num, days: num, median_minutes: num.nullable() }),
   coverage: z.array(z.object({ product: z.string(), coverage: num, at: iso })),
@@ -145,6 +153,8 @@ export type Release = z.infer<typeof Release>
 
 export const Releases = z.object({
   can_add: z.boolean(),
+  /** the anonymity check is the owner's to sign (D-DEV-08) */
+  can_sign_anonymity: z.boolean(),
   products: z.array(Product),
   releases: z.array(Release),
   current: Release.extend({

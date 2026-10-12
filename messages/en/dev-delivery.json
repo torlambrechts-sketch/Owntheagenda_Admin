@@ -27,7 +27,8 @@
       "not_connected": "The intake could not be reached.",
       "fresh_mfa": "Confirm with your authenticator code first.",
       "owner_only": "Only the owner can do this.",
-      "days": "Choose a period of 7 to 365 days."
+      "days": "Choose a period of 7 to 365 days.",
+      "repository": "A repository is owner/name, as GitHub writes it."
     },
     "mfa": {
       "title": "Confirm it is you",
@@ -61,8 +62,8 @@
     },
     "checks": {
       "tests": {
-        "release": "Tests pass (unit, integration, end-to-end)",
-        "gate": "CI: unit, integration and end-to-end tests"
+        "release": "CI test suites pass",
+        "gate": "CI: test suites pass"
       },
       "migrations": {
         "release": "No database migrations waiting for production",
@@ -131,7 +132,9 @@
         "noProject": "No Vercel project is set to this application",
         "rls": "No RLS or anonymity suite in the CI result",
         "deps": "The CI result carries no dependency findings",
-        "noCi": "No CI result for this commit"
+        "noCi": "No CI result for this commit",
+        "noAnonymity": "No anonymity suite in the CI result",
+        "noTests": "No test suite in the CI result"
       },
       "fail": {
         "failing": "{failed} of {total} failing",
@@ -151,7 +154,7 @@
       "complete": "Complete the checklist to record",
       "completeTitle": "{n, plural, one {# item is} other {# items are}} still open",
       "recordedButton": "✓ Recorded · {day}",
-      "recordedToast": "Release recorded · {n, plural, =0 {no note} one {# note} other {# notes}} published",
+      "recordedToast": "Release recorded · {n, plural, =0 {no note added to the changelog} one {# note added to the changelog (not public yet)} other {# notes added to the changelog (not public yet)}}",
       "signedToast": "Signed off",
       "unsignedToast": "Sign-off withdrawn",
       "rollbackPlan": "Rollback plan",
@@ -182,10 +185,11 @@
       "form": {
         "product": "Application",
         "name": "Name",
-        "namePlaceholder": "v2.15.0",
+        "namePlaceholder": "e.g. v2.15",
         "planned": "Planned for",
         "sha": "Commit (optional)",
-        "shaPlaceholder": "7 to 40 hex characters"
+        "shaPlaceholder": "a91f2c7",
+        "shaHint": "7 to 40 hex characters"
       },
       "changelog": {
         "title": "Changelog",
@@ -216,7 +220,8 @@
         "noRollback": "No rollback",
         "rolledBack": "Rolled back {n}×",
         "notes": "{n, plural, one {# note} other {# notes}}"
-      }
+      },
+      "anonymityOwner": "Only the owner signs the anonymity check."
     },
     "gate": {
       "title": "Release gate · {release}",
@@ -247,7 +252,8 @@
         "empty": "No release yet.",
         "open": "Open",
         "recorded": "Recorded · {day}"
-      }
+      },
+      "anonymityOwner": "Only the owner signs the anonymity check."
     },
     "register": {
       "title": "Integrations register",
@@ -328,7 +334,7 @@
         "title": "{name}: owner and upcoming change",
         "owner": "Owner",
         "change": "Upcoming change",
-        "changePlaceholder": "v25 sunsets 27 Jan — upgrade to v26",
+        "changePlaceholder": "What changes, and when",
         "due": "Due",
         "url": "Link to the announcement",
         "none": "None announced",
@@ -355,7 +361,7 @@
       "at": "{ref} · {sha} · {ago}",
       "depsHigh": "{n, plural, one {# high finding} other {# high findings}} in dependencies",
       "depsCounts": "{critical} critical · {high} high · {moderate} moderate",
-      "depsModerate": "{n, plural, one {# moderate dependency update} other {# moderate dependency updates}}",
+      "depsModerate": "{n, plural, one {# moderate dependency finding} other {# moderate dependency findings}}",
       "depsNoHigh": "No high or critical findings",
       "depsNone": "No dependency findings",
       "migrations": "{n, plural, one {# database migration} other {# database migrations}} waiting for production",
@@ -391,13 +397,19 @@
       },
       "cycleNone": "These need pull request times from GitHub, which Sentral does not read.",
       "health": "Health",
-      "prodDeploys": "Production deploys · {days} days",
-      "prodBad": "Failed or rolled back · {days} days",
       "flags": "Feature flags",
       "flagsTitle": "Needs Orgpuls' flags.list command",
       "coverage": "Test coverage · {app}",
       "coverageNone": "Test coverage",
-      "coverageTitle": "Arrives with the CI's result when it sends a coverage figure"
+      "coverageTitle": "Arrives with the CI's result when it sends a coverage figure",
+      "frequencySince": "production deploys, all apps · since {day}",
+      "escaped": "Bugs escaped to production",
+      "escapedTitle": "Bugs from customers' tickets in the last 30 days · goal under {goal}",
+      "perMonth": "{n} / month",
+      "capacity": "Capacity vs planned",
+      "capacityTitle": "Points done of points committed in {name}",
+      "capacityNone": "No sprint with committed points is running",
+      "points": "{done} / {committed} pts"
     },
     "env": {
       "preview": "Preview",
@@ -431,7 +443,9 @@
       "rlsFor": "RLS and anonymity tests · {app}",
       "failing": "{n} failing",
       "passing": "{n} passing",
-      "pr": "{name} · PR #{n}"
+      "pr": "{name} · PR #{n}",
+      "rlsOnly": "Row-level security tests",
+      "rlsOnlyFor": "Row-level security tests · {app}"
     },
     "connect": {
       "state": {
@@ -482,7 +496,24 @@
         "request": "The request",
         "requestNote": "A post older than five minutes is refused; a delivery id is kept once, so a repeat changes nothing.",
         "fields": "Only these fields are kept: ids, shas, counts and file names. Never send test output or logs.",
-        "copyExample": "Copy the example"
+        "copyExample": "Copy the example",
+        "step5": "Bind the repository to its product below: a post from a repository that is not bound, or that names another product, is refused.",
+        "repos": "Repositories",
+        "reposNote": "One secret signs every repository's posts, so each repository is bound to the one product it reports on.",
+        "reposOwner": "Only the owner binds a repository.",
+        "noRepos": "No repository is bound: every CI post is refused until one is.",
+        "lastPost": "last post {ago}",
+        "noPost": "no post yet",
+        "boundBy": "bound by {by}",
+        "repo": "Repository",
+        "repoPlaceholder": "owner/name",
+        "repoProduct": "Product",
+        "repoShape": "owner/name, as in the repository's GitHub address",
+        "bind": "Bind",
+        "unbind": "Unbind",
+        "unbindConfirm": "Unbind {repo}? Its CI posts are refused from now on.",
+        "boundToast": "Repository bound",
+        "unboundToast": "Repository unbound"
       }
     },
     "repo": {

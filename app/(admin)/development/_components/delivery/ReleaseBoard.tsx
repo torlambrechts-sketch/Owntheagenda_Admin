@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import Link from 'next/link'
 import type { Route } from 'next'
 import { useRouter } from 'next/navigation'
@@ -81,7 +81,9 @@ function ReleaseCard({ data, cur }: { data: Releases; cur: CurrentRelease }) {
       {items.map((c) => {
         const x = text(c)
         const on = c.state === 'pass'
-        const toggle = canAct && c.kind === 'manual'
+        // the anonymity check is the owner's to sign (D-DEV-08); anyone else sees why
+        const ownerOnly = canAct && c.key === 'anonymity' && !data.can_sign_anonymity
+        const toggle = canAct && c.kind === 'manual' && !ownerOnly
         const body = (
           <>
             <span className={`flex h-[18px] w-[18px] flex-none items-center justify-center rounded-5 border-[1.5px] border-ink text-10 ${on ? 'bg-ok-bg' : 'bg-transparent'}`} aria-hidden>
@@ -104,6 +106,7 @@ function ReleaseCard({ data, cur }: { data: Releases; cur: CurrentRelease }) {
                 {body}
               </button>
             ) : <div className={row}>{body}</div>}
+            {ownerOnly ? <span className="-mt-1 text-11 text-muted">{t('anonymityOwner')}</span> : null}
             {c.key === 'rollback' && rollback !== null ? (
               <div className="flex flex-col gap-2 rounded-12 bg-canvas p-3">
                 <label className={d.field}>
@@ -129,6 +132,7 @@ function ReleaseCard({ data, cur }: { data: Releases; cur: CurrentRelease }) {
       >
         {label}
       </button>
+      {open && !data.can_add ? <span className="text-11.5 text-muted">{t('noRight')}</span> : null}
       {mfa}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-11.5 text-muted">
         <span>
@@ -176,12 +180,14 @@ function ReleaseFields({ name, setName, planned, setPlanned, sha, setSha }: {
   name: string; setName: (v: string) => void; planned: string; setPlanned: (v: string) => void; sha: string; setSha: (v: string) => void
 }) {
   const t = useTranslations('devDelivery.releases.form')
+  const hint = useId()
   return (
     <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
       <label className={d.field}>{t('name')}<input value={name} maxLength={80} onChange={(e) => setName(e.target.value)} placeholder={t('namePlaceholder')} className={d.input} /></label>
       <label className={d.field}>{t('planned')}<input type="date" value={planned} onChange={(e) => setPlanned(e.target.value)} className={d.input} /></label>
       <label className={d.field}>{t('sha')}<input value={sha} maxLength={40} onChange={(e) => setSha(e.target.value.toLowerCase())} placeholder={t('shaPlaceholder')}
-        className={`${d.input} ${d.mono} text-12`} /></label>
+        aria-describedby={hint} className={`${d.input} ${d.mono} text-12`} />
+        <span id={hint} className="text-11.5 font-normal text-muted">{t('shaHint')}</span></label>
     </div>
   )
 }

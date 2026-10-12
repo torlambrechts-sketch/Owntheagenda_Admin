@@ -1,6 +1,7 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import {
-  bugMarkdown, bugPath, bugStatus, dueState, durationParts, featureMarkdown, featurePath, fileStatus, initials, linkToken, neighbour,
+  bugMarkdown, bugPath, bugStatus, dueState, durationParts, featureMarkdown, featurePath, fileStatus, fixedToastKey, initials, linkToken, neighbour,
   parseReleaseNotes, parseSpecDraft, parseTaskPlan, share, slug, sprintDates, yaml, type FeatureRecord,
 } from '../app/(admin)/development/_components/core/logic'
 
@@ -122,5 +123,23 @@ describe('Development: the Markdown roadmap', () => {
     expect(bugStatus({ state: 'open', workStatus: null })).toBe('backlog')
     expect(bugStatus({ state: 'fixed', workStatus: null })).toBe('done')
     expect(bugStatus({ state: 'open', workStatus: 'staging' })).toBe('staging')
+  })
+})
+
+describe('Development: «Mark fixed» says what happened', () => {
+  it('counts tickets resolved with the reply, and says when no email could be sent', () => {
+    expect(fixedToastKey({ resolved: false, notified: 0, mailReady: null })).toBe('fixedToast')
+    expect(fixedToastKey({ resolved: true, notified: 2, mailReady: true })).toBe('fixedToastProblem')
+    expect(fixedToastKey({ resolved: true, notified: 2, mailReady: false })).toBe('fixedToastNoMail')
+    expect(fixedToastKey({ resolved: true, notified: 0, mailReady: false })).toBe('fixedToastProblem')
+  })
+  it('never words it as customers told or notified', () => {
+    const read = (l: string) => JSON.parse(readFileSync(new URL(`../messages/${l}/dev-core.json`, import.meta.url), 'utf8')).devCore
+    for (const l of ['en', 'no']) {
+      const b = read(l).bugs
+      for (const k of ['fixedToastProblem', 'fixedToastNoMail']) expect(b[k], `${l} ${k}`).not.toMatch(/told|notified|fått beskjed|varslet/)
+      expect(read(l).jobs.kpi.acceptedSub, `${l} acceptedSub`).not.toMatch(/edited|redigert/)
+      expect(read(l).roadmap.note, `${l} roadmap.note`).not.toMatch(/tracker/i)
+    }
   })
 })

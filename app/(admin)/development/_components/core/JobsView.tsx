@@ -37,7 +37,7 @@ export function JobsView({ data, ai, nf, now }: { data: Jobs; ai: AiStatus | nul
     <div className="flex flex-col gap-[14px]">
       <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(160px,1fr))]">
         <Kpi label={t('kpi.drafts')} value={formatNumber(k.drafts, nf)} sub={t('kpi.draftsSub', { calls: k.calls, failed: k.failed })} />
-        <Kpi label={t('kpi.accepted')} value={accepted === null ? t('dash') : `${accepted} %`} tone="text-link" sub={t('kpi.acceptedSub')} />
+        <Kpi label={t('kpi.accepted')} value={accepted === null ? t('dash') : `${accepted} %`} tone={accepted === null ? 'text-ink' : 'text-link'} sub={t('kpi.acceptedSub')} />
         <Kpi label={t('kpi.median')} value={median} sub={t('kpi.medianSub')} />
         <Kpi label={t('kpi.spend')} value={formatNumber(k.tokens_month, nf)} sub={t('kpi.spendSub')} title={t('kpi.spendTitle')} />
       </div>

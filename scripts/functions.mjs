@@ -30,7 +30,7 @@ import { readFileSync } from 'node:fs'
 const REF = process.env.PLATFORM_PROJECT_REF ?? 'zuvqbaejoktpekfsiyyr'
 const TOKEN = process.env.SB_MCP_PAT ?? process.env.SUPABASE_ACCESS_TOKEN
 const FUNCTIONS = ['orgpuls-events', 'product-command', 'secret-intake', 'session-report', 'storage-sign', 'jobs-run', 'mail-run', 'mail-events', 'search-console-run', 'web-collect', 'seo-crawl', 'pagespeed-run', 'ads-run', 'ads-oauth', 'ai-run', 'dev-events', 'csat']
-const SHARED = ['_shared/signing.ts', '_shared/orgpuls.ts', '_shared/secrets.ts', '_shared/zip.ts', '_shared/transcript.ts', '_shared/privacy-package.ts', '_shared/brevo.ts', '_shared/brevo-events.ts', '_shared/mail-render.ts', '_shared/mail-texts.gen.ts', '_shared/google.ts', '_shared/web-collect.ts', '_shared/seo-crawl.ts', '_shared/pagespeed.ts', '_shared/ads.ts', '_shared/dev-events.ts', '_shared/csat.ts']
+const SHARED = ['_shared/signing.ts', '_shared/orgpuls.ts', '_shared/secrets.ts', '_shared/zip.ts', '_shared/transcript.ts', '_shared/privacy-package.ts', '_shared/brevo.ts', '_shared/brevo-events.ts', '_shared/mail-render.ts', '_shared/mail-texts.gen.ts', '_shared/google.ts', '_shared/web-collect.ts', '_shared/seo-crawl.ts', '_shared/pagespeed.ts', '_shared/ads.ts', '_shared/dev-events.ts', '_shared/csat.ts', '_shared/body.ts']
 const ROOT = 'supabase/functions'
 
 execFileSync('npx', ['-y', 'deno', 'check', '--config', `${ROOT}/deno.json`, ...FUNCTIONS.map((f) => `${ROOT}/${f}/index.ts`)], { stdio: 'inherit' })

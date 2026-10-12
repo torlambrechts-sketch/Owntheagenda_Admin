@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
-import type { Connection } from '@/lib/data/dev-delivery'
-import { connectSource, disconnectSource, setProject } from '../../delivery-actions'
+import type { Connection, Deploys } from '@/lib/data/dev-delivery'
+import { bindRepo, connectSource, disconnectSource, setProject } from '../../delivery-actions'
 import { CI_EXAMPLE, CI_HEADERS } from './logic'
 import { CopyButton, useRun } from './kit'
 import { d } from './styles'
@@ -13,11 +13,13 @@ type Source = 'vercel' | 'ci'
 /**
  * The two connections (0078 v3_intake / v3_disconnect: the owner, a fresh second factor): Vercel's deployment webhook and
  * the products' CI. Each card says what to paste where, and takes the signing secret into Vault through secret-intake; the
- * secret never comes back. Vercel's projects are mapped to the applications here (Development › Configure).
+ * secret never comes back. Vercel's projects are mapped to the applications here (Development › Configure). One CI secret
+ * signs every repository's posts (X-V3-1), so the owner binds each repository to its product (0080 dev_ci_repo_set); the
+ * database refuses a post from a repository that is not bound, or that names another product.
  */
-export function Connections({ url, now, vercel, ci, canManage, canConfigure, projects, products }: {
+export function Connections({ url, now, vercel, ci, canManage, canConfigure, projects, products, repos }: {
   url: string | null; now: number; vercel: Connection; ci: Connection; canManage: boolean; canConfigure: boolean
-  projects: { id: string; name: string; product: string | null }[]; products: { key: string; name: string }[]
+  projects: { id: string; name: string; product: string | null }[]; products: { key: string; name: string }[]; repos: Deploys['ci_repos']
 }) {
   const t = useTranslations('devDelivery.connect')
   const { run, pending, mfa } = useRun()
@@ -57,7 +59,9 @@ export function Connections({ url, now, vercel, ci, canManage, canConfigure, pro
           <li>{t('ci.step2')}</li>
           <li>{t('ci.step3')}</li>
           <li>{t('ci.step4')}</li>
+          <li>{t('ci.step5')}</li>
         </ol>
+        <Repos repos={repos} products={products} now={now} canManage={canManage} />
         <details className="text-12.5">
           <summary className="cursor-pointer font-semibold">{t('ci.request')}</summary>
           <div className="mt-2 flex flex-col gap-2">
@@ -69,6 +73,59 @@ export function Connections({ url, now, vercel, ci, canManage, canConfigure, pro
           </div>
         </details>
       </Card>
+    </div>
+  )
+}
+
+/** the repositories bound to a product: who bound each, its newest post; the owner binds and unbinds */
+function Repos({ repos, products, now, canManage }: { repos: Deploys['ci_repos']; products: { key: string; name: string }[]; now: number; canManage: boolean }) {
+  const t = useTranslations('devDelivery.connect.ci')
+  const format = useFormatter()
+  const { run, pending, mfa } = useRun()
+  const [repo, setRepo] = useState('')
+  const [product, setProduct] = useState(products[0]?.key ?? 'sentral')
+  const name = (key: string) => products.find((p) => p.key === key)?.name ?? key
+  const shapeOk = /^[A-Za-z0-9][A-Za-z0-9_-]{0,38}\/(?!\.\.?$)[A-Za-z0-9_.-]{1,100}$/.test(repo.trim())
+  return (
+    <div className="flex flex-col gap-[6px] border-t border-line pt-3">
+      <b className="text-13">{t('repos')}</b>
+      <span className="text-11.5 text-muted">{t('reposNote')}</span>
+      {repos.length === 0 ? <span className="text-12.5 font-semibold text-warn-ink">{t('noRepos')}</span> : null}
+      {repos.map((r) => (
+        <div key={r.repository} className="flex flex-wrap items-center justify-between gap-2 text-12.5">
+          <span className="flex min-w-0 flex-col">
+            <span className={`${d.mono} text-12 [overflow-wrap:anywhere]`}>{r.repository}</span>
+            <span className="text-11 text-muted">
+              {[name(r.product), r.last_run_at ? t('lastPost', { ago: format.relativeTime(new Date(r.last_run_at), now) }) : t('noPost'),
+                t('boundBy', { by: r.bound_by ?? '—' })].join(' · ')}
+            </span>
+          </span>
+          {canManage ? (
+            <button type="button" disabled={pending}
+              onClick={() => { if (window.confirm(t('unbindConfirm', { repo: r.repository }))) run(() => bindRepo({ repository: r.repository, product: null }), () => t('unboundToast')) }}
+              className={d.small}>{t('unbind')}</button>
+          ) : null}
+        </div>
+      ))}
+      {canManage ? (
+        <div className="flex flex-wrap items-end gap-2">
+          <label className={`${d.field} min-w-[180px] flex-[1_1_200px]`}>
+            {t('repo')}
+            <input value={repo} maxLength={140} spellCheck={false} autoComplete="off" onChange={(e) => setRepo(e.target.value)} placeholder={t('repoPlaceholder')}
+              className={`${d.input} ${d.mono} text-12`} />
+          </label>
+          <label className={`${d.field} w-[160px]`}>
+            {t('repoProduct')}
+            <select value={product} onChange={(e) => setProduct(e.target.value)} className={`${d.select} text-12`}>
+              {products.map((p) => <option key={p.key} value={p.key}>{p.name}</option>)}
+            </select>
+          </label>
+          <button type="button" disabled={pending || !shapeOk} onClick={() => run(() => bindRepo({ repository: repo.trim(), product }), () => t('boundToast'), () => setRepo(''))}
+            className={`${d.smallPrimary} mb-[1px]`}>{t('bind')}</button>
+          {repo.trim() && !shapeOk ? <span className="basis-full text-11.5 text-muted">{t('repoShape')}</span> : null}
+        </div>
+      ) : <span className="text-11.5 text-muted">{t('reposOwner')}</span>}
+      {mfa}
     </div>
   )
 }

@@ -139,7 +139,8 @@ export function envRows<D extends DeploymentLite>(projects: ProjectLite[], lates
 }
 
 // ---------------------------------------------------------------------------
-// the CI card: the exact request a product's CI sends (the starter kit's scripts/sentral-report.mjs builds it)
+// the CI card: the exact request a product's CI sends (the starter kit's scripts/sentral-report.mjs builds it). The
+// repository is GitHub's owner/name; the owner binds it to its product in Sentral, or the post is refused (0080).
 export const CI_HEADERS = `content-type: application/json
 x-sentral-timestamp: <unix seconds>
 x-sentral-signature: sha256=<hex HMAC-SHA256 of "<timestamp>.<body>" under SENTRAL_CI_SECRET>`
@@ -148,6 +149,7 @@ export const CI_EXAMPLE = `{
   "v": 1,
   "delivery": "<unique per post, e.g. \${GITHUB_RUN_ID}-\${GITHUB_RUN_ATTEMPT}-orgpuls>",
   "product": "orgpuls",
+  "repository": "<owner>/<repo>",
   "sha": "<the full commit sha>",
   "ref": "main",
   "pr": null,

@@ -8,7 +8,8 @@ import { CHECK_KEYS, INTEGRATION_KEYS, MANUAL } from './_components/delivery/log
 
 /**
  * Development › the delivery half (0080): releases and their checklist, the changelog (release notes, 0078), the
- * integrations register, the Vercel projects' applications and the two connections (Vercel's webhook secret and the CI's).
+ * integrations register, the Vercel projects' applications, the repositories bound to a product and the two connections
+ * (Vercel's webhook secret and the CI's).
  * Every input is parsed; every answer is `{ ok: true, … }` or `{ ok: false, code, detail }`. The database checks the right,
  * the owner and the fresh second factor again. A signing secret goes from the form to secret-intake under a one-time intake
  * number and nowhere else: it is not logged, kept or returned.
@@ -137,6 +138,17 @@ export async function planDone(input: unknown): Promise<Res> {
   const p = uuid.safeParse(input)
   if (!p.success) return bad()
   const r = await rpc('dev_integration_plan_done', { p_plan: p.data }, any)
+  done()
+  return r.ok ? { ok: true } : fail(r)
+}
+
+// ---------------------------------------------------------------------------
+// the repositories whose CI may post: the owner binds each to its product (fresh second factor), or unbinds it
+const repository = z.string().trim().toLowerCase().regex(/^[a-z0-9][a-z0-9_-]{0,38}\/(?!\.\.?$)[a-z0-9_.-]{1,100}$/)
+export async function bindRepo(input: unknown): Promise<Res> {
+  const p = z.object({ repository, product: product.nullable() }).safeParse(input)
+  if (!p.success) return bad(String(p.error.issues[0]?.path[0] ?? ''))
+  const r = await rpc('dev_ci_repo_set', { p_repository: p.data.repository, p_product: p.data.product }, any)
   done()
   return r.ok ? { ok: true } : fail(r)
 }

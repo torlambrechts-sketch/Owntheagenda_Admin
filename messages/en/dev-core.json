@@ -19,7 +19,7 @@
     "roadmap": {
       "all": "All",
       "filter": "Products",
-      "note": "Roadmap = outcomes · tasks live in the tracker",
+      "note": "Roadmap = outcomes · tasks live on the work board",
       "lanes": {
         "now": "Now",
         "next": "Next",
@@ -148,7 +148,7 @@
       "noBug": "No bug",
       "pointsRange": "Points are a whole number from 0 to 100.",
       "sprintSaved": "Sprint saved",
-      "sprintHint": "Sprint 41"
+      "sprintHint": "Sprint name"
     },
     "bugs": {
       "dash": "—",
@@ -240,7 +240,10 @@
       "fixNeedsRight": "Resolving the problem needs Tickets › Edit others.",
       "fixMessage": "Message to the customers on the open linked tickets",
       "fixedToast": "Fixed",
-      "fixedToastProblem": "Fixed · problem resolved · {n, plural, one {# ticket} other {# tickets}} told"
+      "fixedToastProblem": "Fixed · problem resolved{n, plural, =0 {} one { · # ticket resolved with your reply} other { · # tickets resolved with your reply}}",
+      "fixedToastNoMail": "Fixed · problem resolved · {n, plural, one {# ticket} other {# tickets}} resolved with your reply · not emailed: mail is not ready for this application",
+      "ticketsPlaceholder": "Ticket numbers, e.g. T-123",
+      "ticketPlaceholder": "e.g. T-123"
     },
     "specs": {
       "status": {
@@ -287,7 +290,8 @@
       "newTitle": "New spec",
       "add": "Add the spec",
       "added": "Spec added",
-      "noItem": "None: a spec of its own"
+      "noItem": "None: a spec of its own",
+      "signNoRight": "Signing off needs Development › Add."
     },
     "md": {
       "generated": "generated {time}",
@@ -323,7 +327,8 @@
         "severity": "severity",
         "assignee_id": "assignee",
         "problem_id": "problem"
-      }
+      },
+      "readOnlyNote": "Changing the status or the owner needs Development › Add."
     },
     "log": {
       "dev_roadmap_added": {
@@ -437,7 +442,7 @@
         "drafts": "Drafts · 30 d",
         "draftsSub": "{calls, plural, one {# call} other {# calls}} · {failed} failed",
         "accepted": "Accepted",
-        "acceptedSub": "used by a person, then edited",
+        "acceptedSub": "used by a person",
         "median": "Median time to draft",
         "medianSub": "from the request",
         "spend": "Spend",

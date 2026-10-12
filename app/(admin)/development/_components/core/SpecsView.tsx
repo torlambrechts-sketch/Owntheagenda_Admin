@@ -104,6 +104,7 @@ function Detail({ s, canEdit }: { s: Spec; canEdit: boolean }) {
           )
         })}
       </div>
+      {!canEdit ? <span className="text-11.5 text-muted">{t('signNoRight')}</span> : null}
     </div>
   )
 }

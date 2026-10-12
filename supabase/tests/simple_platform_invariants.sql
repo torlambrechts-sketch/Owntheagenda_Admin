@@ -39,8 +39,8 @@ select pg_temp.check((select rights @> array['campaigns:see', 'campaigns:add', '
 select pg_temp.check((select rights @> array['tickets:see', 'global:see'] from app.permission_sets where key = 'support'), 'Support keeps tickets and Global');
 select pg_temp.check((select rights <@ x and rights @> x
                       from app.permission_sets, (select array(select s || ':' || a from unnest(array['deals', 'projects', 'campaigns', 'global', 'tickets']) s,
-                                                                                       unnest(array['see', 'reports_others']) a) x) v
-                      where key = 'analyst'), 'Read-only sees and reads reports, nothing else');
+                                                                                       unnest(array['see', 'reports_others']) a) || array['dev:see'] x) v
+                      where key = 'analyst'), 'Read-only sees and reads reports (and sees Development, 0078), nothing else');
 select pg_temp.check(not exists (select 1 from app.admins a join app.permission_sets p on p.id = a.permission_set_id where a.active and not p.offered),
                      'nobody holds a set that is not offered (Finance → Read-only, Projects → Sales)');
 select pg_temp.check((select p.key from app.admins a join app.permission_sets p on p.id = a.permission_set_id where a.email = 'sara@orgpuls.no') = 'analyst'

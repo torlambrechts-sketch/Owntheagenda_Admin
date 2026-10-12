@@ -148,14 +148,14 @@ function Preview({ data, product, productName, inApp, page, aiConnected }: { dat
               key={k}
               type="button"
               disabled
-              title={t('actions.why')}
+              title={inApp ? t('actions.whyApp') : t('actions.whyWeb')}
               className={`h-[38px] cursor-not-allowed rounded-10 border text-12 font-bold text-ink opacity-60 ${i === 0 ? 'border-ink bg-primary' : 'border-line bg-surface'}`}
             >
               {t(`actions.${k}`)}
             </button>
           ))}
         </div>
-        <Why>{t('actions.why')}</Why>
+        <Why>{inApp ? t('actions.whyApp') : t('actions.whyWeb')}</Why>
       </div>
     </div>
   )
@@ -170,7 +170,7 @@ function Captured({ data, productName, inApp }: { data: Widget; productName: str
   const subs = r?.subscriptions.map((s) => `${s.product}: ${s.status && st.has(s.status) ? st(s.status) : s.status ?? dash}`).join(' · ')
   const rows: [string, string][] = inApp ? [
     [t('user'), r ? [r.person ?? dash, r.role ?? dash].join(' · ') : dash],
-    [t('organization'), r?.organization ? [r.organization.name, r.organization.org_number ? orgNr(r.organization.org_number) : null].filter(Boolean).join(' · ') : dash],
+    [t('organization'), r?.organization ? [r.organization.name, r.organization.org_number ? orgNr(r.organization.org_number) : null, r.organization.band].filter(Boolean).join(' · ') : dash],
     [t('plan'), subs || dash],
     [t('page'), r?.page ?? dash],
     [t('lastError'), `${dash} · ${notSent}`],

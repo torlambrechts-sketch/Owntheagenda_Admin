@@ -68,7 +68,7 @@ export function ResultsView({ data, product, nf }: { data: Results; product: str
         <Gaps data={data} product={product} />
       </div>
       <div className={`${card} overflow-hidden`}>
-        <div className={cardHead}><b className="text-15">{t('articles.title')}</b><span className="text-12 text-muted">{t('articles.definition')}</span></div>
+        <div className={cardHead}><b className="text-15">{t('articles.title')}</b><span className="whitespace-nowrap text-12 text-muted">{t('articles.definition')}</span></div>
         {!data.measured ? <div className="border-b border-line px-[18px] py-[9px]"><Why>{t('articles.notMeasured')}</Why></div> : null}
         {data.articles.length === 0 ? <div className="px-[18px] py-[14px] text-12.5 text-muted">{t('articles.empty')}</div> : null}
         {data.articles.map((a) => (
@@ -99,7 +99,7 @@ function Gaps({ data, product }: { data: Results; product: string }) {
   })
   return (
     <div className={`${card} overflow-hidden`}>
-      <div className={cardHead}><b className="text-15">{t('gaps.title')}</b><span className="text-12 text-muted">{t('gaps.period', { days: data.days })}</span></div>
+      <div className={cardHead}><b className="text-15">{t('gaps.title')}</b><span className="whitespace-nowrap text-12 text-muted">{t('gaps.period', { days: data.days })}</span></div>
       {data.gaps.length === 0 ? <div className="border-b border-line px-[18px] py-[10px] text-12.5 text-muted">{t('gaps.empty')}</div> : null}
       {data.gaps.map((g) => {
         const on = done.includes(g.category_key)

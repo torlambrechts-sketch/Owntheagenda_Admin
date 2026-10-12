@@ -1,35 +1,25 @@
 /**
- * The csat function's decisions (0081), pure so the tests (Node) run the same code. A request carries a single-use token, a
- * score 1–5 and the email's language, and nothing else is read. A score is recorded only when a person's click opened the
- * link (Sec-Fetch-User: ?1, sent by browsers on a user-activated navigation): mail scanners that fetch every link in an
- * email (and would spend the token on the first score they meet) send no such header. Answers are plain text: Supabase
- * serves a GET answer of text/html as text/plain.
+ * The csat function's decisions (0081), pure so the tests (Node) run the same code. The five links in a resolution email
+ * open the public page /u/csat/<token> (app/u/csat), on the application's link address or Sentral's. Opening the page
+ * changes nothing; the page asks here, by POST, whether the token is still open and, when the person sends the score,
+ * records it. A request carries a single-use token and, to answer, a score 1–5: nothing else is read.
  */
-import { MAIL_TEXTS } from './mail-texts.gen.ts'
+export type CsatAction = { peek: string } | { answer: { token: string; score: number } } | { invalid: true }
 
-export type CsatLang = 'en' | 'no'
-export type CsatRequest = { token: string; score: number; lang: CsatLang }
-export type CsatDecision = { record: CsatRequest } | { answer: 'invalid' | 'browser' }
+export const CSAT_TOKEN = /^[A-Za-z0-9_-]{32}$/
 
-const TOKEN = /^[A-Za-z0-9_-]{32}$/
-
-/** what to do with a request: record it, or say why not (the token is never echoed) */
-export function decide(method: string, url: string, headers: Headers): CsatDecision {
-  const p = new URL(url).searchParams
-  const token = p.get('t') ?? ''
-  const score = Number(p.get('s'))
-  const lang: CsatLang = p.get('l') === 'en' ? 'en' : 'no'
-  if (method !== 'GET' || !TOKEN.test(token) || !Number.isInteger(score) || score < 1 || score > 5) return { answer: 'invalid' }
-  if (headers.get('sec-fetch-user') !== '?1') return { answer: 'browser' }
-  return { record: { token, score, lang } }
-}
-
-export function langOf(url: string): CsatLang {
-  return new URL(url).searchParams.get('l') === 'en' ? 'en' : 'no'
-}
-
-/** the page's one line, in the email's language */
-export function pageText(lang: CsatLang, outcome: 'thanks' | 'used' | 'browser' | 'invalid', score?: number): string {
-  const t = MAIL_TEXTS[lang].csat.page
-  return outcome === 'thanks' ? t.thanks.replace('{score}', String(score ?? '')) : t[outcome]
+export function parseCsat(method: string, raw: string): CsatAction {
+  if (method !== 'POST' || raw.length > 1_000) return { invalid: true }
+  let body: unknown
+  try {
+    body = JSON.parse(raw)
+  } catch {
+    return { invalid: true }
+  }
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return { invalid: true }
+  const { action, token, score } = body as Record<string, unknown>
+  if (typeof token !== 'string' || !CSAT_TOKEN.test(token)) return { invalid: true }
+  if (action === 'peek') return { peek: token }
+  if (action === 'answer' && typeof score === 'number' && Number.isInteger(score) && score >= 1 && score <= 5) return { answer: { token, score } }
+  return { invalid: true }
 }

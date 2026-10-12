@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { csatDelta, helpPathOk, parseAnswer, shares, snippetRuns, suggestedFor, ticketsDelta, componentTone, kindTone } from '../app/(admin)/customers/_components/support/logic'
-import { decide, pageText } from '../supabase/functions/_shared/csat'
+import { parseCsat } from '../supabase/functions/_shared/csat'
 import { csatLinks, ticketReply } from '../supabase/functions/_shared/mail-render'
-import { inboundItems, inboundMail, threadHeaders } from '../supabase/functions/_shared/brevo-events'
+import { inboundItems, inboundMail, inboundTally, threadHeaders } from '../supabase/functions/_shared/brevo-events'
+import { clicked, langOf, scoreOf, tokenOk } from '../app/u/csat/[token]/logic'
 
 const TOKEN = 'Abcdefghijklmnopqrstuvwxyz012-_9'
 
@@ -71,38 +72,62 @@ describe('the widget preview', () => {
 })
 
 describe('CSAT (0081)', () => {
-  const h = (o: Record<string, string> = {}) => new Headers(o)
-  it('a person\'s click records a score 1–5 with a well-formed token', () => {
-    expect(decide('GET', `https://x/functions/v1/csat?t=${TOKEN}&s=4&l=en`, h({ 'sec-fetch-user': '?1' }))).toEqual({ record: { token: TOKEN, score: 4, lang: 'en' } })
-    expect(decide('GET', `https://x/functions/v1/csat?t=${TOKEN}&s=5`, h({ 'sec-fetch-user': '?1' }))).toEqual({ record: { token: TOKEN, score: 5, lang: 'no' } })
-  })
-  it('a mail scanner\'s fetch records nothing and leaves the token', () => {
-    expect(decide('GET', `https://x/functions/v1/csat?t=${TOKEN}&s=1`, h())).toEqual({ answer: 'browser' })
-    expect(decide('GET', `https://x/functions/v1/csat?t=${TOKEN}&s=1`, h({ 'sec-fetch-mode': 'navigate' }))).toEqual({ answer: 'browser' })
+  const body = (o: unknown) => JSON.stringify(o)
+  it('the function takes a peek or an answer by POST, a well-formed token and a score 1–5', () => {
+    expect(parseCsat('POST', body({ action: 'peek', token: TOKEN }))).toEqual({ peek: TOKEN })
+    expect(parseCsat('POST', body({ action: 'answer', token: TOKEN, score: 4 }))).toEqual({ answer: { token: TOKEN, score: 4 } })
   })
   it('nothing but a score and a token is accepted', () => {
-    for (const q of [`t=${TOKEN}&s=0`, `t=${TOKEN}&s=6`, `t=${TOKEN}&s=3.5`, `t=${TOKEN}`, `t=short&s=3`, `t=${TOKEN}x&s=3`, 's=3']) {
-      expect(decide('GET', `https://x/functions/v1/csat?${q}`, h({ 'sec-fetch-user': '?1' }))).toEqual({ answer: 'invalid' })
+    for (const b of [{ action: 'answer', token: TOKEN, score: 0 }, { action: 'answer', token: TOKEN, score: 6 }, { action: 'answer', token: TOKEN, score: 3.5 },
+                     { action: 'answer', token: TOKEN, score: '3' }, { action: 'answer', token: TOKEN }, { action: 'peek', token: 'short' },
+                     { action: 'peek', token: `${TOKEN}x` }, { action: 'delete', token: TOKEN }, { token: TOKEN }, [TOKEN]]) {
+      expect(parseCsat('POST', body(b))).toEqual({ invalid: true })
     }
-    expect(decide('POST', `https://x/functions/v1/csat?t=${TOKEN}&s=3`, h({ 'sec-fetch-user': '?1' }))).toEqual({ answer: 'invalid' })
+    expect(parseCsat('GET', body({ action: 'peek', token: TOKEN }))).toEqual({ invalid: true })
+    expect(parseCsat('POST', 'not json')).toEqual({ invalid: true })
+    expect(parseCsat('POST', body({ action: 'peek', token: TOKEN, pad: 'x'.repeat(1000) }))).toEqual({ invalid: true })
   })
-  it('the answer is one line in the email\'s language', () => {
-    expect(pageText('no', 'thanks', 4)).toBe('Takk. Svaret ditt, 4 av 5, er registrert.')
-    expect(pageText('en', 'used')).toBe('This link has already been used or is no longer valid.')
+  it('the page reads its address: a token, a score 1–5, the email\'s language', () => {
+    expect(tokenOk(TOKEN)).toBe(true)
+    expect(tokenOk('short')).toBe(false)
+    expect([scoreOf('1'), scoreOf('5'), scoreOf('0'), scoreOf('6'), scoreOf('3.5'), scoreOf(undefined), scoreOf(['3'])]).toEqual([1, 5, null, null, null, null, null])
+    expect([langOf('en'), langOf('no'), langOf('sv'), langOf(undefined)]).toEqual(['en', 'no', 'no', 'no'])
   })
-  it('the resolving reply carries five links to the csat function, one per score', () => {
-    const links = csatLinks('https://zuvqbaejoktpekfsiyyr.supabase.co', TOKEN, 'no')!
+  it('only a person\'s click records at once; a scanner, a webview or a redirector gets the button', () => {
+    expect(clicked(new Headers({ 'sec-fetch-user': '?1' }))).toBe(true)
+    expect(clicked(new Headers())).toBe(false)
+    expect(clicked(new Headers({ 'sec-fetch-mode': 'navigate' }))).toBe(false)
+  })
+  it('the resolving reply carries five links to the public page, one per score, on the address the claim chose', () => {
+    const links = csatLinks('https://post.orgpuls.no', TOKEN, 'no')!
     expect(links).toHaveLength(5)
-    expect(links[0]).toBe(`https://zuvqbaejoktpekfsiyyr.supabase.co/functions/v1/csat?t=${TOKEN}&s=1&l=no`)
-    expect(csatLinks('https://x.example', 'not-a-token', 'no')).toBeNull()
+    expect(links[0]).toBe(`https://post.orgpuls.no/u/csat/${TOKEN}?s=1&l=no`)
+    expect(csatLinks('https://post.orgpuls.no', 'not-a-token', 'no')).toBeNull()
+    expect(csatLinks(null, TOKEN, 'no')).toBeNull()
     expect(csatLinks('javascript:alert(1)', TOKEN, 'no')).toBeNull()
+    expect(csatLinks('http://post.orgpuls.no', TOKEN, 'no')).toBeNull()
     const m = ticketReply({ lang: 'no', ref: 'T-9', subject: 's', body: 'Løst.', agent: 'Hanna', fromName: 'Orgpuls', csat: links })
     expect(m.text).toContain('Hvor fornøyd er du med hjelpen du fikk?')
-    expect(m.text).toContain(`5: https://zuvqbaejoktpekfsiyyr.supabase.co/functions/v1/csat?t=${TOKEN}&s=5&l=no`)
-    expect(m.html).toContain(`href="https://zuvqbaejoktpekfsiyyr.supabase.co/functions/v1/csat?t=${TOKEN}&amp;s=3&amp;l=no"`)
+    expect(m.text).toContain(`5: https://post.orgpuls.no/u/csat/${TOKEN}?s=5&l=no`)
+    expect(m.html).toContain(`href="https://post.orgpuls.no/u/csat/${TOKEN}?s=3&amp;l=no"`)
     expect(`${m.html}${m.text}`).not.toContain('Sentral')
     const plain = ticketReply({ lang: 'no', ref: 'T-9', subject: 's', body: 'Løst.', agent: 'Hanna', fromName: 'Orgpuls' })
     expect(plain.text).not.toContain('fornøyd')
+  })
+})
+
+describe('inbound mail outcome (0081)', () => {
+  it('a database refusal is not dropped: the delivery is retried, with codes only', () => {
+    const t = inboundTally([
+      { data: { matched: true }, error: null }, { data: { matched: true, auto_reply: true }, error: null }, { data: { matched: false }, error: null },
+      { data: null, error: { code: 'PGRST202' } }, { data: null, error: { code: '57014' } }, { data: null, error: { code: 'PGRST202' } },
+    ])
+    expect(t).toEqual({ matched: 1, auto_reply: 1, dropped: 1, failed: 3, codes: ['PGRST202', '57014'], retry: true })
+  })
+  it('an unmatched answer alone is acknowledged', () => {
+    expect(inboundTally([{ data: { matched: false }, error: null }, { data: { matched: true, duplicate: true }, error: null }]))
+      .toEqual({ matched: 1, auto_reply: 0, dropped: 1, failed: 0, codes: [], retry: false })
+    expect(inboundTally([{ data: null, error: { code: null } }]).codes).toEqual(['unknown'])
   })
 })
 

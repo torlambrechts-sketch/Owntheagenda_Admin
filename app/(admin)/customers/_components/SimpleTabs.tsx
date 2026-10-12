@@ -15,7 +15,8 @@ export function SimpleTabs({ tabs }: { tabs: { key: string; label: string; count
           className={`flex flex-none items-center gap-[7px] whitespace-nowrap rounded-999 border px-4 py-2 text-13 hover:no-underline ${t.on ? 'border-ink bg-ink font-bold text-canvas hover:text-canvas' : 'border-line-strong bg-transparent font-medium text-ink hover:text-ink'}`}
         >
           {t.label}
-          {t.count !== null ? <span className="text-11 opacity-75">{t.count}</span> : null}
+          {/* the design always renders the count's span, so a pill without a count keeps the 7 px gap after its name */}
+          <span className="text-11 opacity-75">{t.count ?? ''}</span>
         </Link>
       ))}
     </nav>

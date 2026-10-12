@@ -155,11 +155,13 @@ export async function postIncidentUpdate(input: { id: string; state: string; bod
   return { ok: true }
 }
 
-export async function resolveIncident(input: { id: string; message: string }): Promise<Result<{ notified: number }>> {
+// «notified» is the number of tickets resolved with the reply; mail_ready says whether those replies can be emailed at all
+export async function resolveIncident(input: { id: string; message: string }): Promise<Result<{ notified: number; mailReady: boolean }>> {
   const p = z.object({ id, message: z.string().trim().min(1).max(4000) }).safeParse(input)
   if (!p.success) return fail('invalid')
-  const r = await rpc('status_incident_resolve', { p_id: p.data.id, p_message: p.data.message }, z.object({ notified: z.number(), notices_cleared: z.number() }))
+  const r = await rpc('status_incident_resolve', { p_id: p.data.id, p_message: p.data.message },
+                      z.object({ notified: z.number(), notices_cleared: z.number(), mail_ready: z.boolean() }))
   if (!r.ok) return fail(r.code)
   done()
-  return { ok: true, notified: r.data.notified }
+  return { ok: true, notified: r.data.notified, mailReady: r.data.mail_ready }
 }

@@ -56,8 +56,8 @@ export function ticketReply(m: { lang: Lang; ref: string; subject: string; body:
 }
 
 /**
- * The CSAT question on the reply that resolves a ticket (0081): five links, one per score, each opening the csat function
- * with the ticket's single-use token. The links are built by the caller; this only lays them out.
+ * The CSAT question on the reply that resolves a ticket (0081): five links, one per score, each opening the public CSAT
+ * page with the ticket's single-use token. The links are built by the caller; this only lays them out.
  */
 function csatBlock(lang: Lang, links: string[]): { html: string; text: string } {
   const c = MAIL_TEXTS[lang].csat.mail
@@ -73,23 +73,18 @@ function csatBlock(lang: Lang, links: string[]): { html: string; text: string } 
   return { html, text }
 }
 
-/** the five CSAT links for one token: the csat function's address, the score and the email's language */
-export function csatLinks(functionsUrl: string, token: string, lang: Lang): string[] | null {
-  if (!/^[A-Za-z0-9_-]{32}$/.test(token)) return null
-  let base: URL
+/**
+ * The five CSAT links for one token: the public page /u/csat/<token> on the address the claim chose (the application's
+ * link address, else Sentral's public address), with the score and the email's language. Opening one changes nothing: the
+ * page records the score on a person's click or offers a button (app/u/csat).
+ */
+export function csatLinks(base: string | null | undefined, token: string, lang: Lang): string[] | null {
+  if (!base || !/^[A-Za-z0-9_-]{32}$/.test(token)) return null
   try {
-    base = new URL('/functions/v1/csat', functionsUrl)
+    return [1, 2, 3, 4, 5].map((s) => safeLink(base, `/u/csat/${token}?s=${s}&l=${lang}`))
   } catch {
     return null
   }
-  if (base.protocol !== 'https:' && base.protocol !== 'http:') return null
-  return [1, 2, 3, 4, 5].map((s) => {
-    const u = new URL(base)
-    u.searchParams.set('t', token)
-    u.searchParams.set('s', String(s))
-    u.searchParams.set('l', lang)
-    return u.toString()
-  })
 }
 
 export function invite(m: { lang: Lang; by: string | null; link: string; fromName: string }): Rendered {

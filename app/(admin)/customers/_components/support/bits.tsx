@@ -8,7 +8,8 @@ import { useTranslations } from 'next-intl'
  */
 export const card = 'rounded-20 border border-line bg-surface'
 export const cardInk = 'rounded-20 border border-ink bg-surface'
-export const cardHead = 'flex justify-between gap-[10px] border-b border-line px-[18px] py-[13px]'
+// wraps rather than squeezing: at 390 a long title pushes the period to its own line, whole (it never breaks inside)
+export const cardHead = 'flex flex-wrap justify-between gap-x-[10px] gap-y-[2px] border-b border-line px-[18px] py-[13px]'
 export const label = 'text-10.5 font-bold uppercase tracking-[.08em] text-muted'
 export const sectionLabel = 'text-11 font-bold uppercase tracking-[.1em] text-muted'
 

@@ -23,6 +23,22 @@ select pg_temp.check((select count(*) from app.web_pageviews p join app.web_sess
                      and exists (select 1 from app.web_events e join app.web_sessions s on s.id = e.session_id where s.visitor_hash = (select h from t_h) and e.name = 'signup_started'),
                      'page views and presses land in one session');
 
+-- an event that reaches Sentral before its page view starts the visit; the page view joins it and says where the visit
+-- came from, so the signup is not a second «Direct» visit (0086)
+create temp table t_h3 as select repeat('ef', 16) h;
+select public.worker_web_track(jsonb_build_object('site', 'orgpuls.com', 'visitor_hash', (select h from t_h3), 'path', '/registrer', 'event', '{"name":"signup_started"}'::jsonb));
+select public.worker_web_track(jsonb_build_object('site', 'orgpuls.com', 'visitor_hash', (select h from t_h3), 'path', '/registrer', 'referrer_host', 'www.google.com'));
+select public.worker_web_track(jsonb_build_object('site', 'orgpuls.com', 'visitor_hash', (select h from t_h3), 'path', '/registrer', 'event', '{"name":"signup_step","value":"org"}'::jsonb));
+select pg_temp.check((select count(*) from app.web_sessions where visitor_hash = (select h from t_h3)) = 1,
+                     'a page view and the events sent with it make one visit, whichever arrives first');
+select pg_temp.check((select s.channel = 'organic_search' and s.referrer_host = 'www.google.com' and s.pageviews = 1 and s.entry_path = '/registrer'
+                      from app.web_sessions s where s.visitor_hash = (select h from t_h3)),
+                     'the first page view of a visit an event started gives it its referrer and channel');
+select pg_temp.check((select count(*) from app.web_events e join app.web_sessions s on s.id = e.session_id where s.visitor_hash = (select h from t_h3)) = 2,
+                     'the signup''s events stay in that visit');
+select pg_temp.check(position('pg_advisory_xact_lock' in pg_get_functiondef('public.worker_web_ingest(jsonb)'::regprocedure)) > 0,
+                     'one visitor''s hits are taken one at a time, so two sent together cannot make two visits');
+
 -- the cap
 do $$ begin for i in 1..300 loop perform public.worker_web_track(jsonb_build_object('site', 'orgpuls.com', 'visitor_hash', repeat('cd', 16), 'path', '/side')); end loop; end $$;
 select pg_temp.check((public.worker_web_track(jsonb_build_object('site', 'orgpuls.com', 'visitor_hash', (select h2 from t_h), 'path', '/side')) ->> 'reason') = 'cap'

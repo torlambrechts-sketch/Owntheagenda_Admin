@@ -1,8 +1,9 @@
 -- product_leads_invariants.sql — a product's free-template download and demo request (0087): each becomes a ticket in the
 -- Sales queue and a CRM lead with the person captured; the ticket keeps what the form asked (template, role, organisation,
 -- the consent answer, language) and nothing else; the lead's title is the category and the template, never words of the
--- person's; the consent answer changes no marketing status; a request is taken once; a request received before there was a
--- way in is taken by the migration; the registry knows the kind.
+-- person's; the consent answer changes no marketing status; a request is taken once, and app.ticket_intake takes one received
+-- before there was a way in; a demo request opens a deal when there is a pipeline, a template download stays a lead (0088);
+-- the funnel's sign-up page is each market's address (0088); the registry knows the kind.
 \ir _helpers.psql
 begin;
 
@@ -66,6 +67,29 @@ select pg_temp.check((select category_key = 'free_template' from pg_temp.ticket_
 select pg_temp.check((select count(*) from app.tickets t join app.events_in e on e.id = t.source_event_id where e.source_id = 990000201) = 1
                      and (select count(*) from app.ticket_links k where k.ticket_id = (select id from pg_temp.ticket_of(990000201)) and k.kind = 'lead') = 1,
                      'a request is taken once');
+
+-- a demo request opens a deal in the first stage of the first pipeline, and its lead is converted to it (0088)
+select pg_temp.check((select d.pipeline_id = (select p.id from app.pipelines p where p.archived_at is null and not p.is_sample order by p.ord limit 1)
+                             and d.stage_id = (select s.id from app.stages s where s.pipeline_id = d.pipeline_id order by s.ord limit 1)
+                             and d.title = 'Demo request' and d.source = 'Demo request'
+                             and d.person_id = (select person_id from pg_temp.ticket_of(990000203))
+                             and (select converted_deal_id from pg_temp.lead_of(990000203)) = d.id
+                             and exists (select 1 from app.ticket_links k where k.ticket_id = (select id from pg_temp.ticket_of(990000203)) and k.kind = 'deal' and k.ref = d.id::text)
+                      from app.deals d where d.id = (select converted_deal_id from pg_temp.lead_of(990000203))),
+                     'a demo request opens a deal in the first stage, its lead converted to it and the ticket linked to both');
+select pg_temp.check((select converted_deal_id is null from pg_temp.lead_of(990000201))
+                     and not exists (select 1 from app.ticket_links k where k.ticket_id = (select id from pg_temp.ticket_of(990000201)) and k.kind = 'deal'),
+                     'a template download stays a lead until someone qualifies it');
+update app.pipelines set archived_at = now() where archived_at is null;
+insert into app.events_in (product, source_id, kind, payload, occurred_at) values
+  ('orgpuls', 990000206, 'demo.requested', '{"name": "Uten Pipeline", "email": "uten.pipeline@example.no", "company": "Ingen AS"}', now());
+select pg_temp.check((select category_key = 'demo' from pg_temp.ticket_of(990000206)) and (select converted_deal_id is null from pg_temp.lead_of(990000206)),
+                     'without a pipeline a demo request is a ticket and a lead, as before');
+
+-- the funnel's sign-up page, by each market's address (0088)
+select pg_temp.check(app.is_signup_path('/registrer') and app.is_signup_path('/registrera') and app.is_signup_path('/sign-up')
+                     and app.is_signup_path('/signup') and not app.is_signup_path('/registreringer') and not app.is_signup_path('/sign-in'),
+                     'the sign-up page in Norway, Sweden and the United Kingdom, and nothing that only begins like it');
 
 -- the registry
 select pg_temp.check((select uses = array['tickets', 'leads'] from app.product_event_kinds where product = 'orgpuls' and kind = 'template.requested')

@@ -31,7 +31,9 @@
       "personvern": "Personvernforespørsel",
       "bug": "Feil",
       "tiltak": "Tiltak",
-      "feature_request": "Ønske om funksjon"
+      "feature_request": "Ønske om funksjon",
+      "free_template": "Gratis mal",
+      "demo": "Demoforespørsel"
     },
     "types": {
       "question": "Spørsmål",

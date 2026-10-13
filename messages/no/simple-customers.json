@@ -281,6 +281,11 @@
         "phReplyMail": "Svar til {name} — sendes på e-post fra Sentral",
         "phReplyMailNoName": "Svar — sendes på e-post fra Sentral",
         "sentMail": "Sendt — svaret går ut på e-post"
+      },
+      "lead": {
+        "template": "Mal: {template}",
+        "consentYes": "Sa ja til e-post om markedsføring",
+        "consentNo": "Sa nei til e-post om markedsføring"
       }
     }
   }

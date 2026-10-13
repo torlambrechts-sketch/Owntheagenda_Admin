@@ -238,6 +238,23 @@ function recentText(t: T, e: TimelineItem) {
   return e.event && t.has(key) ? t(key) : t('recent.eventOther')
 }
 
+/**
+ * What a free-template or demo form asked (0087), for the person following it up: the template, the organisation and role
+ * they gave, and their answer about marketing email. Those requests have no message, so this is all there is to go on.
+ */
+function leadDetails(t: T, tk: SimpleTicketDetail): string[] {
+  if (tk.category_key !== 'free_template' && tk.category_key !== 'demo') return []
+  const text = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : null)
+  const template = text(tk.context.template)
+  const consent = tk.context.consent
+  return [
+    template ? t('tickets.lead.template', { template }) : null,
+    text(tk.context.organisation),
+    text(tk.context.role),
+    typeof consent === 'boolean' ? t(consent ? 'tickets.lead.consentYes' : 'tickets.lead.consentNo') : null,
+  ].filter((x): x is string => !!x)
+}
+
 /** One ticket as the detail column draws it: header, request, thread, and what the staff member may do. */
 function ticketView(tk: SimpleTicketDetail, ctx: { t: T; age: (iso: string) => string; canEdit: boolean; canWrite: boolean; canApprove: boolean }): TicketView {
   const { t, age } = ctx
@@ -275,7 +292,7 @@ function ticketView(tk: SimpleTicketDetail, ctx: { t: T; age: (iso: string) => s
     id: tk.id,
     ref: tk.ref,
     version: tk.version,
-    meta: [t(`tickets.types.${tk.type}`), tk.organization?.name, person].filter((x): x is string => !!x),
+    meta: [t(`tickets.types.${tk.type}`), tk.organization?.name, person, ...leadDetails(t, tk)].filter((x): x is string => !!x),
     subject: tk.subject,
     status: tk.status,
     priority: tk.priority,

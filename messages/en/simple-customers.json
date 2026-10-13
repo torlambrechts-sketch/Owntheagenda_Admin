@@ -281,6 +281,11 @@
         "phReplyMail": "Reply to {name} — sent by email from Sentral",
         "phReplyMailNoName": "Reply — sent by email from Sentral",
         "sentMail": "Sent — the reply goes out by email"
+      },
+      "lead": {
+        "template": "Template: {template}",
+        "consentYes": "Said yes to marketing email",
+        "consentNo": "Said no to marketing email"
       }
     }
   }

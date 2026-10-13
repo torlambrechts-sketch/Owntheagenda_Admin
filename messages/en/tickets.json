@@ -31,7 +31,9 @@
       "personvern": "Personvern request",
       "bug": "Bug",
       "tiltak": "Tiltak",
-      "feature_request": "Feature request"
+      "feature_request": "Feature request",
+      "free_template": "Free template",
+      "demo": "Demo request"
     },
     "types": {
       "question": "Question",

@@ -51,9 +51,16 @@ export async function IntegrationsTab({ d, sc, ads, products, open, nf, app, can
     action: canMeasure && site ? { kind: 'crawl' } : null,
   }
   const gscOn = d.search_console?.status === 'connected'
+  // each site's property (0089): the properties found, and the sites Search Console gives no access to
+  const gscSites = d.search_console?.sites ?? []
+  const props = [...new Set(gscSites.map((x) => x.property).filter((x): x is string => !!x))]
+  const without = gscSites.filter((x) => !x.property).map((x) => x.hostname)
+  const gscState = gscSites.length > 1
+    ? [props.length ? t('state.connectedTo', { what: props.join(' · ') }) : t('state.noProperty'), ...(without.length ? [t('state.noPropertyFor', { sites: without.join(', ') })] : [])].join(' · ')
+    : d.search_console?.property ? t('state.connectedTo', { what: d.search_console.property }) : t('state.noProperty')
   const gsc: Card = {
     key: 'gsc', ini: 'GSC', name: t('cards.gsc.name'), on: gscOn,
-    state: gscOn ? (d.search_console?.property ? t('state.connectedTo', { what: d.search_console.property }) : t('state.noProperty')) : d.search_console?.status === 'error' ? t('state.failed') : t('state.off'),
+    state: gscOn ? gscState : d.search_console?.status === 'error' ? t('state.failed') : t('state.off'),
     desc: t('cards.gsc.desc'), feeds: ['seo', 'pages', 'tech'],
     sync: gscOn && d.search_console?.last_import_at ? t('sync.daily', { ago: ago(d.search_console.last_import_at) }) : null,
     action: { kind: 'link', label: gscOn ? t('manage') : t('connect'), href: growthHref('integrations', {}, { sub: open === 'gsc' ? null : 'gsc' }) },

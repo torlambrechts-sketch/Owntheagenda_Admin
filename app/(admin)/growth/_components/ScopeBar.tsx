@@ -11,10 +11,12 @@ import { useAgo } from '../../applications/_components/kit'
  * The scope bar (SimpleGrowth.dc.html, showScope): the period, the drill-down path (period › day › hour), the source and
  * device filters and when the figures were last fed. Every choice is an address, so the server renders the scoped figures.
  */
-export function ScopeBar({ tab, scope, channels, dayLabel, updatedAt, extra = {}, hideFilters = false, ranges = RANGES }: {
+export function ScopeBar({ tab, scope, channels, dayLabel, updatedAt, extra = {}, hideFilters = false, ranges = RANGES, sites = [] }: {
   tab: Tab
   scope: Scope
   channels: string[]
+  /** the application's sites by hostname (0089: a site per market); the picker shows when there is more than one */
+  sites?: string[]
   dayLabel: string | null
   updatedAt: string | null
   extra?: Record<string, string | number | null>
@@ -69,6 +71,7 @@ export function ScopeBar({ tab, scope, channels, dayLabel, updatedAt, extra = {}
         })}
       </nav>
       <span className="flex-1" />
+      <SiteSelect tab={tab} scope={scope} sites={sites} extra={extra} />
       {hideFilters ? null : (
         <>
           <label className={label(!!scope.src)}>
@@ -92,6 +95,39 @@ export function ScopeBar({ tab, scope, channels, dayLabel, updatedAt, extra = {}
         </>
       )}
       <span className="whitespace-nowrap text-11.5 text-faint">{updatedAt ? t('updated', { ago: ago(updatedAt) }) : t('noData')}</span>
+    </div>
+  )
+}
+
+/**
+ * Which of the application's sites the figures are for (0089: orgpuls.com, se.orgpuls.com, empvibe.com): all of them, or
+ * one. SEO reads one site's Search Console and pages, so there it is one, the first unless another is chosen. Like every
+ * scope choice it is an address. Nothing shows for an application with one site.
+ */
+function SiteSelect({ tab, scope, sites, extra }: { tab: Tab; scope: Scope; sites: string[]; extra: Record<string, string | number | null> }) {
+  const t = useTranslations('simpleGrowth.scope')
+  const router = useRouter()
+  if (sites.length < 2) return null
+  const all = tab !== 'seo'
+  const value = scope.site ?? (all ? '' : sites[0]!)
+  return (
+    <label className={`flex h-8 items-center gap-[5px] rounded-9 border pl-[10px] pr-1 text-12 text-muted ${scope.site ? 'border-ink' : 'border-line'}`}>
+      {t('site')}
+      <select value={value} onChange={(e) => router.push(growthHref(tab, { ...scope, site: e.target.value || null }, extra) as Route)}
+        className="border-none bg-transparent text-12.5 font-semibold text-ink">
+        {all ? <option value="">{t('allSites')}</option> : null}
+        {sites.map((h) => <option key={h} value={h}>{h}</option>)}
+      </select>
+    </label>
+  )
+}
+
+/** SEO's views without the scope bar still say which site they read, and let it be changed (0089) */
+export function SiteBar({ tab, scope, sites, extra = {} }: { tab: Tab; scope: Scope; sites: string[]; extra?: Record<string, string | number | null> }) {
+  if (sites.length < 2) return null
+  return (
+    <div className="flex flex-wrap items-center justify-end gap-2 rounded-16 border border-line bg-surface px-[10px] py-2">
+      <SiteSelect tab={tab} scope={scope} sites={sites} extra={extra} />
     </div>
   )
 }

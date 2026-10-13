@@ -13,7 +13,7 @@ const TONE: Record<Rule, string> = { rank: '#D4633A', deindex: '#D4633A', traffi
  * Sentral does not have. Channels are the app and email; Slack has no sender here and a ticket is for customers
  * (V-GR2-31). Changing a rule needs Campaigns › Edit others'; acknowledging needs Campaigns › Add.
  */
-export async function SeoAlertsView({ d, nf, product, canEdit, canAck }: { d: SeoAlerts; nf: NumberFormat; product: string; canEdit: boolean; canAck: boolean }) {
+export async function SeoAlertsView({ d, nf, product, site = null, canEdit, canAck }: { d: SeoAlerts; nf: NumberFormat; product: string; site?: string | null; canEdit: boolean; canAck: boolean }) {
   const t = await getTranslations('simpleGrowth.seoSuite.alerts')
   const tl = await getTranslations('simpleGrowth.integrations.log')
   const locale = await getLocale()
@@ -45,7 +45,7 @@ export async function SeoAlertsView({ d, nf, product, canEdit, canAck }: { d: Se
           <span className="text-12 text-muted">{t('rulesNote')}</span>
         </div>
         {d.rules.map((r) => (
-          <RuleRow key={r.rule} product={product} rule={r.rule} name={t(`rule.${r.rule}.n`)} cond={t(`rule.${r.rule}.cond`)} enabled={r.enabled}
+          <RuleRow key={r.rule} product={product} site={site} rule={r.rule} name={t(`rule.${r.rule}.n`)} cond={t(`rule.${r.rule}.cond`)} enabled={r.enabled}
             channels={r.channels} mailReady={d.mail_ready} canEdit={canEdit} />
         ))}
       </section>

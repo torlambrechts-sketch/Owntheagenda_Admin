@@ -89,7 +89,11 @@ export const GrowthIntegrations = z.object({
     last_seen_at: z.string().nullable(),
     sessions_24h: n,
   }),
-  search_console: z.object({ status: z.string(), property: z.string().nullable(), last_import_at: z.string().nullable(), last_error: z.string().nullable() }).nullable(),
+  search_console: z.object({
+    status: z.string(), property: z.string().nullable(), last_import_at: z.string().nullable(), last_error: z.string().nullable(),
+    /** each site's property (0089: a site per market) */
+    sites: z.array(z.object({ hostname: z.string(), property: z.string().nullable(), last_import_at: z.string().nullable(), last_error: z.string().nullable() })).catch([]),
+  }).nullable(),
   pagespeed: z.object({ status: z.string().nullable(), last_error: z.string().nullable(), key_stored: z.boolean(), last_at: z.string().nullable(), pages: n }),
   crawler: z.object({ last_at: z.string(), pages: n, error: z.string().nullable() }).nullable(),
   products: z.array(z.object({ product: z.string(), name: z.string(), last_event_at: z.string().nullable(), events_24h: n })),

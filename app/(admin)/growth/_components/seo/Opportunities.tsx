@@ -15,8 +15,8 @@ const COLS = '[grid-template-columns:minmax(0,2fr)_110px_70px_90px_96px]'
  * type chips filter through the address. «Difficulty» (KD) needs an SEO tool's index and is left out, as is the
  * «Featured snippet» kind, which needs result-page data (V-GR2-25).
  */
-export async function SeoOppsView({ opps, ot, priced, connected, scope, nf, product, canAdd }: {
-  opps: SeoOpp[]; ot: (typeof OPP_TYPES)[number]; priced: boolean; connected: boolean; scope: Scope; nf: NumberFormat; product: string; canAdd: boolean
+export async function SeoOppsView({ opps, ot, priced, connected, scope, nf, product, site = null, canAdd }: {
+  opps: SeoOpp[]; ot: (typeof OPP_TYPES)[number]; priced: boolean; connected: boolean; scope: Scope; nf: NumberFormat; product: string; site?: string | null; canAdd: boolean
 }) {
   const t = await getTranslations('simpleGrowth.seoSuite')
   const shown = opps.filter((o) => ot === 'all' || o.kind === ot)
@@ -53,7 +53,7 @@ export async function SeoOppsView({ opps, ot, priced, connected, scope, nf, prod
               <span><span className={`whitespace-nowrap rounded-999 px-[9px] py-[2px] text-11 font-bold ${KIND_BG[o.kind]}`}>{texts[i]!.type}</span></span>
               <span>{texts[i]!.effort}</span>
               <b className="whitespace-nowrap text-link">{texts[i]!.worthShort}</b>
-              <PlanButton product={product} query={o.query} kind={o.kind} path={o.path} planned={o.planned} label={t('doIt')} disabled={!canAdd} />
+              <PlanButton product={product} site={site} query={o.query} kind={o.kind} path={o.path} planned={o.planned} label={t('doIt')} disabled={!canAdd} />
             </div>
           ))}
         </div>

@@ -7,13 +7,13 @@ import { loadAdCampaigns, loadEmailConnected, loadLists, loadProposalStage, load
 import { loadCampaignDetail, loadSendTimes, loadSequenceResults } from '@/lib/data/growth-v3'
 import { loadAds, loadAudiences, loadBudget, loadCalendar, loadDeliverability, loadExperiments, loadFlows, loadFunnel, loadIntegrations, loadKeywordHistory, loadOutcomes,
   loadPages, loadScope, loadSenderDomains, loadSeoAlerts, loadSeoChanges, loadSeoClusters, loadSeoLinks, loadSeoOpps, loadSeoOverview, loadSeoPlan,
-  loadTrial } from '@/lib/data/growth'
+  loadSites, loadTrial } from '@/lib/data/growth'
 import { SEO_VIEWS, seoOpportunities, valuePerClick, type SeoView } from '@/lib/growth/seo'
 import { CAMP_VIEWS, EMAIL_VIEWS, type CampView, type EmailView } from '@/lib/growth/playbook'
 import { keywordRow, opportunities, rate } from '@/lib/growth/calc'
 import { RANGE_DAYS, SCOPED, TABS, growthHref, osloToday, parseGrowth, type Scope, type Tab } from '@/lib/growth/scope'
 import { GrowthTabs, SubTabs } from './_components/GrowthTabs'
-import { ScopeBar } from './_components/ScopeBar'
+import { ScopeBar, SiteBar } from './_components/ScopeBar'
 import { OverviewTab } from './_components/Overview'
 import { FunnelTab } from './_components/Funnel'
 import { PagesTab } from './_components/Pages'
@@ -74,7 +74,14 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
   const canAdd = can(shell, 'campaigns', 'add')
   const tabs = TABS.filter((k) => (k === 'campaigns' || k === 'email' ? see : reports))
   const tab: Tab | null = tabs.includes(p.tab) ? p.tab : tabs[0] ?? null
-  const scope: Scope = { range: p.range, day: p.day, hour: p.hour, src: p.src, dev: p.dev }
+  // the application's sites (0089: a site per market) and the one chosen, by hostname in the address; one not the
+  // application's is not chosen
+  const sitesR = tab && SCOPED.includes(tab) ? await loadSites(product) : null
+  const sites = sitesR?.ok ? sitesR.data : []
+  const chosen = p.site ? sites.find((x) => x.hostname === p.site) ?? null : null
+  const site = chosen?.id ?? null
+  const hosts = sites.map((x) => x.hostname)
+  const scope: Scope = { range: p.range, day: p.day, hour: p.hour, src: p.src, dev: p.dev, site: chosen?.hostname ?? null }
   const today = osloToday()
   const day = p.range === 'today' ? today : p.day
   const scopeLabel = day
@@ -101,12 +108,12 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
   let bar: React.ReactNode = null
   const scopeBar = (updatedAt: string | null, extra: Record<string, string | number | null> = {}, opts: { hideFilters?: boolean; seo?: boolean } = {}) => (
     <ScopeBar tab={tab!} scope={scope} channels={CHANNELS} dayLabel={day ? dayLabel(day, locale) : null} updatedAt={updatedAt} extra={extra}
-      hideFilters={opts.hideFilters} ranges={opts.seo ? ['7d', '30d', '90d'] : undefined} />
+      hideFilters={opts.hideFilters} ranges={opts.seo ? ['7d', '30d', '90d'] : undefined} sites={hosts} />
   )
   try {
     if (tab === 'overview') {
       const [sc, pages, seo, funnel] = await Promise.all([
-        loadScope(product, scope), loadPages(product, scope, null), loadSeo(product, p.range === 'today' ? '7d' : p.range), loadFunnel(product, scope, 4),
+        loadScope(product, scope, site), loadPages(product, scope, null, site), loadSeo(product, p.range === 'today' ? '7d' : p.range, site), loadFunnel(product, scope, 4, site),
       ])
       const d = need(sc)
       const f = funnel.ok ? funnel.data : null
@@ -124,11 +131,11 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
       bar = scopeBar(d.updated_at, { metric: p.metric })
       body = <OverviewTab d={d} scope={scope} metric={p.metric} nf={nf} opps={opps} />
     } else if (tab === 'funnel') {
-      const [sc, f] = await Promise.all([loadScope(product, scope), loadFunnel(product, scope, p.step)])
+      const [sc, f] = await Promise.all([loadScope(product, scope, site), loadFunnel(product, scope, p.step, site)])
       bar = scopeBar(sc.ok ? sc.data.updated_at : null, { step: p.step, lf: p.lf })
       body = <FunnelTab d={need(f)} scope={scope} scopeLabel={scopeLabel} lf={p.lf} nf={nf} />
     } else if (tab === 'pages') {
-      const [sc, pg] = await Promise.all([loadScope(product, scope), loadPages(product, scope, p.page)])
+      const [sc, pg] = await Promise.all([loadScope(product, scope, site), loadPages(product, scope, p.page, site)])
       const s = sc.ok ? sc.data : null
       bar = scopeBar(s?.updated_at ?? null, { sort: p.sort, page: p.page })
       body = <PagesTab d={need(pg)} scope={scope} sort={p.sort} nf={nf} siteRate={s ? rate(s.kpis.started, s.kpis.visitors) : null} />
@@ -143,35 +150,37 @@ export default async function GrowthPage({ searchParams }: { searchParams: Promi
       let inner: React.ReactNode = null
       if (view === 'keywords') {
         const range = p.range === 'today' ? '7d' : p.range
-        const d = need(await loadSeo(product, range))
+        const d = need(await loadSeo(product, range, site))
         const kwSel = p.kw ?? d.keywords.map((k) => keywordRow(k)).sort((a, b) => b.potential - a.potential)[0]?.query ?? null
-        const history = kwSel && d.connected ? await loadKeywordHistory(product, kwSel, RANGE_DAYS[range]) : null
+        const history = kwSel && d.connected ? await loadKeywordHistory(product, kwSel, RANGE_DAYS[range], site) : null
         bar = scopeBar(d.search_console.last_import_at, { sub: 'keywords', kt: p.kt, kw: p.kw }, { hideFilters: true, seo: true })
         inner = (
           <SeoKeywordsTab d={d} scope={{ ...scope, range }} kt={p.kt} kw={kwSel} history={history?.ok ? history.data : null} nf={nf} product={product}
             brands={brands(d.site?.hostname ?? null)} canAdd={canAdd} editOthers={can(shell, 'campaigns', 'edit_others')} />
         )
       } else if (view === 'overview') {
-        const [ov, op] = await Promise.all([loadSeoOverview(product), loadSeoOpps(product)])
+        const [ov, op] = await Promise.all([loadSeoOverview(product, site), loadSeoOpps(product, site)])
         const o = need(op)
-        inner = <SeoOverviewView d={need(ov)} opps={seoOpportunities(o)} priced={valuePerClick(o.econ).perClick !== null} nf={nf} product={product} app={app?.name ?? product} canAdd={canAdd} />
+        inner = <SeoOverviewView d={need(ov)} opps={seoOpportunities(o)} priced={valuePerClick(o.econ).perClick !== null} nf={nf} product={product} site={site} app={app?.name ?? product} canAdd={canAdd} />
       } else if (view === 'clusters') {
-        inner = <SeoClustersView d={need(await loadSeoClusters(product))} sel={p.cl} scope={scope} nf={nf} product={product} canAdd={canAdd} />
+        inner = <SeoClustersView d={need(await loadSeoClusters(product, site))} sel={p.cl} scope={scope} nf={nf} product={product} site={site} canAdd={canAdd} />
       } else if (view === 'opps') {
-        const o = need(await loadSeoOpps(product))
-        inner = <SeoOppsView opps={seoOpportunities(o)} ot={p.ot} priced={valuePerClick(o.econ).perClick !== null} connected={o.connected} scope={scope} nf={nf} product={product} canAdd={canAdd} />
+        const o = need(await loadSeoOpps(product, site))
+        inner = <SeoOppsView opps={seoOpportunities(o)} ot={p.ot} priced={valuePerClick(o.econ).perClick !== null} connected={o.connected} scope={scope} nf={nf} product={product} site={site} canAdd={canAdd} />
       } else if (view === 'plan') {
-        const [pl, op] = await Promise.all([loadSeoPlan(product, p.brief), loadSeoOpps(product)])
+        const [pl, op] = await Promise.all([loadSeoPlan(product, p.brief, site), loadSeoOpps(product, site)])
         inner = <SeoPlanView d={need(pl)} opps={op.ok ? seoOpportunities(op.data) : []} scope={scope} nf={nf} brands={brands(null)} canAdd={canAdd} />
       } else if (view === 'links') {
-        inner = <SeoLinksView d={need(await loadSeoLinks(product))} nf={nf} product={product} canAdd={canAdd} />
+        inner = <SeoLinksView d={need(await loadSeoLinks(product, site))} nf={nf} product={product} site={site} canAdd={canAdd} />
       } else if (view === 'serp') {
         inner = <SeoSerpView />
       } else if (view === 'changes') {
-        inner = <SeoChangesView d={need(await loadSeoChanges(product))} nf={nf} product={product} canAdd={canAdd} />
+        inner = <SeoChangesView d={need(await loadSeoChanges(product, site))} nf={nf} product={product} site={site} canAdd={canAdd} />
       } else if (view === 'alerts') {
-        inner = <SeoAlertsView d={need(await loadSeoAlerts(product))} nf={nf} product={product} canEdit={can(shell, 'campaigns', 'edit_others')} canAck={canAdd} />
+        inner = <SeoAlertsView d={need(await loadSeoAlerts(product, site))} nf={nf} product={product} site={site} canEdit={can(shell, 'campaigns', 'edit_others')} canAck={canAdd} />
       }
+      // the views without the scope bar still show which site they read (0089)
+      if (view !== 'keywords') bar = <SiteBar tab="seo" scope={scope} sites={hosts} extra={{ sub: view === 'overview' ? null : view }} />
       body = <div className="flex flex-col gap-[14px]">{subTabs}{inner}</div>
     } else if (tab === 'integrations') {
       const [d, seo, ads] = await Promise.all([loadIntegrations(product), loadSeo(product, '30d'), loadAds(product)])

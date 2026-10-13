@@ -13,7 +13,7 @@ const HUB = '[grid-template-columns:minmax(0,1.3fr)_50px_minmax(0,1fr)]'
  * suggestion. «Add link» records the decision and logs the change; Sentral does not edit the website, and the next crawl
  * that finds the link retires the suggestion (V-GR2-28).
  */
-export async function SeoLinksView({ d, nf, product, canAdd }: { d: SeoLinks; nf: NumberFormat; product: string; canAdd: boolean }) {
+export async function SeoLinksView({ d, nf, product, site = null, canAdd }: { d: SeoLinks; nf: NumberFormat; product: string; site?: string | null; canAdd: boolean }) {
   const t = await getTranslations('simpleGrowth.seoSuite.links')
   const mapped = d.links > 0
   const empty = (s: string) => <p className="m-0 px-[18px] py-[14px] text-12.5 text-muted">{s}</p>
@@ -32,7 +32,7 @@ export async function SeoLinksView({ d, nf, product, canAdd }: { d: SeoLinks; nf
             <span className={`${mono} text-11.5 [overflow-wrap:anywhere]`}>→ {l.to}</span>
             <span className="flex justify-end gap-[6px]">
               {l.decision === null
-                ? (canAdd ? <LinkDecide product={product} from={l.from} to={l.to} anchor={l.anchor} /> : null)
+                ? (canAdd ? <LinkDecide product={product} site={site} from={l.from} to={l.to} anchor={l.anchor} /> : null)
                 : <b className={`text-12 ${l.decision === 'added' ? 'text-link' : 'text-faint'}`}>{l.decision === 'added' ? t('added') : t('skipped')}</b>}
             </span>
           </div>

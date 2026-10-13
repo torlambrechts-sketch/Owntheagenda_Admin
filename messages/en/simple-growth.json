@@ -347,7 +347,9 @@
         "tablet": "Tablet"
       },
       "updated": "Updated {ago}",
-      "noData": "No data yet"
+      "noData": "No data yet",
+      "site": "Site",
+      "allSites": "All sites"
     },
     "overview": {
       "metrics": {
@@ -698,7 +700,8 @@
         "off": "Not connected",
         "keyRefused": "Key refused",
         "accounts": "Connected · {n} of {total} accounts linked",
-        "notChecked": "Not checked yet"
+        "notChecked": "Not checked yet",
+        "noPropertyFor": "no access to {sites}"
       },
       "sync": {
         "tracker": "Last visit {ago} · {n} visits in 24 h",

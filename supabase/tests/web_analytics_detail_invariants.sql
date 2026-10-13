@@ -28,11 +28,17 @@ select pg_temp.check((select device from app.web_sessions where visitor_hash = (
                      and (select device from app.web_sessions where visitor_hash = (select c from t_h)) is null,
                      'the device class is one of three words, anything else is dropped');
 
--- 0070: Empvibe is orgpuls.com's alias; its visit is filed under orgpuls.com with the host it came to
-select pg_temp.check(public.worker_web_sites() ? 'empvibe.com', 'the collector learns the aliases');
+-- 0070, 0089: Empvibe is a site of Orgpuls of its own (a market); its visit is filed under it with the host it came to
+select pg_temp.check(public.worker_web_sites() ? 'empvibe.com', 'the collector learns the market sites');
 select public.worker_web_track(jsonb_build_object('site', 'empvibe.com', 'visitor_hash', repeat('e4', 16), 'path', '/sign-up', 'host', 'www.empvibe.com'));
 select pg_temp.check(exists (select 1 from app.web_sessions s join app.web_sites w on w.id = s.site_id
-                             where w.hostname = 'orgpuls.com' and s.visitor_hash = repeat('e4', 16) and s.host = 'www.empvibe.com'),
+                             where w.hostname = 'empvibe.com' and w.product = 'orgpuls' and s.visitor_hash = repeat('e4', 16) and s.host = 'www.empvibe.com'),
+                     'a market site''s visit is its own, and keeps its host');
+-- an alias still files a visit under its site (0070)
+update app.web_sites set aliases = array['orgpuls.example'] where hostname = 'orgpuls.com';
+select public.worker_web_track(jsonb_build_object('site', 'orgpuls.example', 'visitor_hash', repeat('e5', 16), 'path', '/', 'host', 'www.orgpuls.example'));
+select pg_temp.check(exists (select 1 from app.web_sessions s join app.web_sites w on w.id = s.site_id
+                             where w.hostname = 'orgpuls.com' and s.visitor_hash = repeat('e5', 16) and s.host = 'www.orgpuls.example'),
                      'an alias''s visit is the site''s, and keeps its host');
 select pg_temp.as_staff('tor@orgpuls.no');
 create temp table t_w as select public.analytics_web(null, 30) w;

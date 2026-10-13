@@ -91,3 +91,21 @@ describe('growth arithmetic and rules (Growth v2)', () => {
     expect(durationParts(86400 * 1.8)).toEqual({ unit: 'd', value: 1.8 })
   })
 })
+
+describe('the site in the address (0089: a site per market)', () => {
+  it('reads a hostname, and nothing else', () => {
+    expect(parseGrowth({ site: 'se.orgpuls.com' }).site).toBe('se.orgpuls.com')
+    expect(parseGrowth({ site: 'empvibe.com' }).site).toBe('empvibe.com')
+    expect(parseGrowth({}).site).toBeNull()
+    expect(parseGrowth({ site: 'not a host' }).site).toBeNull()
+    expect(parseGrowth({ site: 'localhost' }).site).toBeNull()
+    expect(parseGrowth({ site: 'https://evil.example/' }).site).toBeNull()
+  })
+  it('travels with the scope to the scoped tabs, and is left behind elsewhere', () => {
+    const scope = { range: '30d' as const, day: null, hour: null, src: null, dev: null, site: 'empvibe.com' }
+    expect(growthHref('pages', scope)).toBe('/growth?tab=pages&site=empvibe.com')
+    expect(growthHref('seo', scope, { sub: 'links' })).toBe('/growth?tab=seo&site=empvibe.com&sub=links')
+    expect(growthHref('campaigns', scope)).toBe('/growth?tab=campaigns')
+    expect(growthHref('overview', { ...scope, site: null })).toBe('/growth')
+  })
+})

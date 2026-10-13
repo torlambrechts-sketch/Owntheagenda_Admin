@@ -93,7 +93,7 @@ select pg_temp.expect_error($$select public.seo_idea_plan('orgpuls', 'x')$$, 'no
 select pg_temp.check(not has_function_privilege('authenticated', 'public.worker_seo_crawl_result(uuid, int, int, jsonb, text)', 'execute')
                      and not has_function_privilege('authenticated', 'public.worker_search_console_pages(uuid, date, date, jsonb)', 'execute')
                      and has_function_privilege('service_role', 'public.worker_seo_crawl_sites()', 'execute')
-                     and not has_function_privilege('anon', 'public.seo_issue_fix(text, text)', 'execute'),
+                     and not has_function_privilege('anon', 'public.seo_issue_fix(text, text, uuid)', 'execute'),
                      'the worker functions are the service role''s alone');
 select pg_temp.check(public.product_secret('seo_crawl_worker_secret') is not null and exists (select 1 from cron.job where jobname = 'platform-seo-crawl'),
                      'the nightly crawl has its key and its schedule');

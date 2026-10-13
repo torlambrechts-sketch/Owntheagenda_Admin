@@ -14,8 +14,8 @@ import { alertAck, alertRuleSet, changeAdd, linkDecide, planAdd, planMove } from
  */
 
 /** «Do it» / «Plan» → «✓ In plan» (height 30 or 26, radius 9 or 8, yellow; teal once planned) */
-export function PlanButton({ product, query, kind, path, planned, label, small = false, disabled = false }: {
-  product: string; query: string; kind: OppKind; path: string | null; planned: boolean; label: string; small?: boolean; disabled?: boolean
+export function PlanButton({ product, site = null, query, kind, path, planned, label, small = false, disabled = false }: {
+  product: string; site?: string | null; query: string; kind: OppKind; path: string | null; planned: boolean; label: string; small?: boolean; disabled?: boolean
 }) {
   const t = useTranslations('simpleGrowth.seoSuite')
   const te = useTranslations('common.errors')
@@ -26,7 +26,7 @@ export function PlanButton({ product, query, kind, path, planned, label, small =
   return (
     <button type="button" disabled={pending || planned || disabled} aria-pressed={planned}
       onClick={() => start(async () => {
-        const r = await planAdd({ product, query, kind, path })
+        const r = await planAdd({ product, site, query, kind, path })
         if (!r.ok) { flash(te(r.code)); return }
         flash(t('planned'))
         router.refresh()
@@ -63,14 +63,14 @@ export function PlanMove({ id, back, fwd, backLabel, fwdLabel, backName, fwdName
 }
 
 /** «Skip» and «Add link» on a suggested internal link */
-export function LinkDecide({ product, from, to, anchor }: { product: string; from: string; to: string; anchor: string }) {
+export function LinkDecide({ product, site = null, from, to, anchor }: { product: string; site?: string | null; from: string; to: string; anchor: string }) {
   const t = useTranslations('simpleGrowth.seoSuite.links')
   const te = useTranslations('common.errors')
   const flash = useToast()
   const router = useRouter()
   const [pending, start] = useTransition()
   const decide = (decision: 'added' | 'skipped') => start(async () => {
-    const r = await linkDecide({ product, from, to, anchor, decision })
+    const r = await linkDecide({ product, site, from, to, anchor, decision })
     if (!r.ok) { flash(te(r.code)); return }
     flash(decision === 'added' ? t('addedToast') : t('skippedToast'))
     router.refresh()
@@ -86,7 +86,7 @@ export function LinkDecide({ product, from, to, anchor }: { product: string; fro
 }
 
 /** «Log a change»: page, kind, note, «Log change» (selects and input 34 high, radius 9, on the canvas colour) */
-export function ChangeForm({ product, pages }: { product: string; pages: string[] }) {
+export function ChangeForm({ product, site = null, pages }: { product: string; site?: string | null; pages: string[] }) {
   const t = useTranslations('simpleGrowth.seoSuite.changes')
   const te = useTranslations('common.errors')
   const flash = useToast()
@@ -100,7 +100,7 @@ export function ChangeForm({ product, pages }: { product: string; pages: string[
     <form className="contents" onSubmit={(e) => {
       e.preventDefault()
       start(async () => {
-        const r = await changeAdd({ product, path: page, kind, note })
+        const r = await changeAdd({ product, site, path: page, kind, note })
         if (!r.ok) { flash(te(r.code)); return }
         setNote('')
         flash(t('logged'))
@@ -123,8 +123,8 @@ export function ChangeForm({ product, pages }: { product: string; pages: string[
 
 /** An alert rule's row (rules[]: padding 11×18; the name 13 bold and the switch 40 × 22 with a 16 px knob; the condition
  *  12 px muted and the channel pills); off, the row is at half opacity */
-export function RuleRow({ product, rule, name, cond, enabled, channels, mailReady, canEdit }: {
-  product: string; rule: Rule; name: string; cond: string; enabled: boolean; channels: string[]; mailReady: boolean; canEdit: boolean
+export function RuleRow({ product, site = null, rule, name, cond, enabled, channels, mailReady, canEdit }: {
+  product: string; site?: string | null; rule: Rule; name: string; cond: string; enabled: boolean; channels: string[]; mailReady: boolean; canEdit: boolean
 }) {
   const t = useTranslations('simpleGrowth.seoSuite.alerts')
   const te = useTranslations('common.errors')
@@ -132,7 +132,7 @@ export function RuleRow({ product, rule, name, cond, enabled, channels, mailRead
   const router = useRouter()
   const [pending, start] = useTransition()
   const save = (on: boolean, ch: string[]) => start(async () => {
-    const r = await alertRuleSet({ product, rule, enabled: on, channels: ch })
+    const r = await alertRuleSet({ product, site, rule, enabled: on, channels: ch })
     if (!r.ok) { flash(te(r.code)); return }
     router.refresh()
   })

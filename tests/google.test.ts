@@ -1,6 +1,6 @@
 import { webcrypto } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
-import { accessToken, pagePath, parseKey, propertyFor, searchAnalytics, serviceJwt, windows } from '../supabase/functions/_shared/google'
+import { accessToken, pageFilter, pagePath, parseKey, propertyFor, searchAnalytics, serviceJwt, windows } from '../supabase/functions/_shared/google'
 
 const subtle = webcrypto.subtle
 async function testKey() {
@@ -80,5 +80,39 @@ describe('Search Console properties and figures (0064)', () => {
       { from: '2026-01-01', to: '2026-01-30' }, { from: '2026-01-31', to: '2026-03-01' }, { from: '2026-03-02', to: '2026-03-05' },
     ])
     expect(windows('2026-01-02', '2026-01-01', 30)).toEqual([])
+  })
+})
+
+describe('one site\'s pages in a shared property (0089)', () => {
+  const re = (x: string) => new RegExp(x)
+  it('keeps the site\'s hosts and their subdomains, and leaves out the other sites inside them', () => {
+    const f = pageFilter(['orgpuls.com'], ['se.orgpuls.com'])!
+    const keep = (u: string) => re(f.include).test(u) && !f.exclude.some((x) => re(x).test(u))
+    expect(keep('https://www.orgpuls.com/priser')).toBe(true)
+    expect(keep('https://orgpuls.com/')).toBe(true)
+    expect(keep('https://en.orgpuls.com/pricing')).toBe(true)
+    expect(keep('https://se.orgpuls.com/registrera')).toBe(false)
+    expect(keep('https://www.empvibe.com/')).toBe(false)
+    expect(keep('https://evilorgpuls.com/')).toBe(false)
+    expect(keep('https://orgpuls.com.example.net/')).toBe(false)
+  })
+  it('reads a www host as its domain, ignores what is not a host, and keeps nothing without one', () => {
+    expect(pageFilter(['www.empvibe.com'], [])!.include).toBe(pageFilter(['empvibe.com'], [])!.include)
+    expect(pageFilter(['bad host', 42, '..'], [])).toBeNull()
+    expect(pageFilter(null, null)).toBeNull()
+  })
+  it('asks Google for those pages only', async () => {
+    let body: Record<string, unknown> = {}
+    const f = (async (_u: string, init?: RequestInit) => {
+      body = JSON.parse(String(init?.body))
+      return new Response('{"rows":[]}', { status: 200 })
+    }) as typeof fetch
+    await searchAnalytics('t', 'sc-domain:orgpuls.com', '2026-10-01', '2026-10-01', 'day', f, pageFilter(['orgpuls.com'], ['se.orgpuls.com']))
+    expect(body.dimensionFilterGroups).toEqual([{ groupType: 'and', filters: [
+      { dimension: 'page', operator: 'includingRegex', expression: '^https?://([a-z0-9-]+\\.)*(orgpuls\\.com)/' },
+      { dimension: 'page', operator: 'excludingRegex', expression: '^https?://([a-z0-9-]+\\.)*(se\\.orgpuls\\.com)/' },
+    ] }])
+    await searchAnalytics('t', 'sc-domain:orgpuls.com', '2026-10-01', '2026-10-01', 'day', f)
+    expect(body.dimensionFilterGroups).toBeUndefined()
   })
 })

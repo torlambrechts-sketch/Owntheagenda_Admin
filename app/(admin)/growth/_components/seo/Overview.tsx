@@ -17,8 +17,8 @@ export const COVERAGE_COLOR: Record<Coverage, string> = {
  * actions, index coverage from URL Inspection and the facts behind the figures. «Traffic value» is left out: it needs
  * cost-per-click data Sentral does not have (V-GR2-24).
  */
-export async function SeoOverviewView({ d, opps, priced, nf, product, app, canAdd }: {
-  d: SeoOverview; opps: SeoOpp[]; priced: boolean; nf: NumberFormat; product: string; app: string; canAdd: boolean
+export async function SeoOverviewView({ d, opps, priced, nf, product, site = null, app, canAdd }: {
+  d: SeoOverview; opps: SeoOpp[]; priced: boolean; nf: NumberFormat; product: string; site?: string | null; app: string; canAdd: boolean
 }) {
   const t = await getTranslations('simpleGrowth.seoSuite')
   const locale = await getLocale()
@@ -80,7 +80,7 @@ export async function SeoOverviewView({ d, opps, priced, nf, product, app, canAd
                 <b className="text-13 leading-[1.3] [overflow-wrap:anywhere]">{texts[i]!.line}</b>
                 <span className="text-11.5 text-muted">{t('overview.actionSub', { type: texts[i]!.type, effort: texts[i]!.effort })}</span>
               </span>
-              <PlanButton product={product} query={o.query} kind={o.kind} path={o.path} planned={o.planned} label={t('doIt')} disabled={!canAdd} />
+              <PlanButton product={product} site={site} query={o.query} kind={o.kind} path={o.path} planned={o.planned} label={t('doIt')} disabled={!canAdd} />
             </div>
           ))}
         </section>

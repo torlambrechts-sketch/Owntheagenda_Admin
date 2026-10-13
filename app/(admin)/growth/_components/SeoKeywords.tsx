@@ -69,7 +69,7 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
                 )
               })}
             </span>
-            {d.site && canAdd ? <KeywordTrack product={product} connected={d.connected} /> : null}
+            {d.site && canAdd ? <KeywordTrack product={product} site={d.site.id} connected={d.connected} /> : null}
           </div>
           <div className="overflow-x-auto"><div className="min-w-[520px]">
             <div className={`grid gap-2 border-b border-line px-[18px] py-[9px] ${colHead} tracking-[.08em] ${COLS}`}>
@@ -148,7 +148,7 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
             ) : null}
             {advice ? <div className="rounded-13 bg-highlight px-3 py-[10px] text-12.5 leading-[1.5]"><b>{t('detail.doThis')}</b> {t(`advice.${advice}`, { q: sel.query })}</div> : null}
             {sel.tracked && sel.id && canAdd && (sel.mine || editOthers) ? <StopTracking id={sel.id} query={sel.query} /> : null}
-            {!sel.tracked && canAdd ? <TrackThis product={product} query={sel.query} /> : null}
+            {!sel.tracked && canAdd ? <TrackThis product={product} site={d.site?.id ?? null} query={sel.query} /> : null}
           </div>
         ) : null}
       </div>
@@ -156,7 +156,7 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
       {d.site ? (
         <div className="grid items-start gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))]">
           {d.health ? <SiteHealth health={d.health} cannibal={d.cannibal ?? []} slow={d.slow ?? []} site={d.site.id} product={product} nf={nf} canEdit={canAdd} /> : null}
-          {d.ideas ? <ContentIdeas ideas={d.ideas} product={product} nf={nf} canEdit={canAdd} /> : <ContentIdeas ideas={[]} product={product} nf={nf} canEdit={false} notConnected />}
+          {d.ideas ? <ContentIdeas ideas={d.ideas} product={product} site={d.site?.id ?? null} nf={nf} canEdit={canAdd} /> : <ContentIdeas ideas={[]} product={product} nf={nf} canEdit={false} notConnected />}
         </div>
       ) : null}
     </div>

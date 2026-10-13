@@ -14,8 +14,8 @@ import { pos } from './text'
  * The design's MRR per topic and competitors' share of clicks have no source: the card shows the topic's clicks, and the
  * share block splits the topic's clicks between the site's own pages (V-GR2-26).
  */
-export async function SeoClustersView({ d, sel, scope, nf, product, canAdd }: {
-  d: SeoClusters; sel: string | null; scope: Scope; nf: NumberFormat; product: string; canAdd: boolean
+export async function SeoClustersView({ d, sel, scope, nf, product, site = null, canAdd }: {
+  d: SeoClusters; sel: string | null; scope: Scope; nf: NumberFormat; product: string; site?: string | null; canAdd: boolean
 }) {
   const t = await getTranslations('simpleGrowth.seoSuite')
   if (!d.connected) return <p className="m-0 rounded-20 border border-line bg-surface px-5 py-4 text-13 text-muted">{t('notConnected')}</p>
@@ -92,7 +92,7 @@ export async function SeoClustersView({ d, sel, scope, nf, product, canAdd }: {
             </span>
             <span className="flex flex-none items-center gap-[6px]">
               <span className={`whitespace-nowrap text-11.5 font-bold ${s.color}`}>{s.state}</span>
-              {s.missing ? <PlanButton product={product} query={s.missing.query} kind="gap" path={null} planned={false} label={t('clusters.plan')} small disabled={!canAdd} /> : null}
+              {s.missing ? <PlanButton product={product} site={site} query={s.missing.query} kind="gap" path={null} planned={false} label={t('clusters.plan')} small disabled={!canAdd} /> : null}
             </span>
           </div>
         ))}

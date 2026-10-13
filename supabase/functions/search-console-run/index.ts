@@ -5,8 +5,9 @@
  * POST {"kind": "connect" | "run"}
  *   - "connect": the owner (own aal2 token; search_console_check_ready proves the owner). Signs in as the service account,
  *     lists the properties it may read, maps each site to one, reports the verdict, then imports what time allows.
- *   - "run": the nightly cron (header x-worker-key = Vault «search_console_worker_secret») or the owner. Imports each
- *     site's days since a little before its last imported day, thirty days at a time, oldest first, for about ninety
+ *   - "run": the nightly cron (header x-worker-key = Vault «search_console_worker_secret») or the owner. Maps a site that
+ *     has no property yet (a market site added later, 0089), then imports each site's own pages (two market sites can
+ *     share a domain property) since a little before its last imported day, thirty days at a time, oldest first, for about ninety
  *     seconds; the next run goes on from there. Then, until about two and a quarter minutes, it asks URL Inspection
  *     whether Google has each crawled page in its index (0074), the longest unchecked first.
  *
@@ -14,7 +15,7 @@
  */
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2'
 import { sameText } from '../_shared/signing.ts'
-import { accessToken, inspectUrl, listSites, parseKey, propertyFor, searchAnalytics, windows } from '../_shared/google.ts'
+import { accessToken, inspectUrl, listSites, pageFilter, parseKey, propertyFor, searchAnalytics, windows } from '../_shared/google.ts'
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
 const log = (s: string) => console.log(`[search-console-run] ${s}`)
@@ -86,33 +87,41 @@ Deno.serve(async (req) => {
   }
 
   let sites: Array<{ hostname: string; property: string | null }> = []
-  if (kind === 'connect') {
+  const ours = arr<{ site_id: string; hostname: string; property?: string | null }>(await rpc(svc, 'worker_search_console_sites'))
+  // «connect» maps every site to its property; the nightly run maps the sites that have none yet, a market site added
+  // after the connection included (0089). A refusal of the listing stops a connect, not a run's import.
+  const unmapped = kind === 'connect' ? ours : ours.filter((s) => !s.property)
+  if (unmapped.length) {
     const listed = await listSites(tok.token)
-    if (!listed.ok) {
+    if (!listed.ok && kind === 'connect') {
       await rpc(svc, 'worker_search_console_result', { p_ok: false, p_info: { code: listed.code }, p_by: me })
       log(`connect refused ${listed.code}`)
       return json({ ok: false, code: listed.code })
     }
-    const ours = arr<{ site_id: string; hostname: string }>(await rpc(svc, 'worker_search_console_sites'))
-    const mapped = ours.map((s) => ({ site_id: s.site_id, hostname: s.hostname, property: propertyFor(s.hostname, listed.sites) }))
-    await rpc(svc, 'worker_search_console_result', { p_ok: true, p_info: { sites: mapped.map(({ site_id, property }) => ({ site_id, property })) }, p_by: me })
-    sites = mapped.map(({ hostname, property }) => ({ hostname, property }))
-    log(`connect ok properties=${listed.sites.length} mapped=${mapped.filter((m) => m.property).length}/${mapped.length}`)
+    if (listed.ok) {
+      const mapped = unmapped.map((s) => ({ site_id: s.site_id, hostname: s.hostname, property: propertyFor(s.hostname, listed.sites) }))
+      await rpc(svc, 'worker_search_console_result', { p_ok: true, p_info: { sites: mapped.map(({ site_id, property }) => ({ site_id, property })) }, p_by: me })
+      if (kind === 'connect') sites = mapped.map(({ hostname, property }) => ({ hostname, property }))
+      log(`${kind} mapping properties=${listed.sites.length} mapped=${mapped.filter((m) => m.property).length}/${mapped.length}`)
+    } else log(`run mapping refused ${listed.code}`)
   }
 
   // the import: each site's windows, oldest first, while time allows
   let windowsDone = 0
   let rowsIn = 0
   let failed = 0
-  for (const t of arr<{ site_id: string; property: string; from: string; to: string }>(await rpc(svc, 'worker_search_console_targets'))) {
+  for (const t of arr<{ site_id: string; property: string; from: string; to: string; hosts?: unknown; except?: unknown }>(await rpc(svc, 'worker_search_console_targets'))) {
     if (!left()) break
     if (t.from > t.to) continue
+    // only the site's own pages: two market sites can share a domain property (0089)
+    const only = pageFilter(t.hosts, t.except)
+    if (!only) continue
     for (const w of windows(t.from, t.to, 30)) {
       if (!left()) break
       const [days, queries, pages] = await Promise.all([
-        searchAnalytics(tok.token, t.property, w.from, w.to, 'day'),
-        searchAnalytics(tok.token, t.property, w.from, w.to, 'query'),
-        searchAnalytics(tok.token, t.property, w.from, w.to, 'page'),
+        searchAnalytics(tok.token, t.property, w.from, w.to, 'day', fetch, only),
+        searchAnalytics(tok.token, t.property, w.from, w.to, 'query', fetch, only),
+        searchAnalytics(tok.token, t.property, w.from, w.to, 'page', fetch, only),
       ])
       if (!days.ok || !queries.ok) {
         const code = !days.ok ? days.code : !queries.ok ? queries.code : 'failed'

@@ -15,7 +15,7 @@ const PILL: Record<'win' | 'small' | 'none' | 'loss' | 'measuring', string> = {
  * for a new page not yet known by its address, the search); until 28 days are reported it is «Measuring». A drop of 10 %
  * or more is a «Loss», which the design does not have (V-GR2-30).
  */
-export async function SeoChangesView({ d, nf, product, canAdd }: { d: SeoChanges; nf: NumberFormat; product: string; canAdd: boolean }) {
+export async function SeoChangesView({ d, nf, product, site = null, canAdd }: { d: SeoChanges; nf: NumberFormat; product: string; site?: string | null; canAdd: boolean }) {
   const t = await getTranslations('simpleGrowth.seoSuite.changes')
   const locale = await getLocale()
   const loc = locale === 'no' ? 'nb-NO' : locale
@@ -37,7 +37,7 @@ export async function SeoChangesView({ d, nf, product, canAdd }: { d: SeoChanges
       {canAdd ? (
         <section className={`${card} flex flex-wrap items-center gap-2 px-[18px] py-[14px]`}>
           <b className="mr-[6px] text-14">{t('log')}</b>
-          <ChangeForm product={product} pages={d.pages} />
+          <ChangeForm product={product} site={site} pages={d.pages} />
           {!d.pages.length ? <span className="text-12 text-muted">{t('noPages')}</span> : null}
         </section>
       ) : null}

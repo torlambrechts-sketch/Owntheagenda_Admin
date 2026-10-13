@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/Toast'
 import { addKeyword, removeKeyword } from '../actions'
 
 /** «Track a keyword» (the keyword table's head: input 170 px, height 32, and Track) */
-export function KeywordTrack({ product, connected }: { product: string; connected: boolean }) {
+export function KeywordTrack({ product, site = null, connected }: { product: string; site?: string | null; connected: boolean }) {
   const t = useTranslations('simpleGrowth.keywords')
   const te = useTranslations('common.errors')
   const flash = useToast()
@@ -18,7 +18,7 @@ export function KeywordTrack({ product, connected }: { product: string; connecte
     const q = kw.trim()
     if (!q) return
     start(async () => {
-      const r = await addKeyword({ product, query: q })
+      const r = await addKeyword({ product, site, query: q })
       if (!r.ok) { flash(r.detail === 'duplicate' ? t('duplicate') : r.detail === 'limit' ? t('limit') : te(r.code)); return }
       setKw('')
       flash(connected ? t('tracked') : t('trackedNotConnected'))
@@ -56,7 +56,7 @@ export function StopTracking({ id, query }: { id: string; query: string }) {
 }
 
 /** Track a search Google already shows the site for (0084): it then stays in the list when it has no impressions */
-export function TrackThis({ product, query }: { product: string; query: string }) {
+export function TrackThis({ product, site = null, query }: { product: string; site?: string | null; query: string }) {
   const t = useTranslations('simpleGrowth.keywords')
   const te = useTranslations('common.errors')
   const flash = useToast()
@@ -64,7 +64,7 @@ export function TrackThis({ product, query }: { product: string; query: string }
   const [pending, start] = useTransition()
   return (
     <button type="button" disabled={pending} onClick={() => start(async () => {
-      const r = await addKeyword({ product, query })
+      const r = await addKeyword({ product, site, query })
       if (!r.ok) { flash(r.detail === 'duplicate' ? t('duplicate') : r.detail === 'limit' ? t('limit') : te(r.code)); return }
       flash(t('trackedThis', { q: query }))
       router.refresh()

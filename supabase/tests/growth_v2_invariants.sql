@@ -193,7 +193,7 @@ select pg_temp.check(not has_function_privilege('authenticated', 'public.worker_
                      and not has_function_privilege('authenticated', 'public.worker_seo_pages(uuid, jsonb)', 'execute')
                      and not has_function_privilege('authenticated', 'public.worker_growth_sync(text, uuid, int, jsonb, text)', 'execute')
                      and has_function_privilege('service_role', 'public.worker_pagespeed_targets()', 'execute')
-                     and not has_function_privilege('anon', 'public.growth_scope(text, int, date, int, text, text)', 'execute'),
+                     and not has_function_privilege('anon', 'public.growth_scope(text, int, date, int, text, text, uuid)', 'execute'),
                      'the workers are the service role''s; nothing is open to anon');
 select pg_temp.check(exists (select 1 from cron.job where jobname = 'platform-pagespeed'), 'the nightly measurement is scheduled');
 

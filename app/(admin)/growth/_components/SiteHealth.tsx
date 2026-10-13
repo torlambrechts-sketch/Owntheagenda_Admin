@@ -29,7 +29,7 @@ export function SiteHealth({ health, cannibal, slow, site, product, nf, canEdit 
   const [pending, start] = useTransition()
 
   const fix = (kind: SeoIssue['kind']) => start(async () => {
-    const r = await fixIssue({ product, kind })
+    const r = await fixIssue({ product, site, kind })
     if (!r.ok) { flash(te(r.code)); return }
     flash(t('fixed'))
     router.refresh()

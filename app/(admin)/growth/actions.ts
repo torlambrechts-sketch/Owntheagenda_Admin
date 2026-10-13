@@ -15,14 +15,17 @@ const uuid = z.string().uuid()
 const product = z.string().regex(/^[a-z][a-z0-9_]{1,40}$/)
 const bad = { ok: false as const, code: 'invalid' as const }
 const fail = (r: { code: RpcCode; detail: string | null }) => ({ ok: false as const, code: r.code, detail: r.detail })
+/** one of the application's sites (0089); absent or null is its first, as before */
+const site = uuid.nullable().optional()
+const onSite = (v: string | null | undefined) => (v ? { p_site: v } : {})
 const done = () => revalidatePath('/growth')
 
 // ---------------------------------------------------------------------------
 // SEO
-export async function addKeyword(input: { product: string; query: string }): Promise<Result> {
-  const p = z.object({ product, query: z.string().trim().min(1).max(200) }).safeParse(input)
+export async function addKeyword(input: { product: string; site?: string | null; query: string }): Promise<Result> {
+  const p = z.object({ product, site, query: z.string().trim().min(1).max(200) }).safeParse(input)
   if (!p.success) return bad
-  const r = await rpc('seo_keyword_add', { p_product: p.data.product, p_query: p.data.query }, z.object({ id: uuid, query: z.string() }))
+  const r = await rpc('seo_keyword_add', { p_product: p.data.product, p_query: p.data.query, ...onSite(p.data.site) }, z.object({ id: uuid, query: z.string() }))
   if (!r.ok) return fail(r)
   done()
   return { ok: true }
@@ -30,19 +33,19 @@ export async function addKeyword(input: { product: string; query: string }): Pro
 
 // ---------------------------------------------------------------------------
 // Site health and content ideas (0072)
-export async function fixIssue(input: { product: string; kind: string }): Promise<Result> {
-  const p = z.object({ product, kind: z.enum(ISSUE_KINDS) }).safeParse(input)
+export async function fixIssue(input: { product: string; site?: string | null; kind: string }): Promise<Result> {
+  const p = z.object({ product, site, kind: z.enum(ISSUE_KINDS) }).safeParse(input)
   if (!p.success) return bad
-  const r = await rpc('seo_issue_fix', { p_product: p.data.product, p_kind: p.data.kind }, z.object({ kind: z.string() }))
+  const r = await rpc('seo_issue_fix', { p_product: p.data.product, p_kind: p.data.kind, ...onSite(p.data.site) }, z.object({ kind: z.string() }))
   if (!r.ok) return fail(r)
   done()
   return { ok: true }
 }
 
-export async function planIdea(input: { product: string; query: string }): Promise<Result> {
-  const p = z.object({ product, query: z.string().trim().min(1).max(200) }).safeParse(input)
+export async function planIdea(input: { product: string; site?: string | null; query: string }): Promise<Result> {
+  const p = z.object({ product, site, query: z.string().trim().min(1).max(200) }).safeParse(input)
   if (!p.success) return bad
-  const r = await rpc('seo_idea_plan', { p_product: p.data.product, p_query: p.data.query }, z.object({ query: z.string(), planned: z.boolean() }))
+  const r = await rpc('seo_idea_plan', { p_product: p.data.product, p_query: p.data.query, ...onSite(p.data.site) }, z.object({ query: z.string(), planned: z.boolean() }))
   if (!r.ok) return fail(r)
   done()
   return { ok: true }

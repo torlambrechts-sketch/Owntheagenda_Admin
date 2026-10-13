@@ -131,10 +131,28 @@ export function pagePath(url: unknown): string | null {
 type Rows<D> = D extends 'day' ? DayRow[] : D extends 'query' ? QueryRow[] : PageRow[]
 const DIMS = { day: ['date'], query: ['date', 'query'], page: ['date', 'query', 'page'] } as const
 
+/** the pages one site's import keeps (0089): an RE2 expression its page addresses match, and ones they must not */
+export type PageFilter = { include: string; exclude: string[] }
+
+const HOST = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/
+const hostsRe = (hosts: string[]) => `^https?://([a-z0-9-]+\\.)*(${hosts.map((h) => h.replace(/\./g, '\\.')).join('|')})/`
+
+/**
+ * A site's pages inside a property it may share (0089): orgpuls.com and se.orgpuls.com are both read through
+ * sc-domain:orgpuls.com, so each keeps the pages on its own hosts (and their subdomains: www, en.) and leaves out the other
+ * sites inside them. Null when there is no host to keep, so nothing is read rather than everything.
+ */
+export function pageFilter(hosts: unknown, except: unknown): PageFilter | null {
+  const ok = (v: unknown): string[] => (Array.isArray(v) ? v : []).filter((h): h is string => typeof h === 'string' && HOST.test(h)).map((h) => h.replace(/^www\./, ''))
+  const keep = [...new Set(ok(hosts))]
+  if (!keep.length) return null
+  return { include: hostsRe(keep), exclude: [...new Set(ok(except))].map((h) => hostsRe([h])) }
+}
+
 /** Search Analytics for one property and period: by day, by day and query, or by day, query and page (0072); pages of
- *  25 000 rows, at most four */
-export async function searchAnalytics<D extends 'day' | 'query' | 'page'>(token: string, property: string, from: string, to: string, by: D, f: Fetch = fetch):
-  Promise<{ ok: true; rows: Rows<D>; capped: boolean } | Fail> {
+ *  25 000 rows, at most four; only the pages a filter keeps, when it is given (0089) */
+export async function searchAnalytics<D extends 'day' | 'query' | 'page'>(token: string, property: string, from: string, to: string, by: D, f: Fetch = fetch,
+  only: PageFilter | null = null): Promise<{ ok: true; rows: Rows<D>; capped: boolean } | Fail> {
   const rows: PageRow[] = []
   const shape = (): Rows<D> => (by === 'day' ? rows.map(({ query: _q, page: _p, ...d }) => d) : by === 'query' ? rows.map(({ page: _p, ...q }) => q) : rows) as Rows<D>
   const PAGE = 25_000
@@ -144,7 +162,13 @@ export async function searchAnalytics<D extends 'day' | 'query' | 'page'>(token:
       res = await f(`${API}/sites/${encodeURIComponent(property)}/searchAnalytics/query`, {
         method: 'POST',
         headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json', accept: 'application/json' },
-        body: JSON.stringify({ startDate: from, endDate: to, dimensions: DIMS[by], rowLimit: PAGE, startRow: page * PAGE, dataState: 'final' }),
+        body: JSON.stringify({
+          startDate: from, endDate: to, dimensions: DIMS[by], rowLimit: PAGE, startRow: page * PAGE, dataState: 'final',
+          ...(only ? { dimensionFilterGroups: [{ groupType: 'and', filters: [
+            { dimension: 'page', operator: 'includingRegex', expression: only.include },
+            ...only.exclude.map((expression) => ({ dimension: 'page', operator: 'excludingRegex', expression })),
+          ] }] } : {}),
+        }),
         signal: AbortSignal.timeout(30_000),
       })
     } catch {

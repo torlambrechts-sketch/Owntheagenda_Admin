@@ -12,8 +12,9 @@ import { AdCampaigns, Overview, PROPOSAL_STAGE, RANGE_DAYS, Seo, Sequence, type 
 export const loadOverview = (product: string, range: GrowthRange) =>
   rpc('growth_overview', { p_product: product, p_days: RANGE_DAYS[range] }, Overview)
 
-export const loadSeo = (product: string, range: GrowthRange) =>
-  rpc('seo_get', { p_product: product, p_days: RANGE_DAYS[range] }, Seo)
+/** SEO › Keywords of one of the application's sites (0089), or of its first when none is chosen */
+export const loadSeo = (product: string, range: GrowthRange, site: string | null = null) =>
+  rpc('seo_get', { p_product: product, p_days: RANGE_DAYS[range], ...(site ? { p_site: site } : {}) }, Seo)
 
 export const loadAdCampaigns = (product: string) => rpc('ad_campaigns_get', { p_product: product }, AdCampaigns)
 

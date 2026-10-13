@@ -14,8 +14,8 @@ import { cardTable, emptyRow } from './kit'
  * outside its top ten, that nobody tracks. Search Console has no monthly search volume, so the line says impressions over
  * the days read and the page Google showed (V-SGR-30). «Plan article» puts the search in the content plan.
  */
-export function ContentIdeas({ ideas, product, nf, canEdit, notConnected = false }: {
-  ideas: NonNullable<Seo['ideas']>; product: string; nf: NumberFormat; canEdit: boolean; notConnected?: boolean
+export function ContentIdeas({ ideas, product, site = null, nf, canEdit, notConnected = false }: {
+  ideas: NonNullable<Seo['ideas']>; product: string; site?: string | null; nf: NumberFormat; canEdit: boolean; notConnected?: boolean
 }) {
   const t = useTranslations('simpleGrowth.seo.ideas')
   const te = useTranslations('common.errors')
@@ -24,7 +24,7 @@ export function ContentIdeas({ ideas, product, nf, canEdit, notConnected = false
   const [pending, start] = useTransition()
 
   const plan = (query: string) => start(async () => {
-    const r = await planIdea({ product, query })
+    const r = await planIdea({ product, site, query })
     if (!r.ok) { flash(te(r.code)); return }
     flash(t('planned'))
     router.refresh()

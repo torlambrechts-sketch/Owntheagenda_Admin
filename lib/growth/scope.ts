@@ -25,7 +25,8 @@ export type PageSort = (typeof PAGE_SORTS)[number]
 export const KW_TABS = ['all', 'top3', 'striking', 'low', 'losing', 'lowctr'] as const
 export type KwTab = (typeof KW_TABS)[number]
 
-export type Scope = { range: Range; day: string | null; hour: number | null; src: string | null; dev: Device | null }
+/** `site`: one of the application's sites by its hostname (0089: a site per market); null is all of them */
+export type Scope = { range: Range; day: string | null; hour: number | null; src: string | null; dev: Device | null; site?: string | null }
 
 /** Everything a Growth address may carry. Unknown or malformed values fall back to the defaults. */
 export type GrowthParams = Scope & {
@@ -69,10 +70,11 @@ export function parseGrowth(sp: Record<string, string | string[] | undefined>): 
   const hour = (day || range === 'today') && g('hour') !== undefined && Number.isInteger(hourN) && hourN >= 0 && hourN <= 23 ? hourN : null
   const src = g('src') && /^[a-z_]{2,30}$/.test(g('src')!) ? g('src')! : null
   const dev = z.enum(DEVICES).nullable().catch(null).parse(g('dev') ?? null)
+  const site = g('site') && /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(g('site')!) && g('site')!.length <= 253 ? g('site')! : null
   const stepN = Number(g('step'))
   const path = g('page')
   return {
-    tab, range, day, hour, src, dev,
+    tab, range, day, hour, src, dev, site,
     metric: z.enum(METRICS).catch('visitors').parse(g('metric') ?? 'visitors'),
     step: Number.isInteger(stepN) && stepN >= 1 && stepN <= 7 ? stepN : 4,
     lf: z.enum(LOG_FILTERS).catch('all').parse(g('lf') ?? 'all'),
@@ -116,6 +118,7 @@ export function growthHref(tab: Tab, scope: Partial<Scope>, extra: Extra = {}): 
     if (scope.hour !== null && scope.hour !== undefined && (scope.day || scope.range === 'today')) q.set('hour', String(scope.hour))
     if (scope.src) q.set('src', scope.src)
     if (scope.dev) q.set('dev', scope.dev)
+    if (scope.site) q.set('site', scope.site)
   }
   for (const [k, v] of Object.entries(extra) as [keyof Extra, string | number | null | undefined][]) {
     if (v === null || v === undefined || v === DEFAULTS[k]) continue

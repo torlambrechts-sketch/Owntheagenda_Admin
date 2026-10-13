@@ -347,7 +347,9 @@
         "tablet": "Nettbrett"
       },
       "updated": "Oppdatert {ago}",
-      "noData": "Ingen data ennå"
+      "noData": "Ingen data ennå",
+      "site": "Nettsted",
+      "allSites": "Alle nettsteder"
     },
     "overview": {
       "metrics": {
@@ -698,7 +700,8 @@
         "off": "Ikke tilkoblet",
         "keyRefused": "Nøkkelen ble avvist",
         "accounts": "Tilkoblet · {n} av {total} kontoer knyttet",
-        "notChecked": "Ikke sjekket ennå"
+        "notChecked": "Ikke sjekket ennå",
+        "noPropertyFor": "ingen tilgang til {sites}"
       },
       "sync": {
         "tracker": "Siste besøk {ago} · {n} besøk siste døgn",

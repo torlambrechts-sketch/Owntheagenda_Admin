@@ -101,14 +101,16 @@ select pg_temp.check((select impressions from app.search_console_daily where sit
                      'queries are kept lower case; the same query twice sums, its position weighted by impressions');
 select public.worker_search_console_import((select id from t_site),
   jsonb_build_array(jsonb_build_object('day', current_date - 1, 'impressions', 600, 'clicks', 60, 'position', 4)),
-  jsonb_build_array(jsonb_build_object('day', current_date - 1, 'query', 'arbeidsmiljøundersøkelse', 'impressions', 150, 'clicks', 15, 'position', 3)));
+  jsonb_build_array(jsonb_build_object('day', current_date - 1, 'query', 'arbeidsmiljøundersøkelse', 'impressions', 150, 'clicks', 15, 'position', 3)),
+  -- the pages' own figures, as search-console-run sends them since 0091
+  jsonb_build_array(jsonb_build_object('day', current_date - 1, 'page', '/', 'impressions', 600, 'clicks', 60, 'position', 4)));
 select pg_temp.check((select impressions from app.search_console_totals where site_id = (select id from t_site) and day = current_date - 1) = 600
                      and (select impressions from app.search_console_daily where site_id = (select id from t_site) and day = current_date - 1 and query = 'arbeidsmiljøundersøkelse') = 150
                      and (select impressions from app.search_console_daily where site_id = (select id from t_site) and day = current_date - 40 and query = 'arbeidsmiljøundersøkelse') = 50,
                      'importing a day again replaces that day and leaves the others');
 select pg_temp.check((select last_day from app.search_console_sites where site_id = (select id from t_site)) = current_date - 1
                      and (select (x ->> 'from')::date = current_date - 5 from jsonb_array_elements(public.worker_search_console_targets()) x where (x ->> 'site_id')::uuid = (select id from t_site)),
-                     'the next import starts a few days before the last imported day (Search Console revises them)');
+                     'the next import starts a few days before the last imported day (Search Console revises them), its pages caught up (0091)');
 select pg_temp.expect_detail(format($$select public.worker_search_console_import(%L, '[]', '[]')$$, (select id from t_other)), 'not_found', null, 'a site without a property takes no rows');
 select pg_temp.expect_detail(format($$select public.worker_search_console_failed(%L, 'Quota exceeded for x@y')$$, (select id from t_site)), 'invalid', 'code', 'a failure is a code, never Google''s words');
 select public.worker_search_console_failed((select id from t_site), 'http_429');

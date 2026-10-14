@@ -13,8 +13,9 @@
 -- 3. What the list of searches leaves out: seo_get's totals carry the period's impressions and clicks in named searches,
 --    so Keywords can say how much came from searches Google does not name.
 -- 4. worker_search_console_import takes the three, each optional (the function deployed before this one sends none), and
---    replaces them for the days the totals report, as it does the totals and the searches. Every site's last_day is
---    reset, so the next run reads the last 180 days again, these included.
+--    replaces them for the days the totals report, as it does the totals and the searches. A site's import starts 180
+--    days back until its pages' own figures reach the last day its totals had impressions: the next run with the new
+--    function fills them, whenever it is deployed and whatever ran before it, and a run cut short is taken again whole.
 --
 -- Nothing here is about a person: Google counts searches by country and device, never who searched.
 
@@ -136,8 +137,25 @@ end $fn$;
 revoke all on function public.worker_search_console_import(uuid, jsonb, jsonb, jsonb, jsonb, jsonb) from public, anon, authenticated;
 grant execute on function public.worker_search_console_import(uuid, jsonb, jsonb, jsonb, jsonb, jsonb) to service_role;
 
--- the next run reads the last 180 days again, the three new ones with them
-update app.search_console_sites set last_day = null, updated_at = now() where last_day is not null;
+-- what to import (0064, 0089): from a few days before the last imported day, or 180 days back the first time and, since
+-- 0091, until the pages' own figures reach the last day the totals had impressions (a site with none never waits)
+create or replace function public.worker_search_console_targets() returns jsonb
+  language sql stable security definer set search_path = ''
+as $fn$
+  select coalesce(jsonb_agg(jsonb_build_object('site_id', c.site_id, 'property', c.property,
+           'from', greatest(case when coalesce((select max(t.day) from app.search_console_page_totals t where t.site_id = c.site_id), '-infinity'::date)
+                                       >= coalesce((select max(t.day) from app.search_console_totals t where t.site_id = c.site_id and t.impressions > 0), '-infinity'::date) - 4
+                                 then coalesce(c.last_day - 4, current_date - 180) else current_date - 180 end,
+                            current_date - 480), 'to', current_date - 1,
+           'hosts', to_jsonb(array[s.hostname] || s.aliases),
+           'except', to_jsonb(array(select o.hostname from app.web_sites o
+                                    where o.active and o.id <> s.id
+                                      and exists (select 1 from unnest(array[s.hostname] || s.aliases) h where o.hostname like '%.' || h)
+                                    order by o.hostname)))
+           order by s.ord, c.site_id), '[]'::jsonb)
+  from app.search_console_sites c join app.web_sites s on s.id = c.site_id
+  where s.active and c.property is not null and app.connected('search_console')
+$fn$;
 
 -- ---------------------------------------------------------------------------
 -- 3. the readers

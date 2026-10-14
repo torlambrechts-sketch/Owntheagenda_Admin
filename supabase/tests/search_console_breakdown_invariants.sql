@@ -3,7 +3,8 @@
 -- not a path, a country or a device; a call without them (the function deployed before) leaves them as they were. A
 -- page's figures include its unnamed searches: «Pages in Google», the page card, a change's before and after and pages
 -- losing clicks read them; Keywords learns how much of the totals its list accounts for; SEO › Overview shows the
--- countries (ten and the rest) and the devices. The tables are no client's; the import is the service role's.
+-- countries (ten and the rest) and the devices. The import starts 180 days back until a site's pages have caught up.
+-- The tables are no client's; the import is the service role's.
 \ir _helpers.psql
 begin;
 
@@ -120,6 +121,23 @@ select pg_temp.check((public.seo_get('orgpuls', 30, (select id from app.web_site
                      and (public.seo_overview('orgpuls', (select id from app.web_sites where hostname = 'empvibe.com')) -> 'segments') = 'null'::jsonb,
                      'a site with no property shows no figures, nor countries and devices');
 select pg_temp.as_nobody();
+
+-- ---------------------------------------------------------------------------
+-- where the import starts: 180 days back until the pages' own figures reach the totals' last day with impressions
+create or replace function pg_temp.from_of() returns date language sql as $$
+  select (x ->> 'from')::date from jsonb_array_elements(public.worker_search_console_targets()) x where x ->> 'site_id' = (select id from t_site)::text
+$$;
+select pg_temp.check(pg_temp.from_of() = (select last_day - 4 from app.search_console_sites where site_id = (select id from t_site)),
+                     'pages caught up with the totals: the import goes on from its last day');
+delete from app.search_console_page_totals where site_id = (select id from t_site);
+select pg_temp.check(pg_temp.from_of() = current_date - 180,
+                     'no pages'' own figures yet (the function before 0091 imported the totals alone): 180 days back, whatever ran before');
+insert into app.search_console_page_totals (day, site_id, page, impressions, clicks, position)
+values (current_date - 40, (select id from t_site), '/lovkrav', 1, 0, 9);
+select pg_temp.check(pg_temp.from_of() = current_date - 180, 'a run cut short is taken again whole');
+update app.search_console_totals set impressions = 0 where site_id = (select id from t_site);
+select pg_temp.check(pg_temp.from_of() = (select last_day - 4 from app.search_console_sites where site_id = (select id from t_site)),
+                     'a site Google has not shown has nothing to wait for');
 
 -- ---------------------------------------------------------------------------
 -- no client's tables; the import is the service role's

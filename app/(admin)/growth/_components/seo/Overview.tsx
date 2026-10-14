@@ -156,10 +156,13 @@ export async function SeoOverviewView({ d, opps, priced, nf, product, site = nul
           </section>
         </div>
       </div>
-      <div className="grid items-start gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))]">
-        {segTable(t('overview.segments.countries'), t('overview.segments.cols.country'), countries)}
-        {segTable(t('overview.segments.devices'), t('overview.segments.cols.device'), devices)}
-      </div>
+      {/* a database before 0091 sends no segments at all: then the cards are left out rather than say «not connected» */}
+      {d.segments !== undefined ? (
+        <div className="grid items-start gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))]">
+          {segTable(t('overview.segments.countries'), t('overview.segments.cols.country'), countries)}
+          {segTable(t('overview.segments.devices'), t('overview.segments.cols.device'), devices)}
+        </div>
+      ) : null}
     </div>
   )
 }

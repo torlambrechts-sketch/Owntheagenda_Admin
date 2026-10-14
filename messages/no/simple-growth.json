@@ -532,7 +532,11 @@
         "noSources": "Ingen besøk i perioden.",
         "keywords": "Søkeord siden rangerer på",
         "noKeywords": "Ingen Search Console-søk for denne siden.",
-        "rec": "Anbefaling:"
+        "rec": "Anbefaling:",
+        "google": "Google-søk, siste {days} dager",
+        "googleLine": "{impressions} visninger · {clicks} klikk · posisjon {position}",
+        "googleNone": "Ikke vist i Google-søk i perioden.",
+        "googleUnnamed": "{impressions} visninger og {clicks} klikk av disse kom fra sjeldne søk Search Console ikke navngir, så søkeordene under viser dem ikke."
       },
       "advice": {
         "converts": "Siden konverterer {conv}. Lenk til den fra de mest leste artiklene, og bruk den som landingsside for betalte kampanjer.",
@@ -639,7 +643,8 @@
       "trackThis": "Spor «{q}»",
       "trackedThis": "«{q}» spores: det blir stående i listen også en uke uten visninger",
       "capped": "De {n} søkene med flest visninger av {total} i perioden.",
-      "emptyConnected": "Google har ikke vist nettstedet i søk i perioden, og ingen søkeord spores."
+      "emptyConnected": "Google har ikke vist nettstedet i søk i perioden, og ingen søkeord spores.",
+      "unnamed": "{impressions} visninger og {clicks} klikk i perioden kom fra sjeldne søk Search Console teller, men ikke navngir; de er med i tallene over, ikke i listen."
     },
     "integrations": {
       "connected": "<b>{n}</b> av {total} tilkoblet",
@@ -872,6 +877,29 @@
           "noRevenue": "{app} rapporterer ikke hvor en konto kom fra, så organisk inntekt telles ikke.",
           "index": "Indeksdekningen kommer fra URL-inspeksjon: {n, plural, one {# side} other {# sider}} sjekket, sist {date}.",
           "noIndex": "URL-inspeksjon har ikke sjekket noen side ennå."
+        },
+        "segments": {
+          "countries": "Land",
+          "devices": "Enheter",
+          "note": "Google-søk · siste 30 dager",
+          "cols": {
+            "country": "Land",
+            "device": "Enhet",
+            "clicks": "Klikk",
+            "impressions": "Visn.",
+            "change": "Δ 30 d",
+            "ctr": "CTR",
+            "position": "Pos."
+          },
+          "other": "{n, plural, one {# annet land} other {# andre land}}",
+          "unknown": "Ukjent",
+          "device": {
+            "desktop": "Datamaskin",
+            "mobile": "Mobil",
+            "tablet": "Nettbrett"
+          },
+          "empty": "Ingen søk de siste 30 dagene.",
+          "notImported": "Land og enheter kommer med neste import fra Search Console."
         }
       },
       "clusters": {

@@ -155,7 +155,7 @@ select public.search_console_disconnect();
 select pg_temp.check((app.search_console_tick() ->> 'called')::int = 0 and jsonb_array_length(public.worker_search_console_targets()) = 0,
                      'disconnected: nothing is imported');
 select pg_temp.check((public.seo_get('orgpuls', 30) -> 'totals') = 'null'::jsonb, 'and Growth › SEO shows no figures');
-select pg_temp.check(not has_function_privilege('authenticated', 'public.worker_search_console_import(uuid, jsonb, jsonb)', 'execute')
+select pg_temp.check(not has_function_privilege('authenticated', 'public.worker_search_console_import(uuid, jsonb, jsonb, jsonb, jsonb, jsonb)', 'execute')
                      and not has_function_privilege('authenticated', 'public.worker_search_console_result(boolean, jsonb, uuid)', 'execute')
                      and has_function_privilege('service_role', 'public.worker_search_console_targets()', 'execute')
                      and not has_function_privilege('anon', 'public.search_console_intake()', 'execute'),

@@ -19,6 +19,7 @@ const TAG_TONE: Record<KwRow['segment'], string> = { top3: 'text-link', striking
  * the site for, with the page it showed, and the keywords tracked by hand (0084), by segment, their click rate against what the position usually gets (expectedCtr) and the clicks reaching the top three
  * would add; the picked keyword's position day by day and what to do. Search Console has no search volume: the column
  * shows impressions (V-SGR-08), and «Who ranks above us» needs result-page data the platform does not have (V-GR2-15).
+ * Under the list, what the totals hold beyond it: the rare searches Search Console counts but does not name (0090).
  */
 export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, brands, canAdd, editOthers }: {
   d: Seo; scope: Scope; kt: KwTab; kw: string | null; history: KeywordHistory | null; nf: NumberFormat; product: string; brands: string[]
@@ -35,6 +36,9 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
   const top3Prev = rows.filter((r) => r.position_prev !== null && r.position_prev <= 3).length
   const striking = rows.filter((r) => r.segment === 'striking').length
   const potential = rows.reduce((a, r) => a + r.potential, 0)
+  // what the totals hold beyond the list: rare searches Search Console counts but does not name (0090)
+  const rest = s && s.impressions !== null && s.named_impressions != null ? Math.max(0, s.impressions - s.named_impressions) : 0
+  const unnamed = rest > 0 && s ? { impressions: formatNumber(rest, nf), clicks: formatNumber(Math.max(0, (s.clicks ?? 0) - (s.named_clicks ?? 0)), nf) } : null
   const hrefKw = (extra: { kt?: KwTab; kw?: string | null }) => growthHref('seo', scope, { sub: 'keywords', kt: extra.kt ?? kt, kw: extra.kw === undefined ? sel?.query ?? null : extra.kw })
 
   // the position line: lower is better, so 1 is at the top; a dashed line marks the top three
@@ -110,6 +114,7 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
               <div className="px-[18px] py-[10px] text-12 text-muted">{t('capped', { n: rows.filter((r) => (r.impressions ?? 0) > 0).length, total: d.keywords_total })}</div>
             ) : null}
             {rows.length > 0 && shown.length === 0 ? <div className="px-[18px] py-4 text-12.5 text-muted">{t('noneInTab')}</div> : null}
+            {unnamed ? <div className="px-[18px] py-[10px] text-12 text-muted">{t('unnamed', unnamed)}</div> : null}
           </div></div>
         </div>
 

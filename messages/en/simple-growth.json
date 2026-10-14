@@ -532,7 +532,11 @@
         "noSources": "No visits in this period.",
         "keywords": "Keywords ranking this page",
         "noKeywords": "No Search Console queries for this page.",
-        "rec": "Recommendation:"
+        "rec": "Recommendation:",
+        "google": "Google search, last {days} days",
+        "googleLine": "{impressions} impressions · {clicks} clicks · position {position}",
+        "googleNone": "Not shown in Google search in this period.",
+        "googleUnnamed": "{impressions} impressions and {clicks} clicks of these came from rare searches Search Console does not name, so the keywords below do not show them."
       },
       "advice": {
         "converts": "This page converts at {conv}. Link to it from the top articles and use it as the landing page for paid campaigns.",
@@ -639,7 +643,8 @@
       "trackThis": "Track «{q}»",
       "trackedThis": "«{q}» is tracked: it stays in the list even in a week without impressions",
       "capped": "The {n} searches with most impressions of {total} in this period.",
-      "emptyConnected": "Google has not shown the site in search in this period, and no keyword is tracked."
+      "emptyConnected": "Google has not shown the site in search in this period, and no keyword is tracked.",
+      "unnamed": "{impressions} impressions and {clicks} clicks in this period came from rare searches Search Console counts but does not name; they are in the totals above, not in the list."
     },
     "integrations": {
       "connected": "<b>{n}</b> of {total} connected",
@@ -872,6 +877,29 @@
           "noRevenue": "{app} does not report where an account came from, so organic revenue is not counted.",
           "index": "Index coverage comes from URL Inspection: {n, plural, one {# page} other {# pages}} checked, the last on {date}.",
           "noIndex": "URL Inspection has not checked a page yet."
+        },
+        "segments": {
+          "countries": "Countries",
+          "devices": "Devices",
+          "note": "Google search · last 30 days",
+          "cols": {
+            "country": "Country",
+            "device": "Device",
+            "clicks": "Clicks",
+            "impressions": "Impr.",
+            "change": "Δ 30d",
+            "ctr": "CTR",
+            "position": "Pos."
+          },
+          "other": "{n, plural, one {# other country} other {# other countries}}",
+          "unknown": "Unknown",
+          "device": {
+            "desktop": "Desktop",
+            "mobile": "Mobile",
+            "tablet": "Tablet"
+          },
+          "empty": "No searches in the last 30 days.",
+          "notImported": "Countries and devices arrive with the next Search Console import."
         }
       },
       "clusters": {

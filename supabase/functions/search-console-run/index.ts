@@ -8,14 +8,15 @@
  *   - "run": the nightly cron (header x-worker-key = Vault «search_console_worker_secret») or the owner. Maps a site that
  *     has no property yet (a market site added later, 0089), then imports each site's own pages (two market sites can
  *     share a domain property) since a little before its last imported day, thirty days at a time, oldest first, for about ninety
- *     seconds; the next run goes on from there. Then, until about two and a quarter minutes, it asks URL Inspection
+ *     seconds; the next run goes on from there. A window holds the day totals, the searches, the searches by page, and
+ *     each page's, country's and device's own figures (0090). Then, until about two and a quarter minutes, it asks URL Inspection
  *     whether Google has each crawled page in its index (0074), the longest unchecked first.
  *
  * Logs carry kinds, counts and status codes. Never a query, an address or the key.
  */
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2'
 import { sameText } from '../_shared/signing.ts'
-import { accessToken, inspectUrl, listSites, pageFilter, parseKey, propertyFor, searchAnalytics, windows } from '../_shared/google.ts'
+import { accessToken, inspectUrl, listSites, pageFilter, parseKey, propertyFor, searchAnalytics, wholeProperty, windows } from '../_shared/google.ts'
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
 const log = (s: string) => console.log(`[search-console-run] ${s}`)
@@ -113,27 +114,35 @@ Deno.serve(async (req) => {
   for (const t of arr<{ site_id: string; property: string; from: string; to: string; hosts?: unknown; except?: unknown }>(await rpc(svc, 'worker_search_console_targets'))) {
     if (!left()) break
     if (t.from > t.to) continue
-    // only the site's own pages: two market sites can share a domain property (0089)
-    const only = pageFilter(t.hosts, t.except)
-    if (!only) continue
+    // only the site's own pages: two market sites can share a domain property (0089). A property that is the site's
+    // alone is read without a filter, so its figures are counted as Search Console counts them (0090)
+    const filter = pageFilter(t.hosts, t.except)
+    if (!filter) continue
+    const only = wholeProperty(t.property, t.hosts, t.except) ? null : filter
     for (const w of windows(t.from, t.to, 30)) {
       if (!left()) break
-      const [days, queries, pages] = await Promise.all([
+      const [days, queries, pages, pageTotals, countries, devices] = await Promise.all([
         searchAnalytics(tok.token, t.property, w.from, w.to, 'day', fetch, only),
         searchAnalytics(tok.token, t.property, w.from, w.to, 'query', fetch, only),
         searchAnalytics(tok.token, t.property, w.from, w.to, 'page', fetch, only),
+        searchAnalytics(tok.token, t.property, w.from, w.to, 'pageTotal', fetch, only),
+        searchAnalytics(tok.token, t.property, w.from, w.to, 'country', fetch, only),
+        searchAnalytics(tok.token, t.property, w.from, w.to, 'device', fetch, only),
       ])
-      if (!days.ok || !queries.ok) {
-        const code = !days.ok ? days.code : !queries.ok ? queries.code : 'failed'
+      // a window is imported whole or not at all: its days are tried again by the next run (0090)
+      if (!days.ok || !queries.ok || !pageTotals.ok || !countries.ok || !devices.ok) {
+        const code = [days, queries, pageTotals, countries, devices].map((x) => (x.ok ? '' : x.code)).find(Boolean) ?? 'failed'
         await rpc(svc, 'worker_search_console_failed', { p_site: t.site_id, p_code: code })
         failed++
         log(`import refused ${code}`)
         break
       }
-      if (queries.capped) log('import capped at 100000 rows for one window')
-      const r = await rpc<{ totals: number; rows: number }>(svc, 'worker_search_console_import', { p_site: t.site_id, p_totals: days.rows, p_rows: queries.rows })
+      if (queries.capped || pageTotals.capped) log('import capped at 100000 rows for one window')
+      const r = await rpc<{ totals: number; rows: number }>(svc, 'worker_search_console_import', {
+        p_site: t.site_id, p_totals: days.rows, p_rows: queries.rows, p_pages: pageTotals.rows, p_countries: countries.rows, p_devices: devices.rows,
+      })
       if (!r) { failed++; break }
-      // the page each query was seen on (0072): «Ranking page», pages in Google, content ideas. A refusal here keeps the
+      // the page each query was seen on (0072): «Ranking page», split searches, content ideas. A refusal here keeps the
       // window's totals and queries; the pages come again with the next window that overlaps
       if (pages.ok) {
         if (pages.capped) log('pages capped at 100000 rows for one window')

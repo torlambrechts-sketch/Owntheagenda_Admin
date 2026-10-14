@@ -1,8 +1,9 @@
 /**
  * Google Search Console, reduced to what Sentral needs (0064): sign in as a service account (an RS256 JWT exchanged for
  * an access token), list the properties the account may read, find a site's property, and read Search Analytics by day,
- * or by day and query. Web Crypto only, so the edge function (Deno) and the tests (Node) run the same code. Nothing from
- * a response body is passed on or logged: the caller gets the HTTP status as a code.
+ * by day and query, by day, query and page (0072), and by day and page, country or device (0090). Web Crypto only, so the
+ * edge function (Deno) and the tests (Node) run the same code. Nothing from a response body is passed on or logged: the
+ * caller gets the HTTP status as a code.
  */
 import { toBase64Url } from './signing.ts'
 
@@ -12,6 +13,10 @@ export type DayRow = { day: string; impressions: number; clicks: number; positio
 export type QueryRow = DayRow & { query: string }
 /** a day × query × page row; the page is its path (and query string), never the host */
 export type PageRow = QueryRow & { page: string }
+/** a day × page row (0090): the page's own figures, the searches Google does not name included */
+export type PageTotalRow = DayRow & { page: string }
+/** a day × country or day × device row (0090): ISO 3166-1 alpha-3 as Google writes it («nor», «zzz» unknown), or a device */
+export type SegmentRow = DayRow & { key: string }
 type Fetch = typeof fetch
 type Fail = { ok: false; code: string }
 
@@ -128,8 +133,21 @@ export function pagePath(url: unknown): string | null {
   }
 }
 
-type Rows<D> = D extends 'day' ? DayRow[] : D extends 'query' ? QueryRow[] : PageRow[]
-const DIMS = { day: ['date'], query: ['date', 'query'], page: ['date', 'query', 'page'] } as const
+const DIMS = {
+  day: ['date'], query: ['date', 'query'], page: ['date', 'query', 'page'],
+  pageTotal: ['date', 'page'], country: ['date', 'country'], device: ['date', 'device'],
+} as const
+export type By = keyof typeof DIMS
+type Rows<D extends By> = D extends 'day' ? DayRow[] : D extends 'query' ? QueryRow[] : D extends 'page' ? PageRow[]
+  : D extends 'pageTotal' ? PageTotalRow[] : SegmentRow[]
+
+export const DEVICES = ['desktop', 'mobile', 'tablet'] as const
+/** a country or device as Sentral keeps it, or null for anything else */
+export function segmentKey(by: 'country' | 'device', v: unknown): string | null {
+  if (typeof v !== 'string') return null
+  const k = v.trim().toLowerCase()
+  return by === 'country' ? (/^[a-z]{3}$/.test(k) ? k : null) : (DEVICES as readonly string[]).includes(k) ? k : null
+}
 
 /** the pages one site's import keeps (0089): an RE2 expression its page addresses match, and ones they must not */
 export type PageFilter = { include: string; exclude: string[] }
@@ -149,12 +167,31 @@ export function pageFilter(hosts: unknown, except: unknown): PageFilter | null {
   return { include: hostsRe(keep), exclude: [...new Set(ok(except))].map((h) => hostsRe([h])) }
 }
 
-/** Search Analytics for one property and period: by day, by day and query, or by day, query and page (0072); pages of
- *  25 000 rows, at most four; only the pages a filter keeps, when it is given (0089) */
-export async function searchAnalytics<D extends 'day' | 'query' | 'page'>(token: string, property: string, from: string, to: string, by: D, f: Fetch = fetch,
+/**
+ * Whether every page of a property is on the site's own hosts, with no other site inside (0090): then a page filter would
+ * keep everything and change only how Google counts (by page, not by property, as soon as a request filters on pages), so
+ * the import asks without one and its figures are Search Console's own. sc-domain:empvibe.com for empvibe.com is such a
+ * property; sc-domain:orgpuls.com, which holds se.orgpuls.com too, is not.
+ */
+export function wholeProperty(property: string, hosts: unknown, except: unknown): boolean {
+  if (Array.isArray(except) && except.length) return false
+  const keep = (Array.isArray(hosts) ? hosts : []).filter((h): h is string => typeof h === 'string' && HOST.test(h)).map((h) => h.replace(/^www\./, ''))
+  const p = property.toLowerCase()
+  const host = p.startsWith('sc-domain:') ? p.slice('sc-domain:'.length)
+    : /^https?:\/\/([a-z0-9-]+(\.[a-z0-9-]+)+)\/$/.exec(p)?.[1] ?? null
+  if (!host || !HOST.test(host)) return false
+  const bare = host.replace(/^www\./, '')
+  // a domain property counts its subdomains, which the site's filter keeps too; a URL-prefix property one host
+  return keep.some((h) => bare === h || bare.endsWith(`.${h}`))
+}
+
+/** Search Analytics for one property and period: by day, by day and query, by day, query and page (0072), or by day and
+ *  page, country or device (0090); pages of 25 000 rows, at most four; only the pages a filter keeps, when it is given
+ *  (0089) */
+export async function searchAnalytics<D extends By>(token: string, property: string, from: string, to: string, by: D, f: Fetch = fetch,
   only: PageFilter | null = null): Promise<{ ok: true; rows: Rows<D>; capped: boolean } | Fail> {
-  const rows: PageRow[] = []
-  const shape = (): Rows<D> => (by === 'day' ? rows.map(({ query: _q, page: _p, ...d }) => d) : by === 'query' ? rows.map(({ page: _p, ...q }) => q) : rows) as Rows<D>
+  const rows: Array<DayRow | QueryRow | PageRow | PageTotalRow | SegmentRow> = []
+  const shape = () => rows as Rows<D>
   const PAGE = 25_000
   for (let page = 0; page < 4; page++) {
     let res: Response
@@ -183,12 +220,24 @@ export async function searchAnalytics<D extends 'day' | 'query' | 'page'>(token:
     for (const r of got) {
       const day = typeof r.keys?.[0] === 'string' ? r.keys[0] : ''
       if (!DAY.test(day)) continue
-      const query = typeof r.keys?.[1] === 'string' ? r.keys[1] : ''
-      if (by !== 'day' && !query.trim()) continue
-      const pg = by === 'page' ? pagePath(r.keys?.[2]) : ''
-      if (pg === null) continue
       const position = num(r.position)
-      rows.push({ day, query, page: pg, impressions: Math.max(0, Math.round(num(r.impressions))), clicks: Math.max(0, Math.round(num(r.clicks))), position: position > 0 ? position : null })
+      const base: DayRow = { day, impressions: Math.max(0, Math.round(num(r.impressions))), clicks: Math.max(0, Math.round(num(r.clicks))), position: position > 0 ? position : null }
+      if (by === 'day') rows.push(base)
+      else if (by === 'query' || by === 'page') {
+        const query = typeof r.keys?.[1] === 'string' ? r.keys[1] : ''
+        if (!query.trim()) continue
+        if (by === 'query') rows.push({ ...base, query })
+        else {
+          const page = pagePath(r.keys?.[2])
+          if (page !== null) rows.push({ ...base, query, page })
+        }
+      } else if (by === 'pageTotal') {
+        const page = pagePath(r.keys?.[1])
+        if (page !== null) rows.push({ ...base, page })
+      } else {
+        const key = segmentKey(by as 'country' | 'device', r.keys?.[1])
+        if (key !== null) rows.push({ ...base, key })
+      }
     }
     if (got.length < PAGE) return { ok: true, rows: shape(), capped: false }
   }

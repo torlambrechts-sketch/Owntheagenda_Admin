@@ -1,8 +1,11 @@
 import { getLocale, getTranslations } from 'next-intl/server'
 import { formatNumber, money, percent, type NumberFormat } from '@/lib/format'
-import { relChange } from '@/lib/growth/calc'
-import { visibility, type Coverage, type SeoOpp, type SeoOverview } from '@/lib/growth/seo'
-import { Delta, Tile, card, cardTable, head } from '../v2kit'
+import { rate, relChange } from '@/lib/growth/calc'
+import { countryName } from '@/lib/growth/countries'
+import { visibility, type Coverage, type Segment, type SeoOpp, type SeoOverview } from '@/lib/growth/seo'
+import { Delta, Tile, card, cardTable, colHead, head } from '../v2kit'
+
+const SEG_COLS = '[grid-template-columns:minmax(0,1.5fr)_50px_56px_58px_50px_42px]'
 import { PlanButton } from './controls'
 import { oppTexts } from './text'
 
@@ -15,7 +18,8 @@ export const COVERAGE_COLOR: Record<Coverage, string> = {
 /**
  * SEO › SEO overview (SeoSuite.dc.html, v.overview) on seo_overview and seo_opportunities (0074): five KPIs, the top five
  * actions, index coverage from URL Inspection and the facts behind the figures. «Traffic value» is left out: it needs
- * cost-per-click data Sentral does not have (V-GR2-24).
+ * cost-per-click data Sentral does not have (V-GR2-24). Under them, the countries and devices the searches came from
+ * (0090; not drawn by the design, V-GR2-48).
  */
 export async function SeoOverviewView({ d, opps, priced, nf, product, site = null, app, canAdd }: {
   d: SeoOverview; opps: SeoOpp[]; priced: boolean; nf: NumberFormat; product: string; site?: string | null; app: string; canAdd: boolean
@@ -59,6 +63,46 @@ export async function SeoOverviewView({ d, opps, priced, nf, product, site = nul
     d.attributed ? t('overview.facts.revenue') : t('overview.facts.noRevenue', { app }),
     ix && ix.pages && ix.last_at ? t('overview.facts.index', { n: ix.pages, date: date(ix.last_at) }) : t('overview.facts.noIndex'),
   ]
+
+  // the countries and devices the searches came from, the last 30 days (0090)
+  const seg = d.segments ?? null
+  const segEmpty = !d.connected || !seg ? t('notConnected') : !seg.imported ? t('overview.segments.notImported') : t('overview.segments.empty')
+  const segRow = (name: string, x: Pick<Segment, 'clicks' | 'impressions'> & Partial<Segment>, key: string) => {
+    const ctr = rate(x.clicks, x.impressions)
+    const change = x.impressions_prev !== undefined ? relChange(x.impressions, x.impressions_prev) : null
+    return (
+      <div key={key} className={`grid items-center gap-2 border-b border-line px-[18px] py-[9px] text-12.5 tabular-nums ${SEG_COLS}`}>
+        <b className="overflow-hidden text-ellipsis whitespace-nowrap" title={name}>{name}</b>
+        <span>{formatNumber(x.clicks, nf)}</span>
+        <span>{formatNumber(x.impressions, nf)}</span>
+        {change === null ? <span className="text-faint">{dash}</span> : <Delta change={change} nf={nf} />}
+        <span>{ctr === null ? dash : percent(ctr * 100, nf)}</span>
+        <span>{x.position == null ? dash : formatNumber(x.position, nf, 1)}</span>
+      </div>
+    )
+  }
+  const segTable = (title: string, first: string, rows: React.ReactNode[]) => (
+    <section className={cardTable}>
+      <div className={head}>
+        <b className="text-15">{title}</b>
+        <span className="text-12 text-muted">{t('overview.segments.note')}</span>
+      </div>
+      {rows.length ? (
+        <div className="overflow-x-auto"><div className="min-w-[380px]">
+          <div className={`grid gap-2 border-b border-line px-[18px] py-[9px] ${colHead} tracking-[.08em] ${SEG_COLS}`}>
+            <span>{first}</span><span>{t('overview.segments.cols.clicks')}</span><span>{t('overview.segments.cols.impressions')}</span>
+            <span>{t('overview.segments.cols.change')}</span><span>{t('overview.segments.cols.ctr')}</span><span>{t('overview.segments.cols.position')}</span>
+          </div>
+          {rows}
+        </div></div>
+      ) : <p className="m-0 px-[18px] py-[14px] text-12.5 text-muted">{segEmpty}</p>}
+    </section>
+  )
+  const countries = (seg?.countries ?? []).map((c) => segRow(countryName(c.key, locale) ?? t('overview.segments.unknown'), c, c.key))
+  if (seg?.countries_other) {
+    countries.push(segRow(t('overview.segments.other', { n: seg.countries_other.countries }), seg.countries_other, 'other'))
+  }
+  const devices = (seg?.devices ?? []).map((v) => segRow(t(`overview.segments.device.${v.key}`), v, v.key))
 
   return (
     <div className="flex flex-col gap-[14px]">
@@ -111,6 +155,10 @@ export async function SeoOverviewView({ d, opps, priced, nf, product, site = nul
             {facts.map((f) => <span key={f} className="text-12 leading-[1.45] text-ink-2">· {f}</span>)}
           </section>
         </div>
+      </div>
+      <div className="grid items-start gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))]">
+        {segTable(t('overview.segments.countries'), t('overview.segments.cols.country'), countries)}
+        {segTable(t('overview.segments.devices'), t('overview.segments.cols.device'), devices)}
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 import { webcrypto } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
-import { accessToken, pageFilter, pagePath, parseKey, propertyFor, searchAnalytics, serviceJwt, windows } from '../supabase/functions/_shared/google'
+import { accessToken, pageFilter, pagePath, parseKey, propertyFor, searchAnalytics, segmentKey, serviceJwt, wholeProperty, windows } from '../supabase/functions/_shared/google'
 
 const subtle = webcrypto.subtle
 async function testKey() {
@@ -114,5 +114,53 @@ describe('one site\'s pages in a shared property (0089)', () => {
     ] }])
     await searchAnalytics('t', 'sc-domain:orgpuls.com', '2026-10-01', '2026-10-01', 'day', f)
     expect(body.dimensionFilterGroups).toBeUndefined()
+  })
+})
+
+describe('what Search Console reports beyond named searches (0090)', () => {
+  const rowsOf = (rows: unknown[], seen: { body?: Record<string, unknown> } = {}) => (async (_u: unknown, init?: RequestInit) => {
+    seen.body = JSON.parse(String(init?.body))
+    return new Response(JSON.stringify({ rows }), { status: 200 })
+  }) as typeof fetch
+  it('reads a page\'s own figures by day and page, the page as its path', async () => {
+    const seen: { body?: Record<string, unknown> } = {}
+    const r = await searchAnalytics('t', 'sc-domain:orgpuls.com', '2026-10-01', '2026-10-01', 'pageTotal', rowsOf([
+      { keys: ['2026-10-01', 'https://www.orgpuls.com/lovkrav'], impressions: 12, clicks: 2, position: 9.5 },
+      { keys: ['2026-10-01', 'not a url'], impressions: 3, clicks: 0, position: 4 },
+    ], seen))
+    expect(seen.body).toMatchObject({ dimensions: ['date', 'page'] })
+    expect(r).toEqual({ ok: true, capped: false, rows: [{ day: '2026-10-01', page: '/lovkrav', impressions: 12, clicks: 2, position: 9.5 }] })
+  })
+  it('reads countries and devices as Sentral keeps them, and leaves out anything else', async () => {
+    const seen: { body?: Record<string, unknown> } = {}
+    const c = await searchAnalytics('t', 'sc-domain:orgpuls.com', '2026-10-01', '2026-10-01', 'country', rowsOf([
+      { keys: ['2026-10-01', 'nor'], impressions: 15, clicks: 3, position: 10 },
+      { keys: ['2026-10-01', 'ZZZ'], impressions: 1, clicks: 0, position: 0 },
+      { keys: ['2026-10-01', 'no'], impressions: 1, clicks: 0, position: 3 },
+    ], seen))
+    expect(seen.body).toMatchObject({ dimensions: ['date', 'country'] })
+    expect(c).toEqual({ ok: true, capped: false, rows: [
+      { day: '2026-10-01', key: 'nor', impressions: 15, clicks: 3, position: 10 },
+      { day: '2026-10-01', key: 'zzz', impressions: 1, clicks: 0, position: null },
+    ] })
+    const d = await searchAnalytics('t', 'sc-domain:orgpuls.com', '2026-10-01', '2026-10-01', 'device', rowsOf([
+      { keys: ['2026-10-01', 'MOBILE'], impressions: 12, clicks: 2, position: 11 },
+      { keys: ['2026-10-01', 'SMARTWATCH'], impressions: 1, clicks: 0, position: 2 },
+    ], seen))
+    expect(seen.body).toMatchObject({ dimensions: ['date', 'device'] })
+    expect(d).toEqual({ ok: true, capped: false, rows: [{ day: '2026-10-01', key: 'mobile', impressions: 12, clicks: 2, position: 11 }] })
+    expect(segmentKey('device', 'Tablet')).toBe('tablet')
+    expect(segmentKey('country', 42)).toBeNull()
+  })
+  it('reads a property that is the site\'s alone without a filter, so it counts as Search Console does', () => {
+    expect(wholeProperty('sc-domain:empvibe.com', ['empvibe.com'], [])).toBe(true)
+    expect(wholeProperty('sc-domain:empvibe.com', ['www.empvibe.com'], [])).toBe(true)
+    expect(wholeProperty('https://www.empvibe.com/', ['empvibe.com'], [])).toBe(true)
+    // the property holds another site, or more than the site
+    expect(wholeProperty('sc-domain:orgpuls.com', ['orgpuls.com'], ['se.orgpuls.com'])).toBe(false)
+    expect(wholeProperty('sc-domain:orgpuls.com', ['se.orgpuls.com'], [])).toBe(false)
+    expect(wholeProperty('https://www.orgpuls.com/se/', ['orgpuls.com'], [])).toBe(false)
+    expect(wholeProperty('sc-domain:', ['orgpuls.com'], [])).toBe(false)
+    expect(wholeProperty('sc-domain:orgpuls.com', null, null)).toBe(false)
   })
 })

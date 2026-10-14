@@ -31,6 +31,10 @@ export type Coverage = (typeof COVERAGE)[number]
 // Shapes
 
 const Kw = z.object({ query: s, impressions: nn, position: nn, impressions_prev: nn, position_prev: nn })
+/** a country (ISO 3166-1 alpha-3 as Google writes it) or a device, the last 30 days and the impressions of the 30 before (0090) */
+const Segment = z.object({ key: s, impressions: n, clicks: n, position: nn, impressions_prev: n })
+export type Segment = z.infer<typeof Segment>
+export const DEVICES = ['desktop', 'mobile', 'tablet'] as const
 export const SeoOverview = z.object({
   connected: z.boolean(),
   site: z.object({ id: uuid, hostname: s }).nullable(),
@@ -46,6 +50,13 @@ export const SeoOverview = z.object({
     pages: n, indexed: n, dropped: n, last_at: sn, crawled: n,
     buckets: z.array(z.object({ coverage: z.enum(COVERAGE), count: n })),
   }).nullable(),
+  // the countries and devices the searches came from (0090); null without a connection and a property
+  segments: z.object({
+    imported: z.boolean(),
+    countries: z.array(Segment),
+    countries_other: z.object({ countries: n, impressions: n, clicks: n }).nullable(),
+    devices: z.array(Segment.extend({ key: z.enum(DEVICES) })),
+  }).nullable().optional(),
 })
 export type SeoOverview = z.infer<typeof SeoOverview>
 

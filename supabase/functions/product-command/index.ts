@@ -1,7 +1,8 @@
 /**
- * product-command — the platform's one way to act on a product (Orgpuls 0205: public.platform_command).
+ * product-command — the platform's one way to act on a product (Orgpuls 0205, LeaderPact 0025: public.platform_command).
  *
- * POST {"product": "orgpuls", "command": "orgs.list", "args": {...}} with the caller's own JWT:
+ * POST {"product": "orgpuls" | "leaderpact", "command": "orgs.list", "args": {...}} (a product with a command registry in
+ * _shared/commands.ts and an enabled installation, and a command from that registry) with the caller's own JWT:
  *   - an admin of this platform signed in with a second factor (public.admin_whoami says admin), acting
  *     as their own address; or
  *   - the service role, acting as «platform» (scheduled work: a nightly sync, never a person).
@@ -9,12 +10,12 @@
  * action and the admin's role decide — allowed, refused, or (approvals switched on for that action) only under an approval
  * the admin decided and took, with exactly the approved arguments, once. The optional `approval` in the body names it.
  * The token it signs names that actor and only the scope the command needs, lives two minutes and is
- * used once. Every call that reaches the product is written to the audit with its argument names, never
- * their values. The token secret is in this project's Vault (orgpuls_token_secret, 0002), read by the
- * service role only.
+ * used once, with the product as its audience. Every call that reaches the product is written to the audit with its
+ * argument names, never their values. Each product's token secret is in this project's Vault (`<product>_token_secret`,
+ * 0002), read by the service role only.
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
-import { commandClaims, isOrgpulsCommand } from '../_shared/orgpuls.ts'
+import { commandClaims, isCommandProduct, isProductCommand } from '../_shared/commands.ts'
 import { productSecret } from '../_shared/secrets.ts'
 import { sameText, signJwt } from '../_shared/signing.ts'
 import { readCapped } from '../_shared/body.ts'
@@ -43,7 +44,8 @@ Deno.serve(async (req) => {
     return json({ error: 'body' }, 400)
   }
   const args = input.args ?? {}
-  if (input.product !== 'orgpuls' || typeof input.command !== 'string' || !isOrgpulsCommand(input.command)
+  const product = input.product
+  if (!isCommandProduct(product) || !isProductCommand(product, input.command)
       || typeof args !== 'object' || args === null || Array.isArray(args) || Object.keys(args).length > 50) {
     return json({ error: 'invalid' }, 400)
   }
@@ -66,15 +68,15 @@ Deno.serve(async (req) => {
     if (actor) {
       // may this admin run this command (their role's mode for its action), and under which approval
       const { error: refused } = await asUser.rpc('command_authorize', {
-        p_product: 'orgpuls', p_command: command, p_approval: approval, p_args: approval ? args : null,
+        p_product: product, p_command: command, p_approval: approval, p_args: approval ? args : null,
       })
       if (refused) {
         const code = REFUSALS.has(refused.message) ? refused.message : 'not_allowed'
         const svcAudit = createClient(url, serviceKey, { auth: { persistSession: false } })
         await svcAudit.rpc('record_command', {
-          p_actor: actor, p_product: 'orgpuls', p_command: command, p_arg_names: Object.keys(args).sort(), p_ok: false, p_error: `refused:${code}`,
+          p_actor: actor, p_product: product, p_command: command, p_arg_names: Object.keys(args).sort(), p_ok: false, p_error: `refused:${code}`,
         })
-        console.log(`[product-command] ${command} by admin: refused ${code}`)
+        console.log(`[product-command] ${product} ${command} by admin: refused ${code}`)
         return json({ ok: false, error: code }, 403)
       }
     }
@@ -82,13 +84,13 @@ Deno.serve(async (req) => {
   if (!actor) return json({ error: 'not_allowed' }, 403)
 
   const svc = createClient(url, serviceKey, { auth: { persistSession: false } })
-  const { data: inst } = await svc.rpc('installation_of', { p_product: 'orgpuls' })
+  const { data: inst } = await svc.rpc('installation_of', { p_product: product })
   const installation = inst as { api_url?: string; public_key?: string } | null
-  const secret = await productSecret(svc, 'orgpuls_token_secret')
+  const secret = await productSecret(svc, `${product}_token_secret`)
   if (!installation?.api_url || !installation.public_key || !secret) return json({ error: 'not_installed' }, 503)
 
   const nowSec = Math.floor(Date.now() / 1000)
-  const jwt = await signJwt(commandClaims(actor, command, nowSec, crypto.randomUUID()), secret)
+  const jwt = await signJwt(commandClaims(product, actor, command, nowSec, crypto.randomUUID()), secret)
   let reply: { ok?: boolean; error?: string; result?: unknown } = { ok: false, error: 'unreachable' }
   try {
     const res = await fetch(`${installation.api_url}/rest/v1/rpc/platform_command`, {
@@ -108,13 +110,13 @@ Deno.serve(async (req) => {
 
   const { error: auditError } = await svc.rpc('record_command', {
     p_actor: actor,
-    p_product: 'orgpuls',
+    p_product: product,
     p_command: command,
     p_arg_names: Object.keys(args).sort(),
     p_ok: reply.ok === true,
     p_error: reply.ok === true ? null : String(reply.error ?? 'failed').slice(0, 200),
   })
   if (auditError) console.error(`[product-command] audit failed: ${auditError.code ?? ''}`)
-  console.log(`[product-command] ${command} by ${actor === 'platform' ? 'platform' : 'admin'}: ${reply.ok === true ? 'ok' : reply.error}`)
+  console.log(`[product-command] ${product} ${command} by ${actor === 'platform' ? 'platform' : 'admin'}: ${reply.ok === true ? 'ok' : reply.error}`)
   return json(reply, reply.ok === true ? 200 : 502)
 })

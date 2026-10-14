@@ -136,7 +136,7 @@ export async function extendTrial(input: { ticketId: string }): Promise<Result<{
   if (!detail.ok) return { ok: false, code: detail.code }
   const sub = detail.data.subscriptions.find((s) => s.product === 'orgpuls' && s.status === 'trial')
   if (!sub) return { ok: false, code: 'invalid', detail: 'not_in_trial' }
-  const reply = await runCommand('billing.extend_trial', { p_org: sub.tenant_id, p_days: 14, p_reason: t.ref })
+  const reply = await runCommand('orgpuls', 'billing.extend_trial', { p_org: sub.tenant_id, p_days: 14, p_reason: t.ref })
   const result = z.object({ ok: z.boolean().optional(), error: z.string().optional() }).catch({}).parse(reply.result ?? {})
   const ok = reply.ok && result.ok !== false
   const log = await rpc('customer_action_log', { p_org: t.organization_id, p_action: 'billing.extend_trial', p_reason: t.ref, p_ok: ok }, z.object({ ok: z.boolean() }))

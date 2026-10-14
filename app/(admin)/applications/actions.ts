@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { rpc, type RpcCode } from '@/lib/rpc'
 import { createClient } from '@/lib/supabase/server'
 import { runCommand } from '@/lib/platform/command'
+import { isCommandProduct } from '@/supabase/functions/_shared/commands.ts'
 import {
   loadCatalog, loadDeliveries, loadDelivery, type Catalog, type Delivery, type DeliveryRow,
 } from '@/lib/data/platform'
@@ -41,16 +42,17 @@ export async function reverify(input: unknown): Promise<Res> {
 // ---------------------------------------------------------------------------
 // applications
 /**
- * «Test connection»: a harmless read (orgs.list) through product-command, timed here. Only Orgpuls has a command path
- * (lib/platform/command.ts); another product answers not_available. The product-command function does not yet record
+ * «Test connection»: a harmless read (orgs.list) through product-command, timed here. A product with a command registry
+ * (orgpuls, leaderpact: _shared/commands.ts) is asked; another answers not_available. The product-command function does not yet record
  * the ping (worker_application_ping is the edge function's), so the answer is shown, not stored.
  */
 export async function testConnection(input: unknown): Promise<Res<{ ms: number }>> {
   const p = productKey.safeParse(input)
   if (!p.success) return bad
-  if (p.data !== 'orgpuls') return { ok: false, code: 'not_available', detail: 'command_path' }
+  const product = p.data
+  if (!isCommandProduct(product)) return { ok: false, code: 'not_available', detail: 'command_path' }
   const started = Date.now()
-  const reply = await runCommand('orgs.list', {})
+  const reply = await runCommand(product, 'orgs.list', {})
   const ms = Date.now() - started
   if (!reply.ok) return { ok: false, code: 'not_connected', detail: reply.error && /^[a-z0-9_]{1,40}$/.test(reply.error) ? reply.error : 'unreachable' }
   return { ok: true, ms }

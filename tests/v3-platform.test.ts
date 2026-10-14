@@ -199,6 +199,32 @@ describe('the approval run', () => {
     expect(rpc).toHaveBeenCalledWith('approval_decide', { p_id: id, p_yes: true, p_note: null, p_confirm: '123456789' }, expect.anything())
   })
 
+  it('sends an approved LeaderPact command to LeaderPact, and refuses a command its product does not have', async () => {
+    const lpArgs = { p_key: 'check-in', p_version: 2, p_status: 'retired' }
+    const take = (product: string, command: string) => async (fn: string) => {
+      if (fn === 'approval_decide') return ok({ id, state: 'approved', executor: 'command' })
+      if (fn === 'approval_take') return ok({ id, action: 'flags.change', product, command, args: lpArgs, organization_id: null, reason: 'r' })
+      if (fn === 'approval_done') return ok({ id, state: 'executed' })
+      return ok({ ok: true })
+    }
+    rpc.mockImplementation(take('leaderpact', 'modules.set_status'))
+    const fetch = vi.fn(async () => new Response(JSON.stringify({ ok: true, result: { ok: true } }), { status: 200 }))
+    vi.stubGlobal('fetch', fetch)
+    expect(await actions.decideApproval({ id, yes: true })).toMatchObject({ ok: true, state: 'executed' })
+    const [, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
+    expect(JSON.parse(String(init.body))).toEqual({ product: 'leaderpact', command: 'modules.set_status', args: lpArgs, approval: id })
+
+    // Orgpuls's command under LeaderPact's name, or a product without a registry: nothing is sent
+    for (const [product, command] of [['leaderpact', 'orgs.delete_now'], ['empvibe', 'orgs.list']] as const) {
+      rpc.mockReset()
+      rpc.mockImplementation(take(product, command))
+      fetch.mockClear()
+      await actions.decideApproval({ id, yes: true })
+      expect(fetch).not.toHaveBeenCalled()
+      expect(rpc).toHaveBeenCalledWith('approval_done', { p_id: id, p_ok: false, p_code: 'invalid' }, expect.anything())
+    }
+  })
+
   const approvedTrial = (done: unknown) => async (fn: string) => {
     if (fn === 'approval_decide') return ok({ id, state: 'approved', executor: 'command' })
     if (fn === 'approval_take') return ok({ id, action: 'trial.extend', product: 'orgpuls', command: 'billing.extend_trial', args, organization_id: org, reason: 'r' })

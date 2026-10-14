@@ -138,16 +138,16 @@ export async function runCustomerAction(input: { org: string; action: 'trial' | 
   let reply: { ok: boolean; error?: string; result?: unknown }
   if (action === 'trial') {
     if (!p.data.days) return fail('invalid')
-    reply = await runCommand('billing.extend_trial', { p_org: tenant, p_days: p.data.days, p_reason: reason })
+    reply = await runCommand('orgpuls', 'billing.extend_trial', { p_org: tenant, p_days: p.data.days, p_reason: reason })
   } else if (action === 'resync') {
-    reply = await runCommand('orgs.resync', { p_org: tenant })
+    reply = await runCommand('orgpuls', 'orgs.resync', { p_org: tenant })
   } else {
     const shell = await getShell()
     if (shell.me.permission_kind !== 'admin') return fail('forbidden')
     if ((await settingValue('second_admin')) === 'on') return fail('approval_required')
     const typed = (p.data.confirm ?? '').replace(/\s/g, '')
     if (!detail.data.org_number || typed !== detail.data.org_number) return fail('confirm_mismatch')
-    reply = await runCommand('orgs.delete_now', { p_org: tenant, p_confirm: typed, p_reason: reason })
+    reply = await runCommand('orgpuls', 'orgs.delete_now', { p_org: tenant, p_confirm: typed, p_reason: reason })
   }
 
   // the operation itself answers inside the reply ({ ok: true, result: { ok: false, error } })

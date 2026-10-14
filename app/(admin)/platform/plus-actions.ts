@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { rpc, type RpcCode } from '@/lib/rpc'
 import { supabaseEnv } from '@/lib/supabase/env'
 import { createClient } from '@/lib/supabase/server'
-import { isOrgpulsCommand } from '@/supabase/functions/_shared/orgpuls.ts'
+import { isCommandProduct, isProductCommand } from '@/supabase/functions/_shared/commands.ts'
 
 /**
  * Platform › the new tabs' writes (0082). Each parses its input, calls one database function and answers `{ ok: true, … }` or
@@ -71,8 +71,8 @@ type Sent = { ok: true } | { ok: false | null; code: string }
 const SEND_TIMEOUT_MS = 40_000
 
 /** product-command with the approver's own session and the approval's id (runCommand without an approval cannot carry it). */
-async function sendApproved(command: string, args: Record<string, unknown>, approval: string): Promise<Sent> {
-  if (!isOrgpulsCommand(command)) return { ok: false, code: 'invalid' }
+async function sendApproved(product: string, command: string, args: Record<string, unknown>, approval: string): Promise<Sent> {
+  if (!isCommandProduct(product) || !isProductCommand(product, command)) return { ok: false, code: 'invalid' }
   const env = supabaseEnv()
   if ('problem' in env) return { ok: false, code: 'not_configured' }
   const supabase = await createClient()
@@ -83,7 +83,7 @@ async function sendApproved(command: string, args: Record<string, unknown>, appr
     const res = await fetch(`${env.url}/functions/v1/product-command`, {
       method: 'POST',
       headers: { authorization: `Bearer ${token}`, apikey: env.key, 'content-type': 'application/json' },
-      body: JSON.stringify({ product: 'orgpuls', command, args, approval }),
+      body: JSON.stringify({ product, command, args, approval }),
       cache: 'no-store',
       signal: AbortSignal.timeout(SEND_TIMEOUT_MS),
     })
@@ -104,7 +104,7 @@ const DecideZ = z.object({ id: uuid, state: z.string(), executor: z.enum(['comma
 const TakeZ = z.object({
   id: uuid,
   action: z.string(),
-  product: z.literal('orgpuls'),
+  product: z.string(),
   command: z.string(),
   args: z.record(z.string(), z.unknown()),
   organization_id: uuid.nullable(),
@@ -134,7 +134,7 @@ export async function decideApproval(input: unknown): Promise<Res<{ state: strin
     done()
     return { ok: true, state: 'approved', code: take.code }
   }
-  const sent = await sendApproved(take.data.command, take.data.args, take.data.id)
+  const sent = await sendApproved(take.data.product, take.data.command, take.data.args, take.data.id)
   const recorded = await rpc('approval_done', { p_id: take.data.id, p_ok: sent.ok, p_code: sent.ok ? null : sent.code }, DoneZ)
   const state = recorded.ok ? recorded.data.state : null
   const log = ACTION_LOG[take.data.action]

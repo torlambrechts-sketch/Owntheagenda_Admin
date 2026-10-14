@@ -1,4 +1,4 @@
--- 0090_search_console_breakdown.sql — what Search Console reports beyond the searches it names: each page's own figures,
+-- 0091_search_console_breakdown.sql — what Search Console reports beyond the searches it names: each page's own figures,
 -- and the countries and devices the searches came from.
 --
 -- 1. A page's own figures (Tor, 14 Oct 2026). Search Console names a search only when enough people made it; the rest it
@@ -190,11 +190,11 @@ begin
                           / nullif(sum(t.impressions) filter (where t.day > current_date - d and t.position is not null), 0), 1),
         'position_prev', round(sum(t.position * t.impressions) filter (where t.day <= current_date - d and t.position is not null)
                                / nullif(sum(t.impressions) filter (where t.day <= current_date - d and t.position is not null), 0), 1),
-        -- what the period's named searches add up to (0090): the rest came from searches Google does not name
+        -- what the period's named searches add up to (0091): the rest came from searches Google does not name
         'named_impressions', (select coalesce(sum(s.impressions), 0) from app.search_console_daily s where s.site_id = v_site.id and s.day > current_date - d),
         'named_clicks', (select coalesce(sum(s.clicks), 0) from app.search_console_daily s where s.site_id = v_site.id and s.day > current_date - d))
         -- pages Google showed in search in the period (0072), the honest stand-in for «Indexed pages»; null before pages are
-        -- imported. From the pages' own figures once imported (0090): a page shown only for unnamed searches counts too
+        -- imported. From the pages' own figures once imported (0091): a page shown only for unnamed searches counts too
         || jsonb_build_object(
              'pages', case when v_pages then (case when v_full then (select count(distinct p.page) from app.search_console_page_totals p
                                                                     where p.site_id = v_site.id and p.day > current_date - d and p.impressions > 0)
@@ -291,7 +291,7 @@ declare
   v_product text := nullif(p_product, 'all');
   v_site app.web_sites := app.product_site(v_product, p_site);
   v_last date := (select sc.last_day from app.search_console_sites sc where sc.site_id = v_site.id);
-  -- how far back the pages' own figures (0090) and the searches by page (0072) go
+  -- how far back the pages' own figures (0091) and the searches by page (0072) go
   v_tot_from date := (select min(t.day) from app.search_console_page_totals t where t.site_id = v_site.id);
   v_q_from date := (select min(p.day) from app.search_console_pages p where p.site_id = v_site.id);
 begin
@@ -315,7 +315,7 @@ begin
                                   'position', round(sum(r.pw) filter (where r.after) / nullif(sum(r.iw) filter (where r.after), 0), 1),
                                   'days', count(distinct r.day) filter (where r.after)) a
         from (
-          -- a page: its own figures (0090) when they reach the four weeks before the change, or as far back as the searches by
+          -- a page: its own figures (0091) when they reach the four weeks before the change, or as far back as the searches by
           -- page do; else summed from the searches by page, as before
           select p.day, p.day >= c.day after, p.clicks c, p.impressions i,
                  case when p.position is not null then p.position * p.impressions end pw, case when p.position is not null then p.impressions end iw
@@ -380,7 +380,7 @@ begin
         group by x.query having count(*) >= 2
         order by 2 desc, 1 limit 10) cb), '[]'::jsonb) end,
     -- pages whose clicks over the last 28 days fell by a quarter or more against the same 28 days three months before; a
-    -- page's clicks are its own figures once imported (0090), unnamed searches included
+    -- page's clicks are its own figures once imported (0091), unnamed searches included
     'decay', case when v_ok then coalesce((select jsonb_agg(jsonb_build_object('path', dc.page, 'clicks', dc.c_now, 'clicks_before', dc.c_before,
                                                                                'impressions', dc.i_now, 'query', dc.top_query) order by dc.c_before - dc.c_now desc, dc.page) from (
       select * from (
@@ -455,7 +455,7 @@ begin
                    from app.page_vitals pv where pv.site_id = v_site and pv.path = v_path and pv.strategy = 'mobile'),
         'sources', coalesce((select jsonb_agg(jsonb_build_object('channel', c.channel, 'visits', c.n) order by c.n desc, c.channel) from (
             select s.channel, count(*) n from s where s.entry_path = v_path group by 1) c), '[]'::jsonb),
-        -- the page in Google search over the keywords' period (0090): its own figures, and how much of them its named
+        -- the page in Google search over the keywords' period (0091): its own figures, and how much of them its named
         -- searches account for; null before the pages' own figures are imported
         'google', case when v_full then (
           select jsonb_build_object('days', greatest(w.d, 28), 'impressions', coalesce(sum(g.impressions), 0), 'clicks', coalesce(sum(g.clicks), 0),
@@ -560,7 +560,7 @@ begin
                  / nullif(sum(d.impressions) filter (where d.day <= current_date - 30 and d.position is not null), 0) pp
         from app.search_console_daily d where d.site_id = k.site_id and d.query = k.query and d.day > current_date - 60) x on true
       where k.site_id = v_site.id), '[]'::jsonb) end,
-    -- the countries and devices the searches came from (0090), the last 30 days and the impressions of the 30 before: the
+    -- the countries and devices the searches came from (0091), the last 30 days and the impressions of the 30 before: the
     -- ten countries seen most and the rest together; «imported» is false until the first import that reads them
     'segments', case when v_conn and sc.property is not null then (
       with g as (

@@ -1,7 +1,7 @@
 /**
  * Google Search Console, reduced to what Sentral needs (0064): sign in as a service account (an RS256 JWT exchanged for
  * an access token), list the properties the account may read, find a site's property, and read Search Analytics by day,
- * by day and query, by day, query and page (0072), and by day and page, country or device (0090). Web Crypto only, so the
+ * by day and query, by day, query and page (0072), and by day and page, country or device (0091). Web Crypto only, so the
  * edge function (Deno) and the tests (Node) run the same code. Nothing from a response body is passed on or logged: the
  * caller gets the HTTP status as a code.
  */
@@ -13,9 +13,9 @@ export type DayRow = { day: string; impressions: number; clicks: number; positio
 export type QueryRow = DayRow & { query: string }
 /** a day × query × page row; the page is its path (and query string), never the host */
 export type PageRow = QueryRow & { page: string }
-/** a day × page row (0090): the page's own figures, the searches Google does not name included */
+/** a day × page row (0091): the page's own figures, the searches Google does not name included */
 export type PageTotalRow = DayRow & { page: string }
-/** a day × country or day × device row (0090): ISO 3166-1 alpha-3 as Google writes it («nor», «zzz» unknown), or a device */
+/** a day × country or day × device row (0091): ISO 3166-1 alpha-3 as Google writes it («nor», «zzz» unknown), or a device */
 export type SegmentRow = DayRow & { key: string }
 type Fetch = typeof fetch
 type Fail = { ok: false; code: string }
@@ -168,7 +168,7 @@ export function pageFilter(hosts: unknown, except: unknown): PageFilter | null {
 }
 
 /**
- * Whether every page of a property is on the site's own hosts, with no other site inside (0090): then a page filter would
+ * Whether every page of a property is on the site's own hosts, with no other site inside (0091): then a page filter would
  * keep everything and change only how Google counts (by page, not by property, as soon as a request filters on pages), so
  * the import asks without one and its figures are Search Console's own. sc-domain:empvibe.com for empvibe.com is such a
  * property; sc-domain:orgpuls.com, which holds se.orgpuls.com too, is not.
@@ -186,7 +186,7 @@ export function wholeProperty(property: string, hosts: unknown, except: unknown)
 }
 
 /** Search Analytics for one property and period: by day, by day and query, by day, query and page (0072), or by day and
- *  page, country or device (0090); pages of 25 000 rows, at most four; only the pages a filter keeps, when it is given
+ *  page, country or device (0091); pages of 25 000 rows, at most four; only the pages a filter keeps, when it is given
  *  (0089) */
 export async function searchAnalytics<D extends By>(token: string, property: string, from: string, to: string, by: D, f: Fetch = fetch,
   only: PageFilter | null = null): Promise<{ ok: true; rows: Rows<D>; capped: boolean } | Fail> {

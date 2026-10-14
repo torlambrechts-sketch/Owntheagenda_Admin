@@ -15,7 +15,7 @@ const TAG_TONE: Record<Exclude<PageTag, null>, string> = { converts: 'text-link'
 /**
  * Growth › Pages and links (SimpleGrowth.dc.html, v.pages) on growth_pages: the landing pages with their visits, bounce,
  * signups begun and Core Web Vitals (PageSpeed Insights, 0073), the picked page's card (with the page's own figures in
- * Google search, rare searches included, 0090), the sites that send visits and
+ * Google search, rare searches included, 0091), the sites that send visits and
  * the presses on the site's own links and buttons. A referring site's links and domain rating need a backlink index the
  * platform does not have; those columns are left out (V-GR2-12).
  */
@@ -31,7 +31,7 @@ export async function PagesTab({ d, scope, sort, nf, siteRate }: { d: GrowthPage
     sort === 'visits' ? b.visits - a.visits : sort === 'conversion' ? b.cv - a.cv : sort === 'slowest' ? (b.lcp_ms ?? -1) - (a.lcp_ms ?? -1) : b.opp - a.opp)
   const pg = d.page
   const pgRow = pg ? rows.find((r) => r.path === pg.path) ?? null : null
-  // the page in Google search, rare searches included, and what of it the keywords below cannot show (0090)
+  // the page in Google search, rare searches included, and what of it the keywords below cannot show (0091)
   const gg = pg?.google ?? null
   const ggRest = gg && (gg.impressions > gg.named_impressions || gg.clicks > gg.named_clicks)
     ? { impressions: num(Math.max(0, gg.impressions - gg.named_impressions)), clicks: num(Math.max(0, gg.clicks - gg.named_clicks)) } : null

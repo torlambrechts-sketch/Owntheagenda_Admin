@@ -152,11 +152,11 @@ where d.query = 'medarbeiderundersøkelse' on conflict do nothing;
 insert into app.search_console_totals (day, site_id, impressions, clicks, position)
 select day, site_id, sum(impressions) * 3, sum(clicks) * 3, round(sum(position * impressions) / nullif(sum(impressions), 0), 1)
 from app.search_console_daily group by 1, 2 on conflict do nothing;
--- each page's own figures (0090): its named searches and the rare ones Search Console does not name
+-- each page's own figures (0091): its named searches and the rare ones Search Console does not name
 insert into app.search_console_page_totals (day, site_id, page, impressions, clicks, position)
 select day, site_id, page, sum(impressions) * 2, sum(clicks) * 2 + 1, round(sum(position * impressions) / nullif(sum(impressions), 0), 1)
 from app.search_console_pages group by 1, 2, 3 on conflict do nothing;
--- the countries and devices the searches came from (0090)
+-- the countries and devices the searches came from (0091)
 insert into app.search_console_segments (day, site_id, kind, key, impressions, clicks, position)
 select t.day, t.site_id, c.kind, c.key, greatest(1, round(t.impressions * c.share))::int, round(t.clicks * c.share)::int, t.position + c.dpos
 from app.search_console_totals t

@@ -19,7 +19,7 @@ export const COVERAGE_COLOR: Record<Coverage, string> = {
  * SEO › SEO overview (SeoSuite.dc.html, v.overview) on seo_overview and seo_opportunities (0074): five KPIs, the top five
  * actions, index coverage from URL Inspection and the facts behind the figures. «Traffic value» is left out: it needs
  * cost-per-click data Sentral does not have (V-GR2-24). Under them, the countries and devices the searches came from
- * (0090; not drawn by the design, V-GR2-48).
+ * (0091; not drawn by the design, V-GR2-48).
  */
 export async function SeoOverviewView({ d, opps, priced, nf, product, site = null, app, canAdd }: {
   d: SeoOverview; opps: SeoOpp[]; priced: boolean; nf: NumberFormat; product: string; site?: string | null; app: string; canAdd: boolean
@@ -64,7 +64,7 @@ export async function SeoOverviewView({ d, opps, priced, nf, product, site = nul
     ix && ix.pages && ix.last_at ? t('overview.facts.index', { n: ix.pages, date: date(ix.last_at) }) : t('overview.facts.noIndex'),
   ]
 
-  // the countries and devices the searches came from, the last 30 days (0090)
+  // the countries and devices the searches came from, the last 30 days (0091)
   const seg = d.segments ?? null
   const segEmpty = !d.connected || !seg ? t('notConnected') : !seg.imported ? t('overview.segments.notImported') : t('overview.segments.empty')
   const segRow = (name: string, x: Pick<Segment, 'clicks' | 'impressions'> & Partial<Segment>, key: string) => {

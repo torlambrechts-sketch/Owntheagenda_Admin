@@ -1,4 +1,4 @@
--- search_console_breakdown_invariants.sql — what Search Console reports beyond the searches it names (0090): the import
+-- search_console_breakdown_invariants.sql — what Search Console reports beyond the searches it names (0091): the import
 -- keeps each page's own figures and the countries and devices, replacing the days the totals report and dropping what is
 -- not a path, a country or a device; a call without them (the function deployed before) leaves them as they were. A
 -- page's figures include its unnamed searches: «Pages in Google», the page card, a change's before and after and pages
@@ -59,7 +59,7 @@ select pg_temp.check(not exists (select 1 from app.search_console_page_totals wh
                      and (select count(*) from app.search_console_page_totals where site_id = (select id from t_site) and day = current_date - 3) = 2,
                      'a window replaces its own days, and leaves the others as they were');
 
--- the function deployed before 0090 sends no pages, countries or devices: their days stay as they were
+-- the function deployed before 0091 sends no pages, countries or devices: their days stay as they were
 select public.worker_search_console_import((select id from t_site),
   jsonb_build_array(jsonb_build_object('day', current_date - 3, 'impressions', 20, 'clicks', 3, 'position', 12)),
   jsonb_build_array(jsonb_build_object('day', current_date - 3, 'query', 'anonym medarbeiderundersøkelse', 'impressions', 8, 'clicks', 0, 'position', 9)));

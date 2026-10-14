@@ -1,6 +1,6 @@
 /**
  * A country as Search Console names it (ISO 3166-1 alpha-3, lower case: «nor») to the name a reader of this locale knows
- * it by (0090). Intl.DisplayNames names regions by their alpha-2 code, so the alpha-3 codes are mapped first; the table is
+ * it by (0091). Intl.DisplayNames names regions by their alpha-2 code, so the alpha-3 codes are mapped first; the table is
  * ISO 3166-1 as the iso-codes project publishes it, and Kosovo. «zzz», Google's «could not tell», and any code not in the table have
  * no name: the caller shows its own word for unknown.
  */

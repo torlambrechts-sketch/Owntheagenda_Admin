@@ -68,7 +68,7 @@ export const GrowthPages = z.object({
     vitals: Vitals.nullable(),
     sources: z.array(z.object({ channel: z.string(), visits: n })),
     // the page in Google search over the keywords' period, its unnamed searches included, and what its named searches
-    // account for (0090); null before the pages' own figures are imported
+    // account for (0091); null before the pages' own figures are imported
     google: z.object({ days: n, impressions: n, clicks: n, position: nn, named_impressions: n, named_clicks: n }).nullable().optional(),
     keywords: z.array(z.object({ query: z.string(), impressions: n, position: nn })),
   }).nullable(),

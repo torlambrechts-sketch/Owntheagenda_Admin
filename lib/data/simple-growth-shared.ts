@@ -89,7 +89,7 @@ export const Seo = z.object({
     clicks: nn, clicks_prev: nn, impressions: nn, impressions_prev: nn, position: nn, position_prev: nn,
     // pages Google showed in search (0072), null before pages are imported for the period
     pages: nn.optional(), pages_prev: nn.optional(),
-    // the period's figures in searches Google names (0090): the rest came from rare searches it leaves out of the list
+    // the period's figures in searches Google names (0091): the rest came from rare searches it leaves out of the list
     named_impressions: nn.optional(), named_clicks: nn.optional(),
   }).nullable(),
   // every search Google showed the site for (the 200 with most impressions) and the keywords tracked by hand (0084); a

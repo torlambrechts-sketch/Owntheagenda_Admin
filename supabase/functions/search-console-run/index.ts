@@ -9,7 +9,7 @@
  *     has no property yet (a market site added later, 0089), then imports each site's own pages (two market sites can
  *     share a domain property) since a little before its last imported day, thirty days at a time, oldest first, for about ninety
  *     seconds; the next run goes on from there. A window holds the day totals, the searches, the searches by page, and
- *     each page's, country's and device's own figures (0090). Then, until about two and a quarter minutes, it asks URL Inspection
+ *     each page's, country's and device's own figures (0091). Then, until about two and a quarter minutes, it asks URL Inspection
  *     whether Google has each crawled page in its index (0074), the longest unchecked first.
  *
  * Logs carry kinds, counts and status codes. Never a query, an address or the key.
@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
     if (!left()) break
     if (t.from > t.to) continue
     // only the site's own pages: two market sites can share a domain property (0089). A property that is the site's
-    // alone is read without a filter, so its figures are counted as Search Console counts them (0090)
+    // alone is read without a filter, so its figures are counted as Search Console counts them (0091)
     const filter = pageFilter(t.hosts, t.except)
     if (!filter) continue
     const only = wholeProperty(t.property, t.hosts, t.except) ? null : filter
@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
         searchAnalytics(tok.token, t.property, w.from, w.to, 'country', fetch, only),
         searchAnalytics(tok.token, t.property, w.from, w.to, 'device', fetch, only),
       ])
-      // a window is imported whole or not at all: its days are tried again by the next run (0090)
+      // a window is imported whole or not at all: its days are tried again by the next run (0091)
       if (!days.ok || !queries.ok || !pageTotals.ok || !countries.ok || !devices.ok) {
         const code = [days, queries, pageTotals, countries, devices].map((x) => (x.ok ? '' : x.code)).find(Boolean) ?? 'failed'
         await rpc(svc, 'worker_search_console_failed', { p_site: t.site_id, p_code: code })

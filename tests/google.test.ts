@@ -117,7 +117,7 @@ describe('one site\'s pages in a shared property (0089)', () => {
   })
 })
 
-describe('what Search Console reports beyond named searches (0090)', () => {
+describe('what Search Console reports beyond named searches (0091)', () => {
   const rowsOf = (rows: unknown[], seen: { body?: Record<string, unknown> } = {}) => (async (_u: unknown, init?: RequestInit) => {
     seen.body = JSON.parse(String(init?.body))
     return new Response(JSON.stringify({ rows }), { status: 200 })

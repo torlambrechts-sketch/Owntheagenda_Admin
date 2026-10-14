@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { countryName } from '@/lib/growth/countries'
 
-describe('a Search Console country by name (0090)', () => {
+describe('a Search Console country by name (0091)', () => {
   it('names Google\'s three letters in the reader\'s language', () => {
     expect(countryName('nor', 'no')).toBe('Norge')
     expect(countryName('swe', 'no')).toBe('Sverige')

@@ -23,10 +23,13 @@ export const TAB_HREF: Record<PlatformTab, string> = {
 export const HEALTH = ['operational', 'degraded', 'unreachable', 'no_data', 'disabled', 'not_installed'] as const
 export type Health = (typeof HEALTH)[number]
 
-/** The scopes a product's installation may hold: the real command scopes (0044 application_connect), not the design's chips. */
+/**
+ * The scopes a product's installation may hold: the real command scopes (0091 app.installation_scopes, asked by
+ * application_connect and application_update), not the design's chips. users:* are LeaderPact's (users.deactivate, users.resend_invite).
+ */
 export const PRODUCT_SCOPES = [
   'orgs:read', 'orgs:write', 'billing:read', 'billing:write', 'translations:read', 'translations:write',
-  'modules:read', 'modules:write', 'legal:read', 'legal:write', 'settings:read', 'settings:write',
+  'modules:read', 'modules:write', 'legal:read', 'legal:write', 'settings:read', 'settings:write', 'users:read', 'users:write',
 ] as const
 
 /**

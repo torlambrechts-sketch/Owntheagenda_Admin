@@ -4,6 +4,7 @@ import { rpcOrThrow } from '@/lib/rpc'
 import { loadApplication, loadApplications, loadFlags, loadNotice, type Notice } from './platform'
 import { Staff } from './settings'
 import type { Health } from './platform-shared'
+import { isCommandProduct } from '@/supabase/functions/_shared/commands.ts'
 
 /**
  * Sentral Simple › Platform (design-reference/sentral-simple/SimplePlatform.dc.html): the reads behind Applications, Plans and
@@ -32,7 +33,7 @@ export type SimpleApp = {
   /** the installation's host and the product's API version, as the connection reports them */
   host: string | null
   version: string | null
-  /** Test connection goes through product-command, which reaches Orgpuls only (lib/platform/command.ts) */
+  /** Test connection goes through product-command, which reaches a product with a command registry (_shared/commands.ts) */
   testable: boolean
   /** the product offers settings.set_maintenance (none does yet: D-40) */
   maintenance: boolean
@@ -66,7 +67,7 @@ export async function loadAppsTab(product: string): Promise<{
       key: c.key, name: c.name, description: c.description, color: c.color, ink: c.ink, installed: c.installed,
       status: c.health.status, orgs: c.orgs, p95_ms: c.health.p95_ms, error_rate: c.health.error_rate,
       host: hostOf(conn?.api_url ?? null), version: conn?.api_version ?? null,
-      testable: c.key === 'orgpuls' && has('orgs.list') && !!conn?.enabled,
+      testable: isCommandProduct(c.key) && has('orgs.list') && !!conn?.enabled,
       maintenance: has('settings.set_maintenance'),
       token_secret: conn ? conn.token_secret : null, webhook_secret: conn ? conn.webhook_secret : null,
     }

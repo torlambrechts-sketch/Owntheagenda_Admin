@@ -34,8 +34,8 @@ function outcome(reply: CommandReply): { ok: true; result: z.infer<typeof Inner>
 // the status message: stored in Sentral (status_notice_set), then delivered through Orgpuls' settings.set_notice
 /**
  * Publish (text) or clear (null) the status message of a product. The notice is stored and queued as before (noticeSet); no
- * worker drains that queue yet, so the delivery is made here, at once, by settings.set_notice — Orgpuls only, as every
- * product command (lib/platform/command.ts) — and its outcome is recorded against the notice (status_notice_push_result,
+ * worker drains that queue yet, so the delivery is made here, at once, by settings.set_notice — Orgpuls only: LeaderPact
+ * has no notice command (_shared/leaderpact.ts) — and its outcome is recorded against the notice (status_notice_push_result,
  * 0057; «delivered» only when the command audit holds the call). Orgpuls keeps one notice in two languages, at most 300
  * characters: the same text goes to both.
  */
@@ -48,7 +48,7 @@ export async function publishNotice(input: unknown): Promise<Res<{ delivered: bo
   const set = await noticeSet({ product: p.data.product, text: p.data.text, problem, maintenance: false, confirm: null })
   if (!set.ok) return set
   if (p.data.product !== 'orgpuls') return { ok: true, delivered: false, code: 'command_path' }
-  const sent = outcome(await runCommand('settings.set_notice', { p_on: p.data.text !== null, p_no: p.data.text, p_en: p.data.text }))
+  const sent = outcome(await runCommand('orgpuls', 'settings.set_notice', { p_on: p.data.text !== null, p_no: p.data.text, p_en: p.data.text }))
   const recorded = await rpc('status_notice_push_result', { p_id: set.id, p_ok: sent.ok, p_error: sent.ok ? null : sent.code }, z.object({ id: z.string(), ok: z.boolean() }))
   if (!recorded.ok && sent.ok) return { ok: true, delivered: false, code: 'not_recorded' }
   return sent.ok ? { ok: true, delivered: true, code: null } : { ok: true, delivered: false, code: sent.code }
@@ -66,12 +66,16 @@ const ModuleZ = z.object({
 })
 export type ProductFlag = { key: string; version: string; name: string; status: 'draft' | 'published' | 'retired'; items: number | null; pilots: number }
 
-/** The product's modules as its own modules.list returns them (Orgpuls 0122 admin_modules), newest version first per key. */
+/**
+ * The product's modules as its own modules.list returns them (Orgpuls 0122 admin_modules), newest version first per key.
+ * Orgpuls only for now: LeaderPact's modules.set_status takes an integer version and no reason, so its switch needs its own
+ * arguments before the Flags tab offers it.
+ */
 export async function fetchProductFlags(input: unknown): Promise<Res<{ flags: ProductFlag[] }>> {
   const p = productKey.safeParse(input)
   if (!p.success) return { ok: false, code: 'invalid' }
   if (p.data !== 'orgpuls') return { ok: false, code: 'not_available', detail: 'command_path' }
-  const r = outcome(await runCommand('modules.list', {}))
+  const r = outcome(await runCommand('orgpuls', 'modules.list', {}))
   if (!r.ok) return { ok: false, code: 'not_connected', detail: r.code }
   const mods = z.array(ModuleZ).safeParse(r.result.modules)
   if (!mods.success) return { ok: false, code: 'failed', detail: 'unexpected_reply' }
@@ -97,7 +101,7 @@ export async function setProductFlag(input: unknown): Promise<Res> {
   if (!p.success) return { ok: false, code: 'invalid', detail: p.error.issues[0]?.path[0] === 'reason' ? 'reason' : null }
   if (!can(await getShell(), 'global', 'configure')) return { ok: false, code: 'forbidden' }
   if (p.data.product !== 'orgpuls') return { ok: false, code: 'not_available', detail: 'command_path' }
-  const r = outcome(await runCommand('modules.set_status', { p_key: p.data.key, p_version: p.data.version, p_status: p.data.status, p_reason: p.data.reason }))
+  const r = outcome(await runCommand('orgpuls', 'modules.set_status', { p_key: p.data.key, p_version: p.data.version, p_status: p.data.status, p_reason: p.data.reason }))
   return r.ok ? { ok: true } : { ok: false, code: 'not_connected', detail: r.code }
 }
 

@@ -34,7 +34,7 @@ describe('feature flags through modules.list / modules.set_status', () => {
       { key: 'nynorsk', version: '0.1.0', name: 'Nynorsk', status: 'draft', items: 0, pilots: [] },
     ], adoption: [] } })
     const r = await fetchProductFlags('orgpuls')
-    expect(runCommand).toHaveBeenCalledWith('modules.list', {})
+    expect(runCommand).toHaveBeenCalledWith('orgpuls', 'modules.list', {})
     expect(r).toEqual({ ok: true, flags: [
       { key: 'pulse', version: '1.0.0', name: 'Pulse', status: 'published', items: 12, pilots: 1 },
       { key: 'nynorsk', version: '0.1.0', name: 'Nynorsk', status: 'draft', items: 0, pilots: 0 },
@@ -59,7 +59,7 @@ describe('feature flags through modules.list / modules.set_status', () => {
     expect(await setProductFlag({ ...input, reason: 'no' })).toEqual({ ok: false, code: 'invalid', detail: 'reason' })
     runCommand.mockResolvedValue({ ok: true, result: { ok: true, result: 'retired' } })
     expect(await setProductFlag(input)).toEqual({ ok: true })
-    expect(runCommand).toHaveBeenCalledWith('modules.set_status', { p_key: 'pulse', p_version: '1.0.0', p_status: 'retired', p_reason: 'Replaced by 1.1' })
+    expect(runCommand).toHaveBeenCalledWith('orgpuls', 'modules.set_status', { p_key: 'pulse', p_version: '1.0.0', p_status: 'retired', p_reason: 'Replaced by 1.1' })
     runCommand.mockResolvedValue({ ok: true, result: { ok: false, error: 'invalid_transition' } })
     expect(await setProductFlag(input)).toEqual({ ok: false, code: 'not_connected', detail: 'invalid_transition' })
   })
@@ -77,7 +77,7 @@ describe('the status message', () => {
     runCommand.mockResolvedValue({ ok: true, result: { ok: true } })
     expect(await publishNotice({ product: 'orgpuls', text: '  Vedlikehold i kveld ' })).toEqual({ ok: true, delivered: true, code: null })
     expect(noticeSet).toHaveBeenCalledWith({ product: 'orgpuls', text: 'Vedlikehold i kveld', problem: 'bc9345fe-eeb7-4358-ac24-4f4094f41dbf', maintenance: false, confirm: null })
-    expect(runCommand).toHaveBeenCalledWith('settings.set_notice', { p_on: true, p_no: 'Vedlikehold i kveld', p_en: 'Vedlikehold i kveld' })
+    expect(runCommand).toHaveBeenCalledWith('orgpuls', 'settings.set_notice', { p_on: true, p_no: 'Vedlikehold i kveld', p_en: 'Vedlikehold i kveld' })
     expect(rpc.mock.calls[0]?.slice(0, 2)).toEqual(['status_notice_push_result', { p_id: id, p_ok: true, p_error: null }])
   })
 
@@ -85,7 +85,7 @@ describe('the status message', () => {
     runCommand.mockResolvedValue({ ok: false, error: 'timeout' })
     expect(await publishNotice({ product: 'orgpuls', text: null })).toEqual({ ok: true, delivered: false, code: 'timeout' })
     expect(noticeSet).toHaveBeenCalledWith(expect.objectContaining({ text: null, problem: null }))
-    expect(runCommand).toHaveBeenCalledWith('settings.set_notice', { p_on: false, p_no: null, p_en: null })
+    expect(runCommand).toHaveBeenCalledWith('orgpuls', 'settings.set_notice', { p_on: false, p_no: null, p_en: null })
     expect(rpc.mock.calls[0]?.[1]).toEqual({ p_id: id, p_ok: false, p_error: 'timeout' })
   })
 

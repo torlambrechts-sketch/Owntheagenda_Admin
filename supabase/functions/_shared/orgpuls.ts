@@ -1,5 +1,3 @@
-import type { CommandClaims } from './signing.ts'
-
 /**
  * Orgpuls' commands and the scope each needs (its app.platform_command_map, 0205/0206/0207). A token carries
  * only the scope of the one command it is for, so a leaked token can do one kind of thing for five
@@ -47,7 +45,3 @@ export type OrgpulsCommand = keyof typeof ORGPULS_COMMANDS
 
 export const isOrgpulsCommand = (c: string): c is OrgpulsCommand => Object.prototype.hasOwnProperty.call(ORGPULS_COMMANDS, c)
 
-/** two minutes is ample for one call; Orgpuls accepts at most five */
-export function commandClaims(actor: string, command: OrgpulsCommand, nowSec: number, jti: string): CommandClaims {
-  return { aud: 'orgpuls', sub: actor.slice(0, 254), scope: ORGPULS_COMMANDS[command], jti, iat: nowSec, exp: nowSec + 120 }
-}

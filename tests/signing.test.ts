@@ -1,6 +1,8 @@
 import { createHmac } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
-import { commandClaims, isOrgpulsCommand, ORGPULS_COMMANDS } from '@/supabase/functions/_shared/orgpuls.ts'
+import { commandClaims, isCommandProduct, isProductCommand, PRODUCT_COMMANDS } from '@/supabase/functions/_shared/commands.ts'
+import { isLeaderpactCommand, LEADERPACT_COMMANDS } from '@/supabase/functions/_shared/leaderpact.ts'
+import { isOrgpulsCommand, ORGPULS_COMMANDS } from '@/supabase/functions/_shared/orgpuls.ts'
 import { hmacHex, signJwt, verifyWebhook } from '@/supabase/functions/_shared/signing.ts'
 
 const SECRET = 'a'.repeat(64)
@@ -29,7 +31,7 @@ describe('events in', () => {
 
 describe('commands out', () => {
   it('signs an HS256 token Orgpuls can verify, for one scope and two minutes', async () => {
-    const claims = commandClaims('tor@example.com', 'billing.extend_trial', now, '0123456789abcdef')
+    const claims = commandClaims('orgpuls', 'tor@example.com', 'billing.extend_trial', now, '0123456789abcdef')
     expect(claims).toEqual({ aud: 'orgpuls', sub: 'tor@example.com', scope: 'billing:write', jti: '0123456789abcdef', iat: now, exp: now + 120 })
     const jwt = await signJwt(claims, SECRET)
     const [h, b, s] = jwt.split('.')
@@ -43,6 +45,35 @@ describe('commands out', () => {
     expect(isOrgpulsCommand('answers.export')).toBe(false)
     expect(isOrgpulsCommand('constructor')).toBe(false)
     for (const [command, scope] of Object.entries(ORGPULS_COMMANDS)) {
+      expect(command).toMatch(/^[a-z]+\.[a-z_]+$/)
+      expect(scope).toMatch(/^[a-z]+:(read|write)$/)
+    }
+  })
+
+  it('signs for LeaderPact with its own audience and the scope its registry names', async () => {
+    const claims = commandClaims('leaderpact', 'tor@example.com', 'users.deactivate', now, '0123456789abcdef')
+    expect(claims).toEqual({ aud: 'leaderpact', sub: 'tor@example.com', scope: 'users:write', jti: '0123456789abcdef', iat: now, exp: now + 120 })
+    expect(commandClaims('leaderpact', 'tor@example.com', 'billing.set_status', now, 'x'.repeat(8)).scope).toBe('billing:write')
+    expect(commandClaims('leaderpact', 'tor@example.com', 'orgs.get', now, 'x'.repeat(8)).scope).toBe('orgs:read')
+    // LeaderPact checks exp - iat <= 300 and a jti of 8–128 characters
+    expect(claims.exp - claims.iat).toBeLessThanOrEqual(300)
+  })
+
+  it('knows LeaderPact\'s commands only for LeaderPact, and no other product', () => {
+    expect(isCommandProduct('orgpuls')).toBe(true)
+    expect(isCommandProduct('leaderpact')).toBe(true)
+    expect(isCommandProduct('empvibe')).toBe(false)
+    expect(isCommandProduct('constructor')).toBe(false)
+    expect(isCommandProduct(null)).toBe(false)
+    expect(isProductCommand('leaderpact', 'users.deactivate')).toBe(true)
+    expect(isProductCommand('orgpuls', 'users.deactivate')).toBe(false)
+    expect(isProductCommand('leaderpact', 'billing.extend_trial')).toBe(false)
+    expect(isProductCommand('leaderpact', 'orgs.delete_now')).toBe(false)
+    expect(isProductCommand('leaderpact', 'toString')).toBe(false)
+    expect(isProductCommand('leaderpact', 42)).toBe(false)
+    expect(isLeaderpactCommand('billing.move_to_free')).toBe(true)
+    expect(PRODUCT_COMMANDS).toEqual({ orgpuls: ORGPULS_COMMANDS, leaderpact: LEADERPACT_COMMANDS })
+    for (const [command, scope] of Object.entries(LEADERPACT_COMMANDS)) {
       expect(command).toMatch(/^[a-z]+\.[a-z_]+$/)
       expect(scope).toMatch(/^[a-z]+:(read|write)$/)
     }

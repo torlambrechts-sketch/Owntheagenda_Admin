@@ -66,14 +66,32 @@ export function intentOf(query: string, brands: string[]): Intent {
   return 'informational'
 }
 
-export type KwAdvice = 'new' | 'top3_ctr' | 'top3' | 'page1' | 'page2' | 'low'
-/** The design's «Do this»: what the position and the click rate call for */
-export function keywordAdvice(r: KwRow): KwAdvice {
+export type KwAdvice = 'new' | 'top3_ctr' | 'top3' | 'page1' | 'page2' | 'low_split' | 'low_young' | 'low'
+
+/** How long a page needs before a low position says anything about it: eight weeks */
+export const KW_SETTLE_DAYS = 56
+
+/**
+ * The design's «Do this»: what the position and the click rate call for. Below 20 the design says the page answers
+ * another need; that holds only once the position has had time to settle. So a search Google splits over pages asks
+ * for one page first, and one tracked for under eight weeks is too early to judge (LeaderPact D-67). A search with no
+ * tracking date keeps the design's advice.
+ */
+export function keywordAdvice(r: KwRow, ctx: { trackedDays?: number | null; pagesShown?: number | null } = {}): KwAdvice {
   if (r.position === null) return 'new'
   if (r.position <= 3) return r.ctrGap ? 'top3_ctr' : 'top3'
   if (r.position <= 10) return 'page1'
   if (r.position <= 20) return 'page2'
+  if ((ctx.pagesShown ?? 0) >= 2) return 'low_split'
+  if (ctx.trackedDays !== null && ctx.trackedDays !== undefined && ctx.trackedDays < KW_SETTLE_DAYS) return 'low_young'
   return 'low'
+}
+
+/** Whole days since a tracking date (an ISO timestamp), or null without one */
+export function daysSince(iso: string | null | undefined, now: number): number | null {
+  if (!iso) return null
+  const at = Date.parse(iso)
+  return Number.isNaN(at) ? null : Math.max(0, Math.floor((now - at) / 86_400_000))
 }
 
 // ---------------------------------------------------------------------------

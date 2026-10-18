@@ -631,6 +631,8 @@
         "top3": "Forsvar: oppdater siden hvert kvartal, legg til FAQ-skjema og lenk til den fra nye artikler.",
         "page1": "Første side, men langt ned: legg til en del som svarer direkte på «{q}», tre interne lenker med denne ankerteksten, og en bedre tittel.",
         "page2": "Side to: utvid innholdet (sammenlign med topp 3), legg til en nedlastbar mal og skaff 2–3 lenker fra relevante nettsteder.",
+        "low_split": "Google viser flere sider for dette søket: velg den som svarer på det, lenk de andre til den, og hold dem unna temaet.",
+        "low_young": "For tidlig å si: søket har vært fulgt i under åtte uker. Lenk til siden fra beslektede sider, skaff lenker fra relevante nettsteder, og se igjen etter åtte uker.",
         "low": "Ikke konkurransedyktig ennå: lag en egen landingsside — dagens side svarer på et annet behov."
       },
       "duplicate": "Det søkeordet spores allerede.",

@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Route } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { formatNumber, percent, type NumberFormat } from '@/lib/format'
-import { expectedCtr, intentOf, keywordAdvice, keywordRow, kwFilter, relChange, type KwRow } from '@/lib/growth/calc'
+import { daysSince, expectedCtr, intentOf, keywordAdvice, keywordRow, kwFilter, relChange, type KwRow } from '@/lib/growth/calc'
 import { KW_TABS, growthHref, type KwTab, type Scope } from '@/lib/growth/scope'
 import type { Seo } from '@/lib/data/simple-growth-shared'
 import type { KeywordHistory } from '@/lib/growth/types'
@@ -28,7 +28,7 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
   const t = await getTranslations('simpleGrowth.keywords')
   const dash = '—'
   const num = (v: number | null) => (v === null ? dash : formatNumber(v, nf))
-  const rows = d.keywords.map((k) => ({ ...keywordRow(k), id: k.id, tracked: k.tracked, page: k.page ?? null, mine: k.mine, variants: k.variants ?? null }))
+  const rows = d.keywords.map((k) => ({ ...keywordRow(k), id: k.id, tracked: k.tracked, created_at: k.created_at, page: k.page ?? null, mine: k.mine, variants: k.variants ?? null }))
   const shown = rows.filter((r) => kwFilter(kt, r)).sort((a, b) => b.potential - a.potential || (b.impressions ?? 0) - (a.impressions ?? 0))
   const sel = rows.find((r) => r.query === kw) ?? shown[0] ?? rows[0] ?? null
   const s = d.totals
@@ -46,7 +46,13 @@ export async function SeoKeywordsTab({ d, scope, kt, kw, history, nf, product, b
   const kmax = Math.max(12, ...pts.map((p) => p.position ?? 0)) + 1
   const ky = (p: number) => (4 + ((p - 1) / (kmax - 1)) * 62).toFixed(1)
   const line = pts.map((p, i) => `${pts.length > 1 ? ((i * 300) / (pts.length - 1)).toFixed(1) : '150'},${ky(p.position!)}`).join(' ')
-  const advice = sel ? keywordAdvice(sel) : null
+  // a low position means something only once it has settled, and only when Google shows one page for the search
+  const advice = sel
+    ? keywordAdvice(sel, {
+        trackedDays: sel.tracked ? daysSince(sel.created_at, Date.now()) : null,
+        pagesShown: history && history.query === sel.query ? history.pages.filter((p) => p.impressions > 0).length : null,
+      })
+    : null
 
   return (
     <div className="flex flex-col gap-[14px]">

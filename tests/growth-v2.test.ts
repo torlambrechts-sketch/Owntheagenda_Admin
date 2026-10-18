@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { durationParts, expectedCtr, funnelFix, intentOf, keywordAdvice, keywordRow, kwFilter, opportunities, pageOpportunity, pageTag, relChange } from '../lib/growth/calc'
+import { daysSince, durationParts, expectedCtr, funnelFix, intentOf, keywordAdvice, keywordRow, kwFilter, KW_SETTLE_DAYS, opportunities, pageOpportunity, pageTag, relChange } from '../lib/growth/calc'
 import { growthHref, parseGrowth } from '../lib/growth/scope'
 
 describe('growth scope in the address (Growth v2)', () => {
@@ -47,6 +47,24 @@ describe('growth arithmetic and rules (Growth v2)', () => {
     expect(intentOf('hms system pris', [])).toBe('transactional')
     expect(intentOf('medarbeiderundersøkelse mal gratis', [])).toBe('commercial')
     expect(intentOf('verneombud plikter', [])).toBe('informational')
+  })
+
+  it('below 20: one page asked for when Google splits the search, too early before eight weeks, the design after', () => {
+    const low = keywordRow({ query: 'leadership team effectiveness', impressions: 2, clicks: 0, position: 58.5, position_prev: null })
+    expect(keywordAdvice(low)).toBe('low') // no tracking date: the design's advice
+    expect(keywordAdvice(low, { trackedDays: 4, pagesShown: 1 })).toBe('low_young')
+    expect(keywordAdvice(low, { trackedDays: KW_SETTLE_DAYS - 1 })).toBe('low_young')
+    expect(keywordAdvice(low, { trackedDays: KW_SETTLE_DAYS, pagesShown: 1 })).toBe('low')
+    expect(keywordAdvice(low, { trackedDays: 4, pagesShown: 2 })).toBe('low_split')
+    expect(keywordAdvice(low, { trackedDays: null, pagesShown: null })).toBe('low')
+    // above 20 the age changes nothing
+    const p2 = keywordRow({ query: 'x', impressions: 50, clicks: 0, position: 14, position_prev: null })
+    expect(keywordAdvice(p2, { trackedDays: 1, pagesShown: 3 })).toBe('page2')
+    const now = Date.parse('2026-10-18T12:00:00Z')
+    expect(daysSince('2026-10-14T09:00:00Z', now)).toBe(4)
+    expect(daysSince(null, now)).toBeNull()
+    expect(daysSince('not a date', now)).toBeNull()
+    expect(daysSince('2026-10-19T00:00:00Z', now)).toBe(0)
   })
 
   it('a page: its tag and what it would add at the site\'s rate', () => {

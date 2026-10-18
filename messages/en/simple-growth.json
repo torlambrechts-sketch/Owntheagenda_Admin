@@ -631,6 +631,8 @@
         "top3": "Defend: refresh the page every quarter, add FAQ schema and link to it from new articles.",
         "page1": "Page one but below the fold: add a section answering «{q}» directly, add 3 internal links with this anchor text, and improve the title.",
         "page2": "Page two: expand the content (compare with the top 3), add a downloadable template and earn 2–3 links from relevant sites.",
+        "low_split": "Google shows several pages for this search: pick the one that answers it, link the others to it, and keep them off its topic.",
+        "low_young": "Too early to judge: it has been tracked for under eight weeks. Link to the page from related pages, earn links from relevant sites, and check again after eight weeks.",
         "low": "Not competitive yet: create a dedicated landing page — the current page targets a different intent."
       },
       "duplicate": "That keyword is already tracked.",
